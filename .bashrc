@@ -1,3 +1,5 @@
+# .bashrc file written by: terminalforlife (terminalforlife@yahoo.com)
+
 # Much safer file and directory permissions, as recommended in the RHEL world.
 # That's 700 for directories and 600 for files. (drwx------ and -rw-------)
 umask 0077
