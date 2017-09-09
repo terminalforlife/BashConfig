@@ -1,0 +1,27 @@
+#!/bin/bash
+# Written by terminalforlife (terminalforlife@yahoo.com)
+
+# The cd command:
+alias cd..='cd ..'
+alias vf='cd'
+alias xs='cd'
+
+# The ls command:
+alias ld='/bin/ls'
+alias la='/bin/ls'
+alias lsd='/bin/ls'
+alias sl='/bin/ls'
+alias ks='/bin/ls'
+
+# The clear command:
+alias lcear='/usr/bin/clear'
+alias celar='/usr/bin/clear'
+alias clea='/usr/bin/clear'
+alias clre='/usr/bin/clear'
+alias ckear='/usr/bin/clear'
+alias cear='/usr/bin/clear'
+alias caer='/usr/bin/clear'
+alias lcaer='/usr/bin/clear'
+alias lear='/usr/bin/clear'
+alias cler='/usr/bin/clear'
+alias clera='/usr/bin/clear'

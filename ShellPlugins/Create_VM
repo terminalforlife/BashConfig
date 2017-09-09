@@ -1,0 +1,117 @@
+#!/bin/bash
+# Written by terminalforlife (terminalforlife@yahoo.com)
+
+# $1 = Name
+# $2 = Type
+
+mkvm()
+{
+	FAULT_COUNT=0
+	ERR(){ echo "ERROR: $1" 1>&2; }
+
+	if [ $UID -eq 0 ]
+	then
+		ERR "Root access not recommended."
+		let FAULT_COUNT++
+	fi
+
+	if ! type -P /usr/bin/vboxmanage &> /dev/null
+	then
+		ERR "Dependency 'vboxmanage' not met."
+		let FAULT_COUNT++
+	fi
+
+	if ! [ $# -eq 2 ]
+	then
+		ERR "Correct syntax is 'mkvm <name> <ostype>'." 1>&2
+		let FAULT_COUNT++
+	fi
+
+	if [ -z "$VBOX_USER_HOME" ]
+	then
+		ERR "Environment variable 'VBOX_USER_HOME' not set."
+		let FAULT_COUNT++
+	fi
+
+	[ $FAULT_COUNT -gt 0 ] && return
+	
+	(
+		echo "Creating and registering the virtual machine."
+		/usr/bin/vboxmanage createvm                              \
+			--name "$1"                                       \
+			--ostype "$2"                                     \
+			--basefolder "$VBOX_USER_HOME"                    \
+			--register
+		
+		echo "Creating the primary storage medium."
+		/usr/bin/vboxmanage createmedium                          \
+			--filename "$VBOX_USER_HOME/$1/$1"                \
+			--size 12000                                      \
+			--format VDI                                      \
+			--variant Standard
+
+		echo "Configuring the new virtual machine."
+		/usr/bin/vboxmanage modifyvm "$1"                         \
+			--usb off                                         \
+			--audio pulse                                     \
+			--bioslogofadein off                              \
+			--bioslogofadeout off                             \
+			--bioslogodisplaytime 0                           \
+			--biosbootmenu menuonly                           \
+			--audiocontroller ac97                            \
+			--clipboard disabled                              \
+			--monitorcount 1                                  \
+			--draganddrop disabled                            \
+			--mouse ps2                                       \
+			--keyboard ps2                                    \
+			--boot1 dvd                                       \
+			--boot2 disk                                      \
+			--boot3 floppy                                    \
+			--vram 128                                        \
+			--memory 2048                                     \
+			--cpuexecutioncap 95                              \
+			--cpus 3                                          \
+			--paravirtprovider kvm                            \
+			--pae on                                          \
+			--chipset ich9                                    \
+			--graphicscontroller vboxvga                      \
+			--hwvirtex on                                     \
+			--accelerate3d on                                 \
+			--accelerate2dvideo off                           \
+			--firmware bios
+
+		echo "Setting up the FDD controller."
+		/usr/bin/vboxmanage storagectl "$1"                       \
+		                                                          \
+			--name "Floppy Controller"                        \
+			--add floppy
+
+		echo "Setting up the IDE controller."
+		/usr/bin/vboxmanage storagectl "$1"                       \
+		                                                          \
+			--name "IDE Controller"                           \
+			--add ide
+
+		echo "Adding the primary HDD."
+		/usr/bin/vboxmanage storageattach "$1"                    \
+		                                                          \
+			--storagectl "IDE Controller"                     \
+			--port 1                                          \
+			--device 1                                        \
+			--type hdd                                        \
+			--medium "$VBOX_USER_HOME"/$1/${1}.vdi
+
+		echo "Adding the primary FDD."
+		/usr/bin/vboxmanage storageattach "$1"                    \
+		                                                          \
+			--storagectl "Floppy Controller"                  \
+			--port 0                                          \
+			--device 1                                        \
+			--type fdd                                        \
+			--medium "$VBOX_USER_HOME"/vboxtransfer.img
+	) &> /dev/null
+
+	echo "Virtual machine has been created... hopefully."
+
+	# --hostkey 305 128
+}

@@ -1,0 +1,36 @@
+#!/bin/bash
+# Written by terminalforlife (terminalforlife@yahoo.com)
+
+lsf()
+{
+	for FILE in *
+	{
+		if [ -f "$FILE" ]
+		then
+			ls $@ "$FILE"
+		fi
+	}
+}
+
+
+lsd()
+{
+	for DIR in *
+	{
+		if [ -d "$DIR" ]
+		then
+			ls -d $@ "$DIR"
+		fi
+	}
+}
+
+lsx()
+{
+	for EXE in *
+	{
+		if [ -x "$EXE" ] && ! [ -d $EXE ]
+		then
+			ls $@ "$EXE"
+		fi
+	}
+}
