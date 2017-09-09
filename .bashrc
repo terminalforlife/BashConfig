@@ -8,7 +8,7 @@ umask 0077
 set -o posix
 
 # If appropriate, add $HOME/bin to the PATH variable.
-if [ -d "$HOME/bin" ] && ! [[ "$PATH" == */home/$USER/bin* ]]
+if [ -d "$HOME/bin" ] && ! [[ "$PATH" == */home/"$USER"/bin* ]]
 then
         export PATH="/home/$USER/bin:${PATH}"
 fi
@@ -41,7 +41,7 @@ HISTCONTROL=ignoreboth; HISTTIMEFORMAT="[%F_%X]: "; HISTSIZE=1000; HISTFILESIZE=
 
 # Obviously change this as appropriate for your setup. This is where a bash function library
 # would reside, or brief scripts like those which contain your set and/or shopt options.
-FLIB="$HOME/Documents/TT/ZSH_Funcs"
+FLIB="$HOME/ShellPlugins"
 
 # If the above directory exists, then begin sourcing.
 if [ -d "$FLIB" ]
@@ -49,9 +49,9 @@ then
 	for FUNC in\ 
 	\
 		# Add your shell files here which are to be sequentially sourced. To see which ones
-		# I use and have written myself, check the directory 'ZSH_Funcs' in this repository.
+		# I use and have written myself, check the directory 'ShellPlugins' in this repository.
 	{
-	        source "$FLIB/$FUNC"
+	        [ -f "$FLIB/$FUNC" ] && source "$FLIB/$FUNC"
 	}
 fi
 
