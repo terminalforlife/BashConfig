@@ -1,0 +1,53 @@
+#!/bin/bash
+# Written by terminalforlife (terminalforlife@yahoo.com)
+
+# WORK IN PROGRESS
+
+gbh()
+{
+	if [ $UID -eq 0 ]
+	then
+		echo "ERROR: Don't run as root!" 1>&2
+		return
+	fi
+
+	if ! [ $# -eq 0 ]
+	then
+		echo "ERROR: No arguments required." 1>&2
+		return
+	fi
+
+	DEPCOUNT=0
+	for DEP in /bin/{grep,gzip} /usr/bin/{wget,dos2unix,uniq,sort,tr}
+	{
+		if ! type -P "$DEP" &> /dev/null
+		then
+			echo "ERROR: Dependency '$DEP' not met." 1>&2
+			let DEPCOUNT++
+		fi
+	}
+
+	[ $DEPCOUNT -eq 0 ] || return
+
+	URL="http://www.montanamenagerie.org/hostsfile/hosts.txt"
+	DESTINATION="$HOME/Downloads/GBH.txt"
+	[ -d "${DESTINATION%\/*}" ] || return
+
+	if [ -f "${DESTINATION}.gz" ]
+	then
+		echo "ERROR: File already present." 1>&2
+		return
+	fi
+
+	/usr/bin/wget -q --show-progress "$URL" -O "$DESTINATION"
+	/usr/bin/dos2unix "$DESTINATION"
+
+	/bin/cat "$DESTINATION"\
+		| /usr/bin/tr "\t" " "\
+		| /bin/grep -a "^127.0.0.1 "\
+		| /usr/bin/uniq\
+		| /usr/bin/sort\
+		| /usr/bin/gzip -c\
+		> "$DESTINATION"
+
+}

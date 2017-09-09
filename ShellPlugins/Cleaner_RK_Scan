@@ -1,0 +1,23 @@
+#!/bin/bash
+# Written by terminalforlife (terminalforlife@yahoo.com)
+
+rkc()
+{
+	if [ $UID -eq 0 ]
+	then
+		echo "ERROR: Do not run as root!" 1>&2
+		return
+	fi
+
+	/usr/bin/sudo /usr/bin/rkhunter -c --skip-keypress --rwo
+
+	/bin/sed '
+		/nothing found/d;
+		/not infected/d;
+		/not found/d;
+		/nothing detected/d;
+		/nothing deleted/d;
+		/no suspect files/d;
+		/no such file or directory/d
+	' <<< "$(/usr/bin/sudo /usr/sbin/chkrootkit)"
+}

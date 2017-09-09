@@ -1,0 +1,16 @@
+#!/bin/bash
+# Written by terminalforlife (terminalforlife@yahoo.com)
+
+tentt()
+{
+	for XT in {1..10}; { printf "%4d" $XT; }; echo
+	for XT in {2..20..2}; { printf "%4d" $XT; }; echo
+	for XT in {3..30..3}; { printf "%4d" $XT; }; echo
+	for XT in {4..40..4}; { printf "%4d" $XT; }; echo
+	for XT in {5..50..5}; { printf "%4d" $XT; }; echo
+	for XT in {6..60..6}; { printf "%4d" $XT; }; echo
+	for XT in {6..70..7}; { printf "%4d" $XT; }; echo
+	for XT in {8..80..8}; { printf "%4d" $XT; }; echo
+	for XT in {9..90..9}; { printf "%4d" $XT; }; echo
+	for XT in {10..100..10}; { printf "%4d" $XT; }; echo
+}
