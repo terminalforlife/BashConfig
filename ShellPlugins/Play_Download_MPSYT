@@ -1,0 +1,31 @@
+#!/bin/bash
+# Written by terminalforlife (terminalforlife@yahoo.com)
+
+if type -P /usr/bin/mpsyt &> /dev/null
+then
+	yt()
+	{
+		if [ $# -gt 2 ]
+		then
+			echo "USAGE: yt [-p|-d] URL"
+			return
+		fi
+
+		if [ $UID -eq 0 ]
+		then
+			echo "ERROR: Root access is not required."
+			return
+		fi
+	
+		if [ "$1" == "-p" ]
+		then
+			/usr/bin/mpsyt playurl "$2"
+		elif [ "$1" == "-d" ]
+		then
+			/usr/bin/mpsyt dlurl "$2"
+		else
+			echo "Error."
+			return
+		fi
+	}
+fi

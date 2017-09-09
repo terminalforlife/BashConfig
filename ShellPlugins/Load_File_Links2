@@ -1,0 +1,28 @@
+#!/bin/bash
+# Written by terminalforlife (terminalforlife@yahoo.com)
+
+l2f()
+{
+	if [ $# -eq 0 ]
+	then
+		echo "ERROR: Please specify a file to be read." 1>&2
+		return
+	fi
+
+	if [ $UID -eq 0 ]
+	then
+		echo "ERROR: Root access is not recommended here." 1>&2
+		return
+	fi
+	
+	if type -P /usr/bin/links2 &> /dev/null
+	then
+		/usr/bin/links2 -force-html file://"$@"
+	elif type -P /usr/bin/links &> /dev/null
+	then
+		/usr/bin/links -force-html file://"$@"
+	else
+		echo "ERROR: Program 'links2' or 'links' not found." 1>&2
+		return
+	fi
+}

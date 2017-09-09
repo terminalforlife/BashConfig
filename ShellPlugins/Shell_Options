@@ -1,0 +1,37 @@
+#!/bin/bash
+# Written by terminalforlife (terminalforlife@yahoo.com)
+
+shopt -s histappend\
+         checkwinsize\
+         globstar\
+         cmdhist\
+         complete_fullquote\
+         expand_aliases\
+         extquote\
+         extglob\
+         force_fignore\
+         hostcomplete\
+         interactive_comments\
+         promptvars\
+         sourcepath\
+         progcomp autocd\
+         cdspell\
+         dirspell\
+         direxpand\
+         lithist\
+         nocasematch\
+         xpg_echo
+
+for SETOPT in\
+\
+	interactive-comments\
+	history\
+	histexpand\
+	emacs\
+	braceexpand\
+	monitor\
+	hashall\
+	posix
+{
+	set -o $SETOPT
+}

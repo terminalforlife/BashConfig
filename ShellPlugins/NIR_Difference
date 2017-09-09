@@ -1,0 +1,30 @@
+#!/bin/bash
+# Written by terminalforlife (terminalforlife@yahoo.com)
+
+nirdiff()
+{
+        RERR(){ echo "ERROR: $1" 1>&2; return; }
+
+        if [ ! "$#" -eq "1" ]
+	then
+		RERR "One argument (package name) is required."
+        elif dpkg-query --status "$1" &> /dev/null
+	then
+		RERR "Package already installed."
+        elif ! dpkg-query --show "$1" &> /dev/null
+	then
+		RERR "Package '$1' not found."
+	fi
+
+        printf "%-25s%10s\n" "FLAG" "PKG"
+
+        for SIM in "--no-" "--"
+        {
+		/usr/bin/apt-get install -s ${SIM}install-recommends "$1" 2> /dev/null\
+			| /usr/bin/awk -v SIM="$SIM" '
+				{
+					if(/^[0-9]+ to upgrade,\s/)
+						printf "%-25s%10d\n",SIM"install-recommends",$4
+				}'
+        }
+}
