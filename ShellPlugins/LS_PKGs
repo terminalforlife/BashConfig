@@ -10,7 +10,7 @@ LS_INSTALLED_PKGS()
 	fi
 
 	DEPCOUNT=0
-	for DEP in /usr/bin/{dpkg-query,uniq} /bin/grep
+	for DEP in /usr/bin/{dpkg-query,cut,uniq} /bin/grep
 	{
 		if ! type -P "$DEP" 2>&1 > /dev/null
 		then
