@@ -1,0 +1,18 @@
+#!/bin/bash
+# Written by terminalforlife (terminalforlife@yahoo.com)
+
+# Clears the terminal before executing cd and then ls. Skip with \cd.
+# Limited function, but useful. May revisit at a later date.
+cd()
+{
+	if [ $# -eq 0 ]
+        then
+		echo -ne "\033c"
+		cd "$HOME"
+		ls
+	else
+		echo -ne "\033c"
+		cd "$*"
+		ls
+	fi
+}
