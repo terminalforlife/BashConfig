@@ -22,11 +22,6 @@ Using these files is very simple:
   2. Create directory "ShellPlugins" in $HOME/
   3. Place contents of ShellPlugins from this respository into the above.
   4. Place .profile (entirely optional) into $HOME/
-  
-Remember, these are my files and how I've customized them; if you have your own customizations, be sure you back them up beforehand! Otherwise simply copying over your existing files with mine will blast yours away. While they work for me just fine, they may cause unknown issues for you. Back up your files beforehand, perhaps by using this command, but not with sh:
-
-cp $HOME/.bashrc{,bak}
-cp $HOME/.profile{,bak}
 
 If you already have the directory ShellPlugins, make changes to and run this sed command, where X is the name of the directory you'd like to instead use, and FILE is the location of the .bashrc file you got from me.
 
@@ -43,5 +38,10 @@ Aside from that, I've tried to keep assumptions down low. For example, the alias
 
 CAUTION
 -------
+
+Remember, these are my files and how I've customized them; if you have your own customizations, be sure you back them up beforehand! Otherwise simply copying over your existing files with mine will blast yours away. While they work for me just fine, they may cause unknown issues for you. Back up your files beforehand, perhaps by using this command, but not with sh:
+
+cp $HOME/.bashrc{,bak}
+cp $HOME/.profile{,bak}
 
 Some things are still a work in progress, perhaps even abandoned or forgotten, such as the odd ShellPlugins.
