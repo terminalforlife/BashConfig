@@ -42,6 +42,7 @@ CAUTION
 Remember, these are my files and how I've customized them; if you have your own customizations, be sure you back them up beforehand! Otherwise simply copying over your existing files with mine will blast yours away. While they work for me just fine, they may cause unknown issues for you. Back up your files beforehand, perhaps by using this command, but not with sh:
 
 cp $HOME/.bashrc{,bak}
+
 cp $HOME/.profile{,bak}
 
 Some things are still a work in progress, perhaps even abandoned or forgotten, such as the odd ShellPlugins.
