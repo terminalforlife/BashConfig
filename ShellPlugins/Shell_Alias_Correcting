@@ -1,5 +1,6 @@
 #!/bin/bash
 # Written by terminalforlife (terminalforlife@yahoo.com)
+# Please feel free to suggest some typical corrections.
 
 # The cd command:
 alias cd..='cd ..'
