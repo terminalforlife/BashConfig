@@ -32,13 +32,6 @@ then
 		export PS1="→  " PS2=">  " PS3="-  " PS4="+  "
 	else
 		export PS1="➤  " PS2=">  " PS3="-  " PS4="+  "
-
-		if type -P /usr/bin/pacat &> /dev/null
-		then
-			PROMPT_S="$HOME/.config/i3/Sounds/SND03.wav"
-			PROMPT_SO="--volume 17000 --rate 9000"
-			PROMPT_COMMAND='/usr/bin/pacat $PROMPT_SO "$PROMPT_S" & disown'
-		fi
 	fi
 fi
 
@@ -88,10 +81,10 @@ fi
 ETCBC="/etc/bash_completion"
 USRBC="/usr/share/bash-completion/bash_completion"
 
-if [ -f "$ETC_BC" ]
+if [ -f "$ETCBC" ]
 then
 	source "$ETCBC"
-elif [ -f "$USR_CD" ]
+elif [ -f "$USRBC" ]
 then
 	source "$USRBC"
 fi
@@ -176,23 +169,6 @@ then
 	alias vboxsdl="/usr/bin/vboxsdl --hostkey 305 128"
 fi
 
-if [[ "$SHELL" == */zsh ]]
-then
-	if type -P /bin/grep &> /dev/null
-	then
-		alias -g :g='| /bin/grep'
-	fi
-
-	if type -P /usr/bin/xclip &> /dev/null
-	then
-		alias -g :xci="| /usr/bin/xclip -i -selection clipboard"
-	fi
-
-	alias -g :n='&> /dev/null'
-	alias -g :sn='1> /dev/null'
-	alias -g :en='2> /dev/null'
-fi
-
 if type -P /usr/bin/xclip &> /dev/null
 then
 	alias ccb="printf \"\" | /usr/bin/xclip -i"
@@ -227,8 +203,16 @@ fi
 
 for DIR in\
 \
-	Music:mus Videos:vid Desktop:dt Downloads:dl\
-	Pictures:pic Documents:doc ShellPlugins:sp
+	GitHub:gh\
+	Music:mus\
+	Videos:vid\
+	Desktop:dt\
+	Pictures:pic\
+	Downloads:dl\
+	GitHub/terminalforlife:ghtfl\
+	Documents:doc ShellPlugins:sp\
+	GitHub/terminalforlife/Forks:ghtflf\
+	GitHub/terminalforlife/Personal:ghtflp
 {
 	[ -d "$HOME/${DIR%:*}" ] && alias ${DIR/*:}="cd $HOME/${DIR%:*}"
 }
@@ -245,8 +229,15 @@ fi
 
 if type -P /usr/bin/mplayer &> /dev/null
 then
+	MPLAYER_FONT="$HOME/.mplayer/subfont.ttf"
 	alias mpa="/usr/bin/mplayer -nolirc -vo null -really-quiet &> /dev/null"
-	alias mpv="/usr/bin/mplayer -nolirc -really-quiet &> /dev/null"
+
+	if [ -f "$MPLAYER_FONT" ]
+	then
+		alias mpv="/usr/bin/mplayer -nolirc -vo x11 -font "$MPLAYER_FONT" -really-quie#
+	else
+		alias mpv="/usr/bin/mplayer -nolirc -vo x11 -really-quiet &> /dev/null"
+	fi
 fi
 
 if type -P /usr/bin/{cut,dpkg-query,uniq,column} /bin/grep &> /dev/null
@@ -288,7 +279,7 @@ fi
 
 if type -P /bin/lsblk &> /dev/null
 then
-	alias lsblkid="/bin/lsblk -o name,label,fstype,size,uuid,vendor,mountpoint"
+	alias lsblkid="/bin/lsblk -o name,label,fstype,size,uuid,mountpoint"
 fi
 
 if type -P /usr/bin/{pager,less} &> /dev/null
@@ -354,27 +345,27 @@ FOR_THE_EDITOR_R()
 	}
 }
 
-if type -P /usr/bin/tty /bin/chvt &> /dev/null\
-&& [[ `/usr/bin/tty` == /dev/tty* ]]
+if [[ `/usr/bin/tty` == /dev/tty* ]]
 then
-	for TTY in {1..12}
-	{
-		alias $TTY="chvt $TTY"
-	}
+	if type -P /usr/bin/tty /bin/chvt &> /dev/null
+	then
+		for TTY in {1..12}
+		{
+			alias $TTY="chvt $TTY"
+		}
+	fi
 fi
 
 if type -P /usr/bin/vim &> /dev/null
 then
 	FOR_THE_EDITOR "vim"
-	[ -z "$SUDO_EDITOR" ]\
-		&& FOR_THE_EDITOR_R "/usr/bin/sudo /usr/bin/rvim"\
-		|| FOR_THE_EDITOR_R "/usr/bin/sudo -e"
-elif type -P /usr/bin/nano &> /dev/null
-then
-	FOR_THE_EDITOR "nano"
-	[ -z "$SUDO_EDITOR" ]\
-		&& FOR_THE_EDITOR_R "/usr/bin/sudo /usr/bin/rnano"\
-		|| FOR_THE_EDITOR_R "/usr/bin/sudo -e"
+
+	if [ -z "$SUDO_EDITOR" ]
+	then
+		FOR_THE_EDITOR_R "/usr/bin/sudo /usr/bin/rvim"
+	else
+		FOR_THE_EDITOR_R "/usr/bin/sudo -e"
+	fi
 fi
 
 if type -P /usr/bin/evince &> /dev/null
@@ -382,5 +373,4 @@ then
 	alias pdf="/usr/bin/evince &> /dev/null"
 fi
 
-unset FILE DEPCOUNT FOR_THE_EDITOR SUDO_EDITOR\
-	LOGOUT_SCRIPT TTDIR DIR STARTMOCP FORMATTING
+unset FILE DEPCOUNT FOR_THE_EDITOR SUDO_EDITOR LOGOUT_SCRIPT TTDIR DIR STARTMOCP FORMATTING
