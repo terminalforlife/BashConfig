@@ -49,8 +49,8 @@ if [ -d "$FLIB" ]
 then
 	for FUNC in\
 	\
-		Bell_Alarm Clear_CD_LS Cleaner_RK_Scan Times_Table List_Signals\
-		NIR_Difference Load_File_Links2 CPU_Intensive_Procs;
+		Bell_Alarm Cleaner_RK_Scan Times_Table List_Signals NIR_Difference\
+		Load_File_Links2 CPU_Intensive_Procs;
 	{
 		[ -f "$FLIB/$FUNC" ] && source "$FLIB/$FUNC"
 	}
@@ -107,3 +107,13 @@ then
 
 	unset TERMWATCH_LOGFILE CURTERM
 fi
+
+#----------------------------------------------------------------------------------
+
+BASH_ALIASES="$HOME/.bash_aliases"
+if [ -f "$BASH_ALIASES" ] && [ -r "$BASH_ALIASES" ]
+then
+	source "$BASH_ALIASES"
+fi
+
+unset BASH_ALIASES

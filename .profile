@@ -18,13 +18,12 @@ fi
 
 if [ -n "$BASH_VERSION" ]
 then
-	for FILE in .bash_aliases .bashrc;
-	{
-		if [ -f "$FILE" ] && [ -r "$FILE" ]
-		then
-			source "$HOME/.bashrc"
-		fi
-	}
-fi
+	BRC="$HOME/.bashrc"
 
-unset FILE
+	if [ -f "$BRC" ] && [ -r "$BRC" ]
+	then
+		source "$BRC"
+	fi
+
+	unset BRC
+fi
