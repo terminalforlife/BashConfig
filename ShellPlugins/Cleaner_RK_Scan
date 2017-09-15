@@ -1,15 +1,33 @@
 #!/bin/bash
-# Written by terminalforlife (terminalforlife@yahoo.com)
+
+#----------------------------------------------------------------------------------
+# Project Name      - $HOME/ShellPlugins/Cleaner_RK_Scan
+# Started On        - Thu 14 Sep 20:10:21 BST 2017
+# Last Change       - Fri 15 Sep 14:52:30 BST 2017
+# Author E-Mail     - terminalforlife@yahoo.com
+# Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
 
 rkc()
 {
-	if [ $UID -eq 0 ]
-	then
-		echo "ERROR: Do not run as root!" 1>&2
-		return
-	fi
+	RERR(){ echo "ERROR: $1" 1>&2; return; }
+	ERR(){ echo "ERROR: $1" 1>&2; }
+	
+	[ $UID -eq 0 ] && RERR "Root access isn't required."
+	
+	DEPCOUNT=0
+	for DEP in /usr/bin/rkhunter /bin/sed /sbin/chkrootkit
+	{
+		if ! type -P "$DEP" &> /dev/null
+		then
+			ERR "Dependency '$DEP' not met."
+			let DEPCOUNT++
+		fi
+	}
+	
+	[ $DEPCOUNT -eq 0 ] || return
 
-	/usr/bin/sudo /usr/bin/rkhunter -c --skip-keypress --rwo
+	/usr/bin/rkhunter -c --skip-keypress --rwo
 
 	/bin/sed '
 		/nothing found/d;
@@ -19,5 +37,5 @@ rkc()
 		/nothing deleted/d;
 		/no suspect files/d;
 		/no such file or directory/d
-	' <<< "$(/usr/bin/sudo /usr/sbin/chkrootkit)"
+	' <<< "$(/usr/sbin/chkrootkit)"
 }

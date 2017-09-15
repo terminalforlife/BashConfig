@@ -1,18 +1,29 @@
 #!/bin/bash
-# Written by terminalforlife (terminalforlife@yahoo.com)
 
-# Clears the terminal before executing cd and then ls. Skip with \cd.
-# Limited function, but useful. May revisit at a later date.
+#----------------------------------------------------------------------------------
+# Project Name      - $HOME/ShellPlugins/CD_Clear_LS
+# Started On        - Thu 14 Sep 20:15:25 BST 2017
+# Last Change       - Fri 15 Sep 14:54:44 BST 2017
+# Author E-Mail     - terminalforlife@yahoo.com
+# Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
+
 cd()
 {
-	if [ $# -eq 0 ]
-        then
-		echo -ne "\033c"
-		cd "$HOME"
-		ls
+	if type -P /bin/ls &> /dev/null
+	then
+		if [ $# -eq 0 ]
+        	then
+			printf "\033c"
+			cd "$HOME"
+			/bin/ls
+		else
+			printf "\033c"
+			cd "$*"
+			/bin/ls
+		fi
 	else
-		echo -ne "\033c"
-		cd "$*"
-		ls
+		echo "ERROR: Dependency '/bin/ls' not met." 1>&2
+		return
 	fi
 }

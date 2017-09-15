@@ -1,4 +1,10 @@
-# Written by terminalforlife (terminalforlife@yahoo.com)
+#----------------------------------------------------------------------------------
+# Project Name      - $HOME/.profile
+# Started On        - Thu 14 Sep 20:09:24 BST 2017
+# Last Change       - Thu 14 Sep 20:09:33 BST 2017
+# Author E-Mail     - terminalforlife@yahoo.com
+# Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
 
 if type -P /usr/bin/{cut,pactl} /bin/grep &> /dev/null
 then

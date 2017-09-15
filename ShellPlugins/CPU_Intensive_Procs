@@ -1,21 +1,40 @@
 #!/bin/bash
-# Written by terminalforlife (terminalforlife@yahoo.com)
+
+#----------------------------------------------------------------------------------
+# Project Name      - $HOME/ShellPlugins/CPU_Intensive_Procs
+# Started On        - Thu 14 Sep 20:10:21 BST 2017
+# Last Change       - Fri 15 Sep 14:58:15 BST 2017
+# Author E-Mail     - terminalforlife@yahoo.com
+# Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
 
 cpuhit()
 {
-	if [ $# -eq 0 ] || [ $# -gt 1 ]
+	if ( [ $# -eq 0 ] || [ $# -gt 1 ] )\
+	|| ( [ "$1" -lt 1 ] || [ "$1" -gt 10 ] )
 	then
 		echo "USAGE: cpuhit [1-10]" 1>&2
 		return
 	fi
 
-	if [ "$1" -lt 1 ] || [ "$1" -gt 10 ]
-	then
-		echo "Argument '$1' is out of the 1 to 10 range." 1>&2
-		return
-	fi
+	RERR(){ echo "ERROR: $1" 1>&2; return; }
+	ERR(){ echo "ERROR: $1" 1>&2; }
+	
+	[ $UID -eq 0 ] && RERR "Root access isn't required."
+	
+	DEPCOUNT=0
+	for DEP in /usr/bin/{awk,sort} /bin/ps
+	{
+		if ! type -P "$DEP" &> /dev/null
+		then
+			ERR "Dependency '$DEP' not met."
+			let DEPCOUNT++
+		fi
+	}
+	
+	[ $DEPCOUNT -eq 0 ] || return
 
-	ps -eo pcpu,pid\
+	/bin/ps -eo pcpu,pid\
 		| /usr/bin/sort -k 1 -rn\
 		| /usr/bin/awk -Sv var=$1 'NR==1,NR==var {print $1"%","("$2")"}'
 }

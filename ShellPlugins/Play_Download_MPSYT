@@ -1,31 +1,43 @@
 #!/bin/bash
-# Written by terminalforlife (terminalforlife@yahoo.com)
 
-if type -P /usr/bin/mpsyt &> /dev/null
-then
-	yt()
+#----------------------------------------------------------------------------------
+# Project Name      - $HOME/ShellPlugins/Play_Download_MPSYT
+# Started On        - Thu 14 Sep 20:10:21 BST 2017
+# Last Change       - Fri 15 Sep 15:20:04 BST 2017
+# Author E-Mail     - terminalforlife@yahoo.com
+# Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
+
+yt()
+{
+	ARG_FAIL(){ echo "USAGE: yt [-p|-d] URL" 1>&2; return; }
+	RERR(){ echo "ERROR: $1" 1>&2; return; }
+
+	[ $UID -eq 0 ] && RERR "Root access isn't required."
+	[ $# -gt 1 ] || RERR "Please specify a package name."
+
+	DEPCOUNT=0
+	for DEP in /usr/bin/{apt-get,awk,dpkg-query}
 	{
-		if [ $# -gt 2 ]
+		if ! type -P "$DEP" &> /dev/null
 		then
-			echo "USAGE: yt [-p|-d] URL"
-			return
-		fi
-
-		if [ $UID -eq 0 ]
-		then
-			echo "ERROR: Root access is not required."
-			return
-		fi
-	
-		if [ "$1" == "-p" ]
-		then
-			/usr/bin/mpsyt playurl "$2"
-		elif [ "$1" == "-d" ]
-		then
-			/usr/bin/mpsyt dlurl "$2"
-		else
-			echo "Error."
-			return
+			ERR "Dependency '$DEP' not met."
+			let DEPCOUNT++
 		fi
 	}
-fi
+	
+	[ $DEPCOUNT -eq 0 ] || exit 1
+
+	if [ $# -gt 2 ]
+	then
+		ARG_FAIL
+	elif [ "$1" == "-p" ]
+	then
+		/usr/bin/mpsyt playurl "$2"
+	elif [ "$1" == "-d" ]
+	then
+		/usr/bin/mpsyt dlurl "$2"
+	else
+		ARG_FAIL
+	fi
+}

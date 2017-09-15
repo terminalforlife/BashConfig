@@ -1,19 +1,20 @@
 #!/bin/bash
-# Written by terminalforlife (terminalforlife@yahoo.com)
+
+#----------------------------------------------------------------------------------
+# Project Name      - $HOME/ShellPlugins/List_Signals
+# Started On        - Thu 14 Sep 20:10:21 BST 2017
+# Last Change       - Fri 15 Sep 15:09:56 BST 2017
+# Author E-Mail     - terminalforlife@yahoo.com
+# Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
 
 lssig()
 {
-	if [ $UID -eq 0 ]
-	then
-		echo "ERROR: Root access is not required." 1>&2
-		exit 1
-	fi
+	RERR(){ echo "ERROR: $1" 1>&2; return; }
+	ERR(){ echo "ERROR: $1" 1>&2; }
 
-	if [ $# -gt 0 ]
-	then
-		echo "ERROR: No arguments are required." 1>&2
-		exit 1
-	fi
+	[ $UID -eq 0 ] && RERR "Root access isn't required."
+	[ $# -gt 0 ] || RERR "No arguments are required."
 
 	if type -P /usr/bin/column &> /dev/null
 	then
@@ -30,7 +31,7 @@ lssig()
 			printf "%2d %s\n" "${NUM%:*}" "${SIG/*:}"
 		} | /usr/bin/column -x
 	else
-		echo "ERROR: Dependency 'column' and 'printf' required." 1>&2
+		echo "ERROR: Dependency '/usr/bin/column' not met." 1>&2
 		return
 	fi
 }

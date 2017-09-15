@@ -1,39 +1,37 @@
 #!/bin/bash
-# Written by terminalforlife (terminalforlife@yahoo.com)
+
+#----------------------------------------------------------------------------------
+# Project Name      - $HOME/ShellPlugins/Create_VM
+# Started On        - Thu 14 Sep 20:16:42 BST 2017
+# Last Change       - Fri 15 Sep 15:01:40 BST 2017
+# Author E-Mail     - terminalforlife@yahoo.com
+# Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
 
 # $1 = Name
 # $2 = Type
 
 mkvm()
 {
-	FAULT_COUNT=0
+	RERR(){ echo "ERROR: $1" 1>&2; return; }
 	ERR(){ echo "ERROR: $1" 1>&2; }
 
-	if [ $UID -eq 0 ]
+	[ $UID -eq 0 ] && RERR "Root access isn't required."
+	
+	if ! type -P "$DEP" &> /dev/null
 	then
-		ERR "Root access not recommended."
-		let FAULT_COUNT++
-	fi
-
-	if ! type -P /usr/bin/vboxmanage &> /dev/null
-	then
-		ERR "Dependency 'vboxmanage' not met."
-		let FAULT_COUNT++
+		ERR "Dependency '/usr/bin/vboxmanage' not met."
+		return
 	fi
 
 	if ! [ $# -eq 2 ]
-	then
-		ERR "Correct syntax is 'mkvm <name> <ostype>'." 1>&2
-		let FAULT_COUNT++
+		RERR "Correct syntax is 'mkvm <name> <ostype>'."
 	fi
 
 	if [ -z "$VBOX_USER_HOME" ]
 	then
-		ERR "Environment variable 'VBOX_USER_HOME' not set."
-		let FAULT_COUNT++
+		RERR "Environment variable 'VBOX_USER_HOME' not set."
 	fi
-
-	[ $FAULT_COUNT -gt 0 ] && return
 	
 	(
 		echo "Creating and registering the virtual machine."

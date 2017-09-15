@@ -1,5 +1,12 @@
 #!/bin/bash
-# Written by terminalforlife (terminalforlife@yahoo.com)
+
+#----------------------------------------------------------------------------------
+# Project Name      - $HOME/ShellPlugins/Times_Table
+# Started On        - Fri 15 Sep 15:20:17 BST 2017
+# Last Change       - Fri 15 Sep 15:21:17 BST 2017
+# Author E-Mail     - terminalforlife@yahoo.com
+# Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
 
 tentt()
 {

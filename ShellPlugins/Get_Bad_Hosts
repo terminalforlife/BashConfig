@@ -1,42 +1,50 @@
 #!/bin/bash
-# Written by terminalforlife (terminalforlife@yahoo.com)
+
+#----------------------------------------------------------------------------------
+# Project Name      - $HOME/ShellPlugins/Get_Bad_Hosts
+# Started On        - Thu 14 Sep 20:10:21 BST 2017
+# Last Change       - Fri 15 Sep 15:07:51 BST 2017
+# Author E-Mail     - terminalforlife@yahoo.com
+# Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
 
 # WORK IN PROGRESS
 
 gbh()
 {
-	if [ $UID -eq 0 ]
-	then
-		echo "ERROR: Don't run as root!" 1>&2
-		return
-	fi
-
-	if ! [ $# -eq 0 ]
-	then
-		echo "ERROR: No arguments required." 1>&2
-		return
-	fi
-
+	RERR(){ echo "ERROR: $1" 1>&2; return; }
+	ERR(){ echo "ERROR: $1" 1>&2; }
+	
+	[ $UID -eq 0 ] && RERR "Root access isn't required."
+	
 	DEPCOUNT=0
-	for DEP in /bin/{grep,gzip} /usr/bin/{wget,dos2unix,uniq,sort,tr}
+	for DEP in /bin/{cat,grep,gzip} /usr/bin/{wget,dos2unix,uniq,sort,tr}
 	{
 		if ! type -P "$DEP" &> /dev/null
 		then
-			echo "ERROR: Dependency '$DEP' not met." 1>&2
+			ERR "Dependency '$DEP' not met."
 			let DEPCOUNT++
 		fi
 	}
-
+	
 	[ $DEPCOUNT -eq 0 ] || return
+
+	if ! [ $# -eq 0 ]
+	then
+		RERR "ERROR: No arguments required."
+	fi
 
 	URL="http://www.montanamenagerie.org/hostsfile/hosts.txt"
 	DESTINATION="$HOME/Downloads/GBH.txt"
-	[ -d "${DESTINATION%\/*}" ] || return
+
+	if ! [ -d "${DESTINATION%\/*}" ]
+	then
+		RERR "Destination directory not found."
+	fi
 
 	if [ -f "${DESTINATION}.gz" ]
 	then
-		echo "ERROR: File already present." 1>&2
-		return
+		RERR "ERROR: File already present."
 	fi
 
 	/usr/bin/wget -q --show-progress "$URL" -O "$DESTINATION"
@@ -47,7 +55,7 @@ gbh()
 		| /bin/grep -a "^127.0.0.1 "\
 		| /usr/bin/uniq\
 		| /usr/bin/sort\
-		| /usr/bin/gzip -c\
+		| /bin/gzip -c\
 		> "$DESTINATION"
 
 }
