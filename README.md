@@ -13,19 +13,13 @@ The main thing you'll want to change is the location of your function library (o
 
 If you have any issues or recommendations, for .bashrc or for anything else you see here, please let me know.
 
-HOW TO USE
-----------
+INSTALLATION
+------------
 
-Using these files is very simple:
+Paste these commands out into a terminal, using bash, line-by-line. But first off, let's back up your existing files, in-case of any conflicts:
 
-  1. Place .bashrc into $HOME/
-  2. Create directory "ShellPlugins" in $HOME/
-  3. Place contents of ShellPlugins from this respository into the above.
-  4. Place .profile (entirely optional) into $HOME/
-
-If you already have the directory ShellPlugins, make changes to and run this sed command, where X is the name of the directory you'd like to instead use, and FILE is the location of the .bashrc file you got from me.
-
-sed -i 's/ShellPlugins/X/' FILE
+    for I in .{bash{rc,_aliases},profile}; { cp -i "$I"{,_tfl.bak}; }
+    [ -d "$HOME/ShellPlugins" ] && mv -i "$HOME/ShellPlugins"{,_tfl.bak}
 
 ASSUMPTIONS
 -----------

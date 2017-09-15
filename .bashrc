@@ -1,7 +1,9 @@
+#!/bin/bash
+
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Thu 14 Sep 13:13:36 BST 2017
+# Last Change       - Fri 15 Sep 15:59:49 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -107,13 +109,4 @@ then
 	fi
 
 	unset TERMWATCH_LOGFILE CURTERM
-fi
-
-#----------------------------------------------------------------------------------
-
-BASH_ALIASES="$HOME/.bash_aliases"
-
-if [ -f "$BASH_ALIASES" ] && [ -r "$BASH_ALIASES" ]
-then
-	source "$BASH_ALIASES"
 fi

@@ -25,6 +25,7 @@ mkvm()
 	fi
 
 	if ! [ $# -eq 2 ]
+	then
 		RERR "Correct syntax is 'mkvm <name> <ostype>'."
 	fi
 

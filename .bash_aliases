@@ -1,7 +1,9 @@
+#!/bin/bash
+
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Thu 14 Sep 13:53:48 BST 2017
+# Last Change       - Fri 15 Sep 15:57:53 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------

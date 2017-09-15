@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.profile
 # Started On        - Thu 14 Sep 20:09:24 BST 2017
-# Last Change       - Thu 14 Sep 20:09:33 BST 2017
+# Last Change       - Fri 15 Sep 16:03:58 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -16,7 +16,15 @@ then
 		| /usr/bin/cut -d " " -f 3-`
 fi
 
-if [ "$BASH" == "/bin/bash" ] && [ -f "$HOME/.bashrc" ]
+if [ -n "$BASH_VERSION" ]
 then
-	source "$HOME/.bashrc"
+	for FILE in .bash_aliases .bashrc;
+	{
+		if [ -f "$FILE" ] && [ -r "$FILE" ]
+		then
+			source "$HOME/.bashrc"
+		fi
+	}
 fi
+
+unset FILE
