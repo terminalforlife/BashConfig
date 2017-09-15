@@ -8,6 +8,9 @@
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
+#TODO - Fix possible segmentation fault linked to this function. When cd is used.
+#       The \cd instead of cd perhaps fixed it; may be down to a conflicting alias.
+
 cd()
 {
 	if type -P /bin/ls &> /dev/null
@@ -15,11 +18,11 @@ cd()
 		if [ $# -eq 0 ]
         	then
 			printf "\033c"
-			cd "$HOME"
+			\cd "$HOME"
 			/bin/ls
 		else
 			printf "\033c"
-			cd "$*"
+			\cd "$*"
 			/bin/ls
 		fi
 	else
