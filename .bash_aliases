@@ -8,11 +8,20 @@
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
+# Uses the much faster blkid-lite instead of blkid.
 if type -P /usr/bin/blkid-lite &> /dev/null
 then
+	# https://github.com/terminalforlife/blkid-lite
 	alias blkid="/usr/bin/blkid-lite"
 fi
 
+# If you have gvfs-trash available, be safe with that.
+if type -P /usr/bin/gvfs-trash &> /dev/null
+then
+	alias rm="/usr/bin/gvfs-trash"
+fi
+
+# Ease-of-use youtube-dl aliases; these save typing!
 if type -P /usr/{local/bin,bin}/youtube-dl &> /dev/null
 then
 	alias ytdl-video="/usr/local/bin/youtube-dl -c --yes-playlist\
@@ -29,6 +38,7 @@ then
 		--no-call-home --console-title --quiet --ignore-errors"
 fi
 
+# Various [q]uick apt-get aliases to make life a bit easier.
 if type -P /usr/bin/apt-get &> /dev/null
 then
 	for CMD in quf:"remove --purge" qufu:"remove --purge --autoremove"\
@@ -39,6 +49,7 @@ then
 	}
 fi
 
+# Various [q]uick apt-cache aliases to make lifeeasier still.
 if type -P /usr/bin/apt-cache &> /dev/null
 then
 	for CMD in qse:"search" qsh:"show"
@@ -47,11 +58,13 @@ then
 	}
 fi
 
+# Workaround for older versions of dd; displays progress.
 if type -P /bin/{dd,pidof} /usr/bin/sudo &> /dev/null
 then
 	alias ddp="/usr/bin/sudo kill -USR1 `/bin/pidof /bin/dd`"
 fi
 
+# Display a detailed list of kernel modules currently in use.
 if type -P /sbin/{modinfo,lsmod} /usr/bin/cut &> /dev/null
 then
 	alias lsmodd='
@@ -63,21 +76,25 @@ then
 	'
 fi
 
+# This is just options I find the most useful when using dmesg.
 if type -P /bin/dmesg &> /dev/null
 then
 	alias klog="/bin/dmesg -t -L=never -l err,crit,alert,emerg"
 fi
 
+# Enable the default hostkey when vboxsdl is used.
 if type -P /usr/bin/vboxsdl &> /dev/null
 then
 	alias vboxsdl="/usr/bin/vboxsdl --hostkey 305 128"
 fi
 
+# Clear the clipboard using xclip.
 if type -P /usr/bin/xclip &> /dev/null
 then
 	alias ccb="printf \"\" | /usr/bin/xclip -i"
 fi
 
+# Get more functionality by default when using grep and ls.
 if type -P /bin/{ls,grep} /usr/bin/pgrep &> /dev/null
 then
 	case "${TERM:-EMPTY}"
@@ -99,12 +116,15 @@ then
 	esac
 fi
 
+# Quick navigation aliases for the autocd shell option.
 if ! shopt -qp autocd
 then
 	alias ~="cd $HOME"
 	alias ..="cd .."
 fi
 
+# For each directory listed to the left of :, create an alias you see on the right
+# of :. This is a key=value style approach, like dictionaries in Python. HOME only.
 for DIR in\
 \
 	GitHub:gh\
@@ -113,17 +133,17 @@ for DIR in\
 	Desktop:dt\
 	Pictures:pic\
 	Downloads:dl\
+	Documents:doc\
+	Documents/TT:tt\
+	ShellPlugins:sp\
 	GitHub/terminalforlife:ghtfl\
-	Documents:doc ShellPlugins:sp\
 	GitHub/terminalforlife/Forks:ghtflf\
 	GitHub/terminalforlife/Personal:ghtflp
 {
 	[ -d "$HOME/${DIR%:*}" ] && alias ${DIR/*:}="cd $HOME/${DIR%:*}"
 }
 
-TTDIR="$HOME/Documents/TT"
-[ -d $TTDIR ] && alias tt="cd $TTDIR"
-
+# When dealing with udisksctl or mount, these are very useful!
 if [ -d "/media/$USER" ]
 then
 	alias sd="cd /media/$USER"
@@ -131,6 +151,7 @@ else
 	alias mnt="cd /mnt"
 fi
 
+# These aliases save a lot of typing and do away with the output.
 if type -P /usr/bin/mplayer &> /dev/null
 then
 	MPLAYER_FONT="$HOME/.mplayer/subfont.ttf"
@@ -144,8 +165,10 @@ then
 	fi
 fi
 
+# Four little plugins I wrote for displaying only a certain type of package.
 if type -P /usr/bin/{cut,dpkg-query,uniq,column} /bin/grep &> /dev/null
 then
+	# Display essential packages.
 	alias lsesspkg='/usr/bin/dpkg-query --show\
 		-f="\${Essential} \${Package}\n" \*\
 		| /bin/grep "^yes"\
@@ -153,6 +176,7 @@ then
 		| /usr/bin/uniq\
 		| /usr/bin/column'
 
+	# Display required packages.
 	alias lsreqpkg='/usr/bin/dpkg-query --show\
 		-f="\${package} \${Priority}\n" \*\
 		| /bin/grep " \(required\)\$"\
@@ -160,6 +184,7 @@ then
 		| /usr/bin/cut -d " " -f 1\
 		| /usr/bin/column'
 
+	# Display optional packages.
 	alias lsoptpkg='/usr/bin/dpkg-query --show\
 		-f="\${package} \${Priority}\n" \*\
 		| /bin/grep " \(optional\)\$"\
@@ -167,6 +192,7 @@ then
 		| /usr/bin/cut -d " " -f 1\
 		| /usr/bin/column'
 
+	# Display extra packages.
 	alias lsextpkg='/usr/bin/dpkg-query --show\
 		-f="\${package} \${Priority}\n" \*\
 		| /bin/grep " \(extra\)\$"\
@@ -175,23 +201,27 @@ then
 		| /usr/bin/column'
 fi
 
+# My preferred links2 settings; I recommend!
 if type -P /usr/bin/links2 &> /dev/null
 then
 	alias l2="links2 -http.do-not-track 1 -html-tables 1 -html-tables 1\
 		-html-numbered-links 1 duckduckgo.co.uk"
 fi
 
+# A more descriptive lsblk; you'll miss it when it's gone.
 if type -P /bin/lsblk &> /dev/null
 then
 	alias lsblkid="/bin/lsblk -o name,label,fstype,size,uuid,mountpoint"
 fi
 
+# Some options I like to have by default for less and pager.
 if type -P /usr/bin/{pager,less} &> /dev/null
 then
 	alias pager='/usr/bin/pager -sN --tilde'
 	alias less='/usr/bin/pager -sN --tilde'
 fi
 
+# Text files I occasionally like to view, but not edit.
 if type -P /usr/bin/pager &> /dev/null
 then
 	for FILE in\
@@ -207,6 +237,7 @@ then
 	}
 fi
 
+# Many files I often edit; usually configuration files.
 FOR_THE_EDITOR()
 {
 	for FILE in\

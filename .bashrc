@@ -49,11 +49,8 @@ if [ -d "$FLIB" ]
 then
 	for FUNC in\
 	\
-		DIR_Refresh Scrot_Move Safe_RM Cleaner_RK_Scan Command_Note_Search\
-		Bell_Alarm LS_Core_Utils FFMPEG_Convert List_Signals Module_Look\
-		Celsius_to_Fahrenheit Times_Table Load_File_Links2 Download_Upload\
-		Create_VM Movie_Index_Filter
-		
+		Bell_Alarm Clear_CD_LS Cleaner_RK_Scan Times_Table List_Signals\
+		NIR_Difference Load_File_Links2 CPU_Intensive_Procs;
 	{
 		[ -f "$FLIB/$FUNC" ] && source "$FLIB/$FUNC"
 	}
