@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 15 Sep 15:57:53 BST 2017
+# Last Change       - Sat 16 Sep 23:30:55 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -292,6 +292,7 @@ then
 	fi
 fi
 
+#TODO - Use function to avoid repeat code.
 if type -P /usr/bin/vim &> /dev/null
 then
 	FOR_THE_EDITOR "vim"
@@ -299,6 +300,26 @@ then
 	if [ -z "$SUDO_EDITOR" ]
 	then
 		FOR_THE_EDITOR_R "/usr/bin/sudo /usr/bin/rvim"
+	else
+		FOR_THE_EDITOR_R "/usr/bin/sudo -e"
+	fi
+elif type -P /usr/bin/vi &> /dev/null
+then
+	FOR_THE_EDITOR "vi"
+
+	if [ -z "$SUDO_EDITOR" ]
+	then
+		FOR_THE_EDITOR_R "/usr/bin/sudo /usr/bin/vi -Z"
+	else
+		FOR_THE_EDITOR_R "/usr/bin/sudo -e"
+	fi
+elif type -P /bin/nano &> /dev/null
+then
+	FOR_THE_EDITOR "nano"
+
+	if [ -z "$SUDO_EDITOR" ]
+	then
+		FOR_THE_EDITOR_R "/usr/bin/sudo /bin/rnano"
 	else
 		FOR_THE_EDITOR_R "/usr/bin/sudo -e"
 	fi
