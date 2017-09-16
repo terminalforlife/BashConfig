@@ -8,7 +8,7 @@
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-git_status_all()
+gitsa()
 {
 	# Load error functions.
 	RERR(){ echo "ERROR: $1" 1>&2; return; }
