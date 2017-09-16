@@ -17,24 +17,32 @@ INSTALLATION
 
 Paste these commands out into a terminal, using bash, line-by-line. But first off, let's back up your existing files, in-case of any conflicts:
 
-    for I in .{bash{rc,_aliases},profile}; { mv -i "$I"{,_tfl.bak}; }
-    [ -d "$HOME/ShellPlugins" ] && mv -i "$HOME/ShellPlugins"{,_tfl.bak}
+```bash
+for I in .{bash{rc,_aliases},profile}; { mv -i "$I"{,_tfl.bak}; }
+[ -d "$HOME/ShellPlugins" ] && mv -i "$HOME/ShellPlugins"{,_tfl.bak}
+```
 
 Now that you've got your old files backed up, install mine:
 
-    git clone https://github.com/terminalforlife/bashconfig /tmp/bashconfig
-    for I in ShellPlugins .{bash{rc,_aliases},profile}; { cp -ri /tmp/bashconfig/"$I" "$HOME"/; }
+```bash
+git clone https://github.com/terminalforlife/bashconfig /tmp/bashconfig
+for I in ShellPlugins .{bash{rc,_aliases},profile}; { cp -ri /tmp/bashconfig/"$I" "$HOME"/; }
+```
 
 You will need to log out then back in for these changes to make effect, particularly the .profile file.
 
-    for I in .{bash{rc,_aliases},profile}; { mv -i "$I"{,_tfl.bak}; }
-    [ -d "$HOME/ShellPlugins" ] && mv -i "$HOME/ShellPlugins"{,_tfl.bak}
+```bash
+for I in .{bash{rc,_aliases},profile}; { mv -i "$I"{,_tfl.bak}; }
+[ -d "$HOME/ShellPlugins" ] && mv -i "$HOME/ShellPlugins"{,_tfl.bak}
+```
 
 If you'd like to delete my files and restore the previously backed up files, here is a list of the files I offer:
 
-    $HOME/.bashrc
-    $HOME/.bash_aliases
-    $HOME/.profile
+```bash
+$HOME/.bashrc
+$HOME/.bash_aliases
+$HOME/.profile
+```
 
 If you see any files in `$HOME/ShellPlugins`, they too will be from me.
 
@@ -46,8 +54,11 @@ LIMITATIONS
 I sadly cannot guarantee that this repository will work for all setups; in-fact, I definitely can't! I've got too many projects and only so much time which I would rather spend on the actual code, (it would be great if people could help me test it) but here is what I use:
 
 Distribution Base:        Ubuntu 16.04.3
+
 Kernel Version:           4.10.0-30-generic
+
 Desktop Environment:      i3-wm 4.11-1
+
 Bash Version:             4.3-14ubuntu1.2
 
 As you might have guessed, I use Linux and have targeted Linux users with all of my shell stuff; that said, where possible, I try to compensate somewhat for those on systems like Mac and BSD. I have next-to-zero experience on Mac, and limited experience on BSD systems (briefly explored FreeBSD), so there's only so much compensating I can do there. However, if you spot an incompatibility that has gone unchecked, please let me know!
