@@ -3,20 +3,26 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Load_File_Links2
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Fri 15 Sep 15:12:29 BST 2017
+# Last Change       - Sat 16 Sep 18:24:56 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 l2f()
 {
+	# Load error function.
 	RERR(){ echo "ERROR: $1" 1>&2; return; }
 
+	# Check for root access.
 	[ $UID -eq 0 ] && RERR "Root access isn't recommended."
+
+	# If number of arguments is not 0, error and return.
 	[ $# -gt 0 ] || RERR "Please specify a file to be read."
 
+	# If executable /usr/bin/links2 is found.
 	if type -P /usr/bin/links2 &> /dev/null
 	then
+		# Open up specified file (without viewing source) in links2.
 		/usr/bin/links2 -force-html file://"$@"
 	else
 		RERR "Dependency '/usr/bin/links2' not found."

@@ -3,19 +3,26 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Play_Download_MPSYT
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Fri 15 Sep 15:20:04 BST 2017
+# Last Change       - Sat 16 Sep 18:29:27 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 yt()
 {
+	# Load the usage message function.
 	ARG_FAIL(){ echo "USAGE: yt [-p|-d] URL" 1>&2; return; }
+
+	# Load the error message function.
 	RERR(){ echo "ERROR: $1" 1>&2; return; }
 
+	# Check for root access.
 	[ $UID -eq 0 ] && RERR "Root access isn't required."
+
+	# Check for the required one argument.
 	[ $# -gt 1 ] || RERR "Please specify a package name."
 
+	# Check for dependencies.
 	DEPCOUNT=0
 	for DEP in /usr/bin/{apt-get,awk,dpkg-query}
 	{
@@ -26,18 +33,25 @@ yt()
 		fi
 	}
 	
+	# Fail if any dependencies are unmet.
 	[ $DEPCOUNT -eq 0 ] || exit 1
 
 	if [ $# -gt 2 ]
 	then
+		# Call ARG_FAIL function if arguments greater than 2.
 		ARG_FAIL
 	elif [ "$1" == "-p" ]
 	then
+		# If the first argument is -p, then play with a YouTube video
+		# (with the player set in mpsyt) specified in the 2nd argument.
 		/usr/bin/mpsyt playurl "$2"
 	elif [ "$1" == "-d" ]
 	then
+		# If the first argument is -d, then download a YouTube video
+		# (with the downloader set in mpsyt) specified in the 2nd argument.
 		/usr/bin/mpsyt dlurl "$2"
 	else
+		# Otherwise, just load the ARG_FAIL function.
 		ARG_FAIL
 	fi
 }

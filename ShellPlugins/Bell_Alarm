@@ -3,18 +3,21 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Bell_Alarm
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Fri 15 Sep 14:51:49 BST 2017
+# Last Change       - Sat 16 Sep 18:23:16 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 bell()
 {
+	# Load error functions.
 	RERR(){ echo "ERROR: $1" 1>&2; return; }
 	ERR(){ echo "ERROR: $1" 1>&2; }
 	
+	# Check for root access.
 	[ $UID -eq 0 ] && RERR "Root access isn't required."
 	
+	# Check for dependencies.
 	DEPCOUNT=0
 	for DEP in /usr/bin/pactl /bin/{grep,sleep}
 	{
@@ -25,16 +28,20 @@ bell()
 		fi
 	}
 	
+	# Return if any dependencies are unmet.
 	[ $DEPCOUNT -eq 0 ] || return
 
+	# If the module-x11-bell pactl module is loaded, continue.
 	if /usr/bin/pactl list modules | /bin/grep -q "module-x11-bell"
 	then
+		# Infinitely sound the bell every second.
 		while :
 		do
 			printf "\a"
 			/bin/sleep 1
 		done
 	else
+		# If module not loaded, output error and return.
 		echo "ERROR: PulseAudio needs 'module-x11-bell' loaded." 1>&2
 		echo "       Execute 'pactl list modules' to double-check." 1>&2
 		return
