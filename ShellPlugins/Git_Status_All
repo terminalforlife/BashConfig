@@ -84,6 +84,11 @@ gitsa()
 		then
 			echo "    ⏵ Untracked files present."
 		fi
+
+		if echo "$GIT_STATUS" | /bin/grep -q "^Your branch is ahead of"
+		then
+			echo "    ⏵ Commit(s) ready to be sent upstream."
+		fi
 		# )
 
 		# Add spacing to make it more readable.
