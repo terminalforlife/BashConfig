@@ -80,3 +80,13 @@ CAUTION
 If needed, be sure to back your own files up beforehand! Otherwise you may blast away useful functionality which is applicable or required for your setup. While they work for me just fine, they may cause unknown issues for you. Back up your files beforehand, as shown above.
 
 Some things are still a work in progress, perhaps even abandoned or forgotten, such as the odd ShellPlugins. I may wind up removing scripts I find useless, but I back things up a lot, so if you wind up missing them, let me know and I'll probably return them, perhaps in a separate directory within the repository.
+
+KNOWN ISSUES
+------------
+
+On Ubuntu 17.04 with the GNOME Desktop Environment, when tested (pre-updates) on the LiveCD, I noticed these error messages. Things seem to work (although I haven't extensively tested) despite these errors that show on each terminal launch.
+
+  bash: `_apport_bug': not a valid identifier
+  bash: `_apport_cli': not a valid identifier
+  bash: `_apport_unpack': not a valid identifier
+  bash: `_apport_collect': not a valid identifier
