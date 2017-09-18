@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Cleaner_RK_Scan
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Fri 15 Sep 14:52:30 BST 2017
+# Last Change       - Mon 18 Sep 12:24:32 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -16,7 +16,7 @@ rkc()
 	[ $UID -eq 0 ] && RERR "Root access isn't required."
 	
 	DEPCOUNT=0
-	for DEP in /usr/bin/rkhunter /bin/sed /sbin/chkrootkit
+	for DEP in /usr/bin/rkhunter /bin/sed /usr/sbin/chkrootkit
 	{
 		if ! type -P "$DEP" &> /dev/null
 		then
@@ -29,6 +29,7 @@ rkc()
 
 	/usr/bin/rkhunter -c --skip-keypress --rwo
 
+	#TODO - Rewrite this part, using grep for portability and efficiency.
 	/bin/sed '
 		/nothing found/d;
 		/not infected/d;
