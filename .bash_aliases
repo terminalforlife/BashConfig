@@ -3,13 +3,31 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Thu 21 Sep 18:27:05 BST 2017
+# Last Change       - Thu 21 Sep 22:29:21 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 # Relentlessly portable way to view a file.
-alias readf='while read -r; do sleep 0.01s; echo "$REPLY"; done <'
+alias view='while read -r; do sleep 0.01s; echo "$REPLY"; done <'
+
+# Enable a bunch of git aliases, if you have git installed.
+if type -P /usr/bin/git &> /dev/null
+then
+	for CMD in\
+	\
+		"add":add\
+		"diff":diff\
+		"init":ginit\
+		"push":checkout\
+		"commit -m":commit\
+		"status -s":status\
+		"checkout":checkout\
+		"config --list":gconfig;
+	{
+		alias "${CMD/*:}"="/usr/bin/git ${CMD%:*}"
+	}
+fi
 
 # I prefer a builtin, for the same functionality.
 alias which="type -Pf"
@@ -106,8 +124,7 @@ then
 	case "${TERM:-EMPTY}"
 	in
 	        linux|xterm|xterm-256color)
-	                alias ls="/bin/ls --color=auto --group-directories-first -Np"
-	                alias lss="/bin/ls --color=auto --group-directories-first -SNshp"
+	                alias ls="/bin/ls -Npshlq --time-style=iso --color=auto --group-directories-first"
 	                alias grep="/bin/grep --color=auto"
 	                alias egrep="/bin/egrep --color=auto"
 	                alias fgrep="/bin/fgrep --color=auto"
