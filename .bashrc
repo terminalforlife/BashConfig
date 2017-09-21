@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 15 Sep 15:59:49 BST 2017
+# Last Change       - Thu 21 Sep 22:14:04 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -29,16 +29,20 @@ set -o interactive-comments -o histexpand -o emacs\
 
 #----------------------------------------------------------------------------------
 
-PROMPT_COMMAND='printf "↱ [\e[1;37m%0.3d] \033[01;31m${PWD}\e[0m" "$?"'
+PROMPT_COMMAND='
+	printf "%${COLUMNS}s" " " | /usr/bin/tr " " "-"
+	printf "↱ [\e[1;37m%0.3d] \033[01;31m${PWD}\e[0m" "$?"
+'
 
 if type -P /usr/bin/tty &> /dev/null
 then
 	if [[ `/usr/bin/tty` == /dev/tty+([0-9]) ]]
 	then
-		export PS1="\[\e[1;30m\]\A\[\e[m\] →  " PS2=">  " PS3="-  " PS4="+  "
-	else
-		#export PS1="\[\e[1;30m\]\A\[\e[m\] ➤  " PS2=">  " PS3="-  " PS4="+  "
 		export PS1=" \[\033[00m\]\n↳ "
+		#export PS1="\[\e[1;30m\]\A\[\e[m\] →  " PS2=">  " PS3="-  " PS4="+  "
+	else
+		export PS1=" \[\033[00m\]\n↳ "
+		#export PS1="\[\e[1;30m\]\A\[\e[m\] ➤  " PS2=">  " PS3="-  " PS4="+  "
 	fi
 fi
 
