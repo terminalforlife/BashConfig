@@ -3,10 +3,16 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sat 16 Sep 23:30:55 BST 2017
+# Last Change       - Thu 21 Sep 18:27:05 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
+
+# Relentlessly portable way to view a file.
+alias readf='while read -r; do sleep 0.01s; echo "$REPLY"; done <'
+
+# I prefer a builtin, for the same functionality.
+alias which="type -Pf"
 
 # Uses the much faster blkid-lite instead of blkid.
 if type -P /usr/bin/blkid-lite &> /dev/null
@@ -106,7 +112,7 @@ then
 	                alias egrep="/bin/egrep --color=auto"
 	                alias fgrep="/bin/fgrep --color=auto"
 	                alias pgrep="/usr/bin/pgrep --color=auto" ;;
-	        EMPTY|*)
+	        *)
 	                alias ls="/bin/ls --color=never --group-directories-first -Np"
 	                alias lss="/bin/ls --color=never --group-directories-first -Nshp"
 	                alias grep="/bin/grep --color=never"
@@ -116,7 +122,7 @@ then
 	esac
 fi
 
-# Quick navigation aliases for the autocd shell option.
+# Quick navigation aliases in absence of the autocd shell option.
 if ! shopt -qp autocd
 then
 	alias ~="cd $HOME"
@@ -127,18 +133,18 @@ fi
 # of :. This is a key=value style approach, like dictionaries in Python. HOME only.
 for DIR in\
 \
-	GitHub:gh\
-	Music:mus\
-	Videos:vid\
-	Desktop:dt\
-	Pictures:pic\
-	Downloads:dl\
-	Documents:doc\
-	Documents/TT:tt\
-	ShellPlugins:sp\
-	GitHub/terminalforlife:ghtfl\
-	GitHub/terminalforlife/Forks:ghtflf\
-	GitHub/terminalforlife/Personal:ghtflp
+	"Music":mus\
+	"GitHub":gh\
+	"Videos":vid\
+	"Desktop":dt\
+	"Pictures":pic\
+	"Downloads":dl\
+	"Documents":doc\
+	"Documents/TT":tt\
+	"ShellPlugins":sp\
+	"GitHub/terminalforlife":ghtfl\
+	"GitHub/terminalforlife/Forks":ghtflf\
+	"GitHub/terminalforlife/Personal":ghtflp
 {
 	[ -d "$HOME/${DIR%:*}" ] && alias ${DIR/*:}="cd $HOME/${DIR%:*}"
 }
