@@ -29,13 +29,16 @@ set -o interactive-comments -o histexpand -o emacs\
 
 #----------------------------------------------------------------------------------
 
+PROMPT_COMMAND='printf "↱ [\e[1;37m%0.3d] \033[01;31m${PWD}\e[0m" "$?"'
+
 if type -P /usr/bin/tty &> /dev/null
 then
 	if [[ `/usr/bin/tty` == /dev/tty+([0-9]) ]]
 	then
-		export PS1="→  " PS2=">  " PS3="-  " PS4="+  "
+		export PS1="\[\e[1;30m\]\A\[\e[m\] →  " PS2=">  " PS3="-  " PS4="+  "
 	else
-		export PS1="➤  " PS2=">  " PS3="-  " PS4="+  "
+		#export PS1="\[\e[1;30m\]\A\[\e[m\] ➤  " PS2=">  " PS3="-  " PS4="+  "
+		export PS1=" \[\033[00m\]\n↳ "
 	fi
 fi
 
@@ -61,8 +64,9 @@ unset FLIB FUNC
 #----------------------------------------------------------------------------------
 
 export VBOX_USER_HOME="/media/$USER/1TB Internal HDD/Linux Generals/VirtualBox VMs"
-export PATH="${PATH%:\/snap\/bin}"
+export TIMEFORMAT=">>> real %3R | user %3U | sys %3S | pcpu %P <<<"
 export LS_COLORS="di=1;31:ln=1;32:mh=00:ex=1;33:"
+export PATH="${PATH%:\/snap\/bin}"
 export TERM="xterm-256color"
 export LESSSECURE=1
 
