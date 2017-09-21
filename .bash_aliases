@@ -17,9 +17,9 @@ then
 	for CMD in\
 	\
 		"add":add\
+		"push":push\
 		"diff":diff\
 		"init":ginit\
-		"push":checkout\
 		"commit -m":commit\
 		"status -s":status\
 		"checkout":checkout\
