@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Thu 21 Sep 22:29:21 BST 2017
+# Last Change       - Fri 22 Sep 01:41:32 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -124,7 +124,7 @@ then
 	case "${TERM:-EMPTY}"
 	in
 	        linux|xterm|xterm-256color)
-	                alias ls="/bin/ls -Npshlq --time-style=iso --color=auto --group-directories-first"
+	                alias ls="/bin/ls -Nnpshq --time-style=iso --color=auto --group-directories-first"
 	                alias grep="/bin/grep --color=auto"
 	                alias egrep="/bin/egrep --color=auto"
 	                alias fgrep="/bin/fgrep --color=auto"
