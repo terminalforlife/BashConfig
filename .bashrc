@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Thu 21 Sep 22:14:04 BST 2017
+# Last Change       - Fri 22 Sep 01:37:51 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -30,8 +30,8 @@ set -o interactive-comments -o histexpand -o emacs\
 #----------------------------------------------------------------------------------
 
 PROMPT_COMMAND='
-	printf "%${COLUMNS}s" " " | /usr/bin/tr " " "-"
-	printf "↱ [\e[1;37m%0.3d] \033[01;31m${PWD}\e[0m" "$?"
+	X=$?; Y=`printf "%${COLUMNS}s" " "`
+	printf -- "${Y// /-}\n↱ [\e[1;37m%0.3d] \033[01;31m${PWD}\e[0m" "$X"
 '
 
 if type -P /usr/bin/tty &> /dev/null
