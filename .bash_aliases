@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 22 Sep 01:41:32 BST 2017
+# Last Change       - Fri 22 Sep 01:48:12 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -177,14 +177,15 @@ fi
 # These aliases save a lot of typing and do away with the output.
 if type -P /usr/bin/mplayer &> /dev/null
 then
+	# If you're having issues with mpv/mplayer here, try -vo x11 instead.
 	MPLAYER_FONT="$HOME/.mplayer/subfont.ttf"
 	alias mpa="/usr/bin/mplayer -nolirc -vo null -really-quiet &> /dev/null"
 
 	if [ -f "$MPLAYER_FONT" ]
 	then
-		alias mpv="/usr/bin/mplayer -nolirc -vo x11 -font \"$MPLAYER_FONT\" -really-quie#"
+		alias mpv="/usr/bin/mplayer -nolirc -font \"$MPLAYER_FONT\" -really-quiet"
 	else
-		alias mpv="/usr/bin/mplayer -nolirc -vo x11 -really-quiet &> /dev/null"
+		alias mpv="/usr/bin/mplayer -nolirc -really-quiet &> /dev/null"
 	fi
 fi
 
