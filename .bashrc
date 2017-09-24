@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 24 Sep 03:23:53 BST 2017
+# Last Change       - Sun 24 Sep 03:56:12 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -32,12 +32,23 @@ set -o interactive-comments -o histexpand -o emacs\
 if type -P /usr/bin/tty &> /dev/null
 then
 	if [[ "$(/usr/bin/tty)" == /dev/pts/* ]]
+	then
 		PROMPT_COMMAND='
 			X=$?; Y=`printf "%${COLUMNS}s" " "`
-			printf -- "${Y// /-}\n⮳ [\e[1;37m%0.3d] \033[01;31m${PWD}\e[0m" "$X"
+			[ $X -eq 0 ] && A="" || A=""
+
+			if [ -d .git ] && type -P /usr/bin/git &> /dev/null
+			then
+				GIT=" `/usr/bin/git status --short 2> /dev/null` "
+				[ "$GIT" == "  " ] && GIT=" "
+			else
+				GIT=" "
+			fi
+
+			printf -- "${Y// /-}\n \e[1;37m%0.3d${A}\e[1;33m${GIT}\e[01;31m${PWD}\e[0m" "$X"
 		'
 		
-		export PS1=" \[\033[00m\]\n⮱ "
+		export PS1=" \[\033[00m\]\n "
 	else
 		export PS1="$ "
 	fi
