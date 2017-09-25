@@ -33,23 +33,33 @@ if type -P /usr/bin/tty &> /dev/null
 then
 	if [[ "$(/usr/bin/tty)" == /dev/pts/* ]]
 	then
-		GET_PC()
-		{
-			local X=$?; local Y=`printf "%${COLUMNS}s" " "`
-			[ $X -eq 0 ] && local A="" || local A=""
+		# Disabled until I can fix it displaying incorrectly at times.
+		#GET_PC()
+		#{
+		#	local X=$?; local Y=`printf "%${COLUMNS}s\n" " "`
+		#	[ $X -eq 0 ] && local A="" || local A=""
 
-			if [ -d .git ] && type -P /usr/bin/{git,head} &> /dev/null
-			then
-				local GIT=" `/usr/bin/git status -s 2> /dev/null | head -n 1` "
-				[ "$GIT" == "  " ] && local GIT=" "
-			else
-				local GIT=" "
-			fi
+		#	if [ -d .git ] && type -P /usr/bin/{git,head} &> /dev/null
+		#	then
+		#		local GIT=" `/usr/bin/git status -s 2> /dev/null | /usr/bin/head -n 1` "
+		#		[ "$GIT" == "  " ] && local GIT=" "
+		#	else
+		#		local GIT=" "
+		#	fi
 
-			printf -- "\e[1;9;37m${Y}\e[0m\n \e[1;37m%0.3d${A}\e[1;33m${GIT}\e[01;31m${PWD}\e[0m" "$X"
-		}
+		#	printf -- "\e[1;9;37m${Y}\e[0m\n \e[1;37m%0.3d${A}\e[1;33m${GIT}\e[01;31m${PWD}\e[0m" "$X"
+		#}
 
-		PROMPT_COMMAND='GET_PC'
+		#PROMPT_COMMAND='GET_PC'
+		
+		PROMPT_COMMAND='
+			X=$?; X=`printf "%0.3d" "$X"`
+			[ $X -eq 0 ] && A="" || A=""
+		'
+
+		# Temporary but minimalistic approach.
+		PS1='\e[1;37m${X}${A}\e[0m  \e[1;33m${GIT}\e[0m'
+		#export PS1=" \[\033[00m\]\n "
 		
 		export PS1=" \[\033[00m\]\n "
 	else
