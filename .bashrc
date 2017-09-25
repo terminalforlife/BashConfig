@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 24 Sep 17:28:39 BST 2017
+# Last Change       - Mon 25 Sep 15:11:16 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ then
 		'
 
 		# Temporary but minimalistic approach.
-		PS1='\e[1;37m${X}${A}\e[0m  \e[1;33m${GIT}\e[0m'
+		PS1='\[\e[1;37m\]${X}${A}\[\e[0m\]  \[\e[1;33m\]${GIT}\[\e[0m\]'
 		#export PS1=" \[\033[00m\]\n "
 		
 		export PS1=" \[\033[00m\]\n "
