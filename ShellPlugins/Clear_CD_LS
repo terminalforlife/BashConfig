@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/CD_Clear_LS
 # Started On        - Thu 14 Sep 20:15:25 BST 2017
-# Last Change       - Sat 16 Sep 18:23:11 BST 2017
+# Last Change       - Mon 25 Sep 19:01:41 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -13,6 +13,8 @@
 
 cd()
 {
+	RERR(){ echo "ERROR: $1" 1>&2; return 1; }
+
 	# Continue if /bin/ls is found -- because you never know when.
 	if type /bin/ls &> /dev/null
 	then
@@ -31,7 +33,6 @@ cd()
 		fi
 	else
 		# If /bin/ls is not found, say so and return.
-		echo "ERROR: Dependency '/bin/ls' not met." 1>&2
-		return
+		RERR "Dependency '/bin/ls' not met."
 	fi
 }

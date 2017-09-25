@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Play_Download_MPSYT
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Sat 16 Sep 18:29:27 BST 2017
+# Last Change       - Mon 25 Sep 19:02:59 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -11,10 +11,10 @@
 yt()
 {
 	# Load the usage message function.
-	ARG_FAIL(){ echo "USAGE: yt [-p|-d] URL" 1>&2; return; }
+	ARG_FAIL(){ echo "USAGE: yt [-p|-d] URL" 1>&2; return 1; }
 
 	# Load the error message function.
-	RERR(){ echo "ERROR: $1" 1>&2; return; }
+	RERR(){ echo "ERROR: $1" 1>&2; return 1; }
 
 	# Check for root access.
 	[ $UID -eq 0 ] && RERR "Root access isn't required."

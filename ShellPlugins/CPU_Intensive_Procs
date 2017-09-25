@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/CPU_Intensive_Procs
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Fri 15 Sep 14:58:15 BST 2017
+# Last Change       - Mon 25 Sep 19:01:54 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -14,10 +14,10 @@ cpuhit()
 	|| ( [ "$1" -lt 1 ] || [ "$1" -gt 10 ] )
 	then
 		echo "USAGE: cpuhit [1-10]" 1>&2
-		return
+		return 1
 	fi
 
-	RERR(){ echo "ERROR: $1" 1>&2; return; }
+	RERR(){ echo "ERROR: $1" 1>&2; return 1; }
 	ERR(){ echo "ERROR: $1" 1>&2; }
 	
 	[ $UID -eq 0 ] && RERR "Root access isn't required."
@@ -32,7 +32,7 @@ cpuhit()
 		fi
 	}
 	
-	[ $DEPCOUNT -eq 0 ] || return
+	[ $DEPCOUNT -eq 0 ] || return 1
 
 	/bin/ps -eo pcpu,pid\
 		| /usr/bin/sort -k 1 -rn\
