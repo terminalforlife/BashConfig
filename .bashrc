@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Mon 25 Sep 19:03:33 BST 2017
+# Last Change       - Mon 25 Sep 21:52:28 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -33,38 +33,34 @@ if type -P /usr/bin/tty &> /dev/null
 then
 	if [[ "$(/usr/bin/tty)" == /dev/pts/* ]]
 	then
-		# Disabled until I can fix it displaying incorrectly at times.
-		#GET_PC()
-		#{
-		#	local X=$?; local Y=`printf "%${COLUMNS}s\n" " "`
-		#	[ $X -eq 0 ] && local A="" || local A=""
+		GET_PC()
+		{
+			local X=$?; X=`printf "%0.3d" "$X"`
+			local Y=`printf "%${COLUMNS}s\n" " "`
+			[ $X -eq 0 ] && local A="" || local A=""
 
-		#	if [ -d .git ] && type -P /usr/bin/{git,head} &> /dev/null
-		#	then
-		#		local GIT=" `/usr/bin/git status -s 2> /dev/null | /usr/bin/head -n 1` "
-		#		[ "$GIT" == "  " ] && local GIT=" "
-		#	else
-		#		local GIT=" "
-		#	fi
+			if type -P /usr/bin/{git,head} &> /dev/null
+			then
+				# Unnecessary, but keeps it tidy.
+				local GETGIT=$(
+					/usr/bin/git status -s 2> /dev/null\
+						| /usr/bin/head -n 1
+				)
 
-		#	printf -- "\e[1;9;37m${Y}\e[0m\n \e[1;37m%0.3d${A}\e[1;33m${GIT}\e[01;31m${PWD}\e[0m" "$X"
-		#}
+				local GIT=" $GETGIT "
 
-		#PROMPT_COMMAND='GET_PC'
-		
-		PROMPT_COMMAND='
-			X=$?; X=`printf "%0.3d" "$X"`
-			[ $X -eq 0 ] && A="" || A=""
-		'
+				[ "$GIT" == "  " ] && local GIT=" "
+			else
+				local GIT=" "
+			fi
 
-		# Temporary but minimalistic approach.
-		PS1='\[\e[1;37m\]${X}${A}\[\e[0m\]  \[\e[1;33m\]${GIT}\[\e[0m\]'
-		#export PS1=" \[\033[00m\]\n "
-		
-		#export PS1=" \[\033[00m\]\n "
+			PS1="\e\[[1;9;37m\]${Y}\[\e[0m\]\n \[\e[1;37m\]${X}${A}\[\e[1;33m\]${GIT}\[\e[01;31m\]${PWD}\[\e[0m\] \[\033[00m\]\n "
+		}
+
+		PROMPT_COMMAND='GET_PC'
 	else
 		unset PROMPT_COMMAND
-		export PS1="$ "
+		PS1="$ "
 	fi
 fi
 
