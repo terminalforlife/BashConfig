@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 24 Sep 03:56:12 BST 2017
+# Last Change       - Sun 24 Sep 17:28:39 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -33,23 +33,27 @@ if type -P /usr/bin/tty &> /dev/null
 then
 	if [[ "$(/usr/bin/tty)" == /dev/pts/* ]]
 	then
-		PROMPT_COMMAND='
-			X=$?; Y=`printf "%${COLUMNS}s" " "`
-			[ $X -eq 0 ] && A="" || A=""
+		GET_PC()
+		{
+			local X=$?; local Y=`printf "%${COLUMNS}s" " "`
+			[ $X -eq 0 ] && local A="" || local A=""
 
-			if [ -d .git ] && type -P /usr/bin/git &> /dev/null
+			if [ -d .git ] && type -P /usr/bin/{git,head} &> /dev/null
 			then
-				GIT=" `/usr/bin/git status --short 2> /dev/null` "
-				[ "$GIT" == "  " ] && GIT=" "
+				local GIT=" `/usr/bin/git status -s 2> /dev/null | head -n 1` "
+				[ "$GIT" == "  " ] && local GIT=" "
 			else
-				GIT=" "
+				local GIT=" "
 			fi
 
-			printf -- "${Y// /-}\n \e[1;37m%0.3d${A}\e[1;33m${GIT}\e[01;31m${PWD}\e[0m" "$X"
-		'
+			printf -- "\e[1;9;37m${Y}\e[0m\n \e[1;37m%0.3d${A}\e[1;33m${GIT}\e[01;31m${PWD}\e[0m" "$X"
+		}
+
+		PROMPT_COMMAND='GET_PC'
 		
 		export PS1=" \[\033[00m\]\n "
 	else
+		unset PROMPT_COMMAND
 		export PS1="$ "
 	fi
 fi
