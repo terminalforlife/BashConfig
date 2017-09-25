@@ -61,7 +61,7 @@ then
 		PS1='\[\e[1;37m\]${X}${A}\[\e[0m\]  \[\e[1;33m\]${GIT}\[\e[0m\]'
 		#export PS1=" \[\033[00m\]\n "
 		
-		export PS1=" \[\033[00m\]\n "
+		#export PS1=" \[\033[00m\]\n "
 	else
 		unset PROMPT_COMMAND
 		export PS1="$ "
