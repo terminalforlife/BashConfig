@@ -3,10 +3,36 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 22 Sep 01:48:12 BST 2017
+# Last Change       - Mon 25 Sep 09:40:02 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
+
+# Just in-case.
+[ -z "$BASH_VERSION" ] && return
+
+# Rip audio CDs with ease, then convert to ogg, name, and tag. Change the device
+# as fits your needs, same with the formats used. Needs testing.
+if type -P /bin/rm /usr/bin/{eject,kid3,ffmpeg,cdparanoia} &> /dev/null
+then
+	alias cdrip='
+		if /usr/bin/cdparanoia -B 1- -d /dev/sr1
+		then
+			for FILE in *
+			{
+				if /usr/bin/ffmpeg -i "$FILE" "${FILE%.wav}.ogg" &> /dev/null
+				then
+					echo "DONE: $FILE"
+				fi
+			}
+
+			/bin/rm *.wav
+			/usr/bin/eject /dev/sr1
+			/usr/bin/kid3 *
+			/usr/bin/eject -t /dev/sr1
+		fi
+	'
+fi
 
 # Relentlessly portable way to view a file.
 alias view='while read -r; do sleep 0.01s; echo "$REPLY"; done <'
