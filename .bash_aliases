@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 25 Sep 09:40:02 BST 2017
+# Last Change       - Tue 26 Sep 14:38:02 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -11,8 +11,10 @@
 # Just in-case.
 [ -z "$BASH_VERSION" ] && return
 
+shopt -s extglob
+
 # Rip audio CDs with ease, then convert to ogg, name, and tag. Change the device
-# as fits your needs, same with the formats used. Needs testing.
+# as fits your needs, same with the formats used. Uses /dev/sr1; change as needed.
 if type -P /bin/rm /usr/bin/{eject,kid3,ffmpeg,cdparanoia} &> /dev/null
 then
 	alias cdrip='
@@ -44,6 +46,7 @@ then
 	\
 		"add":add\
 		"push":push\
+		"pull":pull\
 		"diff":diff\
 		"init":ginit\
 		"commit -m":commit\
@@ -102,7 +105,7 @@ fi
 # Various [q]uick apt-cache aliases to make lifeeasier still.
 if type -P /usr/bin/apt-cache &> /dev/null
 then
-	for CMD in qse:"search" qsh:"show"
+	for CMD in qse:"search" qsn:"search -n" qsh:"show"
 	{
 		alias ${CMD%:*}="/usr/bin/apt-cache ${CMD/*:}"
 	}
@@ -198,6 +201,17 @@ then
 	alias sd="cd /media/$USER"
 else
 	alias mnt="cd /mnt"
+fi
+
+# For each found "sr" device, enables alias for opening and closing the tray. For
+# example, use ot0 to specific you want the tray for /dev/sr0 to open.
+if type -P /usr/bin/eject &> /dev/null
+then
+	for DEV in /dev/sr+([0-9])
+	{
+		alias ot${DEV/\/dev\/sr}="/usr/bin/eject $DEV"
+		alias ct${DEV/\/dev\/sr}="/usr/bin/eject -t $DEV"
+	}
 fi
 
 # These aliases save a lot of typing and do away with the output.
@@ -380,4 +394,5 @@ then
 	alias pdf="/usr/bin/evince &> /dev/null"
 fi
 
-unset FILE DEPCOUNT FOR_THE_EDITOR SUDO_EDITOR TTDIR DIR
+unset -f FOR_THE_EDITOR FOR_THE_EDITOR_R
+unset FILE DEPCOUNT SUDO_EDITOR TTDIR DIR
