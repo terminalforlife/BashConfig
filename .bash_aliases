@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 26 Sep 15:47:51 BST 2017
+# Last Change       - Tue 26 Sep 17:27:48 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -11,13 +11,22 @@
 # Just in-case.
 [ -z "$BASH_VERSION" ] && return
 
-shopt -s extglob
+# Display a columnized list of bash builtins.
+if type -P /usr/bin/column &> /dev/null
+then
+	alias builtins='\
+		while read -r
+		do
+			echo "${REPLY/* }"
+		done <<< "$(enable -a)" | /usr/bin/column
+	'
+fi
 
 # Rip audio CDs with ease, then convert to ogg, name, and tag. Change the device
-# as fits your needs, same with the formats used. Uses /dev/sr1; change as needed.
+# as fits your needs, same with the formats used. Needs testing.
 if type -P /bin/rm /usr/bin/{eject,kid3,ffmpeg,cdparanoia} &> /dev/null
 then
-	alias cdrip='
+	alias cdrip='\
 		if /usr/bin/cdparanoia -B 1- -d /dev/sr1
 		then
 			for FILE in *
@@ -46,7 +55,6 @@ then
 	\
 		"add":add\
 		"push":push\
-		"pull":pull\
 		"diff":diff\
 		"init":ginit\
 		"commit -m":commit\
@@ -105,7 +113,7 @@ fi
 # Various [q]uick apt-cache aliases to make lifeeasier still.
 if type -P /usr/bin/apt-cache &> /dev/null
 then
-	for CMD in qse:"search" qsn:"search -n" qsh:"show"
+	for CMD in qse:"search" qsh:"show"
 	{
 		alias ${CMD%:*}="/usr/bin/apt-cache ${CMD/*:}"
 	}
@@ -120,7 +128,7 @@ fi
 # Display a detailed list of kernel modules currently in use.
 if type -P /sbin/{modinfo,lsmod} /usr/bin/cut &> /dev/null
 then
-	alias lsmodd='
+	alias lsmodd='\
 		for MOD in `/sbin/lsmod | /usr/bin/cut -d " " -f 1`
 		{
 			printf "$MOD - "
@@ -387,5 +395,4 @@ then
 	alias pdf="/usr/bin/evince &> /dev/null"
 fi
 
-unset -f FOR_THE_EDITOR FOR_THE_EDITOR_R
-unset FILE DEPCOUNT SUDO_EDITOR TTDIR DIR
+unset FILE DEPCOUNT FOR_THE_EDITOR SUDO_EDITOR TTDIR DIR
