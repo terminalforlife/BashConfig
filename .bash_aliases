@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 26 Sep 14:38:02 BST 2017
+# Last Change       - Tue 26 Sep 15:26:51 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -154,16 +154,10 @@ then
 	in
 	        linux|xterm|xterm-256color)
 	                alias ls="/bin/ls -Nnpshq --time-style=iso --color=auto --group-directories-first"
+	                alias lsa="/bin/ls -ANnpshq --time-style=iso --color=auto --group-directories-first"
 	                alias grep="/bin/grep --color=auto"
 	                alias egrep="/bin/egrep --color=auto"
 	                alias fgrep="/bin/fgrep --color=auto"
-	                alias pgrep="/usr/bin/pgrep --color=auto" ;;
-	        *)
-	                alias ls="/bin/ls --color=never --group-directories-first -Np"
-	                alias lss="/bin/ls --color=never --group-directories-first -Nshp"
-	                alias grep="/bin/grep --color=never"
-	                alias egrep="/bin/egrep --color=never"
-	                alias fgrep="/bin/fgrep --color=never"
 	                alias pgrep="/usr/bin/pgrep --color=auto" ;;
 	esac
 fi
