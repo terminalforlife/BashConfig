@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 26 Sep 15:26:51 BST 2017
+# Last Change       - Tue 26 Sep 15:47:51 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ then
 fi
 
 # Get more functionality by default when using grep and ls.
-if type -P /bin/{ls,grep} /usr/bin/pgrep &> /dev/null
+if type -P /bin/{ls,grep} &> /dev/null
 then
 	case "${TERM:-EMPTY}"
 	in
@@ -157,8 +157,7 @@ then
 	                alias lsa="/bin/ls -ANnpshq --time-style=iso --color=auto --group-directories-first"
 	                alias grep="/bin/grep --color=auto"
 	                alias egrep="/bin/egrep --color=auto"
-	                alias fgrep="/bin/fgrep --color=auto"
-	                alias pgrep="/usr/bin/pgrep --color=auto" ;;
+	                alias fgrep="/bin/fgrep --color=auto" ;;
 	esac
 fi
 
