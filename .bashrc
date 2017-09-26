@@ -74,7 +74,7 @@ if [ -d "$FLIB" ]
 then
 	for FUNC in\
 	\
-		Bell_Alarm Cleaner_RK_Scan Times_Table List_Signals NIR_Difference\
+		Bell_Alarm Cleaner_RK_Scan Times_Table NIR_Difference\
 		Load_File_Links2 CPU_Intensive_Procs Git_Status_All;
 	{
 		[ -f "$FLIB/$FUNC" ] && source "$FLIB/$FUNC"
