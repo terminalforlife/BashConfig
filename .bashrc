@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Mon 25 Sep 21:52:28 BST 2017
+# Last Change       - Tue 26 Sep 19:33:48 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ unset FLIB FUNC
 
 export VBOX_USER_HOME="/media/$USER/1TB Internal HDD/Linux Generals/VirtualBox VMs"
 export TIMEFORMAT=">>> real %3R | user %3U | sys %3S | pcpu %P <<<"
-export LS_COLORS="di=1;31:ln=1;32:mh=00:ex=1;33:"
+export LS_COLORS="di=1;31:ln=2;32:mh=1;32:ex=1;33:"
 export PATH="${PATH%:\/snap\/bin}"
 export TERM="xterm-256color"
 export LESSSECURE=1
