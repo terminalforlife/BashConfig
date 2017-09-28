@@ -3,38 +3,56 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/CPU_Intensive_Procs
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Mon 25 Sep 19:01:54 BST 2017
+# Last Change       - Wed 27 Sep 00:25:22 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 cpuhit()
 {
-	if ( [ $# -eq 0 ] || [ $# -gt 1 ] )\
-	|| ( [ "$1" -lt 1 ] || [ "$1" -gt 10 ] )
+	RERR(){ echo "ERROR: $1" 1>&2; return 1; }
+
+	if ! type -P /bin/ps &> /dev/null
 	then
-		echo "USAGE: cpuhit [1-10]" 1>&2
-		return 1
+		RERR "Dependency '/bin/ps' not met." || return 1
 	fi
 
-	RERR(){ echo "ERROR: $1" 1>&2; return 1; }
-	ERR(){ echo "ERROR: $1" 1>&2; }
-	
-	[ $UID -eq 0 ] && RERR "Root access isn't required."
-	
-	DEPCOUNT=0
-	for DEP in /usr/bin/{awk,sort} /bin/ps
-	{
-		if ! type -P "$DEP" &> /dev/null
-		then
-			ERR "Dependency '$DEP' not met."
-			let DEPCOUNT++
-		fi
-	}
-	
-	[ $DEPCOUNT -eq 0 ] || return 1
+	case "${*:-EMPTY}"
+	in
+		[1-9]|10)
+			;;
+		*)
+			RERR "USAGE: cpuhit [1-10]" || return 1 ;;
+	esac
 
-	/bin/ps -eo pcpu,pid\
-		| /usr/bin/sort -k 1 -rn\
-		| /usr/bin/awk -Sv var=$1 'NR==1,NR==var {print $1"%","("$2")"}'
+	local IFS=" "
+	local COUNT=0
+
+	#TODO - Trying to reverse the output, the pure shell way.
+
+	while read -r -a REPLY
+	do
+		local PCPU="${REPLY[1]%.*}"
+
+		OUTPUT()
+		{
+			printf "%d %d %s\n" "${REPLY[0]}" "$PCPU" "${REPLY[2]}"
+		}
+
+		if [ $PCPU -gt 1 ]
+		then
+			if [ -n "$SHOW" ]
+			then
+				local OLDSHOW="$SHOW"
+				local SHOW="$PCPU"
+				[ $SHOW -lt $OLDSHOW ] && OUTPUT
+			else
+				OUTPUT
+			fi
+
+			let COUNT++; [ $COUNT -eq $* ] && return 0
+		else
+			continue
+		fi
+	done <<< `/bin/ps ax --noheader -o pid,pcpu,comm`
 }
