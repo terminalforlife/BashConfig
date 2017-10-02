@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Thu 28 Sep 16:32:28 BST 2017
+# Last Change       - Sat 30 Sep 14:13:54 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -77,8 +77,11 @@ then
 		# Just in-case, disable it.
 		unset PROMPT_COMMAND
 
+		# When \w is used in PS1, this will set ../ when beyond depth 1.
+		PROMPT_DIRTRIM=1
+
 		# Set a simple prompt for being on a TTY, as in Bourne Shell.
-		PS1="$ "
+		PS1="\$ "
 	fi
 fi
 
@@ -97,7 +100,8 @@ then
 	for FUNC in\
 	\
 		Bell_Alarm Cleaner_RK_Scan Times_Table NIR_Difference\
-		Load_File_Links2 CPU_Intensive_Procs Git_Status_All;
+		Load_File_Links2 CPU_Intensive_Procs Git_Status_All\
+		Movie_Index_Filter;
 	{
 		
 		# Source the file if it exists.
