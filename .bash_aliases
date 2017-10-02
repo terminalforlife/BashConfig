@@ -11,6 +11,16 @@
 # Just in-case.
 [ -z "$BASH_VERSION" ] && return
 
+# Show the fan speeds using sensors.
+[ -x /usr/bin/sensors ] && {
+	alias showfans='\
+		while read
+		do
+			[[ "$REPLY" == *[Ff][Aa][Nn]*RPM ]] && echo "$REPLY"
+		done <<< "$(/usr/bin/sensors)"
+	'
+}
+
 # Display a columnized list of bash builtins.
 if type -P /usr/bin/column &> /dev/null
 then
