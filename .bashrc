@@ -51,12 +51,15 @@ then
 			local Y=`printf "%${COLUMNS}s\n" " "`
 			[ $X -eq 0 ] && local A="" || local A=""
 
-			if type -P /usr/bin/{git,head} &> /dev/null
+			if [ -x /usr/bin/git ]
 			then
 				# Unnecessary, but keeps it tidy.
 				local GETGIT=$(
-					/usr/bin/git status -s 2> /dev/null\
-						| /usr/bin/head -n 1
+					readarray REPLY <<< "$(
+						/usr/bin/git status -s 2> /dev/null
+					)"
+
+					echo "${REPLY[0]}"
 				)
 
 				local GIT=" $GETGIT "
