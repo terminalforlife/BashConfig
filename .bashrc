@@ -3,16 +3,15 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Tue  3 Oct 13:02:01 BST 2017
+# Last Change       - Tue  3 Oct 17:25:45 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-if [ -d "$HOME/bin" ] && ! [[ "$PATH" == */home/"$USER"/bin* ]]
-then
+([ -d "$HOME/bin" ] && ! [[ "$PATH" == */home/"$USER"/bin* ]]) && {
 	# If the directory exists and isn't already in PATH, set it so.
 	export PATH="/home/$USER/bin:${PATH}"
-fi
+}
 
 # The RHEL recommended umask for much more safety when creating new files and
 # directories. This is the equivalent of octal 700 and 600 for directories and
@@ -39,20 +38,16 @@ set -o interactive-comments -o histexpand -o emacs\
 
 #----------------------------------------------------------------------------------
 
-if type -P /usr/bin/tty &> /dev/null
-then
+[ -x /usr/bin/tty ] && {
 	# If running in a TTY and not a PTS.
-	if [[ "$(/usr/bin/tty)" == /dev/pts/* ]]
-	then
+	if [[ "$(/usr/bin/tty)" == /dev/pts/* ]]; then
 		# Get the prompt information: Git, PWD, and $?.
-		GET_PC()
-		{
+		function GET_PC {
 			local X=$?; X=`printf "%0.3d" "$X"`
 			local Y=`printf "%${COLUMNS}s\n" " "`
 			[ $X -eq 0 ] && local A="" || local A=""
 
-			if [ -x /usr/bin/git ]
-			then
+			if [ -x /usr/bin/git ]; then
 				# Unnecessary, but keeps it tidy.
 				local GETGIT=$(
 					readarray REPLY <<< "$(
@@ -91,7 +86,7 @@ then
 		# Set a simple prompt for being on a TTY, as in Bourne Shell.
 		PS1="\$ "
 	fi
-fi
+}
 
 # Sets the command history options. See: man bash
 HISTCONTROL=ignoreboth; HISTTIMEFORMAT="[%F_%X]: "; HISTSIZE=1000; HISTFILESIZE=0
@@ -102,8 +97,7 @@ HISTCONTROL=ignoreboth; HISTTIMEFORMAT="[%F_%X]: "; HISTSIZE=1000; HISTFILESIZE=
 FLIB="$HOME/ShellPlugins"
 
 # If the above directory is found.
-if [ -d "$FLIB" ]
-then
+[ -d "$FLIB" ] && {
 	# For each file specified here, within the above directory.
 	for FUNC in\
 	\
@@ -113,9 +107,9 @@ then
 	{
 		
 		# Source the file if it exists.
-		[ -f "$FLIB/$FUNC" ] && source "$FLIB/$FUNC"
+		[ -f "$FLIB/$FUNC" ] && . "$FLIB/$FUNC"
 	}
-fi
+}
 
 unset FLIB FUNC
 
@@ -130,7 +124,7 @@ export TIMEFORMAT=">>> real %3R | user %3U | sys %3S | pcpu %P <<<"
 # Set the colors to use for the ls command. This is a dark, simple theme.
 export LS_COLORS="di=1;31:ln=2;32:mh=1;32:ex=1;33:"
 
-# Remove /snap/bit from the end of the PATH.
+# Remove /snap/bin from the end of the PATH.
 export PATH="${PATH%:\/snap\/bin}"
 
 # Set the terminal color.
@@ -140,57 +134,48 @@ export TERM="xterm-256color"
 export LESSSECURE=1
 
 # If sudo is found, set the sudo -e editor to vim or nano.
-if type -P /usr/bin/sudo &> /dev/null
-then
-	if type -P /usr/bin/vim &> /dev/null
-	then
+[ -x /usr/bin/sudo ] && {
+	if [ -x /usr/bin/vim ]; then
 		export SUDO_EDITOR="rvim"
-	elif type -P /usr/bin/nano &> /dev/null
-	then
+	elif [ -x /usr/bin/nano ]; then
 		export SUDO_EDITOR="rnano"
 	fi
-fi
+}
 
 #----------------------------------------------------------------------------------
 
 ETCBC="/etc/bash_completion"
 USRBC="/usr/share/bash-completion/bash_completion"
 
-# If the bash_completion file is found, source it.
-if [ -f "$ETCBC" ]
-then
-	source "$ETCBC"
-elif [ -f "$USRBC" ]
-then
-	source "$USRBC"
-fi
+# If the bash_completion file is found and has read access, source it.
+([ -f "$ETCBC" ] && [ -r "$ETCBC" ] && . "$ETCBC") ||
+([ -f "$USRBC" ] && [ -r "$USRBC" ] && . "$USRBC")
 
 unset ETCBC USRBC
 
 #----------------------------------------------------------------------------------
 
 # Enable a feature I dub termwatch. It logs whenever the current opens a terminal.
-if type -P /bin/date /usr/bin/tty &> /dev/null
-then
-	TERMWATCH_LOGFILE="$HOME/.termwatch.log"
+[ -x /usr/bin/tty ] && {
+	TERMWATCH_LOG="$HOME/.termwatch.log"
 	CURTERM=`/usr/bin/tty`
 
-	if [ -f "$TERMWATCH_LOGFILE" ] && [ -w "$TERMWATCH_LOGFILE" ]
-	then
-		echo "Using ${CURTERM:-Unknown} (${TERM-unknown})"\
-			"at `/bin/date` as $USER." >> "$TERMWATCH_LOGFILE"
-	fi
+	([ -f "$TERMWATCH_LOG" ] && [ -w "$TERMWATCH_LOG" ]) && {
+		# Using "" to avoid argument miscount when using %()T.
+		printf "Using %s on %s at %(%F (%X))T as %s.\n"\
+			"${CURTERM:-Unknown}" "(${TERM-unknown})" ""\
+			"$USER" >> "$TERMWATCH_LOG"
+	}
 
-	unset TERMWATCH_LOGFILE CURTERM
-fi
+	unset TERMWATCH_LOG CURTERM
+}
 
 #----------------------------------------------------------------------------------
 
 # If the user's bash_aliases file is found, source it.
 BASH_ALIASES="$HOME/.bash_aliases"
-if [ -f "$BASH_ALIASES" ] && [ -r "$BASH_ALIASES" ]
-then
+([ -f "$BASH_ALIASES" ] && [ -r "$BASH_ALIASES" ]) && {
 	source "$BASH_ALIASES"
-fi
+}
 
 unset BASH_ALIASES
