@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Tue  3 Oct 17:25:45 BST 2017
+# Last Change       - Tue  3 Oct 18:07:13 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -40,9 +40,9 @@ set -o interactive-comments -o histexpand -o emacs\
 
 [ -x /usr/bin/tty ] && {
 	# If running in a TTY and not a PTS.
-	if [[ "$(/usr/bin/tty)" == /dev/pts/* ]]; then
+	[[ "$(/usr/bin/tty)" == /dev/pts/* ]] && {
 		# Get the prompt information: Git, PWD, and $?.
-		function GET_PC {
+		GET_PC(){
 			local X=$?; X=`printf "%0.3d" "$X"`
 			local Y=`printf "%${COLUMNS}s\n" " "`
 			[ $X -eq 0 ] && local A="" || local A=""
@@ -76,7 +76,7 @@ set -o interactive-comments -o histexpand -o emacs\
 
 		# Use and keep updated the above prompt code.
 		PROMPT_COMMAND='GET_PC'
-	else
+	} || {
 		# Just in-case, disable it.
 		unset PROMPT_COMMAND
 
@@ -85,7 +85,7 @@ set -o interactive-comments -o histexpand -o emacs\
 
 		# Set a simple prompt for being on a TTY, as in Bourne Shell.
 		PS1="\$ "
-	fi
+	}
 }
 
 # Sets the command history options. See: man bash
