@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 26 Sep 17:27:48 BST 2017
+# Last Change       - Tue  3 Oct 10:36:19 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -234,9 +234,11 @@ then
 
 	if [ -f "$MPLAYER_FONT" ]
 	then
-		alias mpv="/usr/bin/mplayer -nolirc -font \"$MPLAYER_FONT\" -really-quiet"
+		alias mpv="/usr/bin/mplayer -vo x11 -zoom -nolirc -font \"$MPLAYER_FONT\" -really-quiet &> /dev/null"
+		alias mpvdvd="/usr/bin/mplayer -vo x11 -zoom -nolirc -font \"$MPLAYER_FONT\" -really-quiet dvd://1//dev/sr1 &> /dev/null"
 	else
-		alias mpv="/usr/bin/mplayer -nolirc -really-quiet &> /dev/null"
+		alias mpv="/usr/bin/mplayer -vo x11 -zoom -nolirc -really-quiet &> /dev/null &> /dev/null"
+		alias mpvdvd="/usr/bin/mplayer -vo x11 -zoom -nolirc --really-quiet dvd://1//dev/sr1 &> /dev/null"
 	fi
 fi
 
@@ -337,6 +339,7 @@ FOR_THE_EDITOR()
 	}
 }
 
+# As above, but for those which use sudo -e.
 FOR_THE_EDITOR_R()
 {
 	for FILE in\
@@ -356,6 +359,7 @@ FOR_THE_EDITOR_R()
 	}
 }
 
+# When in a TTY, change to different ones.
 if [[ `/usr/bin/tty` == /dev/tty* ]]
 then
 	if type -P /usr/bin/tty /bin/chvt &> /dev/null
