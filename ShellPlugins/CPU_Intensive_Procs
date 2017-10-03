@@ -3,22 +3,19 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/CPU_Intensive_Procs
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Wed 27 Sep 00:25:22 BST 2017
+# Last Change       - Tue  3 Oct 18:20:04 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-cpuhit()
-{
+cpuhit(){
 	RERR(){ echo "ERROR: $1" 1>&2; return 1; }
 
-	if ! type -P /bin/ps &> /dev/null
-	then
+	[ -x /bin/ps ] && {
 		RERR "Dependency '/bin/ps' not met." || return 1
-	fi
+	}
 
-	case "${*:-EMPTY}"
-	in
+	case "${*:-EMPTY}" in
 		[1-9]|10)
 			;;
 		*)
@@ -29,18 +26,14 @@ cpuhit()
 	local COUNT=0
 
 	#TODO - Trying to reverse the output, the pure shell way.
-
-	while read -r -a REPLY
-	do
+	while read -r -a REPLY; do
 		local PCPU="${REPLY[1]%.*}"
 
-		OUTPUT()
-		{
+		OUTPUT(){
 			printf "%d %d %s\n" "${REPLY[0]}" "$PCPU" "${REPLY[2]}"
 		}
 
-		if [ $PCPU -gt 1 ]
-		then
+		[ $PCPU -gt 1 ] && {
 			if [ -n "$SHOW" ]
 			then
 				local OLDSHOW="$SHOW"
@@ -51,8 +44,6 @@ cpuhit()
 			fi
 
 			let COUNT++; [ $COUNT -eq $* ] && return 0
-		else
-			continue
-		fi
+		}
 	done <<< `/bin/ps ax --noheader -o pid,pcpu,comm`
 }

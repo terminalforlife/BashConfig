@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/CD_Clear_LS
 # Started On        - Thu 14 Sep 20:15:25 BST 2017
-# Last Change       - Mon 25 Sep 19:01:41 BST 2017
+# Last Change       - Tue  3 Oct 18:20:08 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -11,28 +11,21 @@
 #TODO - Fix possible segmentation fault linked to this function. When cd is used.
 #       The \cd instead of cd perhaps fixed it; may be down to a conflicting alias.
 
-cd()
-{
+cd(){
 	RERR(){ echo "ERROR: $1" 1>&2; return 1; }
 
 	# Continue if /bin/ls is found -- because you never know when.
-	if type /bin/ls &> /dev/null
-	then
+	[ -x /bin/ls ] && {
 		# If number of arguments is 0.
-		if [ $# -eq 0 ]
-        	then
+		[ $# -eq 0 ] && {
 			# Simply change to home directory.
-			printf "\033c"
-			\cd "$HOME"
-			/bin/ls
-		else 
+			printf "\033c"; \cd "$HOME"; /bin/ls
+		} || {
 			# Change to the directory specified by the user.
-			printf "\033c"
-			\cd "$*"
-			/bin/ls
-		fi
-	else
+			printf "\033c"; \cd "$*"; /bin/ls
+		}
+	} || {
 		# If /bin/ls is not found, say so and return.
 		RERR "Dependency '/bin/ls' not met."
-	fi
+	}
 }

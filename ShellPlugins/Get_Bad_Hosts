@@ -3,54 +3,45 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Get_Bad_Hosts
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Mon 25 Sep 18:58:53 BST 2017
+# Last Change       - Tue  3 Oct 18:19:50 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 # WORK IN PROGRESS
 
-gbh()
-{
+gbh(){
 	RERR(){ echo "ERROR: $1" 1>&2; return 1; }
 	ERR(){ echo "ERROR: $1" 1>&2; }
 	
 	[ $UID -eq 0 ] && RERR "Root access isn't required."
 	
-	DEPCOUNT=0
+	declare -i DEPCOUNT=0
 	for DEP in /bin/{cat,grep,gzip} /usr/bin/{wget,dos2unix,uniq,sort,tr}
 	{
-		if ! type -P "$DEP" &> /dev/null
-		then
+		[ -x "$DEP" ] || {
 			ERR "Dependency '$DEP' not met."
-			let DEPCOUNT++
-		fi
+			DEPCOUNT+=1
+		}
 	}
 	
 	[ $DEPCOUNT -eq 0 ] || return 1
 
-	if ! [ $# -eq 0 ]
-	then
-		RERR "ERROR: No arguments required."
-	fi
+	[ $# -eq 0 ] || RERR "ERROR: No arguments required."
 
 	URL="http://www.montanamenagerie.org/hostsfile/hosts.txt"
 	DESTINATION="$HOME/Downloads/GBH.txt"
 
-	if ! [ -d "${DESTINATION%\/*}" ]
-	then
-		RERR "Destination directory not found."
-	fi
-
-	if [ -f "${DESTINATION}.gz" ]
-	then
-		RERR "ERROR: File already present."
-	fi
+	[ -d "${DESTINATION%\/*}" ] || RERR "Destination directory not found."
+	[ -f "${DESTINATION}.gz" ] && RERR "File already present."
 
 	/usr/bin/wget -q --show-progress "$URL" -O "$DESTINATION"
 	/usr/bin/dos2unix "$DESTINATION"
 
-	/bin/cat "$DESTINATION"\
+	#TODO - Check using while read rather than cat didn't break this.
+	while read -r; do
+		echo "$REPLY"
+	done <<< "$DESTINATION"\
 		| /usr/bin/tr "\t" " "\
 		| /bin/grep -a "^127.0.0.1 "\
 		| /usr/bin/uniq\

@@ -3,26 +3,23 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Cleaner_RK_Scan
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Mon 25 Sep 19:00:12 BST 2017
+# Last Change       - Tue  3 Oct 18:20:12 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-rkc()
-{
+rkc(){
 	RERR(){ echo "ERROR: $1" 1>&2; return 1; }
 	ERR(){ echo "ERROR: $1" 1>&2; }
 	
 	[ $UID -eq 0 ] && RERR "Root access isn't required."
 	
-	DEPCOUNT=0
-	for DEP in /usr/bin/rkhunter /bin/sed /usr/sbin/chkrootkit
-	{
-		if ! type -P "$DEP" &> /dev/null
-		then
+	declare -i DEPCOUNT=0
+	for DEP in /usr/bin/rkhunter /bin/sed /usr/sbin/chkrootkit; {
+		[ -x "$DEP" ] || {
 			ERR "Dependency '$DEP' not met."
-			let DEPCOUNT++
-		fi
+			DEPCOUNT+=1
+		}
 	}
 	
 	[ $DEPCOUNT -eq 0 ] || return 1

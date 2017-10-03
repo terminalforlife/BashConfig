@@ -3,13 +3,12 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Load_File_Links2
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Mon 25 Sep 19:02:45 BST 2017
+# Last Change       - Tue  3 Oct 18:25:45 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-l2f()
-{
+l2f(){
 	# Load error function.
 	RERR(){ echo "ERROR: $1" 1>&2; return 1; }
 
@@ -20,11 +19,10 @@ l2f()
 	[ $# -gt 0 ] || RERR "Please specify a file to be read."
 
 	# If executable /usr/bin/links2 is found.
-	if type -P /usr/bin/links2 &> /dev/null
-	then
+	[ -x /usr/bin/links2 ] && {
 		# Open up specified file (without viewing source) in links2.
 		/usr/bin/links2 -force-html file://"$@"
-	else
+	} || {
 		RERR "Dependency '/usr/bin/links2' not found."
-	fi
+	}
 }

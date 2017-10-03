@@ -3,13 +3,12 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Times_Table
 # Started On        - Fri 15 Sep 15:20:17 BST 2017
-# Last Change       - Fri 15 Sep 15:21:17 BST 2017
+# Last Change       - Tue  3 Oct 18:28:36 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-tentt()
-{
+tentt(){
 	for XT in {1..10}; { printf "%4d" $XT; }; echo
 	for XT in {2..20..2}; { printf "%4d" $XT; }; echo
 	for XT in {3..30..3}; { printf "%4d" $XT; }; echo

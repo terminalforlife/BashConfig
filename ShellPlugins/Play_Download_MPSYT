@@ -3,13 +3,12 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Play_Download_MPSYT
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Mon 25 Sep 19:02:59 BST 2017
+# Last Change       - Tue  3 Oct 18:28:26 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-yt()
-{
+yt(){
 	# Load the usage message function.
 	ARG_FAIL(){ echo "USAGE: yt [-p|-d] URL" 1>&2; return 1; }
 
@@ -23,30 +22,25 @@ yt()
 	[ $# -gt 1 ] || RERR "Please specify a package name."
 
 	# Check for dependencies.
-	DEPCOUNT=0
-	for DEP in /usr/bin/{apt-get,awk,dpkg-query}
-	{
-		if ! type -P "$DEP" &> /dev/null
-		then
+	declare -i DEPCOUNT=0
+	for DEP in /usr/bin/{apt-get,awk,dpkg-query}; {
+		[ -x "$DEP" ] || {
 			ERR "Dependency '$DEP' not met."
-			let DEPCOUNT++
-		fi
+			DEPCOUNT+=1
+		}
 	}
 	
 	# Fail if any dependencies are unmet.
 	[ $DEPCOUNT -eq 0 ] || exit 1
 
-	if [ $# -gt 2 ]
-	then
+	if [ $# -gt 2 ]; then
 		# Call ARG_FAIL function if arguments greater than 2.
 		ARG_FAIL
-	elif [ "$1" == "-p" ]
-	then
+	elif [ "$1" == "-p" ]; then
 		# If the first argument is -p, then play with a YouTube video
 		# (with the player set in mpsyt) specified in the 2nd argument.
 		/usr/bin/mpsyt playurl "$2"
-	elif [ "$1" == "-d" ]
-	then
+	elif [ "$1" == "-d" ]; then
 		# If the first argument is -d, then download a YouTube video
 		# (with the downloader set in mpsyt) specified in the 2nd argument.
 		/usr/bin/mpsyt dlurl "$2"

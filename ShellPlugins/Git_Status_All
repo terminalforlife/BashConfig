@@ -3,13 +3,12 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Git_Status_All
 # Started On        - Sat 16 Sep 14:19:06 BST 2017
-# Last Change       - Mon 25 Sep 19:02:28 BST 2017
+# Last Change       - Tue  3 Oct 18:24:13 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-gitsa()
-{
+gitsa(){
 	# Load error functions.
 	RERR(){ echo "ERROR: $1" 1>&2; return 1; }
 	ERR(){ echo "ERROR: $1" 1>&2; }
@@ -17,13 +16,12 @@ gitsa()
 	# Check for dependencies.
 	DEPCOUNT=0
 	for DEP in /usr/bin/git /usr/bin/basename /usr/bin/id /bin/grep
-	{
-		if ! type -P "$DEP" &> /dev/null
-		then
+	do
+		[ -x "$DEP" ] || {
 			ERR "Dependency '$DEP' not met."
-			let DEPCOUNT++
-		fi
-	}
+			DEPCOUNT=$((DEPCOUNT+1))
+		}
+	done
 	
 	# Return if any dependencies were found.
 	[ $DEPCOUNT -eq 0 ] || return 1
@@ -39,17 +37,13 @@ gitsa()
 	MY_GIT_STORAGE="$HOME/GitHub/terminalforlife/Personal"
 
 	# Check that the above location exists.
-	if ! [ -d "$MY_GIT_STORAGE" ]
-	then
-		RERR "Unable to locate: $MY_GIT_STORAGE"
-	fi
+	[ -d "$MY_GIT_STORAGE" ] || RERR "Unable to locate: $MY_GIT_STORAGE"
 
 	# Store the current working directory here for returning to at the end.
 	CURRENT_DIRECTORY="$PWD"
 
 	# Begin the main processing.
-	for DIR in $MY_GIT_STORAGE/*
-	do
+	for DIR in $MY_GIT_STORAGE/*; do
 		[ -d "$DIR" ] || continue
 
 		cd "$DIR"
@@ -65,30 +59,25 @@ gitsa()
 		# Output status. Used separate statements in-case there are times
 		# when multiple apply. Indented for an easier read.
 		# (
-		if echo "$GIT_STATUS" | /bin/grep -qx "nothing to commit, working directory clean"
-		then
+		echo "$GIT_STATUS" | /bin/grep -qx "nothing to commit, working directory clean" && {
 			echo "    ⏵ Clean; nothing to commit."
-		fi
+		}
 
-		if echo "$GIT_STATUS" | /bin/grep -qx "Changed to be committed:"
-		then
+		echo "$GIT_STATUS" | /bin/grep -qx "Changed to be committed:" && {
 			echo "    ⏵ Changes to be committed."
-		fi
+		}
 
-		if echo "$GIT_STATUS" | /bin/grep -qx "Changes not staged for commit:"
-		then
+		echo "$GIT_STATUS" | /bin/grep -qx "Changes not staged for commit:" && {
 			echo "    ⏵ Changes yet to be staged for commit."
-		fi
+		}
 
-		if echo "$GIT_STATUS" | /bin/grep -qx "nothing added to commit but untracked files present (use \"git add\" to track)"
-		then
+		echo "$GIT_STATUS" | /bin/grep -qx "nothing added to commit but untracked files present (use \"git add\" to track)" && {
 			echo "    ⏵ Untracked files present."
-		fi
+		}
 
-		if echo "$GIT_STATUS" | /bin/grep -q "^Your branch is ahead of"
-		then
+		echo "$GIT_STATUS" | /bin/grep -q "^Your branch is ahead of" && {
 			echo "    ⏵ Commit(s) ready to be sent upstream."
-		fi
+		}
 		# )
 
 		# Add spacing to make it more readable.
