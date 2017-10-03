@@ -3,64 +3,54 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue  3 Oct 10:36:19 BST 2017
+# Last Change       - Tue  3 Oct 18:03:01 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 # Just in-case.
-[ -z "$BASH_VERSION" ] && return
+[ -z "$BASH_VERSION" ] && return 1
 
 # Show the fan speeds using sensors.
 [ -x /usr/bin/sensors ] && {
 	alias showfans='\
-		while read
-		do
+		while read; do
 			[[ "$REPLY" == *[Ff][Aa][Nn]*RPM ]] && echo "$REPLY"
 		done <<< "$(/usr/bin/sensors)"
 	'
 }
 
 # Display a columnized list of bash builtins.
-if type -P /usr/bin/column &> /dev/null
-then
+[ -x /usr/bin/column ] && {
 	alias builtins='\
 		while read -r
 		do
 			echo "${REPLY/* }"
 		done <<< "$(enable -a)" | /usr/bin/column
 	'
-fi
+}
 
 # Rip audio CDs with ease, then convert to ogg, name, and tag. Change the device
 # as fits your needs, same with the formats used. Needs testing.
-if type -P /bin/rm /usr/bin/{eject,kid3,ffmpeg,cdparanoia} &> /dev/null
-then
-	alias cdrip='\
-		if /usr/bin/cdparanoia -B 1- -d /dev/sr1
-		then
-			for FILE in *
-			{
-				if /usr/bin/ffmpeg -i "$FILE" "${FILE%.wav}.ogg" &> /dev/null
-				then
-					echo "DONE: $FILE"
-				fi
+declare -i DEPCOUNT=0
+for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
+	[ -x "$DEP" ] && DEPCOUNT+=1
+
+	# Only execute if all 3 dependencies are found.
+	[ $DEPCOUNT -eq 4 ] && {
+		alias cdrip='\
+			/usr/bin/cdparanoia -B 1- && {
+				for FILE in *; {
+					/usr/bin/ffmpeg -i "$FILE"\
+						"${FILE%.wav}.ogg" &> /dev/null
+				}
 			}
-
-			/bin/rm *.wav
-			/usr/bin/eject /dev/sr1
-			/usr/bin/kid3 *
-			/usr/bin/eject -t /dev/sr1
-		fi
-	'
-fi
-
-# Relentlessly portable way to view a file.
-alias view='while read -r; do sleep 0.01s; echo "$REPLY"; done <'
+		'
+	}
+}
 
 # Enable a bunch of git aliases, if you have git installed.
-if type -P /usr/bin/git &> /dev/null
-then
+[ -x /usr/bin/git ] && {
 	for CMD in\
 	\
 		"add":add\
@@ -74,117 +64,123 @@ then
 	{
 		alias "${CMD/*:}"="/usr/bin/git ${CMD%:*}"
 	}
-fi
+}
 
 # I prefer a builtin, for the same functionality.
-alias which="type -Pf"
+alias dep="command -v"
 
 # Uses the much faster blkid-lite instead of blkid.
-if type -P /usr/bin/blkid-lite &> /dev/null
-then
+[ -x /usr/bin/blkid-lite ] && {
 	# https://github.com/terminalforlife/blkid-lite
 	alias blkid="/usr/bin/blkid-lite"
-fi
+}
 
 # If you have gvfs-trash available, be safe with that.
-if type -P /usr/bin/gvfs-trash &> /dev/null
-then
+[ -x /usr/bin/gvfs-trash ] && {
 	alias rm="/usr/bin/gvfs-trash"
-fi
+}
 
 # Ease-of-use youtube-dl aliases; these save typing!
-if type -P /usr/{local/bin,bin}/youtube-dl &> /dev/null
-then
-	alias ytdl-video="/usr/local/bin/youtube-dl -c --yes-playlist\
-		--sleep-interval 5 --max-sleep-interval 30 --format best\
-		--no-call-home --console-title --quiet --ignore-errors"
-	alias ytdl-audio="/usr/local/bin/youtube-dl -cx --audio-format mp3\
-		--sleep-interval 5 --max-sleep-interval 30 --no-call-home\
-		--console-title --quiet --ignore-errors"
-	alias ytpldl-audio="/usr/local/bin/youtube-dl -cx --audio-format mp3\
-		--sleep-interval 5 --max-sleep-interval 30 --yes-playlist\
-		--no-call-home --console-title --quiet --ignore-errors"
-	alias ytpldl-video="/usr/local/bin/youtube-dl -c --yes-playlist\
-		--sleep-interval 5 --max-sleep-interval 30 --format best\
-		--no-call-home --console-title --quiet --ignore-errors"
-fi
+for DEP in /usr/{local/bin,bin}/youtube-dl; {
+	[ -x "$DEP" ] && {
+		alias ytdl-video="/usr/local/bin/youtube-dl -c --yes-playlist\
+			--sleep-interval 5 --max-sleep-interval 30 --format best\
+			--no-call-home --console-title --quiet --ignore-errors"
+		alias ytdl-audio="/usr/local/bin/youtube-dl -cx --audio-format mp3\
+			--sleep-interval 5 --max-sleep-interval 30 --no-call-home\
+			--console-title --quiet --ignore-errors"
+		alias ytpldl-audio="/usr/local/bin/youtube-dl -cx --audio-format mp3\
+			--sleep-interval 5 --max-sleep-interval 30 --yes-playlist\
+			--no-call-home --console-title --quiet --ignore-errors"
+		alias ytpldl-video="/usr/local/bin/youtube-dl -c --yes-playlist\
+			--sleep-interval 5 --max-sleep-interval 30 --format best\
+			--no-call-home --console-title --quiet --ignore-errors"
+
+		# Just use the first result.
+		break
+	}
+}
 
 # Various [q]uick apt-get aliases to make life a bit easier.
-if type -P /usr/bin/apt-get &> /dev/null
-then
+[ -x /usr/bin/apt-get ] && {
 	for CMD in quf:"remove --purge" qufu:"remove --purge --autoremove"\
 		   qu:"remove" qa:"autoremove" qi:"install" qri:"reinstall"\
 		   qupd:"update" qupg:"upgrade" qdupg:"dist-upgrade"
 	{
 		alias ${CMD%:*}="/usr/bin/sudo /usr/bin/apt-get ${CMD/*:}"
 	}
-fi
+}
 
 # Various [q]uick apt-cache aliases to make lifeeasier still.
-if type -P /usr/bin/apt-cache &> /dev/null
-then
-	for CMD in qse:"search" qsh:"show"
-	{
+[ -x /usr/bin/apt-cache ] && {
+	for CMD in qse:"search" qsh:"show"; {
 		alias ${CMD%:*}="/usr/bin/apt-cache ${CMD/*:}"
 	}
-fi
+}
 
 # Workaround for older versions of dd; displays progress.
-if type -P /bin/{dd,pidof} /usr/bin/sudo &> /dev/null
-then
-	alias ddp="/usr/bin/sudo kill -USR1 `/bin/pidof /bin/dd`"
-fi
+declare -i DEPCOUNT=0
+for DEP in /bin/{dd,pidof} /usr/bin/sudo; {
+	[ -x "$DEP" ] && DEPCOUNT+=1
+
+	[ $DEPCOUNT -gt 3 ] && {
+		alias ddp="/usr/bin/sudo kill -USR1 `/bin/pidof /bin/dd`"
+	}
+}
 
 # Display a detailed list of kernel modules currently in use.
-if type -P /sbin/{modinfo,lsmod} /usr/bin/cut &> /dev/null
-then
-	alias lsmodd='\
-		for MOD in `/sbin/lsmod | /usr/bin/cut -d " " -f 1`
-		{
-			printf "$MOD - "
-			/sbin/modinfo -d "$MOD"
-		}
-	'
-fi
+declare -i DEPCOUNT=0
+for DEP in /sbin/{modinfo,lsmod} /usr/bin/cut; {
+	[ -x "$DEP" ] && DEPCOUNT+=1
+
+	[ $DEPCOUNT -eq 3 ] && {
+		alias lsmodd='\
+			for MOD in `/sbin/lsmod | /usr/bin/cut -d " " -f 1`; {
+				printf "$MOD - "
+				/sbin/modinfo -d "$MOD"
+			}
+		'
+	}
+}
 
 # This is just options I find the most useful when using dmesg.
-if type -P /bin/dmesg &> /dev/null
-then
+[ -x /bin/dmesg ] && {
 	alias klog="/bin/dmesg -t -L=never -l err,crit,alert,emerg"
-fi
+}
 
 # Enable the default hostkey when vboxsdl is used.
-if type -P /usr/bin/vboxsdl &> /dev/null
-then
+[ -x /usr/bin/vboxsdl ] && {
 	alias vboxsdl="/usr/bin/vboxsdl --hostkey 305 128"
-fi
+}
 
 # Clear the clipboard using xclip.
-if type -P /usr/bin/xclip &> /dev/null
-then
+[ -x /usr/bin/xclip ] && {
 	alias ccb="printf \"\" | /usr/bin/xclip -i"
-fi
+}
 
 # Get more functionality by default when using grep and ls.
-if type -P /bin/{ls,grep} &> /dev/null
-then
-	case "${TERM:-EMPTY}"
-	in
-	        linux|xterm|xterm-256color)
-	                alias ls="/bin/ls -Nnpshq --time-style=iso --color=auto --group-directories-first"
-	                alias lsa="/bin/ls -ANnpshq --time-style=iso --color=auto --group-directories-first"
-	                alias grep="/bin/grep --color=auto"
-	                alias egrep="/bin/egrep --color=auto"
-	                alias fgrep="/bin/fgrep --color=auto" ;;
-	esac
-fi
+declare -i DEPCOUNT=0
+for DEP in /bin/{ls,grep}; {
+	[ -x "$DEP" ] && DEPCOUNT+=1
+
+	[ $DEPCOUNT -eq 2 ] && {
+		case "${TERM:-EMPTY}"
+		in
+		        linux|xterm|xterm-256color)
+		                alias ls="/bin/ls -Nnpshq --time-style=iso --color=auto --group-directories-first"
+		                alias lsa="/bin/ls -ANnpshq --time-style=iso --color=auto --group-directories-first"
+		                alias grep="/bin/grep --color=auto"
+		                alias egrep="/bin/egrep --color=auto"
+		                alias fgrep="/bin/fgrep --color=auto" ;;
+		esac
+	}
+}
 
 # Quick navigation aliases in absence of the autocd shell option.
-if ! shopt -qp autocd
-then
+shopt -qp autocd || {
 	alias ~="cd $HOME"
 	alias ..="cd .."
-fi
+}
 
 # For each directory listed to the left of :, create an alias you see on the right
 # of :. This is a key=value style approach, like dictionaries in Python. HOME only.
@@ -207,116 +203,110 @@ for DIR in\
 }
 
 # When dealing with udisksctl or mount, these are very useful!
-if [ -d "/media/$USER" ]
-then
-	alias sd="cd /media/$USER"
-else
-	alias mnt="cd /mnt"
-fi
+[ -d "/media/$USER" ] && alias sd="cd /media/$USER" || alias mnt="cd /mnt"
 
 # For each found "sr" device, enables alias for opening and closing the tray. For
 # example, use ot0 to specific you want the tray for /dev/sr0 to open.
-if type -P /usr/bin/eject &> /dev/null
-then
-	for DEV in /dev/sr+([0-9])
-	{
+[ -x /usr/bin/eject ] && {
+	for DEV in /dev/sr+([0-9]); {
 		alias ot${DEV/\/dev\/sr}="/usr/bin/eject $DEV"
 		alias ct${DEV/\/dev\/sr}="/usr/bin/eject -t $DEV"
 	}
-fi
+}
 
 # These aliases save a lot of typing and do away with the output.
-if type -P /usr/bin/mplayer &> /dev/null
-then
+[ -x /usr/bin/mplayer ] && {
 	# If you're having issues with mpv/mplayer here, try -vo x11 instead.
 	MPLAYER_FONT="$HOME/.mplayer/subfont.ttf"
 	alias mpa="/usr/bin/mplayer -nolirc -vo null -really-quiet &> /dev/null"
 
-	if [ -f "$MPLAYER_FONT" ]
-	then
+	[ -f "$MPLAYER_FONT" ] && {
 		alias mpv="/usr/bin/mplayer -vo x11 -zoom -nolirc -font \"$MPLAYER_FONT\" -really-quiet &> /dev/null"
 		alias mpvdvd="/usr/bin/mplayer -vo x11 -zoom -nolirc -font \"$MPLAYER_FONT\" -really-quiet dvd://1//dev/sr1 &> /dev/null"
-	else
+	} || {
 		alias mpv="/usr/bin/mplayer -vo x11 -zoom -nolirc -really-quiet &> /dev/null &> /dev/null"
 		alias mpvdvd="/usr/bin/mplayer -vo x11 -zoom -nolirc --really-quiet dvd://1//dev/sr1 &> /dev/null"
-	fi
-fi
+	}
+}
 
 # Four little plugins I wrote for displaying only a certain type of package.
-if type -P /usr/bin/{cut,dpkg-query,uniq,column} /bin/grep &> /dev/null
-then
-	# Display essential packages.
-	alias lsesspkg='/usr/bin/dpkg-query --show\
-		-f="\${Essential} \${Package}\n" \*\
-		| /bin/grep "^yes"\
-		| /usr/bin/cut -d " " -f 2\
-		| /usr/bin/uniq\
-		| /usr/bin/column'
+declare -i DEPCOUNT=0
+for DEP in /usr/bin/{cut,dpkg-query,uniq,column} /bin/grep; {
+	[ -x "$DEP" ] && DEPCOUNT+=1
+	
+	[ $DEPCOUNT -eq 5 ] && {
+		# Display essential packages.
+		alias lsesspkg='/usr/bin/dpkg-query --show\
+			-f="\${Essential} \${Package}\n" \*\
+			| /bin/grep "^yes"\
+			| /usr/bin/cut -d " " -f 2\
+			| /usr/bin/uniq\
+			| /usr/bin/column'
 
-	# Display required packages.
-	alias lsreqpkg='/usr/bin/dpkg-query --show\
-		-f="\${package} \${Priority}\n" \*\
-		| /bin/grep " \(required\)\$"\
-		| /usr/bin/uniq\
-		| /usr/bin/cut -d " " -f 1\
-		| /usr/bin/column'
+		# Display required packages.
+		alias lsreqpkg='/usr/bin/dpkg-query --show\
+			-f="\${package} \${Priority}\n" \*\
+			| /bin/grep " \(required\)\$"\
+			| /usr/bin/uniq\
+			| /usr/bin/cut -d " " -f 1\
+			| /usr/bin/column'
 
-	# Display optional packages.
-	alias lsoptpkg='/usr/bin/dpkg-query --show\
-		-f="\${package} \${Priority}\n" \*\
-		| /bin/grep " \(optional\)\$"\
-		| /usr/bin/uniq\
-		| /usr/bin/cut -d " " -f 1\
-		| /usr/bin/column'
+		# Display optional packages.
+		alias lsoptpkg='/usr/bin/dpkg-query --show\
+			-f="\${package} \${Priority}\n" \*\
+			| /bin/grep " \(optional\)\$"\
+			| /usr/bin/uniq\
+			| /usr/bin/cut -d " " -f 1\
+			| /usr/bin/column'
 
-	# Display extra packages.
-	alias lsextpkg='/usr/bin/dpkg-query --show\
-		-f="\${package} \${Priority}\n" \*\
-		| /bin/grep " \(extra\)\$"\
-		| /usr/bin/uniq\
-		| /usr/bin/cut -d " " -f 1\
-		| /usr/bin/column'
-fi
+		# Display extra packages.
+		alias lsextpkg='/usr/bin/dpkg-query --show\
+			-f="\${package} \${Priority}\n" \*\
+			| /bin/grep " \(extra\)\$"\
+			| /usr/bin/uniq\
+			| /usr/bin/cut -d " " -f 1\
+			| /usr/bin/column'
+	}
+}
 
 # My preferred links2 settings; I recommend!
-if type -P /usr/bin/links2 &> /dev/null
-then
+[ -x /usr/bin/links2 ] && {
 	alias l2="links2 -http.do-not-track 1 -html-tables 1 -html-tables 1\
 		-html-numbered-links 1 duckduckgo.co.uk"
-fi
+}
 
 # A more descriptive lsblk; you'll miss it when it's gone.
-if type -P /bin/lsblk &> /dev/null
-then
+[ -x /bin/lsblk ] && {
 	alias lsblkid="/bin/lsblk -o name,label,fstype,size,uuid,mountpoint"
-fi
+}
 
 # Some options I like to have by default for less and pager.
-if type -P /usr/bin/{pager,less} &> /dev/null
-then
-	alias pager='/usr/bin/pager -sN --tilde'
-	alias less='/usr/bin/pager -sN --tilde'
-fi
+declare -i DEPCOUNT=0
+for DEP in /usr/bin/{pager,less}; {
+	[ -x "$DEP" ] && DEPCOUNT+=1
+
+	[ $DEPCOUNT -eq 2 ] && {
+		alias pager='/usr/bin/pager -sN --tilde'
+		alias less='/usr/bin/pager -sN --tilde'
+	}
+}
 
 # Text files I occasionally like to view, but not edit.
-if type -P /usr/bin/pager &> /dev/null
-then
+[ -x /usr/bin/pager ] && {
 	for FILE in\
 	\
 		"/var/log/boot.log":bootlog\
 		"/var/log/apt/history.log":aptlog\
 		"$HOME/Documents/TT/python/Module\ Index.txt":pymodindex;
 	{
-		if [ -f "${FILE%:*}" ] && [ -r "${FILE%:*}" ]
-		then
+		([ -f "${FILE%:*}" ] && [ -r "${FILE%:*}" ]) && {
 			alias ${FILE/*:}="/usr/bin/pager ${FILE%:*}"
-		fi
+		}
 	}
-fi
+}
 
 # Many files I often edit; usually configuration files.
-FOR_THE_EDITOR()
-{
+FOR_THE_EDITOR(){
 	for FILE in\
 	\
 		".zshrc":zshrc\
@@ -340,8 +330,7 @@ FOR_THE_EDITOR()
 }
 
 # As above, but for those which use sudo -e.
-FOR_THE_EDITOR_R()
-{
+FOR_THE_EDITOR_R(){
 	for FILE in\
 	\
 		"/etc/hosts":hosts\
@@ -360,53 +349,32 @@ FOR_THE_EDITOR_R()
 }
 
 # When in a TTY, change to different ones.
-if [[ `/usr/bin/tty` == /dev/tty* ]]
-then
-	if type -P /usr/bin/tty /bin/chvt &> /dev/null
-	then
-		for TTY in {1..12}
-		{
+[[ `/usr/bin/tty` == /dev/tty* ]] && {
+	([ -x /usr/bin/tty ] && [ -x /bin/chvt ]) && {
+		for TTY in {1..12}; {
 			alias $TTY="chvt $TTY"
 		}
-	fi
-fi
+	}
+}
 
-#TODO - Use function to avoid repeat code.
-if type -P /usr/bin/vim &> /dev/null
-then
-	FOR_THE_EDITOR "vim"
+# Saves repeating for every possible editor; caveat? User input.
+CHK_FOR_THE_EDITOR(){
+	[ -x "$1" ] && {
+		FOR_THE_EDITOR "$2"
+	
+		[ -z "$SUDO_EDITOR" ]\
+			&& FOR_THE_EDITOR_R "/usr/bin/sudo $1"\
+			|| FOR_THE_EDITOR_R "/usr/bin/sudo -e"
+	}
+}
 
-	if [ -z "$SUDO_EDITOR" ]
-	then
-		FOR_THE_EDITOR_R "/usr/bin/sudo /usr/bin/rvim"
-	else
-		FOR_THE_EDITOR_R "/usr/bin/sudo -e"
-	fi
-elif type -P /usr/bin/vi &> /dev/null
-then
-	FOR_THE_EDITOR "vi"
+# Enter your desired editor, as you see below.
+CHK_FOR_THE_EDITOR "/usr/bin/vim" "vim"
 
-	if [ -z "$SUDO_EDITOR" ]
-	then
-		FOR_THE_EDITOR_R "/usr/bin/sudo /usr/bin/vi -Z"
-	else
-		FOR_THE_EDITOR_R "/usr/bin/sudo -e"
-	fi
-elif type -P /bin/nano &> /dev/null
-then
-	FOR_THE_EDITOR "nano"
-
-	if [ -z "$SUDO_EDITOR" ]
-	then
-		FOR_THE_EDITOR_R "/usr/bin/sudo /bin/rnano"
-	else
-		FOR_THE_EDITOR_R "/usr/bin/sudo -e"
-	fi
-fi
-
-if type -P /usr/bin/evince &> /dev/null
-then
+[ -x /usr/bin/evince ] && {
 	alias pdf="/usr/bin/evince &> /dev/null"
-fi
+}
 
-unset FILE DEPCOUNT FOR_THE_EDITOR SUDO_EDITOR TTDIR DIR
+# Clean up functions and variables after self.
+unset -f FOR_THE_EDITOR_R FOR_THE_EDITOR CHK_FOR_THE_EDITOR
+unset DEP FILE DEPCOUNT FOR_THE_EDITOR SUDO_EDITOR TTDIR DIR
