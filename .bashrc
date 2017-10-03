@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sat 30 Sep 14:13:54 BST 2017
+# Last Change       - Tue  3 Oct 13:02:01 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -67,8 +67,13 @@ then
 				local GIT=" "
 			fi
 
+			# These will be concatenated; more readable code.
+			PA="\e\[[1;9;37m\]${Y}\[\e[0m\]\n \[\e[1;37m\]"
+			PB="${X}${A}\[\e[1;33m\]${GIT}\[\e[01;31m\]${PWD}"
+			PC="\[\e[0m\] \[\033[00m\]\n "
+
 			# Set the main prompt, using info from above.
-			PS1="\e\[[1;9;37m\]${Y}\[\e[0m\]\n \[\e[1;37m\]${X}${A}\[\e[1;33m\]${GIT}\[\e[01;31m\]${PWD}\[\e[0m\] \[\033[00m\]\n "
+			PS1="${PA}${PB}${PC}"
 		}
 
 		# Use and keep updated the above prompt code.
