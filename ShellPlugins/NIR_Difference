@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/NIR_Difference
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Tue  3 Oct 18:27:20 BST 2017
+# Last Change       - Tue  3 Oct 18:31:04 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ nirdiff(){
 		[ -x "$DEP" ] || {
 			ERR "Dependency '$DEP' not met."
 			DEPCOUNT+=1
-		{
+		}
 	}
 	
 	[ $DEPCOUNT -eq 0 ] || exit 1
