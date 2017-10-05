@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Tue  3 Oct 18:07:13 BST 2017
+# Last Change       - Wed  4 Oct 19:33:38 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -45,6 +45,8 @@ set -o interactive-comments -o histexpand -o emacs\
 		GET_PC(){
 			local X=$?; X=`printf "%0.3d" "$X"`
 			local Y=`printf "%${COLUMNS}s\n" " "`
+
+			# Uses Debian/Ubuntu package: fonts-font-awesome
 			[ $X -eq 0 ] && local A="" || local A=""
 
 			if [ -x /usr/bin/git ]; then
