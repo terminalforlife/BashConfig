@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Play_Download_MPSYT
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Tue  3 Oct 18:28:26 BST 2017
+# Last Change       - Thu  5 Oct 18:09:19 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -13,19 +13,19 @@ yt(){
 	ARG_FAIL(){ echo "USAGE: yt [-p|-d] URL" 1>&2; return 1; }
 
 	# Load the error message function.
-	RERR(){ echo "ERROR: $1" 1>&2; return 1; }
+	RERR(){ echo "[L${1}] ERROR: $2" 1>&2; return 1; }
 
 	# Check for root access.
-	[ $UID -eq 0 ] && RERR "Root access isn't required."
+	[ $UID -eq 0 ] && RERR "$LINENO" "Root access isn't required."
 
 	# Check for the required one argument.
-	[ $# -gt 1 ] || RERR "Please specify a package name."
+	[ $# -gt 1 ] || RERR "$LINENO" "Please specify a package name."
 
 	# Check for dependencies.
 	declare -i DEPCOUNT=0
 	for DEP in /usr/bin/{apt-get,awk,dpkg-query}; {
 		[ -x "$DEP" ] || {
-			ERR "Dependency '$DEP' not met."
+		ERR "$LINENO" "Dependency '$DEP' not met."
 			DEPCOUNT+=1
 		}
 	}

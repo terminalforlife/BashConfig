@@ -3,21 +3,21 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/NIR_Difference
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Tue  3 Oct 18:31:04 BST 2017
+# Last Change       - Thu  5 Oct 18:09:03 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 nirdiff(){
-	RERR(){ echo "ERROR: $1" 1>&2; return 1; }
+	RERR(){ echo "[L${1}] ERROR: $2" 1>&2; return 1; }
 
-	[ $UID -eq 0 ] && RERR "Root access isn't required."
-	[ $# -gt 1 ] || RERR "Please specify a package name."
+	[ $UID -eq 0 ] && RERR "$LINENO" "Root access isn't required."
+	[ $# -gt 1 ] || RERR "$LINENO" "Please specify a package name."
 
 	declare -i DEPCOUNT=0
 	for DEP in /usr/bin/{apt-get,awk,dpkg-query}; {
 		[ -x "$DEP" ] || {
-			ERR "Dependency '$DEP' not met."
+			ERR "$LINENO" "Dependency '$DEP' not met."
 			DEPCOUNT+=1
 		}
 	}
@@ -25,9 +25,9 @@ nirdiff(){
 	[ $DEPCOUNT -eq 0 ] || exit 1
 
 	if /usr/bin/dpkg-query --status "$1" &> /dev/null; then
-		RERR "Package already installed."
+		RERR "$LINENO" "Package already installed."
 	elif ! /usr/bin/dpkg-query --show "$1" &> /dev/null; then
-		RERR "Package '$1' not found."
+		RERR "$LINENO" "Package '$1' not found."
 	fi
 
 	printf "%-25s%10s\n" "FLAG" "PKG"

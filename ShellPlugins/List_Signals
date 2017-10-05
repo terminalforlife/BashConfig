@@ -3,17 +3,17 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/List_Signals
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Tue  3 Oct 18:25:07 BST 2017
+# Last Change       - Thu  5 Oct 18:08:37 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 lssig(){
-	RERR(){ echo "ERROR: $1" 1>&2; return 1; }
-	ERR(){ echo "ERROR: $1" 1>&2; }
+	RERR(){ echo "[L${1}] ERROR: $2" 1>&2; return 1; }
+	ERR(){ echo "[L${1}] ERROR: $2" 1>&2; }
 
-	[ $UID -eq 0 ] && RERR "Root access isn't required."
-	[ $# -gt 0 ] || RERR "No arguments are required."
+	[ $UID -eq 0 ] && RERR "$LINENO" "Root access isn't required."
+	[ $# -gt 0 ] || RERR "$LINENO" "No arguments are required."
 
 	[ -x /usr/bin/column ] && {
 		NUM=0
@@ -29,6 +29,6 @@ lssig(){
 			printf "%2d %s\n" "${NUM%:*}" "${SIG/*:}"
 		} | /usr/bin/column -x
 	} || {
-		RERR "Dependency '/usr/bin/column' not met."
+		RERR "$LINENO" "Dependency '/usr/bin/column' not met."
 	}
 }
