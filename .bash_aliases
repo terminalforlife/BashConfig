@@ -3,13 +3,17 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue  3 Oct 18:03:01 BST 2017
+# Last Change       - Tue 10 Oct 22:10:27 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 # Just in-case.
 [ -z "$BASH_VERSION" ] && return 1
+
+# Two possibly pointless functions to single- or double-quote a string of text.
+alias squo="QUOTE(){ printf \"'%s'\n\" \"\$*\"; }; QUOTE"
+alias dquo='QUOTE(){ printf "\"%s\"\n" "$*"; }; QUOTE'
 
 # Show the fan speeds using sensors.
 [ -x /usr/bin/sensors ] && {
@@ -68,12 +72,6 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 
 # I prefer a builtin, for the same functionality.
 alias dep="command -v"
-
-# Uses the much faster blkid-lite instead of blkid.
-[ -x /usr/bin/blkid-lite ] && {
-	# https://github.com/terminalforlife/blkid-lite
-	alias blkid="/usr/bin/blkid-lite"
-}
 
 # If you have gvfs-trash available, be safe with that.
 [ -x /usr/bin/gvfs-trash ] && {
