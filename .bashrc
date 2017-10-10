@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Tue 10 Oct 22:13:37 BST 2017
+# Last Change       - Tue 10 Oct 22:50:43 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ set -o interactive-comments -o histexpand -o emacs\
 			# Uses Debian/Ubuntu package: fonts-font-awesome
 			[ $X -eq 0 ] && local A="" || local A=""
 
-			[ -x /usr/bin/git ] && {
+			if [ -x /usr/bin/git ]; then
 				# Unnecessary, but keeps it tidy.
 				local GETGIT=$(
 					readarray REPLY <<< "$(
@@ -63,12 +63,14 @@ set -o interactive-comments -o histexpand -o emacs\
 
 				# Just ensures the prompt spacing is correct.
 				[ "$GIT" == "  " ] && local GIT=" "
-			} || { local GIT=" "; }
+			else
+				local GIT=" "
+			fi
 
-			# These will be concatenated; more readable code.
-			PA="\e\[[1;9;37m\]${Y}\[\e[0m\]\n \[\e[1;37m\]"
-			PB="${X}${A}\[\e[1;33m\]${GIT}\[\e[01;31m\]${PWD}"
-			PC="\[\e[0m\] \[\033[00m\]\n "
+			# These will be concatenated; more readable code, sort of.
+			local PA="\e\[[1;9;37m\]${Y}\[\e[0m\]\n \[\e[1;37m\]"
+			local PB="${X}${A}\[\e[1;33m\]${GIT}\[\e[01;31m\]${PWD}"
+			local PC="\[\e[0m\] \[\033[00m\]\n "
 
 			# Set the main prompt, using info from above.
 			PS1="${PA}${PB}${PC}"
