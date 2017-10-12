@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/CPU_Intensive_Procs
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Thu  5 Oct 18:05:47 BST 2017
+# Last Change       - Thu 12 Oct 16:19:33 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -11,9 +11,7 @@
 cpuhit(){
 	RERR(){ echo "[L${1}] ERROR: $2" 1>&2; return 1; }
 
-	[ -x /bin/ps ] && {
-		RERR "$LINENO" "Dependency '/bin/ps' not met." || return 1
-	}
+	[ -x /bin/ps ] || RERR "$LINENO" "Dependency '/bin/ps' not met."
 
 	case "${*:-EMPTY}" in
 		[1-9]|10)
@@ -25,17 +23,18 @@ cpuhit(){
 	local IFS=" "
 	local COUNT=0
 
+	printf "%-8s%-8s%s\n" "PID" "PCPU" "CMD"
+
 	#TODO - Trying to reverse the output, the pure shell way.
 	while read -r -a REPLY; do
 		local PCPU="${REPLY[1]%.*}"
 
 		OUTPUT(){
-			printf "%d %d %s\n" "${REPLY[0]}" "$PCPU" "${REPLY[2]}"
+			printf "%-8d%-8d%s\n" "${REPLY[0]}" "$PCPU" "${REPLY[2]}"
 		}
 
 		[ $PCPU -gt 1 ] && {
-			if [ -n "$SHOW" ]
-			then
+			if [ -n "$SHOW" ]; then
 				local OLDSHOW="$SHOW"
 				local SHOW="$PCPU"
 				[ $SHOW -lt $OLDSHOW ] && OUTPUT
@@ -43,7 +42,8 @@ cpuhit(){
 				OUTPUT
 			fi
 
-			let COUNT++; [ $COUNT -eq $* ] && return 0
+			let COUNT++
+			[ $COUNT -eq $* ] && return 0
 		}
 	done <<< `/bin/ps ax --noheader -o pid,pcpu,comm`
 }
