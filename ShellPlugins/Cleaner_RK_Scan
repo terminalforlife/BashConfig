@@ -3,19 +3,16 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Cleaner_RK_Scan
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Thu  5 Oct 18:03:51 BST 2017
+# Last Change       - Thu 12 Oct 15:47:31 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 rkc(){
-	RERR(){ echo "[L${1}] ERROR: $2" 1>&2; return 1; }
 	ERR(){ echo "[L${1}] ERROR: $2" 1>&2; }
 	
-	[ $UID -eq 0 ] && RERR "$LINENO" "Root access isn't required."
-	
 	declare -i DEPCOUNT=0
-	for DEP in /usr/bin/rkhunter /bin/sed /usr/sbin/chkrootkit; {
+	for DEP in /usr/bin/{sudo,rkhunter} /usr/sbin/chkrootkit; {
 		[ -x "$DEP" ] || {
 			ERR "$LINENO" "Dependency '$DEP' not met."
 			DEPCOUNT+=1
@@ -24,16 +21,28 @@ rkc(){
 	
 	[ $DEPCOUNT -eq 0 ] || return 1
 
-	/usr/bin/rkhunter -c --skip-keypress --rwo
+	/usr/bin/sudo /usr/bin/rkhunter -c --skip-keypress --rwo
 
-	#TODO - Rewrite this part, using grep for portability and efficiency.
-	/bin/sed '
-		/nothing found/d;
-		/not infected/d;
-		/not found/d;
-		/nothing detected/d;
-		/nothing deleted/d;
-		/no suspect files/d;
-		/no such file or directory/d
-	' <<< "$(/usr/sbin/chkrootkit)"
+	while read -r; do
+		case "$REPLY" in
+			*nothing\ found*)
+				;;
+			*not\ infected*)
+				;;
+			*not\ found*)
+				;;
+			*nothing\ detected*)
+				;;
+			*nothing\ deleted*)
+				;;
+			*no\ suspect\ files*)
+				;;
+			*no\ such\ file\ or\ directory)
+				;;
+			\!\ *)
+				;;
+			*)
+				echo "$REPLY" ;;
+		esac
+	done <<< "$(/usr/bin/sudo /usr/sbin/chkrootkit)"
 }
