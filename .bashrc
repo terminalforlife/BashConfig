@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Thu 12 Oct 15:30:06 BST 2017
+# Last Change       - Thu 12 Oct 17:26:42 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -161,12 +161,12 @@ unset ETCBC USRBC
 [ -x /usr/bin/tty ] && {
 	TERMWATCH_LOG="$HOME/.termwatch.log"
 	CURTERM=`/usr/bin/tty`
+	DATE=`printf '%(%F (%X))T'`
 
 	([ -f "$TERMWATCH_LOG" ] && [ -w "$TERMWATCH_LOG" ]) && {
 		# Using "" to avoid argument miscount when using %()T.
-		printf "Using %s on %s at %(%F (%X))T as %s.\n"\
-			"${CURTERM:-Unknown}" "(${TERM-unknown})" ""\
-			"$USER" >> "$TERMWATCH_LOG"
+		printf 'Using %s on %s at %s as %s.\n' "${CURTERM:-Unknown}"\
+			"(${TERM-unknown})" "$DATE" "$USER" >> "$TERMWATCH_LOG"
 	}
 
 	unset TERMWATCH_LOG CURTERM
