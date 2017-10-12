@@ -3,29 +3,28 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/CD_Clear_LS
 # Started On        - Thu 14 Sep 20:15:25 BST 2017
-# Last Change       - Thu  5 Oct 19:00:28 BST 2017
+# Last Change       - Thu 12 Oct 16:08:25 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-#TODO - Fix possible segmentation fault linked to this function. When cd is used.
-#       The \cd instead of cd perhaps fixed it; may be down to a conflicting alias.
+CD_CLEAR_LS(){
+	RERR(){ echo "[L${1}] ERROR: $2" 1>&2; return 1; }
 
-cd(){
-	RERR(){ echo "ERROR: $1" 1>&2; return 1; }
-
-	# Continue if /bin/ls is found -- because you never know when.
-	[ -x /bin/ls ] && {
+	# Continue if ls is found in PATH -- because you never know when.
+	type -P ls &> /dev/null && {
 		# If number of arguments is 0.
 		[ $# -eq 0 ] && {
 			# Simply change to home directory.
-			printf "\033c"; \cd "$HOME"; /bin/ls
+			printf "\033c"; cd "$HOME"; ls
 		} || {
 			# Change to the directory specified by the user.
-			printf "\033c"; \cd "$*"; /bin/ls
+			printf "\033c"; cd "$*"; ls
 		}
 	} || {
-		# If /bin/ls is not found, say so and return.
-		RERR "Dependency '/bin/ls' not met."
+		# If ls is not found, say so and return.
+		RERR "$LINENO" "Dependency 'ls' not met."
 	}
 }
+
+alias cd='CD_CLEAR_LS'
