@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Tue 10 Oct 22:50:43 BST 2017
+# Last Change       - Thu 12 Oct 15:30:06 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -135,12 +135,12 @@ export TERM="xterm-256color"
 # Set less and the pager to be more secure by disabling certain features.
 export LESSSECURE=1
 
-# If sudo is found, set the sudo -e editor to vim or nano.
+# If sudo is found, set the sudo -e editor to rvim or rnano.
 [ -x /usr/bin/sudo ] && {
-	if [ -x /usr/bin/vim ]; then
-		export SUDO_EDITOR="rvim"
-	elif [ -x /usr/bin/nano ]; then
-		export SUDO_EDITOR="rnano"
+	if [ -x /usr/bin/rvim ]; then
+		export SUDO_EDITOR="/usr/bin/rvim"
+	elif [ -x /bin/rnano ]; then
+		export SUDO_EDITOR="/bin/rnano"
 	fi
 }
 
@@ -176,8 +176,6 @@ unset ETCBC USRBC
 
 # If the user's bash_aliases file is found, source it.
 BASH_ALIASES="$HOME/.bash_aliases"
-([ -f "$BASH_ALIASES" ] && [ -r "$BASH_ALIASES" ]) && {
-	source "$BASH_ALIASES"
-}
+([ -f "$BASH_ALIASES" ] && [ -r "$BASH_ALIASES" ]) && . "$BASH_ALIASES"
 
 unset BASH_ALIASES
