@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Bell_Alarm
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Thu  5 Oct 18:02:27 BST 2017
+# Last Change       - Thu 12 Oct 15:59:00 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -13,12 +13,9 @@ bell(){
 	RERR(){ echo "[L${1}] ERROR: $2" 1>&2; return 1; }
 	ERR(){ echo "[L${1}] ERROR: $2" 1>&2; }
 	
-	# Check for root access.
-	[ $UID -eq 0 ] && RERR "$LINENO" "Root access isn't required."
-	
 	# Check for dependencies.
 	declare -i DEPCOUNT=0
-	for DEP in /usr/bin/pactl /bin/{grep,sleep}; {
+	for DEP in /usr/bin/pactl /bin/sleep; {
 		[ -x "$DEP" ] || {
 			ERR "$LINENO" "Dependency '$DEP' not met."
 			DEPCOUNT+=1
@@ -28,15 +25,22 @@ bell(){
 	# Return if any dependencies are unmet.
 	[ $DEPCOUNT -eq 0 ] || return 1
 
+	# Check for root access.
+	[ $UID -eq 0 ] && RERR "$LINENO" "Root access isn't required."
+
 	# If the module-x11-bell pactl module is loaded, continue.
-	/usr/bin/pactl list modules | /bin/grep -q "module-x11-bell" && {
-		# Infinitely sound the bell every second.
-		while :; do
-			printf "\a"
-			/bin/sleep 1
-		done
-	} || {
-		# If module not loaded, output error and return 1.
-		XERR "$LINENO" "ERROR: PulseAudio needs 'module-x11-bell' loaded."
-	}
+	while read -r; do
+		[[ "$REPLY" == ?Name:\ module-x11-bell ]] && {
+			# Infinitely sound the bell every second.
+			while :; do
+				printf "\a"
+				/bin/sleep 1
+			done
+
+			return
+		}
+	done <<< "$(/usr/bin/pactl list modules)"
+
+	# If module not loaded, output error and return 1.
+	RERR "$LINENO" "PulseAudio needs 'module-x11-bell' loaded."
 }
