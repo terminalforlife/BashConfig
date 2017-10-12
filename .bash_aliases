@@ -58,6 +58,7 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 	for CMD in\
 	\
 		"add":add\
+		"log":log\
 		"push":push\
 		"diff":diff\
 		"init":ginit\
@@ -317,6 +318,7 @@ FOR_THE_EDITOR(){
 		".config/i3/config":i3c\
 		"bin/maintain":maintain-sh\
 		".bash_aliases":bashaliases\
+		".config/compton.conf":compconf\
 		"Documents/TT/Useful_Commands":cn\
 		".maintain/changelog.txt":maintain-cl\
 		".maintain/maintain.man":maintain-man\
