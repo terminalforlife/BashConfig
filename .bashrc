@@ -3,12 +3,12 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 13 Oct 13:48:54 BST 2017
+# Last Change       - Fri 13 Oct 23:40:14 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-([ -d "$HOME/bin" ] && ! [[ "$PATH" == */home/"$USER"/bin* ]]) && {
+{ [ -d "$HOME/bin" ] && ! [[ "$PATH" == */home/"$USER"/bin* ]]; } && {
 	# If the directory exists and isn't already in PATH, set it so.
 	export PATH="/home/$USER/bin:${PATH}"
 }
@@ -149,8 +149,8 @@ ETCBC="/etc/bash_completion"
 USRBC="/usr/share/bash-completion/bash_completion"
 
 # If the bash_completion file is found and has read access, source it.
-([ -f "$ETCBC" ] && [ -r "$ETCBC" ] && . "$ETCBC") ||
-([ -f "$USRBC" ] && [ -r "$USRBC" ] && . "$USRBC")
+{ [ -f "$ETCBC" ] && [ -r "$ETCBC" ] && . "$ETCBC"; } ||
+{ [ -f "$USRBC" ] && [ -r "$USRBC" ] && . "$USRBC"; }
 
 unset ETCBC USRBC
 
@@ -162,7 +162,7 @@ unset ETCBC USRBC
 	CURTERM=`/usr/bin/tty`
 	DATE=`printf '%(%F (%X))T'`
 
-	([ -f "$TERMWATCH_LOG" ] && [ -w "$TERMWATCH_LOG" ]) && {
+	{ [ -f "$TERMWATCH_LOG" ] && [ -w "$TERMWATCH_LOG" ]; } && {
 		# Using "" to avoid argument miscount when using %()T.
 		printf 'Using %s on %s at %s as %s.\n' "${CURTERM:-Unknown}"\
 			"(${TERM-unknown})" "$DATE" "$USER" >> "$TERMWATCH_LOG"
@@ -175,6 +175,6 @@ unset ETCBC USRBC
 
 # If the user's bash_aliases file is found, source it.
 BASH_ALIASES="$HOME/.bash_aliases"
-([ -f "$BASH_ALIASES" ] && [ -r "$BASH_ALIASES" ]) && . "$BASH_ALIASES"
+{ [ -f "$BASH_ALIASES" ] && [ -r "$BASH_ALIASES" ]; } && . "$BASH_ALIASES"
 
 unset BASH_ALIASES
