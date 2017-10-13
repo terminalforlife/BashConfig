@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 13 Oct 17:32:47 BST 2017
+# Last Change       - Fri 13 Oct 23:10:52 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -11,11 +11,29 @@
 # Just in-case.
 [ -z "$BASH_VERSION" ] && return 1
 
+# Create or unmount a user-only RAM Disk (tmpfs, basically) of 512MB.
+{ [ -x /usr/bin/sudo ] && [ -x /bin/mount ] && [ -x /bin/umount ]; } && {
+	RAMDISK="/media/$USER/RAMDisk_512M"
+
+	alias rd='\
+		/usr/bin/sudo /bin/mount -t tmpfs tmpfs\
+			-o x-mount.mkdir=700,uid=1000,gid=1000,mode=700,nodev\
+			-o noexec,nosuid,size=512M "$RAMDISK"
+	'
+
+	alias nord='\
+		/usr/bin/sudo /bin/sh -c\
+			/bin/umount\ "$RAMDISK"\ \&\&\ /bin/rmdir\ "$RAMDISK"
+	'
+}
+
 # Similar to "genpass" you sometimes find in distros, but lighter.
-alias getpass='\
-	/usr/bin/tr -dc "[[[:alnum:]][[:punct:]]]"\
-		< /dev/urandom | 2> /dev/null /usr/bin/head -c\
-'
+{ [ -x /usr/bin/xclip ] && [ -x /usr/bin/head ] && [ -x /usr/bin/tr ]; } && {
+	alias getpass='\
+		/usr/bin/tr -dc "[[[:alnum:]][[:punct:]]]"\
+			< /dev/urandom | 2> /dev/null /usr/bin/head -c\
+	'
+}
 
 # Two possibly pointless functions to single- or double-quote a string of text.
 alias squo="QUOTE(){ printf \"'%s'\n\" \"\$*\"; }; QUOTE"
@@ -304,7 +322,7 @@ for DEP in /usr/bin/{pager,less}; {
 		"/var/log/apt/history.log":aptlog\
 		"$HOME/Documents/TT/python/Module\ Index.txt":pymodindex;
 	{
-		([ -f "${FILE%:*}" ] && [ -r "${FILE%:*}" ]) && {
+		{ [ -f "${FILE%:*}" ] && [ -r "${FILE%:*}" ]; } && {
 			alias ${FILE/*:}="/usr/bin/pager ${FILE%:*}"
 		}
 	}
@@ -356,7 +374,7 @@ FOR_THE_EDITOR_R(){
 
 # When in a TTY, change to different ones.
 [[ `/usr/bin/tty` == /dev/tty* ]] && {
-	([ -x /usr/bin/tty ] && [ -x /bin/chvt ]) && {
+	{ [ -x /usr/bin/tty ] && [ -x /bin/chvt ]; } && {
 		for TTY in {1..12}; {
 			alias $TTY="chvt $TTY"
 		}
