@@ -3,13 +3,13 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/CD_Clear_LS
 # Started On        - Thu 14 Sep 20:15:25 BST 2017
-# Last Change       - Thu 12 Oct 16:08:25 BST 2017
+# Last Change       - Fri 13 Oct 23:44:08 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 CD_CLEAR_LS(){
-	RERR(){ echo "[L${1}] ERROR: $2" 1>&2; return 1; }
+	ERR(){ echo "[L${1}] ERROR: $2" 1>&2; }
 
 	# Continue if ls is found in PATH -- because you never know when.
 	type -P ls &> /dev/null && {
@@ -23,7 +23,8 @@ CD_CLEAR_LS(){
 		}
 	} || {
 		# If ls is not found, say so and return.
-		RERR "$LINENO" "Dependency 'ls' not met."
+		ERR "$LINENO" "Dependency 'ls' not met."
+		return 1
 	}
 }
 
