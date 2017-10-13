@@ -3,49 +3,42 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Play_Download_MPSYT
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Thu  5 Oct 18:09:19 BST 2017
+# Last Change       - Fri 13 Oct 23:54:57 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 yt(){
-	# Load the usage message function.
-	ARG_FAIL(){ echo "USAGE: yt [-p|-d] URL" 1>&2; return 1; }
+	ARG_FAIL(){ echo "USAGE: yt [-p|-d] URL" 1>&2; }
+	ERR(){ echo "[L${1}] ERROR: $2" 1>&2; }
 
-	# Load the error message function.
-	RERR(){ echo "[L${1}] ERROR: $2" 1>&2; return 1; }
+	[ $UID -eq 0 ] && {
+		ERR "$LINENO" "Root access isn't required."
+		return 1
+	}
 
-	# Check for root access.
-	[ $UID -eq 0 ] && RERR "$LINENO" "Root access isn't required."
+	[ $# -gt 1 ] || {
+		ERR "$LINENO" "Please specify a package name."
+		return 1
+	}
 
-	# Check for the required one argument.
-	[ $# -gt 1 ] || RERR "$LINENO" "Please specify a package name."
-
-	# Check for dependencies.
 	declare -i DEPCOUNT=0
 	for DEP in /usr/bin/{apt-get,awk,dpkg-query}; {
 		[ -x "$DEP" ] || {
-		ERR "$LINENO" "Dependency '$DEP' not met."
+			ERR "$LINENO" "Dependency '$DEP' not met."
 			DEPCOUNT+=1
 		}
 	}
 	
-	# Fail if any dependencies are unmet.
 	[ $DEPCOUNT -eq 0 ] || exit 1
 
 	if [ $# -gt 2 ]; then
-		# Call ARG_FAIL function if arguments greater than 2.
-		ARG_FAIL
+		ARG_FAIL; return 1
 	elif [ "$1" == "-p" ]; then
-		# If the first argument is -p, then play with a YouTube video
-		# (with the player set in mpsyt) specified in the 2nd argument.
 		/usr/bin/mpsyt playurl "$2"
 	elif [ "$1" == "-d" ]; then
-		# If the first argument is -d, then download a YouTube video
-		# (with the downloader set in mpsyt) specified in the 2nd argument.
 		/usr/bin/mpsyt dlurl "$2"
 	else
-		# Otherwise, just load the ARG_FAIL function.
-		ARG_FAIL
+		ARG_FAIL; return 1
 	fi
 }
