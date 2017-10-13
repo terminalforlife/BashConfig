@@ -3,21 +3,22 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/CPU_Intensive_Procs
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Thu 12 Oct 16:19:33 BST 2017
+# Last Change       - Fri 13 Oct 23:44:56 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 cpuhit(){
-	RERR(){ echo "[L${1}] ERROR: $2" 1>&2; return 1; }
+	ERR(){ echo "[L${1}] ERROR: $2" 1>&2; }
 
-	[ -x /bin/ps ] || RERR "$LINENO" "Dependency '/bin/ps' not met."
+	[ -x /bin/ps ] || ERR "$LINENO" "Dependency '/bin/ps' not met."
 
 	case "${*:-EMPTY}" in
 		[1-9]|10)
 			;;
 		*)
-			RERR "$LINENO" "USAGE: cpuhit [1-10]" || return 1 ;;
+			ERR "$LINENO" "USAGE: cpuhit [1-10]"
+			return 1 ;;
 	esac
 
 	local IFS=" "
