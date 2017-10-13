@@ -3,13 +3,19 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 10 Oct 22:10:27 BST 2017
+# Last Change       - Fri 13 Oct 17:32:47 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 # Just in-case.
 [ -z "$BASH_VERSION" ] && return 1
+
+# Similar to "genpass" you sometimes find in distros, but lighter.
+alias getpass='\
+	/usr/bin/tr -dc "[[[:alnum:]][[:punct:]]]"\
+		< /dev/urandom | 2> /dev/null /usr/bin/head -c\
+'
 
 # Two possibly pointless functions to single- or double-quote a string of text.
 alias squo="QUOTE(){ printf \"'%s'\n\" \"\$*\"; }; QUOTE"
