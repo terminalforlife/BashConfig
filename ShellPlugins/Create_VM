@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Create_VM
 # Started On        - Thu 14 Sep 20:16:42 BST 2017
-# Last Change       - Thu  5 Oct 18:07:25 BST 2017
+# Last Change       - Fri 13 Oct 23:45:50 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -13,28 +13,33 @@
 
 mkvm(){
 	# Load error functions.
-	RERR(){ echo "[L${1}] ERROR: $2" 1>&2; return 1; }
 	ERR(){ echo "[L${1}] ERROR: $2" 1>&2; }
 
 	# Check for root access.
-	[ $UID -eq 0 ] && RERR "$LINENO" "Root access isn't required."
+	[ $UID -eq 0 ] && {
+		ERR "$LINENO" "Root access isn't required."
+		return 1
+	}
 	
 	# Check for dependencies. Return if any are unmet.
 	[ -x /usr/bin/vboxmanage ] || {
-		RERR "$LINENO" "Dependency '/usr/bin/vboxmanage' not met."
+		ERR "$LINENO" "Dependency '/usr/bin/vboxmanage' not met."
+		return 1
 	}
 
 	# Output error if number of arguments don't equal 2.
 	[ $# -eq 2 ] || {
-		RERR "$LINENO" "Correct syntax is 'mkvm <name> <ostype>'."
+		ERR "$LINENO" "Correct syntax is 'mkvm <name> <ostype>'."
+		return 1
 	}
 
 	# Check for the below variable to know where VirtualBox stores VMs.
 	[ -z "$VBOX_USER_HOME" ] && {
-		RERR "$LINENO" "Environment variable 'VBOX_USER_HOME' not set."
+		ERR "$LINENO" "Environment variable 'VBOX_USER_HOME' not set."
+		return 1
 	}
 	
-	(
+	{
 		echo "Creating and registering the virtual machine."
 		/usr/bin/vboxmanage createvm                              \
 			--name "$1"                                       \
@@ -108,7 +113,7 @@ mkvm(){
 			--device 1                                        \
 			--type fdd                                        \
 			--medium "$VBOX_USER_HOME"/vboxtransfer.img
-	) &> /dev/null
+	} &> /dev/null
 
 	echo "Virtual machine has been created... hopefully."
 
