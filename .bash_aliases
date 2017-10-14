@@ -190,8 +190,8 @@ for DEP in /bin/{ls,grep}; {
 		case "${TERM:-EMPTY}"
 		in
 		        linux|xterm|xterm-256color)
-		                alias ls="/bin/ls -Nnpshq --time-style=iso --color=auto --group-directories-first"
-		                alias lsa="/bin/ls -ANnpshq --time-style=iso --color=auto --group-directories-first"
+		                alias ls="/bin/ls -nphq --time-style=iso --color=auto --group-directories-first"
+		                alias lsa="/bin/ls -Anphq --time-style=iso --color=auto --group-directories-first"
 		                alias grep="/bin/grep --color=auto"
 		                alias egrep="/bin/egrep --color=auto"
 		                alias fgrep="/bin/fgrep --color=auto" ;;
