@@ -3,13 +3,26 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 15 Oct 22:44:40 BST 2017
+# Last Change       - Sun 15 Oct 23:22:55 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 # Just in-case.
 [ -z "$BASH_VERSION" ] && return 1
+
+# Fix all CWD file and directory permissions to match the safer 0077 umask.
+[ -x /bin/chmod ] && {
+	alias fixperms='\
+		for FILE in ./*; {
+			if [ -f "$FILE" ]; then
+				chmod 600 "$FILE"
+			elif [ -d "$FILE" ]; then
+				chmod 700 "$FILE"
+			fi
+		}
+	'
+}
 
 # Create or unmount a user-only RAM Disk (tmpfs, basically) of 512MB.
 { [ -x /usr/bin/sudo ] && [ -x /bin/mount ] && [ -x /bin/umount ]; } && {
