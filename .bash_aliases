@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 13 Oct 23:10:52 BST 2017
+# Last Change       - Sun 15 Oct 22:44:40 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -244,11 +244,15 @@ for DIR in\
 	alias mpa="/usr/bin/mplayer -nolirc -vo null -really-quiet &> /dev/null"
 
 	[ -f "$MPLAYER_FONT" ] && {
-		alias mpv="/usr/bin/mplayer -vo x11 -zoom -nolirc -font \"$MPLAYER_FONT\" -really-quiet &> /dev/null"
-		alias mpvdvd="/usr/bin/mplayer -vo x11 -zoom -nolirc -font \"$MPLAYER_FONT\" -really-quiet dvd://1//dev/sr1 &> /dev/null"
+		#alias mpv="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -vf pp=hb/vb/ha/va/h1/v1/dr/fq/fa,hqdn3d=6:6,gradfun=1.2 -zoom -nolirc -font \"$MPLAYER_FONT\" -really-quiet &> /dev/null"
+		#alias mpvdvd="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -vf pp=hb/vb/ha/va/h1/v1/dr/fq/fa,hqdn3d=6:6,gradfun=1.2 -zoom -nolirc -font \"$MPLAYER_FONT\" -really-quiet dvd://1//dev/sr1 &> /dev/null"
+		alias mpv="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc -font \"$MPLAYER_FONT\" -really-quiet &> /dev/null"
+		alias mpvdvd="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc -font \"$MPLAYER_FONT\" -really-quiet dvd://1//dev/sr1 &> /dev/null"
 	} || {
-		alias mpv="/usr/bin/mplayer -vo x11 -zoom -nolirc -really-quiet &> /dev/null &> /dev/null"
-		alias mpvdvd="/usr/bin/mplayer -vo x11 -zoom -nolirc --really-quiet dvd://1//dev/sr1 &> /dev/null"
+		#alias mpv="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -vf pp=hb/vb/ha/va/h1/v1/dr/fq/fa,hqdn3d=6:6,gradfun=1.2 -zoom -nolirc -really-quiet &> /dev/null &> /dev/null"
+		#alias mpvdvd="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -vf pp=hb/vb/ha/va/h1/v1/dr/fq/fa,hqdn3d=6:6,gradfun=1.2 -zoom -nolirc --really-quiet dvd://1//dev/sr1 &> /dev/null"
+		alias mpv="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc -really-quiet &> /dev/null &> /dev/null"
+		alias mpvdvd="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc --really-quiet dvd://1//dev/sr1 &> /dev/null"
 	}
 }
 
