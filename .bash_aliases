@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 15 Oct 23:22:55 BST 2017
+# Last Change       - Mon 16 Oct 00:36:40 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -91,11 +91,30 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 }
 
 # Enable a bunch of git aliases, if you have git installed.
-[ -x /usr/bin/git ] && {
+{ [ -x /usr/bin/git ] && [ -x /bin/date ]; } && {
+	GIT_LOG_ALIAS(){
+		declare -i COUNT=0
+		local RESULT=`/usr/bin/git log`
+
+		[ "$RESULT" ] || return
+
+		while read -r; do
+			[[ "$REPLY" == Date:\ \ \ [A-Z][a-z][a-z]\ * ]] && {
+				/bin/date -d "${REPLY:8:24}" +%F\ \(%X\)
+				COUNT+=1
+			}
+		done <<< "$RESULT"
+
+		echo "TOTAL:    $COUNT"
+
+		unset COUNT REPLY
+	}
+
+	alias log="GIT_LOG_ALIAS"
+
 	for CMD in\
 	\
 		"add":add\
-		"log":log\
 		"push":push\
 		"diff":diff\
 		"init":ginit\
