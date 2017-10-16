@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 16 Oct 00:36:40 BST 2017
+# Last Change       - Mon 16 Oct 01:15:16 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -111,6 +111,42 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 	}
 
 	alias log="GIT_LOG_ALIAS"
+
+	GIT_COMMIT_TOTALS(){
+		printf "%-7s  %s\n" "COMMITS" "REPOSITORY"
+
+		for DIR in *; {
+			[ -d "$DIR" ] && {
+				cd "$DIR"
+
+				GET_TTLS=`GIT_LOG_ALIAS`
+				[ -z "$GET_TTLS" ] && return
+
+				#TODO - Finish this. If CWD is not root of repo, -
+				#       then show only repo root's directory name.
+				#declare -i INUM=0
+				#for I in *; {
+				#	[ "$I" == ".git" ] && {
+				#		INUM+=1
+				#		cd - > /dev/null
+				#	}
+				#}
+				#
+				#[ $INUM -eq 0 ] && DIR="${CWD}"
+
+				while read -a REPLY; do
+					[[ "$REPLY" == TOTAL:* ]] && {
+						printf "%-7d  %s\n"\
+							"${REPLY[1]}" "${PWD//*\/}"
+					}
+				done <<< "$GET_TTLS"
+
+				cd - > /dev/null
+			}
+		}
+	}
+
+	alias logttl="GIT_COMMIT_TOTALS"
 
 	for CMD in\
 	\
