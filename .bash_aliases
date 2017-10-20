@@ -3,13 +3,28 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 20 Oct 12:17:44 BST 2017
+# Last Change       - Fri 20 Oct 19:50:12 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 # Just in-case.
 [ -z "$BASH_VERSION" ] && return 1
+
+# Blast away all of the (global) configuration files of the previously uninstalled
+# packages using dpkg to detect them and apt-get to purge them.
+{ [ -x /usr/bin/apt-get ] && [ -x /usr/bin/dpkg ]; } && {
+	#TODO - Incomplete and probably not yet functional, hence -s.
+	alias rmrc='\
+		local LIST=$(
+			while read -ra REPLY; do
+				[[ "${REPLY[0]}" == rc ]] && echo "${REPLY[1]}"
+			done <<< "$(/usr/bin/dpkg -l 2> /dev/null)"
+		)
+
+		/usr/bin/apt-get -s purge $LIST
+	'
+}
 
 # Fix all CWD file and directory permissions to match the safer 0077 umask.
 [ -x /bin/chmod ] && {
