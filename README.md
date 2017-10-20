@@ -86,7 +86,11 @@ KNOWN ISSUES
 
 On Ubuntu 17.04 with the GNOME Desktop Environment, when tested (pre-updates) on the LiveCD, I noticed these error messages. Things seem to work (although I haven't extensively tested) despite these errors that show on each terminal launch.
 
-  bash: `_apport_bug': not a valid identifier
-  bash: `_apport_cli': not a valid identifier
-  bash: `_apport_unpack': not a valid identifier
-  bash: `_apport_collect': not a valid identifier
+```bash
+bash: `_apport_bug': not a valid identifier
+bash: `_apport_cli': not a valid identifier
+bash: `_apport_unpack': not a valid identifier
+bash: `_apport_collect': not a valid identifier
+```
+
+I've also sadly noticed this bug on Ubuntu 17.10 with a similar, terminal-focused, i3-wm setup.
