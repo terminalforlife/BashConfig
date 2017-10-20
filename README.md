@@ -48,6 +48,22 @@ If you see any files in `$HOME/ShellPlugins`, they too will be from me.
 
 *NOTE: These instructions were tested using version 4.3 of bash.*
 
+REQUIREMENTS
+------------
+
+Aside from the obvious (bash), you'll need at least the following (Ubuntu and/or Debian) packages for this to work as it does for me:
+
+1. fonts-font-awesome
+2. fonts-opensymbol
+
+To install these with a quick one liner:
+
+```bash
+sudo apt-get install fonts-font-awesome fonts-opensymbol
+```
+
+This list will be changed as requirements are realised or added.
+
 LIMITATIONS
 -----------
 
