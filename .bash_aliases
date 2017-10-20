@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 20 Oct 01:34:50 BST 2017
+# Last Change       - Fri 20 Oct 12:17:44 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -41,22 +41,12 @@
 }
 
 # Similar to "genpass" you sometimes find in distros, but lighter.
-{ [ -x /usr/bin/xclip ] && [ -x /usr/bin/head ] && [ -x /usr/bin/tr ]; } && {
+{ [ -x /usr/bin/head ] && [ -x /usr/bin/tr ]; } && {
 	alias getpass='\
 		/usr/bin/tr -dc "[[[:alnum:]][[:punct:]]]"\
 			< /dev/urandom | 2> /dev/null /usr/bin/head -c\
 	'
 }
-
-# Work in progress. Pure shell approach to genpass.
-#[ -e /dev/urandom ] && {
-#	alias shellpass="\
-#		while :; do
-#			read -n 1 -a X < /dev/urandom
-#			[[ "$X" == [_A-Za-z0-9] ]] && printf "$X"
-#		done
-#	"
-#}
 
 # Two possibly pointless functions to single- or double-quote a string of text.
 alias squo="QUOTE(){ printf \"'%s'\n\" \"\$*\"; }; QUOTE"
