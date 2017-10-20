@@ -60,6 +60,8 @@ Desktop Environment:      i3-wm 4.11-1
 Bash Version:             4.3-14ubuntu1.2
 ```
 
+However, now that Ubuntu 17.10 is out, I'll soon be upgrading, which means cleaning up and fully supporting Ubuntu 17.10! I've already began making changes.
+
 As you might have guessed, I use Linux and have targeted Linux users with all of my shell stuff; that said, where possible, I try to compensate somewhat for those on systems like Mac and BSD. I have next-to-zero experience on Mac, and limited experience on BSD systems (briefly explored FreeBSD), so there's only so much compensating I can do there. However, if you spot an incompatibility that has gone unchecked, please let me know!
 
 I endeavor to use absolute paths in all my work, so if you have compiled your own system with something like Gentoo or LFS, then you will probably run into issues; if this is a popular issue, I would consider at least offering a patch for which changes all the paths for ones you use.
