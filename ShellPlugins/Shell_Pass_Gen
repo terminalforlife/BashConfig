@@ -1,0 +1,56 @@
+#!/bin/bash
+
+#----------------------------------------------------------------------------------
+# Project Name      - bashconfig/ShellPlugins/Shell_Pass_Gen
+# Started On        - Fri 20 Oct 12:14:09 BST 2017
+# Last Change       - Fri 20 Oct 12:40:23 BST 2017
+# Author E-Mail     - terminalforlife@yahoo.com
+# Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
+
+# A pure-shell approach to complex password generation.
+#
+# I thought this would be a nice idea, but it's much slower than my getpass alias
+# which works near-instantly, even with a 4096 character password.
+#
+# I think this is because of using arrays; it's having to put an entire line into
+# a variable and assign each field therein an index, ever single iteration, then do
+# a bunch of tests on the first index. This can surely be improved, but for now
+# this does sort of work.
+#
+# Unfortunately, some unicode characters still show up; I'm not sure how to fix
+# this without being even more specific with the testing of $X.
+
+#----------------------------------------------------------------------------------
+
+shellpass(){
+	shopt -s extglob
+
+	[ -e /dev/urandom ] || {
+		printf "[L%0.4d] ERROR: %s\n" "$LINENO"\
+			"Unable to access /dev/urandom device." 1>&2
+		return 1
+	}
+
+	[ $# -eq 1 ] || {
+		printf "[L%0.4d] ERROR: %s\n" "$LINENO"\
+			"Only one argument is required." 1>&2
+		return 1
+	}
+
+	{ [[ "$*" == +([0-9]) ]] && [ "$*" -ge 1 ]; } || {
+		printf "[L%0.4d] ERROR: %s\n" "$LINENO"\
+			"Requires an integer greater than or equal to 1." 1>&2
+		return 1
+	}
+
+	declare -i A=0
+
+	while read -a X; do
+		[[ "$X" == @([[:alnum:]]|[[:punct:]]) ]] && {
+			local A+=1
+			printf "%s" "$X"
+			[ $A -eq $* ] && break
+		}
+	done < /dev/urandom
+}
