@@ -53,13 +53,12 @@ LIMITATIONS
 
 I sadly cannot guarantee that this repository will work for all setups; in-fact, I definitely can't! I've got too many projects and only so much time which I would rather spend on the actual code, (it would be great if people could help me test it) but here is what I use:
 
+```
 Distribution Base:        Ubuntu 16.04.3
-
 Kernel Version:           4.10.0-30-generic
-
 Desktop Environment:      i3-wm 4.11-1
-
 Bash Version:             4.3-14ubuntu1.2
+```
 
 As you might have guessed, I use Linux and have targeted Linux users with all of my shell stuff; that said, where possible, I try to compensate somewhat for those on systems like Mac and BSD. I have next-to-zero experience on Mac, and limited experience on BSD systems (briefly explored FreeBSD), so there's only so much compensating I can do there. However, if you spot an incompatibility that has gone unchecked, please let me know!
 
@@ -86,7 +85,7 @@ KNOWN ISSUES
 
 On Ubuntu 17.04 with the GNOME Desktop Environment, when tested (pre-updates) on the LiveCD, I noticed these error messages. Things seem to work (although I haven't extensively tested) despite these errors that show on each terminal launch.
 
-```bash
+```
 bash: `_apport_bug': not a valid identifier
 bash: `_apport_cli': not a valid identifier
 bash: `_apport_unpack': not a valid identifier
