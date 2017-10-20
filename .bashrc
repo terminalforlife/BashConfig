@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 13 Oct 23:40:14 BST 2017
+# Last Change       - Fri 20 Oct 12:18:15 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -18,8 +18,10 @@
 # files, respectively; drwx------ and -rw-------.
 umask 0077
 
-# Set the maximum number of processes for the current user.
-ulimit -u 5000
+# Set the maximum number of processes for the current user. May require root access
+# depending on your setup. Needed root access in Ubuntu 17.10 with a similar setup.
+# It seems to just needs root access to raise this value, but not lower it.
+#ulimit -u 5000
 
 # If not running interactively, then ignore the rest of the file.
 [ -z "$BASH_VERSION" ] && return
@@ -104,7 +106,8 @@ FLIB="$HOME/ShellPlugins"
 	for FUNC in\
 	\
 		Bell_Alarm Cleaner_RK_Scan Times_Table NIR_Difference\
-		Load_File_Links2 CPU_Intensive_Procs Git_Status_All
+		Load_File_Links2 CPU_Intensive_Procs Git_Status_All\
+		Shell_Pass_Gen;
 	{
 		
 		# Source the file if it exists.
