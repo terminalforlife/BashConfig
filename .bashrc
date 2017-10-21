@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 22 Oct 00:34:52 BST 2017
+# Last Change       - Sun 22 Oct 00:54:27 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -30,7 +30,10 @@ PREFIX_DIR="true"
 
 # By default, you should see a rather nice prompt. If you want something simple, -
 # akin to the Bourne Shell prompt, set this option to true.
-SIMPLE_PROMPT="false"
+SIMPLE="false"
+
+# Instead of a simple prompt, use the standard, Debian PS1 prompt, if set to true.
+STANDARD="false"
 
 # If DO_GIT is true, and this option is true, then the current, active branch will
 # be shown if you're currently in a git repository.
@@ -84,15 +87,16 @@ umask 0077
 
 for OPT in\
 \
-	SHOW_LINES:$SHOW_LINES DO_GIT:$DO_GIT BRANCH:$BRANCH COMMITS:$COMMITS\
-	PREFIX_DIR:$PREFIX_DIR SIMPLE_PROMPT:$SIMPLE_PROMPT
+	SHOW_LINES:$SHOW_LINES DO_GIT:$DO_GIT BRANCH:$BRANCH\
+	COMMITS:$COMMITS PREFIX_DIR:$PREFIX_DIR\
+	SIMPLE:$SIMPLE STANDARD:$STANDARD
 {
 	[[ "${OPT/*:}" == @(true|false) ]] || {
 		echo "ERROR: Incorrect setting at: ${OPT%:*}" 1>&2
 	}
 }
 
-if [ "$SIMPLE_PROMPT" == "false" ] && [ -x /usr/bin/tty ]; then
+if [ "$SIMPLE" == "false" ] && [ -x /usr/bin/tty ]; then
 	# Get the prompt information: Git, PWD, and $?.
 	GET_PC(){
 		if [ "$SHOW_LINES" == "true" ]; then
@@ -163,7 +167,11 @@ if [ "$SIMPLE_PROMPT" == "false" ] && [ -x /usr/bin/tty ]; then
 		local PD="\[\e[01;31m\]${_PWD/ }\[\e[0m\]\[\033[0m\]\n╙╾ "
 
 		# Set the main prompt, using info from above.
-		PS1="${PA}${PB}${PC}${PD}"
+		if [ "$STANDARD" == "false" ]; then
+			PS1="${PA}${PB}${PC}${PD}"
+		elif [ "$STANDARD" == "true" ]; then
+			PS1="\[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w\[\e[00m\]\$ "
+		fi
 	}
 
 	# Use and keep updated the above prompt code.
