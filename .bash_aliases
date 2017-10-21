@@ -3,13 +3,21 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 20 Oct 19:50:12 BST 2017
+# Last Change       - Sat 21 Oct 01:06:24 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 # Just in-case.
 [ -z "$BASH_VERSION" ] && return 1
+
+#
+{ [ -x /bin/ls ] && [ -x /usr/bin/watch ]; } && {
+	alias dwatch='\
+		/usr/bin/watch -n 0.1 "/bin/ls -nphq --time-style=iso\
+			--color=auto --group-directories-first"
+	'
+}
 
 # Blast away all of the (global) configuration files of the previously uninstalled
 # packages using dpkg to detect them and apt-get to purge them.
@@ -52,14 +60,6 @@
 	alias nord='\
 		/usr/bin/sudo /bin/sh -c\
 			/bin/umount\ "$RAMDISK"\ \&\&\ /bin/rmdir\ "$RAMDISK"
-	'
-}
-
-# Similar to "genpass" you sometimes find in distros, but lighter.
-{ [ -x /usr/bin/head ] && [ -x /usr/bin/tr ]; } && {
-	alias getpass='\
-		/usr/bin/tr -dc "[[[:alnum:]][[:punct:]]]"\
-			< /dev/urandom | 2> /dev/null /usr/bin/head -c\
 	'
 }
 
