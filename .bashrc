@@ -3,10 +3,50 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sat 21 Oct 21:55:47 BST 2017
+# Last Change       - Sun 22 Oct 00:05:14 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
+
+# This is my .bashrc configuration file, but it has been written in such a way that
+# other people could use it, too. I've included easy-to-use configuration options
+# just below.
+#
+# Thank you for your interest.
+
+#---------------------------------------------------------------------USER SETTINGS
+
+# This is where you, the user, can change some settings within this .bashrc file.
+# You won't need any programming knowledge or any major experience with a terminal.
+# Know that "true" is on and "false" is off -- but only replace the words!
+
+# If git is installed and you're in a git repository, then this .bashrc file will
+# by default display various git-related information. Change to false to disable.
+DO_GIT="true"
+
+# Set this to false to disable the prefixed ../ where the current working directory
+# is displayed, unless you're of course in /. Alignment should be maintained.
+PREFIX_DIR="true"
+
+# By default, you should see a rather nice prompt. If you want something simple, -
+# akin to the Bourne Shell prompt, set this option to true.
+SIMPLE_PROMPT="false"
+
+# If DO_GIT is true, and this option is true, then the current, active branch will
+# be shown if you're currently in a git repository.
+BRANCH="true"
+
+# If DO_GIT is true, and this option is true, then output the total number of
+# commits in parentheses. This will be placed to the right of the status message.
+COMMITS="true"
+
+# By default, each prompt will be separated by a tidy set of lines. To disable this
+# feature, even though it may be harder to see each, then just set this to false.
+SHOW_LINES="false"
+
+# WARNING: Changing code below, without knowledge of shell, could easily break it!
+
+#--------------------------------------------------------------MAIN SETS AND SHOPTS
 
 { [ -d "$HOME/bin" ] && ! [[ "$PATH" == */home/"$USER"/bin* ]]; } && {
 	# If the directory exists and isn't already in PATH, set it so.
@@ -26,7 +66,6 @@ umask 0077
 # If not running interactively, then ignore the rest of the file.
 [ -z "$PS1" ] && return
 
-#--------------------------------------------------------------MAIN SETS AND SHOPTS
 
 # Don't want to run these commands if using zsh.
 [ -z "$ZSH_VERSION" ] && {
@@ -43,44 +82,59 @@ umask 0077
 
 #------------------------------------------------------------------PROMPT & HISTORY
 
-[ -x /usr/bin/tty ] && {
-	# If running in a TTY and not a PTS.
-	[[ "$(/usr/bin/tty)" == /dev/pts/* ]] && {
-		# Get the prompt information: Git, PWD, and $?.
-		GET_PC(){
-			local X=$?; X=`printf " %0.3d" "$X"`
+for OPT in\
+\
+	SHOW_LINES:$SHOW_LINES DO_GIT:$DO_GIT BRANCH:$BRANCH COMMITS:$COMMITS\
+	PREFIX_DIR:$PREFIX_DIR SIMPLE_PROMPT:$SIMPLE_PROMPT
+{
+	[[ "${OPT/*:}" == @(true|false) ]] || {
+		echo "ERROR: Incorrect setting at: ${OPT%:*}" 1>&2
+	}
+}
+
+{ [ "$SIMPLE_PROMPT" == "false" ] && [ -x /usr/bin/tty ]; } && {
+	# Get the prompt information: Git, PWD, and $?.
+	GET_PC(){
+		local X=$?; X=`printf "%0.3d" "$X"`
+		[ "$SHOW_LINES" == "true" ] && {
 			local Y=`printf "%${COLUMNS}s\n" " "`
+		}
 
-			# Uses Debian/Ubuntu package: fonts-font-awesome
-			[ $X -eq 0 ] && local A=" " || local A=" "
+		# Uses Debian/Ubuntu package: fonts-font-awesome
+		[ $X -eq 0 ] && local A="  " || local A="  "
 
-			if [ -x /usr/bin/git ]; then
-				# Work in progress. Rework of the above.
-				local GS=$(
-					declare -i L=0
-					while read -ra X; do
-						L+=1
+		if [ -x /usr/bin/git ] && [ "$DO_GIT" == "true" ]; then
+			# Work in progress. Rework of the above.
+			local GS=$(
+				declare -i L=0
+				while read -ra X; do
+					L+=1
 
-						# If on 2nd line.
-						[ $L -eq 2 ] && {
-							# Removing . or : at the
-							# end, to keep it clean, -
-							# sane, and consistent.
-							printf "%s " "${X[@]//[:\'.]/}"
-							break # No more lines.
-						}
-					done <<< "$(/usr/bin/git status 2> /dev/null)"
-				)
+					# If on 2nd line.
+					[ $L -eq 2 ] && {
+						# Removing . or : at the
+						# end, to keep it clean, -
+						# sane, and consistent.
+						printf "%s " "${X[@]//[:\'.]/}"
+						break # No more lines.
+					}
+				done <<< "$(/usr/bin/git status 2> /dev/null)"
+			)
 
+			[ -n "$GS" ] && GS="${GS% } "
+
+			{ [ "$BRANCH" == "true" -a "$DO_GIT" == "true" ]; } && {
 				local GB=$(
 					# Shows the active branch.
 					while read -ra X; do
 						[[ "${X[@]}" == \*\ * ]] && {
-							printf "  [%s] "  "${X[1]}"
+							printf " [%s] "  "${X[1]}"
 						}
 					done <<< "$(/usr/bin/git branch 2> /dev/null)"
 				)
+			}
 
+			{ [ "$COMMITS" == "true" -a "$DO_GIT" == "true" ]; } && {
 				local GC=$(
 					# Count the number of commits.
 					declare -i L=0
@@ -89,34 +143,41 @@ umask 0077
 					done <<< "$(/usr/bin/git log 2> /dev/null)"
 					[ $L -eq 0 ] || echo "(${L}) " && echo ""
 				)
-			fi
+			}
+		fi
 
-			# Avoids showing "..//". The _PWD var is for prompt only.
-			# Changing PWD directory also breaks features like "cd -".
+		# Avoids showing "..//". The _PWD var is for prompt only.
+		# Changing PWD directory also breaks features like "cd -".
+		if [ "$PREFIX_DIR" == "true" ]; then
 			[ "$PWD" == "/" ] && _PWD="/" || _PWD="../${PWD//*\/}"
+		fi
 
-			# These will be concatenated; more readable code, sort of.
+		# These will be concatenated; more readable code, sort of.
+		if [ "$SHOW_LINES" == "true" ]; then
 			local PA="\e\[[2;9;38m\]${Y}\n\[\e[0m\]╓╾ \[\e[1;38m\]"
-			local PB="${X}${A}\[\e[2;33m\]${GB:-  }\[\e[2;39m\]"
-			local PC="${GS/Your branch is }\[\033[2;32m\]${GC}"
-			local PD="\[\e[01;31m\]${_PWD}\[\e[0m\]\[\033[0m\]\n╙╾  "
+		else
+			local PA="\[\e[0m\]╓╾ \[\e[1;38m\]"
+		fi
 
-			# Set the main prompt, using info from above.
-			PS1="${PA}${PB}${PC}${PD}"
-		}
+		local PB="${X}${A}\[\e[2;33m\]${GB}\[\e[2;39m\]"
+		local PC="${GS/Your branch is }\[\033[2;32m\]${GC}"
+		local PD="\[\e[01;31m\]${_PWD/ }\[\e[0m\]\[\033[0m\]\n╙╾ "
 
-		# Use and keep updated the above prompt code.
-		PROMPT_COMMAND='GET_PC'
-	} || {
-		# Just in-case, disable it.
-		unset PROMPT_COMMAND
-
-		# When \w is used in PS1, this will set ../ when beyond depth 1.
-		PROMPT_DIRTRIM=1
-
-		# Set a simple prompt for being on a TTY, as in Bourne Shell.
-		PS1="\$ "
+		# Set the main prompt, using info from above.
+		PS1="${PA}${PB}${PC}${PD}"
 	}
+
+	# Use and keep updated the above prompt code.
+	PROMPT_COMMAND='GET_PC'
+} || {
+	# Just in-case, disable it.
+	unset PROMPT_COMMAND
+
+	# When \w is used in PS1, this will set ../ when beyond depth 1.
+	#PROMPT_DIRTRIM=1
+
+	# Set a simple prompt for being on a TTY, as in Bourne Shell.
+	PS1="\$ "
 }
 
 # Sets the command history options. See: man bash
@@ -205,3 +266,7 @@ BASH_ALIASES="$HOME/.bash_aliases"
 { [ -f "$BASH_ALIASES" ] && [ -r "$BASH_ALIASES" ]; } && . "$BASH_ALIASES"
 
 unset BASH_ALIASES
+
+#-------------------------------------------------------------------UNSET USER SETS
+
+unset DO_GIT PREFIX_DIR SIMPLE_PROMPT BRANCH COMMITS SHOW_LINES
