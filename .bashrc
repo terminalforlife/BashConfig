@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 22 Oct 00:05:14 BST 2017
+# Last Change       - Sun 22 Oct 00:34:52 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ COMMITS="true"
 
 # By default, each prompt will be separated by a tidy set of lines. To disable this
 # feature, even though it may be harder to see each, then just set this to false.
-SHOW_LINES="false"
+SHOW_LINES="true"
 
 # WARNING: Changing code below, without knowledge of shell, could easily break it!
 
@@ -92,15 +92,14 @@ for OPT in\
 	}
 }
 
-{ [ "$SIMPLE_PROMPT" == "false" ] && [ -x /usr/bin/tty ]; } && {
+if [ "$SIMPLE_PROMPT" == "false" ] && [ -x /usr/bin/tty ]; then
 	# Get the prompt information: Git, PWD, and $?.
 	GET_PC(){
-		local X=$?; X=`printf "%0.3d" "$X"`
-		[ "$SHOW_LINES" == "true" ] && {
+		if [ "$SHOW_LINES" == "true" ]; then
 			local Y=`printf "%${COLUMNS}s\n" " "`
-		}
+		fi
 
-		# Uses Debian/Ubuntu package: fonts-font-awesome
+		local X=$?; X=`printf "%0.3d" "$X"`
 		[ $X -eq 0 ] && local A="  " || local A="  "
 
 		if [ -x /usr/bin/git ] && [ "$DO_GIT" == "true" ]; then
@@ -111,30 +110,30 @@ for OPT in\
 					L+=1
 
 					# If on 2nd line.
-					[ $L -eq 2 ] && {
+					if [ $L -eq 2 ]; then
 						# Removing . or : at the
 						# end, to keep it clean, -
 						# sane, and consistent.
 						printf "%s " "${X[@]//[:\'.]/}"
 						break # No more lines.
-					}
+					fi
 				done <<< "$(/usr/bin/git status 2> /dev/null)"
 			)
 
 			[ -n "$GS" ] && GS="${GS% } "
 
-			{ [ "$BRANCH" == "true" -a "$DO_GIT" == "true" ]; } && {
+			if [ "$BRANCH" == "true" -a "$DO_GIT" == "true" ]; then
 				local GB=$(
 					# Shows the active branch.
 					while read -ra X; do
-						[[ "${X[@]}" == \*\ * ]] && {
+						if [[ "${X[@]}" == \*\ * ]]; then
 							printf " [%s] "  "${X[1]}"
-						}
+						fi
 					done <<< "$(/usr/bin/git branch 2> /dev/null)"
 				)
-			}
+			fi
 
-			{ [ "$COMMITS" == "true" -a "$DO_GIT" == "true" ]; } && {
+			if [ "$COMMITS" == "true" -a "$DO_GIT" == "true" ]; then
 				local GC=$(
 					# Count the number of commits.
 					declare -i L=0
@@ -143,7 +142,7 @@ for OPT in\
 					done <<< "$(/usr/bin/git log 2> /dev/null)"
 					[ $L -eq 0 ] || echo "(${L}) " && echo ""
 				)
-			}
+			fi
 		fi
 
 		# Avoids showing "..//". The _PWD var is for prompt only.
@@ -169,7 +168,7 @@ for OPT in\
 
 	# Use and keep updated the above prompt code.
 	PROMPT_COMMAND='GET_PC'
-} || {
+else
 	# Just in-case, disable it.
 	unset PROMPT_COMMAND
 
@@ -178,7 +177,7 @@ for OPT in\
 
 	# Set a simple prompt for being on a TTY, as in Bourne Shell.
 	PS1="\$ "
-}
+fi
 
 # Sets the command history options. See: man bash
 HISTCONTROL=ignoreboth; HISTTIMEFORMAT="[%F_%X]: "; HISTSIZE=1000; HISTFILESIZE=0
@@ -266,7 +265,3 @@ BASH_ALIASES="$HOME/.bash_aliases"
 { [ -f "$BASH_ALIASES" ] && [ -r "$BASH_ALIASES" ]; } && . "$BASH_ALIASES"
 
 unset BASH_ALIASES
-
-#-------------------------------------------------------------------UNSET USER SETS
-
-unset DO_GIT PREFIX_DIR SIMPLE_PROMPT BRANCH COMMITS SHOW_LINES
