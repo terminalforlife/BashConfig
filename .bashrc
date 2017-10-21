@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sat 21 Oct 16:52:19 BST 2017
+# Last Change       - Sat 21 Oct 21:55:47 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ umask 0077
 # If not running interactively, then ignore the rest of the file.
 [ -z "$PS1" ] && return
 
-#----------------------------------------------------------------------------------
+#--------------------------------------------------------------MAIN SETS AND SHOPTS
 
 # Don't want to run these commands if using zsh.
 [ -z "$ZSH_VERSION" ] && {
@@ -41,7 +41,7 @@ umask 0077
 	    -o hashall -o posix -o braceexpand -o emacs
 }
 
-#----------------------------------------------------------------------------------
+#------------------------------------------------------------------PROMPT & HISTORY
 
 [ -x /usr/bin/tty ] && {
 	# If running in a TTY and not a PTS.
@@ -52,7 +52,7 @@ umask 0077
 			local Y=`printf "%${COLUMNS}s\n" " "`
 
 			# Uses Debian/Ubuntu package: fonts-font-awesome
-			[ $X -eq 0 ] && local A=" " || local A=" "
+			[ $X -eq 0 ] && local A=" " || local A=" "
 
 			if [ -x /usr/bin/git ]; then
 				# Work in progress. Rework of the above.
@@ -66,7 +66,7 @@ umask 0077
 							# Removing . or : at the
 							# end, to keep it clean, -
 							# sane, and consistent.
-							printf "%s " "${X[@]%[.:]}"
+							printf "%s " "${X[@]//[:\'.]/}"
 							break # No more lines.
 						}
 					done <<< "$(/usr/bin/git status 2> /dev/null)"
@@ -80,6 +80,15 @@ umask 0077
 						}
 					done <<< "$(/usr/bin/git branch 2> /dev/null)"
 				)
+
+				local GC=$(
+					# Count the number of commits.
+					declare -i L=0
+					while read -r; do
+						[[ "$REPLY" == *commit* ]] && L+=1
+					done <<< "$(/usr/bin/git log 2> /dev/null)"
+					[ $L -eq 0 ] || echo "(${L}) " && echo ""
+				)
 			fi
 
 			# Avoids showing "..//". The _PWD var is for prompt only.
@@ -87,10 +96,10 @@ umask 0077
 			[ "$PWD" == "/" ] && _PWD="/" || _PWD="../${PWD//*\/}"
 
 			# These will be concatenated; more readable code, sort of.
-			local PA="\e\[[2;9;38m\]${Y}\[\e[0m\]\n \[\e[1;38m\]"
+			local PA="\e\[[2;9;38m\]${Y}\n\[\e[0m\]╓╾ \[\e[1;38m\]"
 			local PB="${X}${A}\[\e[2;33m\]${GB:-  }\[\e[2;39m\]"
-			local PC="${GS/Your branch is }\[\e[01;31m\]${_PWD}"
-			local PD="\[\e[0m\] \[\033[00m\]\n  "
+			local PC="${GS/Your branch is }\[\033[2;32m\]${GC}"
+			local PD="\[\e[01;31m\]${_PWD}\[\e[0m\]\[\033[0m\]\n╙╾  "
 
 			# Set the main prompt, using info from above.
 			PS1="${PA}${PB}${PC}${PD}"
@@ -113,7 +122,7 @@ umask 0077
 # Sets the command history options. See: man bash
 HISTCONTROL=ignoreboth; HISTTIMEFORMAT="[%F_%X]: "; HISTSIZE=1000; HISTFILESIZE=0
 
-#----------------------------------------------------------------------------------
+#--------------------------------------------------------------------SOURCE PLUGINS
 
 # The location of the Shell Plugins sourced below.
 FLIB="$HOME/ShellPlugins"
@@ -134,7 +143,7 @@ FLIB="$HOME/ShellPlugins"
 
 unset FLIB FUNC
 
-#----------------------------------------------------------------------------------
+#-------------------------------------------------------------ENVIRONMENT VARIABLES
 
 # Set the location where various VirtualBox settings and your VMs are stored.
 export VBOX_USER_HOME="/media/$USER/1TB Internal HDD/Linux Generals/VirtualBox VMs"
@@ -163,7 +172,7 @@ export LESSSECURE=1
 	fi
 }
 
-#----------------------------------------------------------------------------------
+#------------------------------------------------------------SOURCE BASH_COMPLETION
 
 USRBC="/usr/share/bash-completion/bash_completion"
 
@@ -172,7 +181,7 @@ USRBC="/usr/share/bash-completion/bash_completion"
 
 unset USRBC
 
-#----------------------------------------------------------------------------------
+#-------------------------------------------------------------------------TERMWATCH
 
 # Enable a feature I dub termwatch. It logs whenever the current opens a terminal.
 [ -x /usr/bin/tty ] && {
@@ -189,7 +198,7 @@ unset USRBC
 	unset TERMWATCH_LOG CURTERM
 }
 
-#----------------------------------------------------------------------------------
+#---------------------------------------------------------------SOURCE BASH_ALIASES
 
 # If the user's bash_aliases file is found, source it.
 BASH_ALIASES="$HOME/.bash_aliases"
