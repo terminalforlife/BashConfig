@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 20 Oct 12:18:15 BST 2017
+# Last Change       - Sat 21 Oct 01:05:41 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -106,8 +106,7 @@ FLIB="$HOME/ShellPlugins"
 	for FUNC in\
 	\
 		Bell_Alarm Cleaner_RK_Scan Times_Table NIR_Difference\
-		Load_File_Links2 CPU_Intensive_Procs Git_Status_All\
-		Shell_Pass_Gen;
+		Load_File_Links2 CPU_Intensive_Procs Git_Status_All
 	{
 		
 		# Source the file if it exists.
