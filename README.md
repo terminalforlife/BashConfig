@@ -1,6 +1,11 @@
 # bashconfig
 Bash configuration files I created to use and share.
 
+**MASTER** - _Hopefully stable branch._\
+**DEV** - _Development Branch (latest changes)_
+
+I will eventually incorporate this method to all of my repositories, but that will _definitely_ take time.
+
 INTRODUCTION
 ------------
 
