@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sat 21 Oct 16:46:01 BST 2017
+# Last Change       - Sat 21 Oct 16:52:19 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -63,6 +63,9 @@ umask 0077
 
 						# If on 2nd line.
 						[ $L -eq 2 ] && {
+							# Removing . or : at the
+							# end, to keep it clean, -
+							# sane, and consistent.
 							printf "%s " "${X[@]%[.:]}"
 							break # No more lines.
 						}
@@ -80,6 +83,7 @@ umask 0077
 			fi
 
 			# Avoids showing "..//". The _PWD var is for prompt only.
+			# Changing PWD directory also breaks features like "cd -".
 			[ "$PWD" == "/" ] && _PWD="/" || _PWD="../${PWD//*\/}"
 
 			# These will be concatenated; more readable code, sort of.
