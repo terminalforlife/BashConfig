@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sat 21 Oct 01:05:41 BST 2017
+# Last Change       - Sat 21 Oct 16:46:01 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -24,19 +24,22 @@ umask 0077
 #ulimit -u 5000
 
 # If not running interactively, then ignore the rest of the file.
-[ -z "$BASH_VERSION" ] && return
+[ -z "$PS1" ] && return
 
 #----------------------------------------------------------------------------------
 
-# Sets various shell options. See: man bash
-shopt -s histappend checkwinsize globstar cmdhist complete_fullquote\
-	 expand_aliases extquote extglob force_fignore hostcomplete\
-	 interactive_comments promptvars sourcepath progcomp autocd\
-	 cdspell dirspell direxpand lithist nocasematch xpg_echo
+# Don't want to run these commands if using zsh.
+[ -z "$ZSH_VERSION" ] && {
+	# Sets various shell options. See: man bash
+	shopt -s histappend checkwinsize globstar cmdhist complete_fullquote\
+		 expand_aliases extquote extglob force_fignore hostcomplete\
+		 interactive_comments promptvars sourcepath progcomp autocd\
+		 cdspell dirspell direxpand lithist nocasematch xpg_echo
 
-# Sets additional shell options. See: help set
-set -o interactive-comments -o histexpand -o emacs\
-    -o monitor -o hashall -o posix -o braceexpand
+	# Sets additional shell options. See: help set
+	set -o interactive-comments -o histexpand -o monitor\
+	    -o hashall -o posix -o braceexpand -o emacs
+}
 
 #----------------------------------------------------------------------------------
 
@@ -45,37 +48,48 @@ set -o interactive-comments -o histexpand -o emacs\
 	[[ "$(/usr/bin/tty)" == /dev/pts/* ]] && {
 		# Get the prompt information: Git, PWD, and $?.
 		GET_PC(){
-			local X=$?; X=`printf "%0.3d" "$X"`
+			local X=$?; X=`printf " %0.3d" "$X"`
 			local Y=`printf "%${COLUMNS}s\n" " "`
 
 			# Uses Debian/Ubuntu package: fonts-font-awesome
-			[ $X -eq 0 ] && local A="" || local A=""
+			[ $X -eq 0 ] && local A=" " || local A=" "
 
 			if [ -x /usr/bin/git ]; then
-				# Unnecessary, but keeps it tidy.
-				local GETGIT=$(
-					readarray REPLY <<< "$(
-						/usr/bin/git status -s 2> /dev/null
-					)"
+				# Work in progress. Rework of the above.
+				local GS=$(
+					declare -i L=0
+					while read -ra X; do
+						L+=1
 
-					echo "${REPLY[0]}"
+						# If on 2nd line.
+						[ $L -eq 2 ] && {
+							printf "%s " "${X[@]%[.:]}"
+							break # No more lines.
+						}
+					done <<< "$(/usr/bin/git status 2> /dev/null)"
 				)
 
-				local GIT=" $GETGIT "
-
-				# Just ensures the prompt spacing is correct.
-				[ "$GIT" == "  " ] && local GIT=" "
-			else
-				local GIT=" "
+				local GB=$(
+					# Shows the active branch.
+					while read -ra X; do
+						[[ "${X[@]}" == \*\ * ]] && {
+							printf "  [%s] "  "${X[1]}"
+						}
+					done <<< "$(/usr/bin/git branch 2> /dev/null)"
+				)
 			fi
 
+			# Avoids showing "..//". The _PWD var is for prompt only.
+			[ "$PWD" == "/" ] && _PWD="/" || _PWD="../${PWD//*\/}"
+
 			# These will be concatenated; more readable code, sort of.
-			local PA="\e\[[1;9;37m\]${Y}\[\e[0m\]\n \[\e[1;37m\]"
-			local PB="${X}${A}\[\e[1;33m\]${GIT}\[\e[01;31m\]${PWD}"
-			local PC="\[\e[0m\] \[\033[00m\]\n "
+			local PA="\e\[[2;9;38m\]${Y}\[\e[0m\]\n \[\e[1;38m\]"
+			local PB="${X}${A}\[\e[2;33m\]${GB:-  }\[\e[2;39m\]"
+			local PC="${GS/Your branch is }\[\e[01;31m\]${_PWD}"
+			local PD="\[\e[0m\] \[\033[00m\]\n  "
 
 			# Set the main prompt, using info from above.
-			PS1="${PA}${PB}${PC}"
+			PS1="${PA}${PB}${PC}${PD}"
 		}
 
 		# Use and keep updated the above prompt code.
@@ -108,7 +122,7 @@ FLIB="$HOME/ShellPlugins"
 		Bell_Alarm Cleaner_RK_Scan Times_Table NIR_Difference\
 		Load_File_Links2 CPU_Intensive_Procs Git_Status_All
 	{
-		
+
 		# Source the file if it exists.
 		[ -f "$FLIB/$FUNC" ] && . "$FLIB/$FUNC"
 	}
@@ -147,14 +161,12 @@ export LESSSECURE=1
 
 #----------------------------------------------------------------------------------
 
-ETCBC="/etc/bash_completion"
 USRBC="/usr/share/bash-completion/bash_completion"
 
 # If the bash_completion file is found and has read access, source it.
-{ [ -f "$ETCBC" ] && [ -r "$ETCBC" ] && . "$ETCBC"; } ||
-{ [ -f "$USRBC" ] && [ -r "$USRBC" ] && . "$USRBC"; }
+{ [ -f "$USRBC" ] && [ -r "$USRBC" ]; } && source "$USRBC"
 
-unset ETCBC USRBC
+unset USRBC
 
 #----------------------------------------------------------------------------------
 
