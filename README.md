@@ -53,6 +53,8 @@ If you see any files in `$HOME/ShellPlugins`, they too will be from me.
 
 *NOTE: These instructions were tested using version 4.3 of bash.*
 
+I should also point out that I removed /etc/profile, /etc/bash.bashrc, and various other system files related to bash, as they are either redundant (why source and test for bash_completion every which where possible?!); I've yet to experience any negatives from this. I prefer my root account and any other local account I create be set to mostly standard bash defaults. If you wanted to do the same, be sure to back up your files beforehand! It might all work for me, but I cannot guarantee it would for all setups.
+
 REQUIREMENTS
 ------------
 
