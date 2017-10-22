@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 22 Oct 00:54:27 BST 2017
+# Last Change       - Sun 22 Oct 18:06:03 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -20,6 +20,9 @@
 # You won't need any programming knowledge or any major experience with a terminal.
 # Know that "true" is on and "false" is off -- but only replace the words!
 
+# Set this to false to not indicate that shell should above by posix standards.
+POSIX_MODE="true"
+
 # If git is installed and you're in a git repository, then this .bashrc file will
 # by default display various git-related information. Change to false to disable.
 DO_GIT="true"
@@ -35,6 +38,15 @@ SIMPLE="false"
 # Instead of a simple prompt, use the standard, Debian PS1 prompt, if set to true.
 STANDARD="false"
 
+# Set ALT_PROMPT to true if you want to use one of the alternative prompts I've
+# either written myself or pasted from random places online, just to add veriety.
+ALT_PROMPT="false"
+
+# Requires ALT_PROMPT to be true. Choose the type of alternative prompt to use.
+# Valid prompt types:
+#                                          dsuveges - https://pastebin.com/T43WuZqU
+ALT_TYPE="dsuveges"
+
 # If DO_GIT is true, and this option is true, then the current, active branch will
 # be shown if you're currently in a git repository.
 BRANCH="true"
@@ -46,6 +58,9 @@ COMMITS="true"
 # By default, each prompt will be separated by a tidy set of lines. To disable this
 # feature, even though it may be harder to see each, then just set this to false.
 SHOW_LINES="true"
+
+# Set this to true in order to remove all history settings and use the defaults.
+DEFAULT_HISTORY="false"
 
 # WARNING: Changing code below, without knowledge of shell, could easily break it!
 
@@ -70,20 +85,24 @@ umask 0077
 [ -z "$PS1" ] && return
 
 
-# Don't want to run these commands if using zsh.
+# These commands don't work with zsh.
 [ -z "$ZSH_VERSION" ] && {
-	# Sets various shell options. See: man bash
-	shopt -s histappend checkwinsize globstar cmdhist complete_fullquote\
-		 expand_aliases extquote extglob force_fignore hostcomplete\
-		 interactive_comments promptvars sourcepath progcomp autocd\
-		 cdspell dirspell direxpand lithist nocasematch xpg_echo
+	[ "$DEFAULT_HISTORY" == "true" ] || {
+		shopt -s histappend cmdhist lithist
+		set -o histexpand
+	}
 
-	# Sets additional shell options. See: help set
-	set -o interactive-comments -o histexpand -o monitor\
-	    -o hashall -o posix -o braceexpand -o emacs
+	shopt -s checkwinsize globstar complete_fullquote expand_aliases extquote\
+		 extglob force_fignore hostcomplete interactive_comments xpg_echo\
+		 promptvars sourcepath progcomp autocd cdspell dirspell direxpand\
+		 nocasematch
+
+	set -o interactive-comments -o monitor -o hashall -o braceexpand -o emacs
+
+	[ "$POXIS_MODE" == "true" ] && set -o posix
 }
 
-#------------------------------------------------------------------PROMPT & HISTORY
+#----------------------------------------------------------------------------PROMPT
 
 for OPT in\
 \
@@ -96,99 +115,115 @@ for OPT in\
 	}
 }
 
-if [ "$SIMPLE" == "false" ] && [ -x /usr/bin/tty ]; then
-	# Get the prompt information: Git, PWD, and $?.
-	GET_PC(){
-		if [ "$SHOW_LINES" == "true" ]; then
-			local Y=`printf "%${COLUMNS}s\n" " "`
-		fi
+# When \w is used in PS1, this will set ../ when beyond depth 1.
+PROMPT_DIRTRIM=1
 
-		local X=$?; X=`printf "%0.3d" "$X"`
-		[ $X -eq 0 ] && local A="  " || local A="  "
-
-		if [ -x /usr/bin/git ] && [ "$DO_GIT" == "true" ]; then
-			# Work in progress. Rework of the above.
-			local GS=$(
-				declare -i L=0
-				while read -ra X; do
-					L+=1
-
-					# If on 2nd line.
-					if [ $L -eq 2 ]; then
-						# Removing . or : at the
-						# end, to keep it clean, -
-						# sane, and consistent.
-						printf "%s " "${X[@]//[:\'.]/}"
-						break # No more lines.
-					fi
-				done <<< "$(/usr/bin/git status 2> /dev/null)"
-			)
-
-			[ -n "$GS" ] && GS="${GS% } "
-
-			if [ "$BRANCH" == "true" -a "$DO_GIT" == "true" ]; then
-				local GB=$(
-					# Shows the active branch.
-					while read -ra X; do
-						if [[ "${X[@]}" == \*\ * ]]; then
-							printf " [%s] "  "${X[1]}"
-						fi
-					done <<< "$(/usr/bin/git branch 2> /dev/null)"
-				)
+if ! [ "$ALT_PROMPT" == "true" ]; then
+	if [ "$SIMPLE" == "false" ] && [ -x /usr/bin/tty ]; then
+		# Get the prompt information: Git, PWD, and $?.
+		GET_PC(){
+			if [ "$SHOW_LINES" == "true" ]; then
+				printf -v Y "%${COLUMNS}s" " "
 			fi
 
-			if [ "$COMMITS" == "true" -a "$DO_GIT" == "true" ]; then
-				local GC=$(
-					# Count the number of commits.
+			local X=$?; printf -v X "%0.3d" "$X"
+			[ $X -eq 0 ] && local A="  " || local A="  "
+
+			if [ -x /usr/bin/git ] && [ "$DO_GIT" == "true" ]; then
+				# Work in progress. Rework of the above.
+				local GS=$(
 					declare -i L=0
-					while read -r; do
-						[[ "$REPLY" == *commit* ]] && L+=1
-					done <<< "$(/usr/bin/git log 2> /dev/null)"
-					[ $L -eq 0 ] || echo "(${L}) " && echo ""
+					while read -ra X; do
+						L+=1
+
+						# If on 2nd line.
+						if [ $L -eq 2 ]; then
+							# Removing . or : at the
+							# end, to keep it clean, -
+							# sane, and consistent.
+							printf "%s " "${X[@]//[:\'.]/}"
+							break # No more lines.
+						fi
+					done <<< "$(/usr/bin/git status 2> /dev/null)"
 				)
+
+				[ -n "$GS" ] && GS="${GS% } "
+
+				if [ "$BRANCH" == "true" -a "$DO_GIT" == "true" ]; then
+					local GB=$(
+						# Shows the active branch.
+						while read -ra X; do
+							if [[ "${X[@]}" == \*\ * ]]; then
+								printf " [%s] "  "${X[1]}"
+							fi
+						done <<< "$(/usr/bin/git branch 2> /dev/null)"
+					)
+				fi
+
+				if [ "$COMMITS" == "true" -a "$DO_GIT" == "true" ]; then
+					local GC=$(
+						# Count the number of commits.
+						declare -i L=0
+						while read -r; do
+							[[ "$REPLY" == *commit* ]] && L+=1
+						done <<< "$(/usr/bin/git log 2> /dev/null)"
+						[ $L -eq 0 ] || echo "(${L}) " && echo ""
+					)
+				fi
 			fi
-		fi
 
-		# Avoids showing "..//". The _PWD var is for prompt only.
-		# Changing PWD directory also breaks features like "cd -".
-		if [ "$PREFIX_DIR" == "true" ]; then
-			[ "$PWD" == "/" ] && _PWD="/" || _PWD="../${PWD//*\/}"
-		fi
+			# Avoids showing "..//". The _PWD var is for prompt only.
+			# Changing PWD directory also breaks features like "cd -".
+			if [ "$PREFIX_DIR" == "true" ]; then
+				[ "$PWD" == "/" ] && _PWD="/" || _PWD="../${PWD//*\/}"
+			fi
 
-		# These will be concatenated; more readable code, sort of.
-		if [ "$SHOW_LINES" == "true" ]; then
-			local PA="\e\[[2;9;38m\]${Y}\n\[\e[0m\]╓╾ \[\e[1;38m\]"
-		else
-			local PA="\[\e[0m\]╓╾ \[\e[1;38m\]"
-		fi
+			# These will be concatenated; more readable code, sort of.
+			if [ "$SHOW_LINES" == "true" ]; then
+				local PA="\e\[[2;9;38m\]${Y}\n\[\e[0m\]╓╾ \[\e[1;38m\]"
+			else
+				local PA="\[\e[0m\]╓╾ \[\e[1;38m\]"
+			fi
 
-		local PB="${X}${A}\[\e[2;33m\]${GB}\[\e[2;39m\]"
-		local PC="${GS/Your branch is }\[\033[2;32m\]${GC}"
-		local PD="\[\e[01;31m\]${_PWD/ }\[\e[0m\]\[\033[0m\]\n╙╾ "
+			local PB="${X}${A}\[\e[2;33m\]${GB}\[\e[2;39m\]"
+			local PC="${GS/Your branch is }\[\033[2;32m\]${GC}"
+			local PD="\[\e[01;31m\]${_PWD/ }\[\e[0m\]\[\033[0m\]\n╙╾ "
 
-		# Set the main prompt, using info from above.
-		if [ "$STANDARD" == "false" ]; then
-			PS1="${PA}${PB}${PC}${PD}"
-		elif [ "$STANDARD" == "true" ]; then
-			PS1="\[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w\[\e[00m\]\$ "
-		fi
-	}
+			# Set the main prompt, using info from above.
+			if [ "$STANDARD" == "false" ]; then
+				PS1="${PA}${PB}${PC}${PD}"
+			elif [ "$STANDARD" == "true" ]; then
+				PS1="\[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w\[\e[00m\]\$ "
+			fi
+		}
 
-	# Use and keep updated the above prompt code.
-	PROMPT_COMMAND='GET_PC'
+		# Use and keep updated the above prompt code.
+		PROMPT_COMMAND='GET_PC'
+	else
+		# Set a simple prompt for being on a TTY, as in Bourne Shell.
+		PS1="\$ "
+	fi
 else
-	# Just in-case, disable it.
-	unset PROMPT_COMMAND
-
-	# When \w is used in PS1, this will set ../ when beyond depth 1.
-	#PROMPT_DIRTRIM=1
-
-	# Set a simple prompt for being on a TTY, as in Bourne Shell.
-	PS1="\$ "
+	[ -n "$ALT_TYPE" ] && {
+		case "$ALT_TYPE" in
+			dsuveges)
+				PS1="\[\e[1;30m\]\A \u@\h\[\e[m\]:\[\e[1;32m\]\W\[\e[m\]$ " ;;
+			*)
+				echo "ERROR: Incorrect setting at: ALT_TYPE" 1>&2 ;;
+		esac
+	} || echo "ERROR: Missing setting at: ALT_TYPE" 1>&2
 fi
 
+#---------------------------------------------------------------------------HISTORY
+
 # Sets the command history options. See: man bash
-HISTCONTROL=ignoreboth; HISTTIMEFORMAT="[%F_%X]: "; HISTSIZE=1000; HISTFILESIZE=0
+[ "$DEFAULT_HISTORY" == "true" ] || {
+	HISTIGNORE="ls *:exit *:clear:cd *::pwd:history *"
+	HISTTIMEFORMAT="[%F_%X]: "
+	HISTCONTROL=ignoreboth
+	HISTFILESIZE=0
+	HISTSIZE=1000
+}
 
 #--------------------------------------------------------------------SOURCE PLUGINS
 
@@ -255,7 +290,7 @@ unset USRBC
 [ -x /usr/bin/tty ] && {
 	TERMWATCH_LOG="$HOME/.termwatch.log"
 	CURTERM=`/usr/bin/tty`
-	DATE=`printf '%(%F (%X))T'`
+	printf -v DATE '%(%F (%X))T'
 
 	{ [ -f "$TERMWATCH_LOG" ] && [ -w "$TERMWATCH_LOG" ]; } && {
 		# Using "" to avoid argument miscount when using %()T.
