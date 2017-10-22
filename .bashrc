@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 22 Oct 18:06:03 BST 2017
+# Last Change       - Sun 22 Oct 18:31:27 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -165,7 +165,7 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 						# Count the number of commits.
 						declare -i L=0
 						while read -r; do
-							[[ "$REPLY" == *commit* ]] && L+=1
+							[[ "$REPLY" == commit* ]] && L+=1
 						done <<< "$(/usr/bin/git log 2> /dev/null)"
 						[ $L -eq 0 ] || echo "(${L}) " && echo ""
 					)
