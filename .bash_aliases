@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sat 21 Oct 20:38:57 BST 2017
+# Last Change       - Sun 22 Oct 22:14:16 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -11,7 +11,19 @@
 # Just in-case.
 [ -z "$BASH_VERSION" ] && return 1
 
-#
+#TODO - Finish this.
+## If Vi IMproved is detected, set up these vim-like aliases.
+#[ -x /usr/bin/vim ] && {
+#	for ITEM in\
+#	\
+#		/usr/bin/vim:
+#	{
+#		:
+#	}
+#}
+
+# Watches a directory as its size and number files increase. Useful while you're
+# downloading or making other sorts of changes to its contents, and want to watch.
 { [ -x /bin/ls ] && [ -x /usr/bin/watch ]; } && {
 	alias dwatch='\
 		/usr/bin/watch -n 0.1 "/bin/ls -SsCphq\
