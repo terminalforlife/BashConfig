@@ -60,14 +60,7 @@ REQUIREMENTS
 
 Aside from the obvious (bash), you'll need at least the following (Ubuntu and/or Debian) packages for this to work as it does for me:
 
-1. fonts-font-awesome
-2. fonts-opensymbol
-
-To install these with a quick one liner:
-
-```bash
-sudo apt-get install fonts-font-awesome fonts-opensymbol
-```
+1. fonts-opensymbol
 
 This list will be changed as requirements are realised or added.
 
