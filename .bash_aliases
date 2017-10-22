@@ -14,7 +14,7 @@
 #
 { [ -x /bin/ls ] && [ -x /usr/bin/watch ]; } && {
 	alias dwatch='\
-		/usr/bin/watch -n 0.1 "/bin/ls -nphq --time-style=iso\
+		/usr/bin/watch -n 0.1 "/bin/ls -SsCphq\
 			--color=auto --group-directories-first"
 	'
 }
