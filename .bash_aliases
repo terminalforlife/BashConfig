@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 22 Oct 22:44:37 BST 2017
+# Last Change       - Mon 23 Oct 00:18:51 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -11,16 +11,18 @@
 # Just in-case.
 [ -z "$BASH_VERSION" ] && return 1
 
-#TODO - Finish this.
-## If Vi IMproved is detected, set up these vim-like aliases.
-#[ -x /usr/bin/vim ] && {
-#	for ITEM in\
-#	\
-#		/usr/bin/vim:
-#	{
-#		:
-#	}
-#}
+# A simple dictionary lookup alias, similar to the look command.
+{ [ -f /usr/share/dict/words ] && [ -r /usr/share/dict/words ]; } && {
+	alias dict='\
+		DICT_LOOKUP(){
+			while read -r; do
+				[[ "$REPLY" == *"$1"* ]] && echo "$REPLY"
+			done < /usr/share/dict/words
+		}
+
+		DICT_LOOKUP\
+	'
+}
 
 # Watches a directory as its size and number files increase. Useful while you're
 # downloading or making other sorts of changes to its contents, and want to watch.
