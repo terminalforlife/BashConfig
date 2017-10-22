@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 22 Oct 22:41:41 BST 2017
+# Last Change       - Sun 22 Oct 22:44:37 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -208,13 +208,13 @@ for DEP in /usr/{local/bin,bin}/youtube-dl; {
 		alias ytdl-video="/usr/local/bin/youtube-dl -c --yes-playlist\
 			--sleep-interval 5 --max-sleep-interval 30 --format best\
 			--no-call-home --console-title --quiet --ignore-errors"
-		alias ytdl-audio="/usr/local/bin/youtube-dl -cx --audio-format mp3\
+		alias ytdl-audio="/usr/local/bin/youtube-dl -cx --audio-format ogg\
 			--sleep-interval 5 --max-sleep-interval 30 --no-call-home\
 			--console-title --quiet --ignore-errors"
-		alias ytpldl-audio="/usr/local/bin/youtube-dl -cx --audio-format mp3\
+		alias ytpldl-audio="/usr/local/bin/youtube-dl -cix --audio-format ogg\
 			--sleep-interval 5 --max-sleep-interval 30 --yes-playlist\
 			--no-call-home --console-title --quiet --ignore-errors"
-		alias ytpldl-video="/usr/local/bin/youtube-dl -c --yes-playlist\
+		alias ytpldl-video="/usr/local/bin/youtube-dl -ci --yes-playlist\
 			--sleep-interval 5 --max-sleep-interval 30 --format best\
 			--no-call-home --console-title --quiet --ignore-errors"
 
