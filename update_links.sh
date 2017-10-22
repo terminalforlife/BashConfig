@@ -1,9 +1,9 @@
 #!/bin/sh
 
 #----------------------------------------------------------------------------------
-# Project Name      - update_links.sh
+# Project Name      - bashconfig/update_links.sh
 # Started On        - Sun 22 Oct 00:15:02 BST 2017
-# Last Change       - Sun 22 Oct 00:19:12 BST 2017
+# Last Change       - Mon 23 Oct 00:35:35 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
