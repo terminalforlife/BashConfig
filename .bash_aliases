@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 22 Oct 22:14:16 BST 2017
+# Last Change       - Sun 22 Oct 22:41:41 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -182,6 +182,7 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 		"push":push\
 		"diff":diff\
 		"init":init\
+		"merge":merge\
 		"branch":branch\
 		"commit -m":commit\
 		"status -s":status\
