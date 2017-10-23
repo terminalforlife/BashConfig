@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 22 Oct 18:31:27 BST 2017
+# Last Change       - Mon 23 Oct 17:53:00 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -122,12 +122,13 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 	if [ "$SIMPLE" == "false" ] && [ -x /usr/bin/tty ]; then
 		# Get the prompt information: Git, PWD, and $?.
 		GET_PC(){
+			local X=$?; printf -v X "%0.3d" "$X"
+			[ $X -eq 0 ] && local A="  " || local A="  "
+
+			# This must come second to ensure $? above works.
 			if [ "$SHOW_LINES" == "true" ]; then
 				printf -v Y "%${COLUMNS}s" " "
 			fi
-
-			local X=$?; printf -v X "%0.3d" "$X"
-			[ $X -eq 0 ] && local A="  " || local A="  "
 
 			if [ -x /usr/bin/git ] && [ "$DO_GIT" == "true" ]; then
 				# Work in progress. Rework of the above.
