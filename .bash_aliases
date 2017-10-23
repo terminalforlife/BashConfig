@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 23 Oct 00:18:51 BST 2017
+# Last Change       - Mon 23 Oct 00:43:58 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -186,10 +186,11 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 		"init":init\
 		"merge":merge\
 		"branch":branch\
+		"config":config\
 		"commit -m":commit\
 		"status -s":status\
 		"checkout":checkout\
-		"config --list":config\
+		"config --list":gcl\
 		"describe --long --tag":describe;
 	{
 		alias "${CMD/*:}"="/usr/bin/git ${CMD%:*}"
