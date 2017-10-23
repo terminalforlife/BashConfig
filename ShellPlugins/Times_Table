@@ -3,20 +3,20 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Times_Table
 # Started On        - Fri 15 Sep 15:20:17 BST 2017
-# Last Change       - Tue  3 Oct 18:28:36 BST 2017
+# Last Change       - Mon 23 Oct 13:17:28 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 tentt(){
-	for XT in {1..10}; { printf "%4d" $XT; }; echo
-	for XT in {2..20..2}; { printf "%4d" $XT; }; echo
-	for XT in {3..30..3}; { printf "%4d" $XT; }; echo
-	for XT in {4..40..4}; { printf "%4d" $XT; }; echo
-	for XT in {5..50..5}; { printf "%4d" $XT; }; echo
-	for XT in {6..60..6}; { printf "%4d" $XT; }; echo
-	for XT in {6..70..7}; { printf "%4d" $XT; }; echo
-	for XT in {8..80..8}; { printf "%4d" $XT; }; echo
-	for XT in {9..90..9}; { printf "%4d" $XT; }; echo
-	for XT in {10..100..10}; { printf "%4d" $XT; }; echo
+	printf "%4d" {1..10}; echo
+	printf "%4d" {2..20..2}; echo
+	printf "%4d" {3..30..3}; echo
+	printf "%4d" {4..40..4}; echo
+	printf "%4d" {5..50..5}; echo
+	printf "%4d" {6..60..6}; echo
+	printf "%4d" {6..70..7}; echo
+	printf "%4d" {8..80..8}; echo
+	printf "%4d" {9..90..9}; echo
+	printf "%4d" {10..100..10}; echo
 }
