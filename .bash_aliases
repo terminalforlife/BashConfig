@@ -3,13 +3,18 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 24 Oct 00:25:50 BST 2017
+# Last Change       - Tue 24 Oct 20:32:18 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 # Just in-case.
 [ -z "$BASH_VERSION" ] && return 1
+
+# Quickly download with wget, using some tider settings with -c.
+[ -x /usr/bin/wget ] && {
+	alias get='/usr/bin/wget -qc --show-progress'
+}
 
 # View the system boot log.
 [ -f /var/log/boot.log ] && {
@@ -35,7 +40,12 @@
 
 [ -x /usr/bin/newsbeuter ] && {
 	# Load newsbeuter more quickly to get access to RSS feeds.
-	alias news='/usr/bin/newsbeuter -r'
+	alias news='\
+		/usr/bin/newsbeuter -qr\
+			-c "$HOME/.newsbeuter/cache.db"\
+			-u "$HOME/.newsbeuter/urls"\
+			-C "$HOME/.newsbeuter/newsbeuter.conf"
+	'
 
 	# Quickly edit RSS feed list.
 	alias rss='/usr/bin/vim $HOME/.newsbeuter/urls'
@@ -521,6 +531,6 @@ CHK_FOR_THE_EDITOR "/usr/bin/vim" "vim"
 	alias pdf="/usr/bin/evince &> /dev/null"
 }
 
-# Clean up functions and variables after self.
+# Clean up functions and variables.
 unset -f FOR_THE_EDITOR_R FOR_THE_EDITOR CHK_FOR_THE_EDITOR
 unset DEP FILE DEPCOUNT FOR_THE_EDITOR TTDIR DIR
