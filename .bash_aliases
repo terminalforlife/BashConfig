@@ -3,13 +3,22 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 23 Oct 04:37:03 BST 2017
+# Last Change       - Tue 24 Oct 00:25:50 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 # Just in-case.
 [ -z "$BASH_VERSION" ] && return 1
+
+# View the system boot log.
+[ -f /var/log/boot.log ] && {
+	alias bootlog='\
+		while read -r; do
+			printf "%s\n" "$REPLY"
+		done < /var/log/boot.log
+	'
+}
 
 # A simple dictionary lookup alias, similar to the look command.
 { [ -f /usr/share/dict/words ] && [ -r /usr/share/dict/words ]; } && {
@@ -22,6 +31,14 @@
 
 		DICT_LOOKUP\
 	'
+}
+
+[ -x /usr/bin/newsbeuter ] && {
+	# Load newsbeuter more quickly to get access to RSS feeds.
+	alias news='/usr/bin/newsbeuter -r'
+
+	# Quickly edit RSS feed list.
+	alias rss='/usr/bin/vim $HOME/.newsbeuter/urls'
 }
 
 # Watches a directory as its size and number files increase. Useful while you're
@@ -424,7 +441,6 @@ for DEP in /usr/bin/{pager,less}; {
 [ -x /usr/bin/pager ] && {
 	for FILE in\
 	\
-		"/var/log/boot.log":bootlog\
 		"/var/log/apt/history.log":aptlog\
 		"$HOME/Documents/TT/python/Module\ Index.txt":pymodindex;
 	{
