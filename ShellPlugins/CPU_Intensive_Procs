@@ -3,13 +3,13 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/CPU_Intensive_Procs
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Fri 13 Oct 23:44:56 BST 2017
+# Last Change       - Tue 24 Oct 22:28:36 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 cpuhit(){
-	ERR(){ echo "[L${1}] ERROR: $2" 1>&2; }
+	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
 
 	[ -x /bin/ps ] || ERR "$LINENO" "Dependency '/bin/ps' not met."
 
@@ -27,11 +27,11 @@ cpuhit(){
 	printf "%-8s%-8s%s\n" "PID" "PCPU" "CMD"
 
 	#TODO - Trying to reverse the output, the pure shell way.
-	while read -r -a REPLY; do
-		local PCPU="${REPLY[1]%.*}"
+	while read -ra X; do
+		local PCPU="${X[1]%.*}"
 
 		OUTPUT(){
-			printf "%-8d%-8d%s\n" "${REPLY[0]}" "$PCPU" "${REPLY[2]}"
+			printf "%-8d%-8d%s\n" "${X[0]}" "$PCPU" "${X[2]}"
 		}
 
 		[ $PCPU -gt 1 ] && {
