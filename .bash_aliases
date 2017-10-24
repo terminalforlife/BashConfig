@@ -3,13 +3,18 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 24 Oct 20:32:18 BST 2017
+# Last Change       - Tue 24 Oct 22:35:44 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 # Just in-case.
 [ -z "$BASH_VERSION" ] && return 1
+
+# Quickly view all of your sd* storage device temperatures.
+{ [ -x /usr/bin/sudo ] && [ -x /usr/sbin/hddtemp ]; } && {
+	alias temphdd='/usr/bin/sudo /usr/sbin/hddtemp /dev/sd{a..z} 2> /dev/null'
+}
 
 # Quickly download with wget, using some tider settings with -c.
 [ -x /usr/bin/wget ] && {
