@@ -1,38 +1,28 @@
-#!/bin/sh
+#!/bin/bash
 
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Git_Status_All
 # Started On        - Sat 16 Sep 14:19:06 BST 2017
-# Last Change       - Fri 13 Oct 23:49:35 BST 2017
+# Last Change       - Tue 24 Oct 22:00:17 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 gitsa(){
-	# Load error functions.
-	ERR(){ echo "ERROR: $1" 1>&2; }
+	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
 	
-	# Check for dependencies.
-	DEPCOUNT=0
-	for DEP in /usr/bin/git /usr/bin/basename /usr/bin/id /bin/grep; do
-		[ -x "$DEP" ] || {
-			ERR "Dependency '$DEP' not met."
-			DEPCOUNT=$((DEPCOUNT+1))
-		}
-	done
-	
-	# Return if any dependencies were found.
-	[ $DEPCOUNT -eq 0 ] || return 1
-
-	# Check for root access.
-	[ `/usr/bin/id -u` -eq 0 ] && {
-		ERR "Root access isn't required."
+	[ -x /usr/bin/git ] || {
+		ERR "$LINENO" "Dependency '/usr/bin/git' not met."
 		return 1
 	}
 
-	# Check for position parameters.
+	[ $UID -eq 0 ] && {
+		ERR "$LINENO" "Root access isn't required."
+		return 1
+	}
+
 	[ $# -eq 0 ] || {
-		ERR "Arguments not required."
+		ERR "$LINENO" "Arguments not required."
 		return 1
 	}
 
@@ -40,9 +30,8 @@ gitsa(){
 	# assumed to be its own directory by the name of the repository itself.
 	MY_GIT_STORAGE="$HOME/GitHub/terminalforlife/Personal"
 
-	# Check that the above location exists.
 	[ -d "$MY_GIT_STORAGE" ] || {
-		ERR "Unable to locate: $MY_GIT_STORAGE"
+		ERR "$LINENO" "Unable to locate: $MY_GIT_STORAGE"
 		return 1
 	}
 
@@ -50,45 +39,54 @@ gitsa(){
 	CURRENT_DIRECTORY="$PWD"
 
 	# Begin the main processing.
-	for DIR in $MY_GIT_STORAGE/*; do
-		[ -d "$DIR" ] || continue
+	for DIR in $MY_GIT_STORAGE/* 'D+LqTAFĴ{!'; do
+		TITLE="false"
 
-		cd "$DIR"
-
-		# Store the status of the current working directory.
-		GIT_STATUS=`/usr/bin/git status`
-
-		# Store just the directory name of the repository.
-		GIT_NAME=`/usr/bin/basename "$DIR"`
-
-		echo "Status of $GIT_NAME repository:"
-
-		# Output status. Used separate statements in-case there are times
-		# when multiple apply. Indented for an easier read.
-		# (
-		echo "$GIT_STATUS" | /bin/grep -qx "nothing to commit, working directory clean" && {
-			echo "    ⏵ Clean; nothing to commit."
+		#TODO - Remove that last empty space... somehow.
+		{ [ "$B" ] || [ "$C" ] || [ "$D" ] || [ "$E" ]; } && {
+			[ "$DIR" == 'D+LqTAFĴ{!' ] || echo && break
 		}
 
-		echo "$GIT_STATUS" | /bin/grep -qx "Changed to be committed:" && {
-			echo "    ⏵ Changes to be committed."
-		}
+		unset B C D E
+		#unset A B C D E
 
-		echo "$GIT_STATUS" | /bin/grep -qx "Changes not staged for commit:" && {
-			echo "    ⏵ Changes yet to be staged for commit."
-		}
+		[ -d "$DIR" ] || continue && cd "$DIR"
 
-		echo "$GIT_STATUS" | /bin/grep -qx "nothing added to commit but untracked files present (use \"git add\" to track)" && {
-			echo "    ⏵ Untracked files present."
-		}
+		while read -ra X; do
+			case "${X[*]}" in
+				#*nothing\ to\ commit,\ working\ directory\ clean*)
+				#         A="true"
+				#         [ "$TITLE" == "true" ] || TITLE="true" ;;
+				*Changed\ to\ be\ committed\:*)
+					B="true"
+					[ "$TITLE" == "true" ] || TITLE="true" ;;
+				*Changes\ not\ staged\ for\ commit\:*)
+					C="true"
+					[ "$TITLE" == "true" ] || TITLE="true" ;;
+				*nothing\ added\ to\ commit\ but\ untracked\ files\ present\ \(use\ \"git\ add\"\ to\ track\)*)
+					D="true"
+					[ "$TITLE" == "true" ] || TITLE="true" ;;
+				*Your\ branch\ is\ ahead\ of*)
+					E="true"
+					[ "$TITLE" == "true" ] || TITLE="true" ;;
+			esac
+		done <<< "$(/usr/bin/git status)"
 
-		echo "$GIT_STATUS" | /bin/grep -q "^Your branch is ahead of" && {
-			echo "    ⏵ Commit(s) ready to be sent upstream."
-		}
-		# )
+		[ "$TITLE" == "true" ] && {
+			#{ [ "$A" ] || [ "$B" ] || [ "$C" ] || [ "$D" ] || [ "$E" ]; } && {
+			{ [ "$B" ] || [ "$C" ] || [ "$D" ] || [ "$E" ]; } && {
+				echo "Status of ${DIR//*\/} repository:"
+			}
 
-		# Add spacing to make it more readable.
-		echo
+			#[ "$A" ] && echo "    ⏵ Clean; nothing to commit."
+			[ "$B" ] && echo "    ⏵ Changes to be committed."
+			[ "$C" ] && echo "    ⏵ Changes yet to be staged for commit."
+			[ "$D" ] && echo "    ⏵ Untracked files present."
+			[ "$E" ] && echo "    ⏵ Commit(s) ready to be sent upstream."
+
+			
+			#{ [ "$A" ] || [ "$B" ] || [ "$C" ] || [ "$D" ] || [ "$E" ]; } && echo
+		}
 
 		# Change back to the previous directory.
 		cd ..
