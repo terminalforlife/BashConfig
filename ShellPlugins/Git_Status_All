@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Git_Status_All
 # Started On        - Sat 16 Sep 14:19:06 BST 2017
-# Last Change       - Tue 24 Oct 22:00:17 BST 2017
+# Last Change       - Tue 24 Oct 22:51:32 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -40,13 +40,12 @@ gitsa(){
 
 	# Begin the main processing.
 	for DIR in $MY_GIT_STORAGE/* 'D+LqTAFĴ{!'; do
-		TITLE="false"
-
 		#TODO - Remove that last empty space... somehow.
-		{ [ "$B" ] || [ "$C" ] || [ "$D" ] || [ "$E" ]; } && {
+		if [ "$B" ] || [ "$C" ] || [ "$D" ] || [ "$E" ]; then
 			[ "$DIR" == 'D+LqTAFĴ{!' ] || echo && break
-		}
+		fi
 
+		TITLE="false"
 		unset B C D E
 		#unset A B C D E
 
