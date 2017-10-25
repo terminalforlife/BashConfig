@@ -8,8 +8,17 @@
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
+# This was something I wrote at a while back, because I was curious to see the
+# difference of the number of packages which needed to be installed when using the
+# apt-get "--no-install-recommends" flag, VS not using it.
+#
+# In retrospect, I could totally have done this better and more concisely, but it
+# was written a while ago. Still, using it on packages like lightdm is interesting.
+
+#----------------------------------------------------------------------------------
+
 nirdiff(){
-	ERR(){ echo "[L${1}] ERROR: $2" 1>&2; }
+	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
 
 	[ $UID -eq 0 ] && {
 		ERR "$LINENO" "Root access isn't required."
