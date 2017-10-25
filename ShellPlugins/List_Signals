@@ -3,9 +3,17 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/List_Signals
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Wed 25 Oct 14:57:33 BST 2017
+# Last Change       - Wed 25 Oct 15:00:32 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
+
+# Admittedly, this probably isn't all that useful. There are various ways already
+# to list the various signal, but I used it as an educational exercise, more than
+# anything.
+#
+# Alternative, run "kill -l", "killall -l", trap -l, or "skill -L"
+
 #----------------------------------------------------------------------------------
 
 lssig(){
