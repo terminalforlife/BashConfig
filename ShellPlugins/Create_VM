@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Create_VM
 # Started On        - Thu 14 Sep 20:16:42 BST 2017
-# Last Change       - Fri 13 Oct 23:45:50 BST 2017
+# Last Change       - Wed 25 Oct 14:53:41 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -13,7 +13,7 @@
 
 mkvm(){
 	# Load error functions.
-	ERR(){ echo "[L${1}] ERROR: $2" 1>&2; }
+	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
 
 	# Check for root access.
 	[ $UID -eq 0 ] && {
@@ -39,81 +39,79 @@ mkvm(){
 		return 1
 	}
 	
-	{
-		echo "Creating and registering the virtual machine."
-		/usr/bin/vboxmanage createvm                              \
-			--name "$1"                                       \
-			--ostype "$2"                                     \
-			--basefolder "$VBOX_USER_HOME"                    \
-			--register
-		
-		echo "Creating the primary storage medium."
-		/usr/bin/vboxmanage createmedium                          \
-			--filename "$VBOX_USER_HOME/$1/$1"                \
-			--size 12000                                      \
-			--format VDI                                      \
-			--variant Standard
+	echo "Creating and registering the virtual machine."
+	/usr/bin/vboxmanage createvm                                              \
+		--name "$1"                                                       \
+		--ostype "$2"                                                     \
+		--basefolder "$VBOX_USER_HOME"                                    \
+		--register
+	
+	echo "Creating the primary storage medium."
+	/usr/bin/vboxmanage createmedium                                          \
+		--filename "$VBOX_USER_HOME/$1/$1"                                \
+		--size 12000                                                      \
+		--format VDI                                                      \
+		--variant Standard
 
-		echo "Configuring the new virtual machine."
-		/usr/bin/vboxmanage modifyvm "$1"                         \
-			--usb off                                         \
-			--audio pulse                                     \
-			--bioslogofadein off                              \
-			--bioslogofadeout off                             \
-			--bioslogodisplaytime 0                           \
-			--biosbootmenu menuonly                           \
-			--audiocontroller ac97                            \
-			--clipboard disabled                              \
-			--monitorcount 1                                  \
-			--draganddrop disabled                            \
-			--mouse ps2                                       \
-			--keyboard ps2                                    \
-			--boot1 dvd                                       \
-			--boot2 disk                                      \
-			--boot3 floppy                                    \
-			--vram 128                                        \
-			--memory 2048                                     \
-			--cpuexecutioncap 95                              \
-			--cpus 3                                          \
-			--paravirtprovider kvm                            \
-			--pae on                                          \
-			--chipset ich9                                    \
-			--graphicscontroller vboxvga                      \
-			--hwvirtex on                                     \
-			--accelerate3d on                                 \
-			--accelerate2dvideo off                           \
-			--firmware bios
+	echo "Configuring the new virtual machine."
+	/usr/bin/vboxmanage modifyvm "$1"                                         \
+		--usb off                                                         \
+		--audio pulse                                                     \
+		--bioslogofadein off                                              \
+		--bioslogofadeout off                                             \
+		--bioslogodisplaytime 0                                           \
+		--biosbootmenu menuonly                                           \
+		--audiocontroller ac97                                            \
+		--clipboard disabled                                              \
+		--monitorcount 1                                                  \
+		--draganddrop disabled                                            \
+		--mouse ps2                                                       \
+		--keyboard ps2                                                    \
+		--boot1 dvd                                                       \
+		--boot2 disk                                                      \
+		--boot3 floppy                                                    \
+		--vram 128                                                        \
+		--memory 2048                                                     \
+		--cpuexecutioncap 95                                              \
+		--cpus 3                                                          \
+		--paravirtprovider kvm                                            \
+		--pae on                                                          \
+		--chipset ich9                                                    \
+		--graphicscontroller vboxvga                                      \
+		--hwvirtex on                                                     \
+		--accelerate3d on                                                 \
+		--accelerate2dvideo off                                           \
+		--firmware bios
 
-		echo "Setting up the FDD controller."
-		/usr/bin/vboxmanage storagectl "$1"                       \
-		                                                          \
-			--name "Floppy Controller"                        \
-			--add floppy
+	echo "Setting up the FDD controller."
+	/usr/bin/vboxmanage storagectl "$1"                                       \
+	                                                                          \
+		--name "Floppy Controller"                                        \
+		--add floppy
 
-		echo "Setting up the IDE controller."
-		/usr/bin/vboxmanage storagectl "$1"                       \
-		                                                          \
-			--name "IDE Controller"                           \
-			--add ide
+	echo "Setting up the IDE controller."
+	/usr/bin/vboxmanage storagectl "$1"                                       \
+	                                                                          \
+		--name "IDE Controller"                                           \
+		--add ide
 
-		echo "Adding the primary HDD."
-		/usr/bin/vboxmanage storageattach "$1"                    \
-		                                                          \
-			--storagectl "IDE Controller"                     \
-			--port 1                                          \
-			--device 1                                        \
-			--type hdd                                        \
-			--medium "$VBOX_USER_HOME"/$1/${1}.vdi
+	echo "Adding the primary HDD."
+	/usr/bin/vboxmanage storageattach "$1"                                    \
+	                                                                          \
+		--storagectl "IDE Controller"                                     \
+		--port 1                                                          \
+		--device 1                                                        \
+		--type hdd                                                        \
+		--medium "$VBOX_USER_HOME"/$1/${1}.vdi
 
-		echo "Adding the primary FDD."
-		/usr/bin/vboxmanage storageattach "$1"                    \
-		                                                          \
-			--storagectl "Floppy Controller"                  \
-			--port 0                                          \
-			--device 1                                        \
-			--type fdd                                        \
-			--medium "$VBOX_USER_HOME"/vboxtransfer.img
-	} &> /dev/null
+	echo "Adding the primary FDD."
+	/usr/bin/vboxmanage storageattach "$1"                                    \
+	                                                                          \
+		--storagectl "Floppy Controller"                                  \
+		--port 0                                                          \
+		--device 1                                                        \
+		--type fdd                                                        \
+		--medium "$VBOX_USER_HOME"/vboxtransfer.img
 
 	echo "Virtual machine has been created... hopefully."
 
