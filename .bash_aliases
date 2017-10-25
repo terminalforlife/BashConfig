@@ -3,13 +3,46 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 24 Oct 22:35:44 BST 2017
+# Last Change       - Wed 25 Oct 13:31:22 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 # Just in-case.
 [ -z "$BASH_VERSION" ] && return 1
+
+# Handy alias to run before going off to bed, or before going out. I set this up
+# pretty quickly just before I went to bed, so it'll probably be revised soon.
+declare -i DEPCOUNT=0
+for DEP in\
+\
+	/sbin/shutdown\
+	/bin/{sh,sync,sleep}\
+	/usr/bin/{sudo,clamscan,rkhunter}\
+	/usr/sbin/{e4defrag,chkrootkit,unhide}
+{
+	[ -x "$DEP" ] && DEPCOUNT+=1
+
+	# Only execute if all 3 dependencies are found.
+	[ $DEPCOUNT -eq 10 ] && {
+		BEFORE_GOING_TO_BED(){
+			local SH_CMDS="/usr/bin/clamscan -riz /;\
+				       /usr/sbin/e4defrag / 1> /dev/null;\
+				       /usr/sbin/chkrootkit;\
+				       /usr/bin/rkhunter -c --cronjob --report-warnings-only;\
+				       /usr/sbin/unhide -m -d sys procall brute reverse"
+
+			/usr/bin/sudo /bin/sh -c "$SH_CMDS"\
+				&> $HOME/Desktop/b4bed_`printf '%(%F_%X)T'`.log
+
+			/bin/sync
+			/bin/sleep 10s
+			/sbin/shutdown now
+		}
+
+		alias b4bed='BEFORE_GOING_TO_BED'
+	}
+}
 
 # Quickly view all of your sd* storage device temperatures.
 { [ -x /usr/bin/sudo ] && [ -x /usr/sbin/hddtemp ]; } && {
@@ -436,9 +469,12 @@ for DEP in /usr/bin/{cut,dpkg-query,uniq,column} /bin/grep; {
 		-html-numbered-links 1 duckduckgo.co.uk"
 }
 
-# A more descriptive lsblk; you'll miss it when it's gone.
-[ -x /bin/lsblk ] && {
-	alias lsblkid="/bin/lsblk -o name,label,fstype,size,uuid,mountpoint"
+# A more descriptive, yet concise lsblk; you'll miss it when it's gone.
+{ [ -x /bin/lsblk ] && [ -x /bin/grep ]; } && {
+	alias lsblkid='\
+		/bin/lsblk -o name,label,fstype,size,uuid,mountpoint --noheadings -l\
+			| /bin/grep -v "^sd[a-z]\s"
+	'
 }
 
 # Some options I like to have by default for less and pager.
