@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Wed 25 Oct 13:31:22 BST 2017
+# Last Change       - Thu 26 Oct 22:08:05 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -244,14 +244,18 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 
 	for CMD in\
 	\
+		"rm":grm\
 		"add":add\
 		"tag":tag\
 		"push":push\
+		"pull":pull\
 		"diff":diff\
 		"init":init\
+		"clone":clone\
 		"merge":merge\
 		"branch":branch\
 		"config":config\
+		"rm --cached":grmc\
 		"commit -m":commit\
 		"status -s":status\
 		"checkout":checkout\
@@ -266,9 +270,7 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 alias dep="command -v"
 
 # If you have gvfs-trash available, be safe with that.
-[ -x /usr/bin/gvfs-trash ] && {
-	alias rm="/usr/bin/gvfs-trash"
-}
+[ -x /usr/bin/gvfs-trash ] && alias rm="/usr/bin/gvfs-trash"
 
 # Ease-of-use youtube-dl aliases; these save typing!
 for DEP in /usr/{local/bin,bin}/youtube-dl; {
@@ -345,26 +347,26 @@ for DEP in /sbin/{modinfo,lsmod} /usr/bin/cut; {
 
 # Clear the clipboard using xclip.
 [ -x /usr/bin/xclip ] && {
-	alias ccb="printf \"\" | /usr/bin/xclip -i"
+	alias ccb='\
+		for X in "-i" "-i -selection clipboard"; {
+			printf "%s" "" | /usr/bin/xclip $X
+		}
+	'
 }
 
 # Get more functionality by default when using grep and ls.
-declare -i DEPCOUNT=0
-for DEP in /bin/{ls,grep}; {
-	[ -x "$DEP" ] && DEPCOUNT+=1
-
-	[ $DEPCOUNT -eq 2 ] && {
-		case "${TERM:-EMPTY}"
-		in
-		        linux|xterm|xterm-256color)
-		                alias ls="/bin/ls -nphq --time-style=iso --color=auto --group-directories-first"
-		                alias lsa="/bin/ls -Anphq --time-style=iso --color=auto --group-directories-first"
-		                alias grep="/bin/grep --color=auto"
-		                alias egrep="/bin/egrep --color=auto"
-		                alias fgrep="/bin/fgrep --color=auto" ;;
-		esac
-	}
+{ [ -x /bin/ls ] && [ -x /bin/grep ]; } && {
+	case "${TERM:-EMPTY}" in
+	        linux|xterm|xterm-256color)
+	                alias ls="/bin/ls -nphq --time-style=iso --color=auto --group-directories-first"
+	                alias lsa="/bin/ls -Anphq --time-style=iso --color=auto --group-directories-first"
+	                alias grep="/bin/grep --color=auto"
+	                alias egrep="/bin/egrep --color=auto"
+	                alias fgrep="/bin/fgrep --color=auto" ;;
+	esac
 }
+
+[ -x /usr/bin/pgrep ] && alias pgrep="/bin/pgrep --color=auto"
 
 # Quick navigation aliases in absence of the autocd shell option.
 shopt -qp autocd || {
@@ -411,13 +413,9 @@ for DIR in\
 	alias mpa="/usr/bin/mplayer -nolirc -vo null -really-quiet &> /dev/null"
 
 	[ -f "$MPLAYER_FONT" ] && {
-		#alias mpv="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -vf pp=hb/vb/ha/va/h1/v1/dr/fq/fa,hqdn3d=6:6,gradfun=1.2 -zoom -nolirc -font \"$MPLAYER_FONT\" -really-quiet &> /dev/null"
-		#alias mpvdvd="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -vf pp=hb/vb/ha/va/h1/v1/dr/fq/fa,hqdn3d=6:6,gradfun=1.2 -zoom -nolirc -font \"$MPLAYER_FONT\" -really-quiet dvd://1//dev/sr1 &> /dev/null"
 		alias mpv="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc -font \"$MPLAYER_FONT\" -really-quiet &> /dev/null"
 		alias mpvdvd="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc -font \"$MPLAYER_FONT\" -really-quiet dvd://1//dev/sr1 &> /dev/null"
 	} || {
-		#alias mpv="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -vf pp=hb/vb/ha/va/h1/v1/dr/fq/fa,hqdn3d=6:6,gradfun=1.2 -zoom -nolirc -really-quiet &> /dev/null &> /dev/null"
-		#alias mpvdvd="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -vf pp=hb/vb/ha/va/h1/v1/dr/fq/fa,hqdn3d=6:6,gradfun=1.2 -zoom -nolirc --really-quiet dvd://1//dev/sr1 &> /dev/null"
 		alias mpv="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc -really-quiet &> /dev/null &> /dev/null"
 		alias mpvdvd="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc --really-quiet dvd://1//dev/sr1 &> /dev/null"
 	}
