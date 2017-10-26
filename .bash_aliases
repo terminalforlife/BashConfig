@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Thu 26 Oct 22:08:05 BST 2017
+# Last Change       - Fri 27 Oct 00:29:37 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -427,13 +427,26 @@ for DEP in /usr/bin/{cut,dpkg-query,uniq,column} /bin/grep; {
 	[ -x "$DEP" ] && DEPCOUNT+=1
 	
 	[ $DEPCOUNT -eq 5 ] && {
+		LS_ESS_PKG_FUNC(){
+			while read -ra X; do
+			        [ "${X[0]}" == yes ] && B+=(${X[1]}) || continue
+			done <<< "$(/usr/bin/dpkg-query --show\
+				-f="\${Essential} \${Package}\n" \*)"
+			
+			for P in ${B[@]}; {
+			        declare -i M=0
+			        Y+=($P)
+			
+			        for V in ${Y[@]}; {
+			                [ "$V" == "$P" ] && M+=1
+			        }
+			
+			        [ $M -eq 1 ] && echo "$P"
+			}
+		}
+
 		# Display essential packages.
-		alias lsesspkg='/usr/bin/dpkg-query --show\
-			-f="\${Essential} \${Package}\n" \*\
-			| /bin/grep "^yes"\
-			| /usr/bin/cut -d " " -f 2\
-			| /usr/bin/uniq\
-			| /usr/bin/column'
+		alias lsesspkg='LS_ESS_PKG_FUNC | /usr/bin/column'
 
 		# Display required packages.
 		alias lsreqpkg='/usr/bin/dpkg-query --show\
