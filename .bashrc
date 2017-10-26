@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Tue 24 Oct 22:44:09 BST 2017
+# Last Change       - Fri 27 Oct 00:06:47 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -61,6 +61,11 @@ SHOW_LINES="true"
 
 # Set this to true in order to remove all history settings and use the defaults.
 DEFAULT_HISTORY="false"
+
+# Enter your chosen ShellPlugins here. They must exist in: $HOME/ShellPlugins/
+# Each entry must be separated by spaces, so ensure you escape or quote filenames
+# with spaces in them, or even special characters understood by the shell.
+PLUGINS=(Bell_Alarm Cleaner_RK_Scan Load_File_Links2 Git_Status_All List_Signals)
 
 # WARNING: Changing code below, without knowledge of shell, could easily break it!
 
@@ -231,15 +236,9 @@ fi
 # The location of the Shell Plugins sourced below.
 FLIB="$HOME/ShellPlugins"
 
-# If the above directory is found.
+# If the above directory is found, then source each plugin, if it's found.
 [ -d "$FLIB" ] && {
-	# For each file specified here, within the above directory.
-	for FUNC in\
-	\
-		Bell_Alarm Cleaner_RK_Scan Load_File_Links2 Git_Status_All
-	{
-
-		# Source the file if it exists.
+	for FUNC in ${PLUGINS[@]}; {
 		[ -f "$FLIB/$FUNC" ] && . "$FLIB/$FUNC"
 	}
 }
