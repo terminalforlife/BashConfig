@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 27 Oct 01:20:08 BST 2017
+# Last Change       - Fri 27 Oct 20:36:08 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -13,39 +13,39 @@
 
 # Handy alias to run before going off to bed, or before going out. I set this up
 # pretty quickly just before I went to bed, so it'll probably be revised soon.
-declare -i DEPCOUNT=0
-for DEP in\
-\
-	/sbin/shutdown /bin/{sh,sync,sleep} /usr/bin/{sudo,clamscan,rkhunter}\
-	/usr/sbin/{e4defrag,chkrootkit,unhide}
-{
-	[ -x "$DEP" ] && DEPCOUNT+=1
-
-	# Only execute if all 3 dependencies are found.
-	[ $DEPCOUNT -eq 10 ] && {
-		BEFORE_GOING_TO_BED(){
-			local SH_CMDS="/usr/bin/clamscan -riz /;\
-				       /usr/sbin/e4defrag / 1> /dev/null;\
-				       /usr/sbin/chkrootkit;\
-				       /usr/bin/rkhunter -c --cronjob --report-warnings-only;\
-				       /usr/sbin/unhide -m -d sys procall brute reverse"
-
-			/usr/bin/sudo /bin/sh -c "$SH_CMDS"\
-				&> $HOME/Desktop/b4bed_`printf '%(%F_%X)T'`.log
-
-			/bin/sync
-			/bin/sleep 10s
-			/sbin/shutdown now
-		}
-
-		alias b4bed='BEFORE_GOING_TO_BED'
-	}
-}
+#declare -i DEPCOUNT=0
+#for DEP in\
+#\
+#	/sbin/shutdown /bin/{sh,sync,sleep} /usr/bin/{sudo,clamscan,rkhunter}\
+#	/usr/sbin/{e4defrag,chkrootkit,unhide}
+#{
+#	[ -x "$DEP" ] && DEPCOUNT+=1
+#
+#	# Only execute if all 3 dependencies are found.
+#	[ $DEPCOUNT -eq 10 ] && {
+#		BEFORE_GOING_TO_BED(){
+#			local SH_CMDS="/usr/bin/clamscan -riz /;\
+#				       /usr/sbin/e4defrag / 1> /dev/null;\
+#				       /usr/sbin/chkrootkit;\
+#				       /usr/bin/rkhunter -c --cronjob --report-warnings-only;\
+#				       /usr/sbin/unhide -m -d sys procall brute reverse"
+#
+#			/usr/bin/sudo /bin/sh -c "$SH_CMDS"\
+#				&> $HOME/Desktop/b4bed_`printf '%(%F_%X)T'`.log
+#
+#			/bin/sync
+#			/bin/sleep 10s
+#			/sbin/shutdown now
+#		}
+#
+#		alias b4bed='BEFORE_GOING_TO_BED'
+#	}
+#}
 
 # Quickly view all of your sd* storage device temperatures.
-{ [ -x /usr/bin/sudo ] && [ -x /usr/sbin/hddtemp ]; } && {
-	alias temphdd='/usr/bin/sudo /usr/sbin/hddtemp /dev/sd{a..z} 2> /dev/null'
-}
+#{ [ -x /usr/bin/sudo ] && [ -x /usr/sbin/hddtemp ]; } && {
+#	alias temphdd='/usr/bin/sudo /usr/sbin/hddtemp /dev/sd{a..z} 2> /dev/null'
+#}
 
 # Quickly download with wget, using some tider settings with -c.
 [ -x /usr/bin/wget ] && {
@@ -125,20 +125,20 @@ for DEP in\
 }
 
 # Create or unmount a user-only RAM Disk (tmpfs, basically) of 512MB.
-{ [ -x /usr/bin/sudo ] && [ -x /bin/mount ] && [ -x /bin/umount ]; } && {
-	RAMDISK="/media/$USER/RAMDisk_512M"
-
-	alias rd='\
-		/usr/bin/sudo /bin/mount -t tmpfs tmpfs\
-			-o x-mount.mkdir=700,uid=1000,gid=1000,mode=700,nodev\
-			-o noexec,nosuid,size=512M "$RAMDISK"
-	'
-
-	alias nord='\
-		/usr/bin/sudo /bin/sh -c\
-			/bin/umount\ "$RAMDISK"\ \&\&\ /bin/rmdir\ "$RAMDISK"
-	'
-}
+#{ [ -x /usr/bin/sudo ] && [ -x /bin/mount ] && [ -x /bin/umount ]; } && {
+#	RAMDISK="/media/$USER/RAMDisk_512M"
+#
+#	alias rd='\
+#		/usr/bin/sudo /bin/mount -t tmpfs tmpfs\
+#			-o x-mount.mkdir=700,uid=1000,gid=1000,mode=700,nodev\
+#			-o noexec,nosuid,size=512M "$RAMDISK"
+#	'
+#
+#	alias nord='\
+#		/usr/bin/sudo /bin/sh -c\
+#			/bin/umount\ "$RAMDISK"\ \&\&\ /bin/rmdir\ "$RAMDISK"
+#	'
+#}
 
 # Two possibly pointless functions to single- or double-quote a string of text.
 alias squo="QUOTE(){ printf \"'%s'\n\" \"\$*\"; }; QUOTE"
@@ -277,16 +277,16 @@ for DEP in /usr/{local/bin,bin}/youtube-dl; {
 }
 
 # Various [q]uick apt-get aliases to make life a bit easier.
-[ -x /usr/bin/apt-get ] && {
-	for CMD in\
-	\
-		quf:"remove --purge" qufu:"remove --purge --autoremove"\
-		qu:"remove" qa:"autoremove" qi:"install" qri:"reinstall"\
-		qupd:"update" qupg:"upgrade" qdupg:"dist-upgrade"
-	{
-		alias ${CMD%:*}="/usr/bin/sudo /usr/bin/apt-get ${CMD/*:}"
-	}
-}
+#[ -x /usr/bin/apt-get ] && {
+#	for CMD in\
+#	\
+#		quf:"remove --purge" qufu:"remove --purge --autoremove"\
+#		qu:"remove" qa:"autoremove" qi:"install" qri:"reinstall"\
+#		qupd:"update" qupg:"upgrade" qdupg:"dist-upgrade"
+#	{
+#		alias ${CMD%:*}="/usr/bin/sudo /usr/bin/apt-get ${CMD/*:}"
+#	}
+#}
 
 # Various [q]uick apt-cache aliases to make lifeeasier still.
 [ -x /usr/bin/apt-cache ] && {
@@ -296,14 +296,14 @@ for DEP in /usr/{local/bin,bin}/youtube-dl; {
 }
 
 # Workaround for older versions of dd; displays progress.
-declare -i DEPCOUNT=0
-for DEP in /bin/{dd,pidof} /usr/bin/sudo; {
-	[ -x "$DEP" ] && DEPCOUNT+=1
-
-	[ $DEPCOUNT -gt 3 ] && {
-		alias ddp="/usr/bin/sudo kill -USR1 `/bin/pidof /bin/dd`"
-	}
-}
+#declare -i DEPCOUNT=0
+#for DEP in /bin/{dd,pidof} /usr/bin/sudo; {
+#	[ -x "$DEP" ] && DEPCOUNT+=1
+#
+#	[ $DEPCOUNT -gt 3 ] && {
+#		alias ddp="/usr/bin/sudo kill -USR1 `/bin/pidof /bin/dd`"
+#	}
+#}
 
 # Display a detailed list of kernel modules currently in use.
 declare -i DEPCOUNT=0
@@ -479,20 +479,20 @@ FOR_THE_EDITOR(){
 }
 
 # As above, but for those which use sudo -e.
-FOR_THE_EDITOR_R(){
-	for FILE in\
-	\
-		"/etc/hosts":hosts "/etc/fstab":fstab "/etc/modules":modules\
-		"/etc/pam.d/login":pamlogin "/etc/bash.bashrc":bash.bashrc\
-		"$HOME/bin/maintain":maintain-sh\
-		"/etc/X11/default-display-manager":ddm\
-		"/etc/X11/default-display-manager":defdm\
-		"/etc/modprobe.d/blacklist.conf":blacklist
-	{
-		[ -f "${FILE%:*}" ] || continue
-		alias ${FILE/*:}="$1 ${FILE%:*}"
-	}
-}
+#FOR_THE_EDITOR_R(){
+#	for FILE in\
+#	\
+#		"/etc/hosts":hosts "/etc/fstab":fstab "/etc/modules":modules\
+#		"/etc/pam.d/login":pamlogin "/etc/bash.bashrc":bash.bashrc\
+#		"$HOME/bin/maintain":maintain-sh\
+#		"/etc/X11/default-display-manager":ddm\
+#		"/etc/X11/default-display-manager":defdm\
+#		"/etc/modprobe.d/blacklist.conf":blacklist
+#	{
+#		[ -f "${FILE%:*}" ] || continue
+#		alias ${FILE/*:}="$1 ${FILE%:*}"
+#	}
+#}
 
 # When in a TTY, change to different ones.
 [[ `/usr/bin/tty` == /dev/tty* ]] && {
@@ -504,15 +504,15 @@ FOR_THE_EDITOR_R(){
 }
 
 # Saves repeating for every possible editor; caveat? User input.
-CHK_FOR_THE_EDITOR(){
-	[ -x "$1" ] && {
-		FOR_THE_EDITOR "$2"
-	
-		[ -z "$SUDO_EDITOR" ]\
-			&& FOR_THE_EDITOR_R "/usr/bin/sudo $1"\
-			|| FOR_THE_EDITOR_R "/usr/bin/sudo -e"
-	}
-}
+#CHK_FOR_THE_EDITOR(){
+#	[ -x "$1" ] && {
+#		FOR_THE_EDITOR "$2"
+#	
+#		[ -z "$SUDO_EDITOR" ]\
+#			&& FOR_THE_EDITOR_R "/usr/bin/sudo $1"\
+#			|| FOR_THE_EDITOR_R "/usr/bin/sudo -e"
+#	}
+#}
 
 # Enter your desired editor, as you see below.
 CHK_FOR_THE_EDITOR "/usr/bin/vim" "vim"
