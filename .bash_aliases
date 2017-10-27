@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 27 Oct 00:29:37 BST 2017
+# Last Change       - Fri 27 Oct 01:04:59 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -421,57 +421,29 @@ for DIR in\
 	}
 }
 
-# Four little plugins I wrote for displaying only a certain type of package.
-declare -i DEPCOUNT=0
-for DEP in /usr/bin/{cut,dpkg-query,uniq,column} /bin/grep; {
-	[ -x "$DEP" ] && DEPCOUNT+=1
-	
-	[ $DEPCOUNT -eq 5 ] && {
-		LS_ESS_PKG_FUNC(){
-			while read -ra X; do
-			        [ "${X[0]}" == yes ] && B+=(${X[1]}) || continue
-			done <<< "$(/usr/bin/dpkg-query --show\
-				-f="\${Essential} \${Package}\n" \*)"
-			
-			for P in ${B[@]}; {
-			        declare -i M=0
-			        Y+=($P)
-			
-			        for V in ${Y[@]}; {
-			                [ "$V" == "$P" ] && M+=1
-			        }
-			
-			        [ $M -eq 1 ] && echo "$P"
-			}
+# Display only a certain type of package. Use: ls{ess,req,opt,ext}pkg
+{ [ -x /usr/bin/dpkg-query ] && [ -x /usr/bin/column ]; } && {
+	LS_PKG_TYPE(){
+		while read -ra X; do
+		        [ "${X[0]}" == "$2" ] && B+=(${X[1]}) || continue
+		done <<< "$(/usr/bin/dpkg-query --show -f="\${$1} \${Package}\n" \*)"
+		
+		for P in ${B[@]}; {
+		        declare -i M=0
+		        Y+=($P)
+		
+		        for V in ${Y[@]}; {
+		                [ "$V" == "$P" ] && M+=1
+		        }
+		
+		        [ $M -eq 1 ] && echo "$P"
 		}
-
-		# Display essential packages.
-		alias lsesspkg='LS_ESS_PKG_FUNC | /usr/bin/column'
-
-		# Display required packages.
-		alias lsreqpkg='/usr/bin/dpkg-query --show\
-			-f="\${package} \${Priority}\n" \*\
-			| /bin/grep " \(required\)\$"\
-			| /usr/bin/uniq\
-			| /usr/bin/cut -d " " -f 1\
-			| /usr/bin/column'
-
-		# Display optional packages.
-		alias lsoptpkg='/usr/bin/dpkg-query --show\
-			-f="\${package} \${Priority}\n" \*\
-			| /bin/grep " \(optional\)\$"\
-			| /usr/bin/uniq\
-			| /usr/bin/cut -d " " -f 1\
-			| /usr/bin/column'
-
-		# Display extra packages.
-		alias lsextpkg='/usr/bin/dpkg-query --show\
-			-f="\${package} \${Priority}\n" \*\
-			| /bin/grep " \(extra\)\$"\
-			| /usr/bin/uniq\
-			| /usr/bin/cut -d " " -f 1\
-			| /usr/bin/column'
 	}
+
+	alias lsesspkg='LS_PKG_TYPE Essential yes | /usr/bin/column'
+	alias lsreqpkg='LS_PKG_TYPE Priority required | /usr/bin/column'
+	alias lsoptpkg='LS_PKG_TYPE Priority optional | /usr/bin/column'
+	alias lsextpkg='LS_PKG_TYPE Priority extra | /usr/bin/column'
 }
 
 # My preferred links2 settings; I recommend!
