@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 27 Oct 01:04:59 BST 2017
+# Last Change       - Fri 27 Oct 01:09:01 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -444,6 +444,7 @@ for DIR in\
 	alias lsreqpkg='LS_PKG_TYPE Priority required | /usr/bin/column'
 	alias lsoptpkg='LS_PKG_TYPE Priority optional | /usr/bin/column'
 	alias lsextpkg='LS_PKG_TYPE Priority extra | /usr/bin/column'
+	alias lsimppkg='LS_PKG_TYPE Priority important | /usr/bin/column'
 }
 
 # My preferred links2 settings; I recommend!
