@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 27 Oct 21:59:17 BST 2017
+# Last Change       - Fri 27 Oct 23:27:04 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -425,10 +425,15 @@ for DIR in\
 	alias lsimppkg='LS_PKG_TYPE Priority important | /usr/bin/column'
 }
 
-# My preferred links2 settings; I recommend!
+# My preferred links2 settings. Also allows you to quickly search with DDG.
 [ -x /usr/bin/links2 ] && {
-	alias l2="links2 -http.do-not-track 1 -html-tables 1 -html-tables 1\
-		-html-numbered-links 1 duckduckgo.co.uk"
+	L2_FUNC(){
+		/usr/bin/links2 -http.do-not-track 1 -html-tables 1\
+			-html-tables 1 -html-numbered-links 1\
+			http://duckduckgo.com/?q="$*"
+	}
+
+	alias l2='L2_FUNC'
 }
 
 # A more descriptive, yet concise lsblk; you'll miss it when it's gone.
