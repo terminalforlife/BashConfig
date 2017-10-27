@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 27 Oct 21:50:21 BST 2017
+# Last Change       - Fri 27 Oct 21:58:24 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -264,9 +264,6 @@ export TERM="xterm-256color"
 
 # Set less and the pager to be more secure by disabling certain features.
 export LESSSECURE=1
-
-# Set the editor to use. Some programs will adhere to this.
-export EDITOR="/usr/bin/vim"
 
 # If sudo is found, set the sudo -e editor to rvim or rnano.
 [ -x /usr/bin/sudo ] && {

@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 27 Oct 21:48:52 BST 2017
+# Last Change       - Fri 27 Oct 21:59:17 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -463,8 +463,7 @@ for DEP in /usr/bin/{pager,less}; {
 	}
 }
 
-# Set and export this in somewhere like .bashrc.
-[ -x "$EDITOR" ] && {
+[ -x /usr/bin/vim ] && {
 	# Many files I often edit; usually configuration files.
 	for FILE in\
 	\
@@ -478,7 +477,7 @@ for DEP in /usr/bin/{pager,less}; {
 		".maintain/usersettings.conf":maintain-set
 	{
 		[ -f "${FILE%:*}" ] || continue
-		alias ${FILE/*:}="$EDITOR $HOME/${FILE%:*}"
+		alias ${FILE/*:}="/usr/bin/vim $HOME/${FILE%:*}"
 	}
 	
 	# As above, but for those which need root privileges.
@@ -492,7 +491,7 @@ for DEP in /usr/bin/{pager,less}; {
 		"/etc/modprobe.d/blacklist.conf":blacklist
 	{
 		[ -f "${FILE%:*}" ] || continue
-		alias ${FILE/*:}="$EDITOR ${FILE%:*}"
+		alias ${FILE/*:}="/usr/bin/vim ${FILE%:*}"
 	}
 }
 
