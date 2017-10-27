@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 27 Oct 01:09:01 BST 2017
+# Last Change       - Fri 27 Oct 01:20:08 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -16,9 +16,7 @@
 declare -i DEPCOUNT=0
 for DEP in\
 \
-	/sbin/shutdown\
-	/bin/{sh,sync,sleep}\
-	/usr/bin/{sudo,clamscan,rkhunter}\
+	/sbin/shutdown /bin/{sh,sync,sleep} /usr/bin/{sudo,clamscan,rkhunter}\
 	/usr/sbin/{e4defrag,chkrootkit,unhide}
 {
 	[ -x "$DEP" ] && DEPCOUNT+=1
@@ -244,30 +242,15 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 
 	for CMD in\
 	\
-		"rm":grm\
-		"add":add\
-		"tag":tag\
-		"push":push\
-		"pull":pull\
-		"diff":diff\
-		"init":init\
-		"clone":clone\
-		"merge":merge\
-		"branch":branch\
-		"config":config\
-		"rm --cached":grmc\
-		"commit -m":commit\
-		"status -s":status\
-		"checkout":checkout\
-		"config --list":gcl\
+		"rm":grm "add":add "tag":tag "push":push "pull":pull "diff":diff\
+		"init":init "clone":clone "merge":merge "branch":branch\
+		"config":config "rm --cached":grmc "commit -m":commit\
+		"status -s":status "checkout":checkout "config --list":gcl\
 		"describe --long --tag":describe;
 	{
 		alias "${CMD/*:}"="/usr/bin/git ${CMD%:*}"
 	}
 }
-
-# I prefer a builtin, for the same functionality.
-alias dep="command -v"
 
 # If you have gvfs-trash available, be safe with that.
 [ -x /usr/bin/gvfs-trash ] && alias rm="/usr/bin/gvfs-trash"
@@ -295,9 +278,11 @@ for DEP in /usr/{local/bin,bin}/youtube-dl; {
 
 # Various [q]uick apt-get aliases to make life a bit easier.
 [ -x /usr/bin/apt-get ] && {
-	for CMD in quf:"remove --purge" qufu:"remove --purge --autoremove"\
-		   qu:"remove" qa:"autoremove" qi:"install" qri:"reinstall"\
-		   qupd:"update" qupg:"upgrade" qdupg:"dist-upgrade"
+	for CMD in\
+	\
+		quf:"remove --purge" qufu:"remove --purge --autoremove"\
+		qu:"remove" qa:"autoremove" qi:"install" qri:"reinstall"\
+		qupd:"update" qupg:"upgrade" qdupg:"dist-upgrade"
 	{
 		alias ${CMD%:*}="/usr/bin/sudo /usr/bin/apt-get ${CMD/*:}"
 	}
@@ -336,12 +321,10 @@ for DEP in /sbin/{modinfo,lsmod} /usr/bin/cut; {
 }
 
 # This is just options I find the most useful when using dmesg.
-[ -x /bin/dmesg ] && {
-	alias klog="/bin/dmesg -t -L=never -l err,crit,alert,emerg"
-}
+[ -x /bin/dmesg ] && alias klog="/bin/dmesg -t -L=never -l err,crit,alert,emerg"
 
-# Enable the default hostkey when vboxsdl is used.
-[ -x /usr/bin/vboxsdl ] && {
+# Enable the default hostkey when vboxsdl is used, if virtualbox GUI is not found.
+{ [ -x /usr/bin/vboxsdl ] && ! [ -x /usr/bin/virtualbox ]; } && {
 	alias vboxsdl="/usr/bin/vboxsdl --hostkey 305 128"
 }
 
@@ -378,18 +361,10 @@ shopt -qp autocd || {
 # of :. This is a key=value style approach, like dictionaries in Python. HOME only.
 for DIR in\
 \
-	"Music":mus\
-	"GitHub":gh\
-	"Videos":vid\
-	"Desktop":dt\
-	"Pictures":pic\
-	"Downloads":dl\
-	"Documents":doc\
-	"Documents/TT":tt\
-	"ShellPlugins":sp\
-	"GitHub/terminalforlife":ghtfl\
-	"GitHub/terminalforlife/Forks":ghtflf\
-	"GitHub/terminalforlife/Personal":ghtflp
+	"Music":mus "GitHub":gh "Videos":vid "Desktop":dt "Pictures":pic\
+	"Downloads":dl "Documents":doc "Documents/TT":tt "ShellPlugins":sp\
+	"GitHub/terminalforlife":ghtfl "GitHub/terminalforlife/Forks":ghtflf\
+	"GitHub/terminalforlife/Personal":ghtflp;
 {
 	[ -d "$HOME/${DIR%:*}" ] && alias ${DIR/*:}="cd $HOME/${DIR%:*}"
 }
@@ -489,17 +464,10 @@ for DEP in /usr/bin/{pager,less}; {
 FOR_THE_EDITOR(){
 	for FILE in\
 	\
-		".zshrc":zshrc\
-		".vimrc":vimrc\
-		".bashrc":bashrc\
-		".conkyrc":conkyrc\
-		".profile":profile\
-		".i3blocks.conf":i3b1\
-		".i3blocks2.conf":i3b2\
-		".config/i3/config":i3c\
-		"bin/maintain":maintain-sh\
-		".bash_aliases":bashaliases\
-		".config/compton.conf":compconf\
+		".zshrc":zshrc ".vimrc":vimrc ".bashrc":bashrc ".conkyrc":conkyrc\
+		".profile":profile ".i3blocks.conf":i3b1 ".i3blocks2.conf":i3b2\
+		".config/i3/config":i3c "bin/maintain":maintain-sh\
+		".bash_aliases":bashaliases ".config/compton.conf":compconf\
 		"Documents/TT/Useful_Commands":cn\
 		".maintain/changelog.txt":maintain-cl\
 		".maintain/maintain.man":maintain-man\
@@ -514,11 +482,8 @@ FOR_THE_EDITOR(){
 FOR_THE_EDITOR_R(){
 	for FILE in\
 	\
-		"/etc/hosts":hosts\
-		"/etc/fstab":fstab\
-		"/etc/modules":modules\
-		"/etc/pam.d/login":pamlogin\
-		"/etc/bash.bashrc":bash.bashrc\
+		"/etc/hosts":hosts "/etc/fstab":fstab "/etc/modules":modules\
+		"/etc/pam.d/login":pamlogin "/etc/bash.bashrc":bash.bashrc\
 		"$HOME/bin/maintain":maintain-sh\
 		"/etc/X11/default-display-manager":ddm\
 		"/etc/X11/default-display-manager":defdm\
