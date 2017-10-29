@@ -23,44 +23,37 @@ INSTALLATION
 Paste these commands out into a terminal, using bash, line-by-line. But first off, let's back up your existing files, in-case of any conflicts:
 
 ```bash
-for I in .{bash{rc,_aliases},profile}; { mv -i "$I"{,_tfl.bak}; }
-[ -d "$HOME/ShellPlugins" ] && mv -i "$HOME/ShellPlugins"{,_tfl.bak}
+for I in .bash{rc,_aliases}; { mv -i "$I"{,.bak}; }
 ```
 
-Now that you've got your old files backed up, install mine:
+This line is only relevant if you already have a directory in $HOME/ called ShellPlugins:
 
 ```bash
-git clone https://github.com/terminalforlife/bashconfig /tmp/bashconfig
+mv -i $HOME/ShellPlugins{,.bak}
+```
+
+Now that you've got your old files backed up, install mine, but note that this method will require git to be installed:
+
+```bash
+git clone https://github.com/terminalforlife/bashconfig /tmp/bashconfig && cd !$
 for I in ShellPlugins .{bash{rc,_aliases},profile}; { cp -ri /tmp/bashconfig/"$I" "$HOME"/; }
 ```
 
-You will need to log out then back in for these changes to make effect, particularly the .profile file.
+Alternatively, if you don't have or want to install git, then you can mimic the commands here with a GUI and use your browser to download the entire branch by clicking on the green "Clone or download" button. Both methods should work just fine. Either way, once that's done, you can restart bash (may need to relog) for the changes to take effect.
 
-```bash
-for I in .{bash{rc,_aliases},profile}; { mv -i "$I"{,_tfl.bak}; }
-[ -d "$HOME/ShellPlugins" ] && mv -i "$HOME/ShellPlugins"{,_tfl.bak}
-```
-
-If you'd like to delete my files and restore the previously backed up files, here is a list of the files I offer:
-
-```bash
-$HOME/.bashrc
-$HOME/.bash_aliases
-$HOME/.profile
-```
-
-If you see any files in `$HOME/ShellPlugins`, they too will be from me.
+To restore your old files, remove mine and replace them with yours which were backed up as described above.
 
 *NOTE: These instructions were tested using version 4.3 of bash.*
 
-I should also point out that I removed /etc/profile, /etc/bash.bashrc, and various other system files related to bash, as they are either redundant (why source and test for bash_completion every which where possible?!); I've yet to experience any negatives from this. I prefer my root account and any other local account I create be set to mostly standard bash defaults. If you wanted to do the same, be sure to back up your files beforehand! It might all work for me, but I cannot guarantee it would for all setups.
+I should also point out that I removed /etc/profile, /etc/bash.bashrc, and various other system files related to bash, as they are either redundant (why source and test for bash_completion every which where possible?!); I've yet to experience any negatives from this. I prefer my root account and any other local account I create be set to mostly standard bash defaults. If you wanted to do the same, be sure to back up your files beforehand!
 
 REQUIREMENTS
 ------------
 
-Aside from the obvious (bash), you'll need at least the following (Ubuntu and/or Debian) packages for this to work as it does for me:
+On a Debian/Ubuntu system, at least these packages are required for this to work:
 
-1. fonts-opensymbol
+* bash
+* fonts-opensymbol
 
 This list will be changed as requirements are realised or added.
 
