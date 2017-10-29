@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Git_Status_All
 # Started On        - Sat 16 Sep 14:19:06 BST 2017
-# Last Change       - Tue 24 Oct 22:51:32 BST 2017
+# Last Change       - Sun 29 Oct 14:20:07 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -38,53 +38,56 @@ gitsa(){
 	# Store the current working directory here for returning to at the end.
 	CURRENT_DIRECTORY="$PWD"
 
-	# Begin the main processing.
+	# Begin the main processing. Using gibberish to avoid conflicts.
 	for DIR in $MY_GIT_STORAGE/* 'D+LqTAFĴ{!'; do
 		#TODO - Remove that last empty space... somehow.
 		if [ "$B" ] || [ "$C" ] || [ "$D" ] || [ "$E" ]; then
-			[ "$DIR" == 'D+LqTAFĴ{!' ] || echo && break
+			[ "$DIR" == 'D+LqTAFĴ{!' ] && continue; echo
 		fi
 
 		TITLE="false"
 		unset B C D E
-		#unset A B C D E
 
 		[ -d "$DIR" ] || continue && cd "$DIR"
 
 		while read -ra X; do
 			case "${X[*]}" in
 				#*nothing\ to\ commit,\ working\ directory\ clean*)
-				#         A="true"
-				#         [ "$TITLE" == "true" ] || TITLE="true" ;;
-				*Changed\ to\ be\ committed\:*)
+				#	A="true"
+				#	[ "$TITLE" == "true" ] || TITLE="true" ;;
+				Changes\ to\ be\ committed\:)
 					B="true"
 					[ "$TITLE" == "true" ] || TITLE="true" ;;
-				*Changes\ not\ staged\ for\ commit\:*)
+				Changes\ not\ staged\ for\ commit\:)
 					C="true"
 					[ "$TITLE" == "true" ] || TITLE="true" ;;
-				*nothing\ added\ to\ commit\ but\ untracked\ files\ present\ \(use\ \"git\ add\"\ to\ track\)*)
+				*nothing\ added\ to\ commit\ but\ untracked*)
 					D="true"
 					[ "$TITLE" == "true" ] || TITLE="true" ;;
-				*Your\ branch\ is\ ahead\ of*)
+				Your\ branch\ is\ ahead\ of*)
 					E="true"
 					[ "$TITLE" == "true" ] || TITLE="true" ;;
+				#Your\ branch\ is\ up-to-date\ with*)
+				#	F="true"
+				#	[ "$TITLE" == "true" ] || TITLE="true" ;;
 			esac
 		done <<< "$(/usr/bin/git status)"
 
 		[ "$TITLE" == "true" ] && {
-			#{ [ "$A" ] || [ "$B" ] || [ "$C" ] || [ "$D" ] || [ "$E" ]; } && {
-			{ [ "$B" ] || [ "$C" ] || [ "$D" ] || [ "$E" ]; } && {
-				echo "Status of ${DIR//*\/} repository:"
+			IFLET(){
+				for LET in $@; { [ "$LET" ] && local DO="yes"; }
+				[ "$DO" == "yes" ] && echo "REPO: ${DIR//*\/}"
 			}
 
-			#[ "$A" ] && echo "    ⏵ Clean; nothing to commit."
-			[ "$B" ] && echo "    ⏵ Changes to be committed."
-			[ "$C" ] && echo "    ⏵ Changes yet to be staged for commit."
-			[ "$D" ] && echo "    ⏵ Untracked files present."
-			[ "$E" ] && echo "    ⏵ Commit(s) ready to be sent upstream."
+			# If either of these letters (as args) are true.
+			IFLET B C D E F
 
-			
-			#{ [ "$A" ] || [ "$B" ] || [ "$C" ] || [ "$D" ] || [ "$E" ]; } && echo
+			#[ "$A" ] && echo "  ⏵ Clean; nothing to commit."
+			[ "$B" ] && echo "  ⏵ Changes to be committed."
+			[ "$C" ] && echo "  ⏵ Changes yet to be staged for commit."
+			[ "$D" ] && echo "  ⏵ Untracked files present."
+			[ "$E" ] && echo "  ⏵ Commit(s) ready to be sent upstream."
+			#[ "$F" ] && echo "  ⏵ Current branch is up-to-date with origin."
 		}
 
 		# Change back to the previous directory.
