@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 27 Oct 21:58:24 BST 2017
+# Last Change       - Sun 29 Oct 15:05:22 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ COMMITS="true"
 
 # By default, each prompt will be separated by a tidy set of lines. To disable this
 # feature, even though it may be harder to see each, then just set this to false.
-SHOW_LINES="true"
+SHOW_LINES="false"
 
 # Set this to true in order to remove all history settings and use the defaults.
 DEFAULT_HISTORY="false"
@@ -113,7 +113,7 @@ for OPT in\
 \
 	SHOW_LINES:$SHOW_LINES DO_GIT:$DO_GIT BRANCH:$BRANCH\
 	COMMITS:$COMMITS PREFIX_DIR:$PREFIX_DIR\
-	SIMPLE:$SIMPLE STANDARD:$STANDARD
+	SIMPLE:$SIMPLE STANDARD:$STANDARD POSIX_MODE:$POSIX_MODE
 {
 	[[ "${OPT/*:}" == @(true|false) ]] || {
 		echo "ERROR: Incorrect setting at: ${OPT%:*}" 1>&2
