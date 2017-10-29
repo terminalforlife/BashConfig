@@ -6,15 +6,9 @@
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-# Moved to $HOME/.i3a/initialize (see i3config repository)
-#[ -x /usr/bin/pactl ] && {
-#		while read -ra X; do
-#			if [[ "${X[@]%%: *}" == Default\ Source:\ * ]]; then
-#				printf -v PA_DEF_SOURCE "%s" "${X[2]}"
-#				export PA_DEF_SOURCE
-#			elif [[ "${X[@]%%: *}" == Default\ Sink:\ * ]]; then
-#				printf -v PA_DEF_SINK "%s" "${X[2]}"
-#				export PA_DEF_SINK
-#			fi
-#		done <<< "$(/usr/bin/pactl info short)"
-#}
+# This file currently doesn't do anything but is here mainly for the header to be
+# carried over if I decide to add something to the file.
+#
+# Things I would usually put in this file are processed by i3-wm when it starts.
+
+#--------------------------------------------------------------------------THE VOID
