@@ -43,7 +43,7 @@ Alternatively, if you don't have or want to install git, then you can mimic the 
 
 To restore your old files, remove mine and replace them with yours which were backed up as described above.
 
-*NOTE: These instructions were tested using version 4.3 of bash.*
+*NOTE: These instructions were tested using version 4.3 and 4.4 of bash.*
 
 I should also point out that I removed /etc/profile, /etc/bash.bashrc, and various other system files related to bash, as they are either redundant (why source and test for bash_completion every which where possible?!); I've yet to experience any negatives from this. I prefer my root account and any other local account I create be set to mostly standard bash defaults. If you wanted to do the same, be sure to back up your files beforehand!
 
