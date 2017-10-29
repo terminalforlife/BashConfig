@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 27 Oct 23:27:04 BST 2017
+# Last Change       - Sat 28 Oct 01:13:58 BST 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -14,6 +14,22 @@
 # Nifty trick to allow aliases to work with sudo. This avoids needing sudo in these
 # configuration files, since using sudo within a bash script/program is not great.
 alias sudo="sudo "
+
+# Efficient and fairly portable way to display the current iface.
+[ -x /sbin/ip ] && alias iface='X=(`/sbin/ip route`) && echo ${X[4]}'
+
+# Get and display the distribution type. (original base first)
+{ [ -f /etc/os-release ] && [ -r /etc/os-release ]; } && {
+	alias distro='\
+		while read -a X; do
+			if [[ "${X[0]}" == ID_LIKE=* ]]; then
+				echo "${X[0]/*=}"; break
+			elif [[ "${X[0]}" == ID=* ]]; then
+				echo "${X[0]/*=}"; break
+			fi
+		done < /etc/os-release
+	'
+}
 
 # Handy alias to run before going off to bed, or before going out. I set this up
 # pretty quickly just before I went to bed, so it'll probably be revised soon.
