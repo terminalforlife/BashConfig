@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sat 28 Oct 01:13:58 BST 2017
+# Last Change       - Sun 29 Oct 19:24:35 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -175,8 +175,7 @@ alias dquo='QUOTE(){ printf "\"%s\"\n" "$*"; }; QUOTE'
 # Display a columnized list of bash builtins.
 [ -x /usr/bin/column ] && {
 	alias builtins='\
-		while read -r
-		do
+		while read -r; do
 			echo "${REPLY/* }"
 		done <<< "$(enable -a)" | /usr/bin/column
 	'
@@ -331,10 +330,10 @@ for DEP in /sbin/{modinfo,lsmod} /usr/bin/cut; {
 
 	[ $DEPCOUNT -eq 3 ] && {
 		alias lsmodd='\
-			for MOD in `/sbin/lsmod | /usr/bin/cut -d " " -f 1`; {
-				printf "$MOD - "
-				/sbin/modinfo -d "$MOD"
-			}
+			while read -a X; do
+				Y=`/sbin/modinfo -d "${X[0]}"`
+				[ "$Y" ] && printf "%s - %s\n" "${X[0]}" "$Y"
+			done <<< "$(/sbin/lsmod)"
 		'
 	}
 }
@@ -454,6 +453,7 @@ for DIR in\
 
 # A more descriptive, yet concise lsblk; you'll miss it when it's gone.
 { [ -x /bin/lsblk ] && [ -x /bin/grep ]; } && {
+	#TODO - Use pure shell approach instead of grep.
 	alias lsblkid='\
 		/bin/lsblk -o name,label,fstype,size,uuid,mountpoint --noheadings -l\
 			| /bin/grep -v "^sd[a-z]\s"
