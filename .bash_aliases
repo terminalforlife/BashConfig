@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 29 Oct 19:24:35 GMT 2017
+# Last Change       - Sun 29 Oct 20:04:11 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -208,16 +208,17 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 
 		[ "$RESULT" ] || return
 
-		while read -r; do
-			[[ "$REPLY" == Date:\ \ \ [A-Z][a-z][a-z]\ * ]] && {
-				/bin/date -d "${REPLY:8:24}" +%F\ \(%X\)
+		while read X; do
+			#TODO - Include comment and name.
+			[[ "$X" == Date:\ \ \ [A-Z][a-z][a-z]\ * ]] && {
+				/bin/date -d "${X:8:24}" +%F\ \(%X\)
 				COUNT+=1
 			}
 		done <<< "$RESULT"
 
 		echo "TOTAL:    $COUNT"
 
-		unset COUNT REPLY
+		unset COUNT X
 	}
 
 	alias log="GIT_LOG_ALIAS"
@@ -453,10 +454,8 @@ for DIR in\
 
 # A more descriptive, yet concise lsblk; you'll miss it when it's gone.
 { [ -x /bin/lsblk ] && [ -x /bin/grep ]; } && {
-	#TODO - Use pure shell approach instead of grep.
 	alias lsblkid='\
-		/bin/lsblk -o name,label,fstype,size,uuid,mountpoint --noheadings -l\
-			| /bin/grep -v "^sd[a-z]\s"
+		/bin/lsblk -o name,label,fstype,size,uuid,mountpoint --noheadings
 	'
 }
 
