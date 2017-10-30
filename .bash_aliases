@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 29 Oct 20:04:11 GMT 2017
+# Last Change       - Mon 30 Oct 00:51:48 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -14,6 +14,9 @@
 # Nifty trick to allow aliases to work with sudo. This avoids needing sudo in these
 # configuration files, since using sudo within a bash script/program is not great.
 alias sudo="sudo "
+
+# Remove trailing spaces or lines with only spaces. Tabs included. Needs testing.
+[ -x /bin/sed ] && alias nospace='/bin/sed -i s/^[\s\t]\+$//\;\ s/[\s\t]\+$//'
 
 # Efficient and fairly portable way to display the current iface.
 [ -x /sbin/ip ] && alias iface='X=(`/sbin/ip route`) && echo ${X[4]}'
@@ -326,17 +329,13 @@ for DEP in /bin/{dd,pidof}; {
 
 # Display a detailed list of kernel modules currently in use.
 declare -i DEPCOUNT=0
-for DEP in /sbin/{modinfo,lsmod} /usr/bin/cut; {
-	[ -x "$DEP" ] && DEPCOUNT+=1
-
-	[ $DEPCOUNT -eq 3 ] && {
-		alias lsmodd='\
-			while read -a X; do
-				Y=`/sbin/modinfo -d "${X[0]}"`
-				[ "$Y" ] && printf "%s - %s\n" "${X[0]}" "$Y"
-			done <<< "$(/sbin/lsmod)"
-		'
-	}
+{ [ -x /sbin/lsmod ] && [ -x /sbin/modinfo ]; } && {
+	alias lsmodd='\
+		while read -a X; do
+			Y=`/sbin/modinfo -d "${X[0]}"`
+			[ "$Y" ] && printf "%s - %s\n" "${X[0]}" "$Y"
+		done <<< "$(/sbin/lsmod)"
+	'
 }
 
 # This is just options I find the most useful when using dmesg.
@@ -453,7 +452,7 @@ for DIR in\
 }
 
 # A more descriptive, yet concise lsblk; you'll miss it when it's gone.
-{ [ -x /bin/lsblk ] && [ -x /bin/grep ]; } && {
+[ -x /bin/lsblk ] && {
 	alias lsblkid='\
 		/bin/lsblk -o name,label,fstype,size,uuid,mountpoint --noheadings
 	'
