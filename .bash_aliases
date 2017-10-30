@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 30 Oct 01:45:42 GMT 2017
+# Last Change       - Mon 30 Oct 01:58:44 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -22,12 +22,21 @@ alias sudo="sudo "
 			"USERNAME" "UID" "GID" "HOME" "SHELL"
 
 		while IFS=":" read -a X; do
-			printf "%-20s %-7d %-7d %-25s %s\n"\
-				"${X[0]}" "${X[2]}" "${X[3]}" "${X[5]}" "${X[6]}"
+			if [ "$1" == "--nosys" ]; then
+				[[ "${X[5]/\/home\/syslog}" == /home/* ]] && {
+					printf "%-20s %-7d %-7d %-25s %s\n"\
+						"${X[0]}" "${X[2]}" "${X[3]}"\
+						"${X[5]}" "${X[6]}"
+				}
+			else
+				printf "%-20s %-7d %-7d %-25s %s\n" "${X[0]}"\
+					"${X[2]}" "${X[3]}" "${X[5]}" "${X[6]}"
+			fi
 		done < /etc/passwd
 	}
 
-	alias lsusers='LSUSERS_FUNC'
+	alias lsusers='LSUSERS_FUNC --nosys'
+	alias lsallusers='LSUSERS_FUNC'
 }
 
 # Remove trailing spaces or lines with only spaces. Tabs included. Needs testing.
