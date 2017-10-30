@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 30 Oct 00:51:48 GMT 2017
+# Last Change       - Mon 30 Oct 01:45:42 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -14,6 +14,21 @@
 # Nifty trick to allow aliases to work with sudo. This avoids needing sudo in these
 # configuration files, since using sudo within a bash script/program is not great.
 alias sudo="sudo "
+
+# Display the users on the system (parse /etc/passwd) in a more human-readable way.
+[ -f /etc/passwd ] && {
+	LSUSERS_FUNC(){
+		printf "%-20s %-7s %-7s %-25s %s\n"\
+			"USERNAME" "UID" "GID" "HOME" "SHELL"
+
+		while IFS=":" read -a X; do
+			printf "%-20s %-7d %-7d %-25s %s\n"\
+				"${X[0]}" "${X[2]}" "${X[3]}" "${X[5]}" "${X[6]}"
+		done < /etc/passwd
+	}
+
+	alias lsusers='LSUSERS_FUNC'
+}
 
 # Remove trailing spaces or lines with only spaces. Tabs included. Needs testing.
 [ -x /bin/sed ] && alias nospace='/bin/sed -i s/^[\s\t]\+$//\;\ s/[\s\t]\+$//'
