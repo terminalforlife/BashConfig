@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 30 Oct 01:58:44 GMT 2017
+# Last Change       - Tue 31 Oct 00:21:52 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -274,7 +274,7 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 
 				while read -a REPLY; do
 					[[ "$REPLY" == TOTAL:* ]] && {
-						printf "%-7d  %s\n"\
+						printf "%'-7d  %s\n"\
 							"${REPLY[1]}" "${PWD//*\/}"
 					}
 				done <<< "$GET_TTLS"
@@ -483,14 +483,9 @@ for DIR in\
 }
 
 # Some options I like to have by default for less and pager.
-declare -i DEPCOUNT=0
-for DEP in /usr/bin/{pager,less}; {
-	[ -x "$DEP" ] && DEPCOUNT+=1
-
-	[ $DEPCOUNT -eq 2 ] && {
-		alias pager='/usr/bin/pager -sN --tilde'
-		alias less='/usr/bin/pager -sN --tilde'
-	}
+{ [ -x /usr/bin/pager ] || [ -x /usr/bin/less ]; } && {
+	alias pager='/usr/bin/pager -sN --tilde'
+	alias less='/usr/bin/pager -sN --tilde'
 }
 
 # Text files I occasionally like to view, but not edit.
@@ -514,7 +509,7 @@ for DEP in /usr/bin/{pager,less}; {
 		".profile":profile ".i3blocks.conf":i3b1 ".i3blocks2.conf":i3b2\
 		".config/i3/config":i3c "bin/maintain":maintain-sh\
 		".bash_aliases":bashaliases ".config/compton.conf":compconf\
-		"Documents/TT/Useful_Commands":cn\
+		"Documents/TT/Useful_Commands":cn "i3blocks1.conf":i3cb1\
 		".maintain/changelog.txt":maintain-cl\
 		".maintain/maintain.man":maintain-man\
 		".maintain/usersettings.conf":maintain-set
