@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 31 Oct 00:21:52 GMT 2017
+# Last Change       - Wed  1 Nov 14:31:03 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -23,6 +23,8 @@ alias sudo="sudo "
 
 		while IFS=":" read -a X; do
 			if [ "$1" == "--nosys" ]; then
+				#TODO - Make this instead omit system ones by
+				#       testing for the shell used.
 				[[ "${X[5]/\/home\/syslog}" == /home/* ]] && {
 					printf "%-20s %-7d %-7d %-25s %s\n"\
 						"${X[0]}" "${X[2]}" "${X[3]}"\
@@ -113,11 +115,11 @@ for DEP in\
 	alias dict='\
 		DICT_LOOKUP(){
 			while read -r; do
-				[[ "$REPLY" == *"$1"* ]] && echo "$REPLY"
+				[[ "$REPLY" == *${1}* ]] && echo "$REPLY"
 			done < /usr/share/dict/words
 		}
 
-		DICT_LOOKUP\
+		DICT_LOOKUP
 	'
 }
 
@@ -134,7 +136,7 @@ for DEP in\
 	alias rss='/usr/bin/vim $HOME/.newsbeuter/urls'
 }
 
-# Watches a directory as its size and number files increase. Useful while you're
+# Watches a directory as its size and number of files increase. Useful while you're
 # downloading or making other sorts of changes to its contents, and want to watch.
 { [ -x /bin/ls ] && [ -x /usr/bin/watch ]; } && {
 	alias dwatch='\
@@ -146,7 +148,6 @@ for DEP in\
 # Blast away all of the (global) configuration files of the previously uninstalled
 # packages using dpkg to detect them and apt-get to purge them.
 { [ -x /usr/bin/apt-get ] && [ -x /usr/bin/dpkg ]; } && {
-	#TODO - Incomplete and probably not yet functional, hence -s.
 	alias rmrc='\
 		local LIST=$(
 			while read -ra REPLY; do
@@ -163,9 +164,9 @@ for DEP in\
 	alias fixperms='\
 		for FILE in ./*; {
 			if [ -f "$FILE" ]; then
-				chmod 600 "$FILE"
+				/bin/chmod 600 "$FILE"
 			elif [ -d "$FILE" ]; then
-				chmod 700 "$FILE"
+				/bin/chmod 700 "$FILE"
 			fi
 		}
 	'
@@ -362,7 +363,7 @@ declare -i DEPCOUNT=0
 	'
 }
 
-# This is just options I find the most useful when using dmesg.
+# These are just options I find the most useful when using dmesg.
 [ -x /bin/dmesg ] && alias klog="/bin/dmesg -t -L=never -l err,crit,alert,emerg"
 
 # Enable the default hostkey when vboxsdl is used, if virtualbox GUI is not found.
