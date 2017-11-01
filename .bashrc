@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 29 Oct 15:05:22 GMT 2017
+# Last Change       - Mon 30 Oct 21:28:12 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ DO_GIT="true"
 
 # Set this to false to disable the prefixed ../ where the current working directory
 # is displayed, unless you're of course in /. Alignment should be maintained.
-PREFIX_DIR="true"
+PREFIX_DIR="false"
 
 # By default, you should see a rather nice prompt. If you want something simple, -
 # akin to the Bourne Shell prompt, set this option to true.
@@ -57,7 +57,7 @@ COMMITS="true"
 
 # By default, each prompt will be separated by a tidy set of lines. To disable this
 # feature, even though it may be harder to see each, then just set this to false.
-SHOW_LINES="false"
+SHOW_LINES="true"
 
 # Set this to true in order to remove all history settings and use the defaults.
 DEFAULT_HISTORY="false"
@@ -132,7 +132,7 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 
 			# This must come second to ensure $? above works.
 			if [ "$SHOW_LINES" == "true" ]; then
-				printf -v Y "%${COLUMNS}s" " "
+				printf -v Y "%-.*d" "${COLUMNS}"
 			fi
 
 			if [ -x /usr/bin/git ] && [ "$DO_GIT" == "true" ]; then
@@ -173,7 +173,7 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 						while read -r; do
 							[[ "$REPLY" == commit* ]] && L+=1
 						done <<< "$(/usr/bin/git log 2> /dev/null)"
-						[ $L -eq 0 ] || echo "(${L}) " && echo ""
+						[ $L -eq 0 ] || printf "(%'d) " "$L" && echo ""
 					)
 				fi
 			fi
@@ -186,7 +186,7 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 
 			# These will be concatenated; more readable code, sort of.
 			if [ "$SHOW_LINES" == "true" ]; then
-				local PA="\e\[[2;9;38m\]${Y}\n\[\e[0m\]╓╾ \[\e[1;38m\]"
+				local PA="\e\[[2;38m\]${Y//0/━}\n\[\e[0m\]╓╾ \[\e[1;38m\]"
 			else
 				local PA="\[\e[0m\]╓╾ \[\e[1;38m\]"
 			fi
