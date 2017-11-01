@@ -3,29 +3,22 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Get_Bad_Hosts
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Fri 13 Oct 23:47:29 BST 2017
+# Last Change       - Wed  1 Nov 14:50:29 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-# WORK IN PROGRESS
-
 gbh(){
-	ERR(){ echo "[L${1}] ERROR: $2" 1>&2; }
+	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
 	
 	[ $UID -eq 0 ] && {
 		ERR "$LINENO" "Root access isn't required."
 	}
 	
-	declare -i DEPCOUNT=0
-	for DEP in /bin/{grep,gzip} /usr/bin/{wget,dos2unix,uniq,sort,tr}; {
-		[ -x "$DEP" ] || {
-			ERR "$LINENO" "Dependency '$DEP' not met."
-			DEPCOUNT+=1
-		}
+	[ -x /usr/bin/wget ] || {
+		ERR "$LINENO" "Dependency '/usr/bin/wget' not met."
+		return 1
 	}
-	
-	[ $DEPCOUNT -eq 0 ] || return 1
 
 	[ $# -eq 0 ] || {
 		ERR "$LINENO" "No arguments required."
@@ -36,25 +29,18 @@ gbh(){
 	DESTINATION="$HOME/Downloads/GBH.txt"
 
 	[ -d "${DESTINATION%\/*}" ] || {
-		RERR "$LINENO" "Destination directory not found."
+		ERR "$LINENO" "Destination directory not found."
 		return 1
 	}
 
 	[ -f "${DESTINATION}.gz" ] && {
-		RERR "$LINENO" "File already present."
+		ERR "$LINENO" "File already present."
 		return 1
 	}
 
-	/usr/bin/wget -q --show-progress "$URL" -O "$DESTINATION"
-	/usr/bin/dos2unix "$DESTINATION"
-
-	while read -r; do
-		echo "$REPLY"
-	done <<< "$DESTINATION"\
-		| /usr/bin/tr "\t" " "\
-		| /bin/grep -a "^127.0.0.1 "\
-		| /usr/bin/uniq\
-		| /usr/bin/sort\
-		| /bin/gzip -c\
-		> "$DESTINATION"
+	while read -a X; do
+		[ "${X[0]}" == "127.0.0.1" ] && {
+			printf "%s %s\n" "${X[0]}" "${X[1]%}"
+		}
+	done <<< "$(/usr/bin/wget -q "$URL" -O -)" > ./Bad\ Hosts.txt
 }
