@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/List_Signals
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Wed 25 Oct 15:00:32 BST 2017
+# Last Change       - Mon 30 Oct 02:01:03 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -24,7 +24,7 @@ lssig(){
 		return 1
 	}
 
-	[ $# -gt 0 ] || {
+	[ $# -gt 0 ] && {
 		ERR "$LINENO" "No arguments are required."
 		return 1
 	}
