@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Mon 30 Oct 21:28:12 GMT 2017
+# Last Change       - Wed  1 Nov 12:03:44 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ COMMITS="true"
 
 # By default, each prompt will be separated by a tidy set of lines. To disable this
 # feature, even though it may be harder to see each, then just set this to false.
-SHOW_LINES="true"
+SHOW_LINES="false"
 
 # Set this to true in order to remove all history settings and use the defaults.
 DEFAULT_HISTORY="false"
@@ -65,7 +65,13 @@ DEFAULT_HISTORY="false"
 # Enter your chosen ShellPlugins here. They must exist in: $HOME/ShellPlugins/
 # Each entry must be separated by spaces, so ensure you escape or quote filenames
 # with spaces in them, or even special characters understood by the shell.
-PLUGINS=(Bell_Alarm Cleaner_RK_Scan Load_File_Links2 Git_Status_All List_Signals)
+PLUGINS=(
+	Bell_Alarm                # Run 'bell' for simple alarm using the x11 bell.
+	Cleaner_RK_Scan           # Run 'rkc' to scan with rkhunter and chkrootkit.
+	Load_File_Links2          # Run 'l2f FILE' to load a file with links2.
+	Git_Status_All            # Run 'gitsa' to show repos which need action.
+	List_Signals              # Run 'lsssig' for another way to list signals.
+)
 
 # WARNING: Changing code below, without knowledge of shell, could easily break it!
 
