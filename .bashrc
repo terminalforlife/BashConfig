@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed  1 Nov 12:03:44 GMT 2017
+# Last Change       - Wed  1 Nov 14:48:05 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -70,6 +70,7 @@ PLUGINS=(
 	Cleaner_RK_Scan           # Run 'rkc' to scan with rkhunter and chkrootkit.
 	Load_File_Links2          # Run 'l2f FILE' to load a file with links2.
 	Git_Status_All            # Run 'gitsa' to show repos which need action.
+	Get_Bad_Hosts             # Run 'gbh' to download a list of bad domains.
 	List_Signals              # Run 'lsssig' for another way to list signals.
 )
 
