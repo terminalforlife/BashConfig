@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Wed  1 Nov 14:31:03 GMT 2017
+# Last Change       - Wed  1 Nov 18:11:49 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -14,6 +14,23 @@
 # Nifty trick to allow aliases to work with sudo. This avoids needing sudo in these
 # configuration files, since using sudo within a bash script/program is not great.
 alias sudo="sudo "
+
+# Display the total data downloaded and uploaded on a given interface.
+[ -f /proc/net/dev ] && {
+	INOUT_FUNC(){
+		while read -a X; do
+			[ "${X[0]}" == "${1}:" ] && {
+				IN=${X[1]}
+				OUT=${X[9]}
+			}
+		done < /proc/net/dev
+
+		printf "IN:  %'14dK\nOUT: %'14dK\n"\
+			"$((IN/1024))" "$((OUT/1024))"
+	}
+
+	alias inout='INOUT_FUNC'
+}
 
 # Display the users on the system (parse /etc/passwd) in a more human-readable way.
 [ -f /etc/passwd ] && {
