@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Wed  1 Nov 18:11:49 GMT 2017
+# Last Change       - Thu  2 Nov 19:20:53 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -14,6 +14,18 @@
 # Nifty trick to allow aliases to work with sudo. This avoids needing sudo in these
 # configuration files, since using sudo within a bash script/program is not great.
 alias sudo="sudo "
+
+# Quickly flash the terminal and sound the bell 3 times.
+[ -x /bin/sleep ] && {
+	alias alertme='\
+		for I in {1..3}; {
+			/bin/sleep 0.03s
+			printf "\a\e[?5h"
+			/bin/sleep 0.03s
+			printf "\a\e[?5l"
+		}
+	'
+}
 
 # Display the total data downloaded and uploaded on a given interface.
 [ -f /proc/net/dev ] && {
