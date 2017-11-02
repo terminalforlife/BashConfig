@@ -1,0 +1,30 @@
+#!/bin/bash
+
+#----------------------------------------------------------------------------------
+# Project Name      - $HOME/ShellPlugins/Loop_This
+# Started On        - Thu  2 Nov 18:52:49 GMT 2017
+# Last Change       - Thu  2 Nov 19:03:28 GMT 2017
+# Author E-Mail     - terminalforlife@yahoo.com
+# Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
+
+loop(){
+	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
+
+	[ -x /bin/sleep ] || {
+		ERR "$LINENO" "Dependency '/bin/sleep' not met."
+		return 1
+	}
+
+	[ $# -eq 0 ] && {
+		ERR "$LINENO" "Command(s) required before looping can begin."
+		return 1
+	}
+
+	printf "\ec"
+	while :; do
+		printf "\ec\eH"
+		/bin/sleep 0.3
+		$@
+	done
+}
