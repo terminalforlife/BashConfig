@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Thu  2 Nov 19:20:53 GMT 2017
+# Last Change       - Fri  3 Nov 16:07:06 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -540,6 +540,7 @@ for DIR in\
 		".config/i3/config":i3c "bin/maintain":maintain-sh\
 		".bash_aliases":bashaliases ".config/compton.conf":compconf\
 		"Documents/TT/Useful_Commands":cn "i3blocks1.conf":i3cb1\
+		"Documents/TT/python/Useful_Commands.py":cnp\
 		".maintain/changelog.txt":maintain-cl\
 		".maintain/maintain.man":maintain-man\
 		".maintain/usersettings.conf":maintain-set
