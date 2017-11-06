@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri  3 Nov 16:07:06 GMT 2017
+# Last Change       - Mon  6 Nov 11:24:45 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -560,7 +560,7 @@ for DIR in\
 		"/etc/modprobe.d/blacklist.conf":blacklist
 	{
 		[ -f "${FILE%:*}" ] || continue
-		alias ${FILE/*:}="/usr/bin/vim ${FILE%:*}"
+		alias ${FILE/*:}="/usr/bin/rvim ${FILE%:*}"
 	}
 }
 
