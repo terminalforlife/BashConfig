@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/update_links.sh
 # Started On        - Sun 22 Oct 00:15:02 BST 2017
-# Last Change       - Tue 24 Oct 22:19:59 BST 2017
+# Last Change       - Tue  7 Nov 20:04:50 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -28,9 +28,11 @@ for DEP in /bin/{ln,rm}; {
 [ "${PWD//*\/}" == "bashconfig" ] || XERR "Not in the repository's root directory."
 
 for FILE in .bashrc .bash_aliases .profile; {
-	/bin/rm $HOME/$FILE && /bin/ln $FILE $HOME/$FILE
+	/bin/rm $HOME/$FILE 2> /dev/null
+	/bin/ln $FILE $HOME/$FILE 2> /dev/null
 }
 
 for FILE in ShellPlugins/*; {
-	/bin/rm $HOME/$FILE && /bin/ln $FILE $HOME/$FILE
+	/bin/rm $HOME/$FILE 2> /dev/null
+	/bin/ln $FILE $HOME/$FILE 2> /dev/null
 }
