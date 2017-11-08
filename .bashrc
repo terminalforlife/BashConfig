@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed  8 Nov 19:17:34 GMT 2017
+# Last Change       - Wed  8 Nov 19:22:00 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ for OPT in\
 PROMPT_DIRTRIM=1
 
 if ! [ "$ALT_PROMPT" == "true" ]; then
-	if [ "$SIMPLE" == "false" ] && [ -x /usr/bin/tty ]; then
+	if [ "$SIMPLE" == "false" -a -x /usr/bin/tty ]; then
 		# Get the prompt information: Git, PWD, and $?.
 		GET_PC(){
 			local X=$?; printf -v X "%0.3d" "$X"
@@ -142,7 +142,7 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 				printf -v Y "%-.*d" "${COLUMNS}"
 			fi
 
-			if [ -x /usr/bin/git ] && [ "$DO_GIT" == "true" ]; then
+			if [ -x /usr/bin/git -a "$DO_GIT" == "true" ]; then
 				# Work in progress. Rework of the above.
 				local GS=$(
 					U="Your branch is ahead of"
@@ -295,7 +295,7 @@ export LESSSECURE=1
 USRBC="/usr/share/bash-completion/bash_completion"
 
 # If the bash_completion file is found and has read access, source it.
-{ [ -f "$USRBC" ] && [ -r "$USRBC" ]; } && source "$USRBC"
+[ -f "$USRBC" -a -r "$USRBC" ] && source "$USRBC"
 
 unset USRBC
 
@@ -307,7 +307,7 @@ unset USRBC
 	CURTERM=`/usr/bin/tty`
 	printf -v DATE '%(%F (%X))T'
 
-	{ [ -f "$TERMWATCH_LOG" ] && [ -w "$TERMWATCH_LOG" ]; } && {
+	[ -f "$TERMWATCH_LOG" -a -w "$TERMWATCH_LOG" ] && {
 		# Using "" to avoid argument miscount when using %()T.
 		printf 'Using %s on %s at %s as %s.\n' "${CURTERM:-Unknown}"\
 			"(${TERM-unknown})" "$DATE" "$USER" >> "$TERMWATCH_LOG"
@@ -320,6 +320,6 @@ unset USRBC
 
 # If the user's bash_aliases file is found, source it.
 BASH_ALIASES="$HOME/.bash_aliases"
-{ [ -f "$BASH_ALIASES" ] && [ -r "$BASH_ALIASES" ]; } && . "$BASH_ALIASES"
+[ -f "$BASH_ALIASES" -a -r "$BASH_ALIASES" ] && . "$BASH_ALIASES"
 
 unset BASH_ALIASES
