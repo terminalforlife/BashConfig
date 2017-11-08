@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed  8 Nov 19:00:29 GMT 2017
+# Last Change       - Wed  8 Nov 19:17:34 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -145,11 +145,20 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 			if [ -x /usr/bin/git ] && [ "$DO_GIT" == "true" ]; then
 				# Work in progress. Rework of the above.
 				local GS=$(
+					U="Your branch is ahead of"
 					declare -i L=0
+
 					while read -ra X; do
 						L+=1
 
 						# If on 2nd line.
+						if [[ $L -eq 2 && "${X[*]}" == "$U"* ]]
+						then
+							printf "%s " "${X[@]//[:\'.]/}"
+							break # No more lines.
+						fi
+
+						# If on 3rd line.
 						if [ $L -eq 3 ]; then
 							# Removing . or : at the
 							# end, to keep it clean, -
