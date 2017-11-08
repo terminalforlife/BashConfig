@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed  1 Nov 14:48:05 GMT 2017
+# Last Change       - Wed  8 Nov 19:00:29 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ COMMITS="true"
 
 # By default, each prompt will be separated by a tidy set of lines. To disable this
 # feature, even though it may be harder to see each, then just set this to false.
-SHOW_LINES="false"
+SHOW_LINES="true"
 
 # Set this to true in order to remove all history settings and use the defaults.
 DEFAULT_HISTORY="false"
@@ -150,7 +150,7 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 						L+=1
 
 						# If on 2nd line.
-						if [ $L -eq 2 ]; then
+						if [ $L -eq 3 ]; then
 							# Removing . or : at the
 							# end, to keep it clean, -
 							# sane, and consistent.
