@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon  6 Nov 11:24:45 GMT 2017
+# Last Change       - Wed  8 Nov 15:32:52 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -14,6 +14,30 @@
 # Nifty trick to allow aliases to work with sudo. This avoids needing sudo in these
 # configuration files, since using sudo within a bash script/program is not great.
 alias sudo="sudo "
+
+# Search the given path(s) for file types of TYPE. Ignores filename extension.
+[ -x /usr/bin/file ] && {
+	SEARCH_IN_FILE(){
+		[ $# -eq 0 ] && printf "%s\n"\
+			"USAGE: sif TYPE FILE1 [FILE2 FILE3...]" 1>&2
+
+		TYPE="$1"
+		shift
+
+	for FILE in $@; {
+		while read -a X; do
+			for I in ${X[@]}; {
+				#TODO - Why won't this match case?
+				if [[ "$I" == $TYPE ]]; then
+					printf "%s\n" "$FILE"
+				fi
+			}
+		done <<< "$(/usr/bin/mimetype -bd "$FILE")"
+	}
+}
+
+	alias sif='SEARCH_IN_FILE'
+}
 
 # Quickly flash the terminal and sound the bell 3 times.
 [ -x /bin/sleep ] && {
@@ -541,14 +565,15 @@ for DIR in\
 		".bash_aliases":bashaliases ".config/compton.conf":compconf\
 		"Documents/TT/Useful_Commands":cn "i3blocks1.conf":i3cb1\
 		"Documents/TT/python/Useful_Commands.py":cnp\
-		".maintain/changelog.txt":maintain-cl\
-		".maintain/maintain.man":maintain-man\
+		".maintain/changelog.txt":maintain-cl ".xbindkeysrc":xbkrc\
+		".maintain/maintain.man":maintain-man ".config/openbox/rc.xml":obc\
 		".maintain/usersettings.conf":maintain-set
+
 	{
 		[ -f "${FILE%:*}" ] || continue
 		alias ${FILE/*:}="/usr/bin/vim $HOME/${FILE%:*}"
 	}
-	
+
 	# As above, but for those which need root privileges.
 	for FILE in\
 	\
