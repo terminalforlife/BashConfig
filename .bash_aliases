@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Wed  8 Nov 15:32:52 GMT 2017
+# Last Change       - Thu  9 Nov 13:02:46 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -445,7 +445,7 @@ declare -i DEPCOUNT=0
 	esac
 }
 
-[ -x /usr/bin/pgrep ] && alias pgrep="/bin/pgrep --color=auto"
+[ -x /usr/bin/pgrep ] && alias pgrep="/usr/bin/pgrep --color=auto"
 
 # Quick navigation aliases in absence of the autocd shell option.
 shopt -qp autocd || {
