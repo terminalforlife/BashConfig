@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 10 Nov 01:13:45 GMT 2017
+# Last Change       - Fri 10 Nov 14:29:16 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -150,6 +150,8 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 
 					while read -ra X; do
 						L+=1
+
+						#TODO - Fix empty when new branch.
 
 						# If on 2nd line.
 						if [[ $L -eq 2 && "${X[*]}" == "$U"* ]]
