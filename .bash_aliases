@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Thu  9 Nov 13:04:31 GMT 2017
+# Last Change       - Fri 10 Nov 02:10:46 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -14,6 +14,35 @@
 # Nifty trick to allow aliases to work with sudo. This avoids needing sudo in these
 # configuration files, since using sudo within a bash script/program is not great.
 alias sudo="sudo "
+
+[ -x /usr/bin/notify-send -a -x /usr/bin/tty ] && {
+	alias yo='\
+		/usr/bin/notify-send --urgency=normal\
+			"Your normal job in `/usr/bin/tty` has completed."
+	'
+
+	alias YO='\
+		/usr/bin/notify-send --urgency=critical\
+			"Your critical job in `/usr/bin/tty` has completed."
+	'
+}
+
+[ -x /usr/bin/feh ] && {
+	alias img='\
+		/usr/bin/feh --fullscreen --hide-pointer --draw-filename\
+			--no-menus --preload --cycle-once 2> /dev/null
+	'
+}
+
+[ -x /usr/bin/clamscan ] && {
+	alias scan='\
+		/usr/bin/clamscan --bell -r --no-summary -i --detect-pua=yes\
+			--detect-structured=no --structured-cc-count=3\
+			--structured-ssn-count=3 --phishing-ssl=yes\
+			--phishing-cloak=yes --partition-intersection=yes\
+			--detect-broken=yes --block-macros=yes --max-filesize=256M
+	'
+}
 
 # Search the given path(s) for file types of TYPE. Ignores filename extension.
 [ -x /usr/bin/file ] && {
