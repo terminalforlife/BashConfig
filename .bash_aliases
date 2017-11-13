@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 10 Nov 02:10:46 GMT 2017
+# Last Change       - Mon 13 Nov 13:24:45 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -15,18 +15,25 @@
 # configuration files, since using sudo within a bash script/program is not great.
 alias sudo="sudo "
 
+# Sick of typing this in the termanal, out of habit!
+alias ":q"="exit"
+
+# Used to notify you of a job completion on the terminal.
 [ -x /usr/bin/notify-send -a -x /usr/bin/tty ] && {
+	# Standard notification.
 	alias yo='\
 		/usr/bin/notify-send --urgency=normal\
 			"Your normal job in `/usr/bin/tty` has completed."
 	'
 
+	# Urgent notification.
 	alias YO='\
 		/usr/bin/notify-send --urgency=critical\
 			"Your critical job in `/usr/bin/tty` has completed."
 	'
 }
 
+# Used to use gpicview, until I realised feh could be used as an image viewer!
 [ -x /usr/bin/feh ] && {
 	alias img='\
 		/usr/bin/feh --fullscreen --hide-pointer --draw-filename\
@@ -34,6 +41,7 @@ alias sudo="sudo "
 	'
 }
 
+# Very useful, quick alias to scan anything you specify, if you have clamscan.
 [ -x /usr/bin/clamscan ] && {
 	alias scan='\
 		/usr/bin/clamscan --bell -r --no-summary -i --detect-pua=yes\
