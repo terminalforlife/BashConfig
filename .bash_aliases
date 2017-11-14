@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 13 Nov 13:24:45 GMT 2017
+# Last Change       - Tue 14 Nov 14:01:02 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ alias ":q"="exit"
 [ -x /usr/bin/feh ] && {
 	alias img='\
 		/usr/bin/feh --fullscreen --hide-pointer --draw-filename\
-			--no-menus --preload --cycle-once 2> /dev/null
+			--no-menus --preload 2> /dev/null
 	'
 }
 
@@ -383,7 +383,7 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 		"init":init "clone":clone "merge":merge "branch":branch\
 		"config":config "rm --cached":grmc "commit -m":commit\
 		"status -s":status "checkout":checkout "config --list":gcl\
-		"describe --long --tag":describe;
+		"describe --long --tag":describe "mv":gmv;
 	{
 		alias "${CMD/*:}"="/usr/bin/git ${CMD%:*}"
 	}
