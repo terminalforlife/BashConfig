@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 14 Nov 14:01:02 GMT 2017
+# Last Change       - Sun 19 Nov 23:13:02 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -417,9 +417,15 @@ for DEP in /usr/{local/bin,bin}/youtube-dl; {
 [ -x /usr/bin/apt-get ] && {
 	for CMD in\
 	\
-		quf:"remove --purge" qufu:"remove --purge --autoremove"\
-		qu:"remove" qa:"autoremove" qi:"install" qri:"reinstall"\
-		qupd:"update" qupg:"upgrade" qdupg:"dist-upgrade"
+		quf:"-qq --show-progress remove --purge"\
+		qufu:"-qq --show-progress remove --purge --autoremove"\
+		qu:"-qq --show-progress remove"\
+		qa:"-qq --show-progress autoremove"\
+		qi:"-qq --show-progress install"\
+		qri:"-qq --show-progress reinstall"\
+		qupg:"-qq --show-progress upgrade"\
+		qdupg:"-qq --show-progress dist-upgrade"\
+		qupd:"-q update"
 	{
 		alias ${CMD%:*}="/usr/bin/apt-get ${CMD/*:}"
 	}
@@ -602,8 +608,7 @@ for DIR in\
 		"Documents/TT/python/Useful_Commands.py":cnp\
 		".maintain/changelog.txt":maintain-cl ".xbindkeysrc":xbkrc\
 		".maintain/maintain.man":maintain-man ".config/openbox/rc.xml":obc\
-		".maintain/usersettings.conf":maintain-set
-
+		".maintain/usersettings.conf":maintain-set ".wgetrc":wgetrc
 	{
 		[ -f "${FILE%:*}" ] || continue
 		alias ${FILE/*:}="/usr/bin/vim $HOME/${FILE%:*}"
