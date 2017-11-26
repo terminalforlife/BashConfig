@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 19 Nov 23:13:02 GMT 2017
+# Last Change       - Sat 25 Nov 18:14:59 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -17,6 +17,9 @@ alias sudo="sudo "
 
 # Sick of typing this in the termanal, out of habit!
 alias ":q"="exit"
+
+# Just points to a personal script for moving screenshots.
+[ -f "$HOME/Documents/TT/iih" ] && alias iih="/bin/bash $HOME/Documents/TT/iih"
 
 # Used to notify you of a job completion on the terminal.
 [ -x /usr/bin/notify-send -a -x /usr/bin/tty ] && {
@@ -501,7 +504,7 @@ for DIR in\
 	"Music":mus "GitHub":gh "Videos":vid "Desktop":dt "Pictures":pic\
 	"Downloads":dl "Documents":doc "Documents/TT":tt "ShellPlugins":sp\
 	"GitHub/terminalforlife":ghtfl "GitHub/terminalforlife/Forks":ghtflf\
-	"GitHub/terminalforlife/Personal":ghtflp;
+	"GitHub/terminalforlife/Personal":ghtflp "DosBox":db
 {
 	[ -d "$HOME/${DIR%:*}" ] && alias ${DIR/*:}="cd $HOME/${DIR%:*}"
 }
@@ -608,7 +611,8 @@ for DIR in\
 		"Documents/TT/python/Useful_Commands.py":cnp\
 		".maintain/changelog.txt":maintain-cl ".xbindkeysrc":xbkrc\
 		".maintain/maintain.man":maintain-man ".config/openbox/rc.xml":obc\
-		".maintain/usersettings.conf":maintain-set ".wgetrc":wgetrc
+		".maintain/usersettings.conf":maintain-set ".wgetrc":wgetrc\
+		".dosbox/dosbox-0.74.conf":dbc
 	{
 		[ -f "${FILE%:*}" ] || continue
 		alias ${FILE/*:}="/usr/bin/vim $HOME/${FILE%:*}"
