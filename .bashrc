@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 10 Nov 14:29:16 GMT 2017
+# Last Change       - Wed 13 Dec 01:08:16 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -31,6 +31,11 @@ DO_GIT="true"
 # is displayed, unless you're of course in /. Alignment should be maintained.
 PREFIX_DIR="false"
 
+# If you use my custom prompt, use these top and bottom prompt pointers.
+TARR="⮣ "
+BARR="⮡ "
+
+#TODO - Fix this not working properly in Konsole, KDE Plasma 5.
 # By default, you should see a rather nice prompt. If you want something simple, -
 # akin to the Bourne Shell prompt, set this option to true.
 SIMPLE="false"
@@ -96,7 +101,6 @@ umask 0077
 # If not running interactively, then ignore the rest of the file.
 [ -z "$PS1" ] && return
 
-
 # These commands don't work with zsh.
 [ -z "$ZSH_VERSION" ] && {
 	[ "$DEFAULT_HISTORY" == "true" ] || {
@@ -114,7 +118,7 @@ umask 0077
 	[ "$POXIS_MODE" == "true" ] && set -o posix
 }
 
-#----------------------------------------------------------------------------PROMPT
+#-------------------------------------------------------------------USER SET CHECKS
 
 for OPT in\
 \
@@ -126,6 +130,8 @@ for OPT in\
 		echo "ERROR: Incorrect setting at: ${OPT%:*}" 1>&2
 	}
 }
+
+#----------------------------------------------------------------------------PROMPT
 
 # When \w is used in PS1, this will set ../ when beyond depth 1.
 PROMPT_DIRTRIM=1
@@ -204,14 +210,14 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 
 			# These will be concatenated; more readable code, sort of.
 			if [ "$SHOW_LINES" == "true" ]; then
-				local PA="\e\[[2;38m\]${Y//0/━}\n\[\e[0m\]⮣ \[\e[1;38m\]"
+				local PA="\e\[[2;38m\]${Y//0/━}\n\[\e[0m\]${TARR}\[\e[1;38m\]"
 			else
-				local PA="\[\e[0m\]⮣ \[\e[1;38m\]"
+				local PA="\[\e[0m\]${TARR}\[\e[1;38m\]"
 			fi
 
 			local PB="${X}${A}\[\e[2;33m\]${GB}\[\e[2;39m\]"
 			local PC="${GS/Your branch is }\[\033[2;32m\]${GC}"
-			local PD="\[\e[01;31m\]${_PWD/ }\[\e[0m\]\[\033[0m\]\n⮡ "
+			local PD="\[\e[01;31m\]${_PWD/ }\[\e[0m\]\[\033[0m\]\n${BARR}"
 
 			# Set the main prompt, using info from above.
 			if [ "$STANDARD" == "false" ]; then
@@ -279,6 +285,9 @@ export PATH="${PATH%:\/snap\/bin}"
 
 # Set the terminal color.
 export TERM="xterm-256color"
+
+# Supposedly, this should be run after the above line, according to: man 1 tput
+[ -x /usr/bin/tput ] && /usr/bin/tput init
 
 # Set less and the pager to be more secure by disabling certain features.
 export LESSSECURE=1
