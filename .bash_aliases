@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sat 25 Nov 18:14:59 GMT 2017
+# Last Change       - Sun 17 Dec 13:22:07 GMT 2017
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -17,6 +17,9 @@ alias sudo="sudo "
 
 # Sick of typing this in the termanal, out of habit!
 alias ":q"="exit"
+
+# Make the ffmpeg output less cluttered, but also ignore many errors.
+[ -x /usr/bin/ffmpeg ] && alias ffmpeg="ffmpeg -v 0 -stats"
 
 # Just points to a personal script for moving screenshots.
 [ -f "$HOME/Documents/TT/iih" ] && alias iih="/bin/bash $HOME/Documents/TT/iih"
