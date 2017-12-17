@@ -4,8 +4,6 @@ Bash configuration files I created to use and share.
 **MASTER** - _Hopefully stable branch._\
 **DEV** - _Development Branch (latest changes)_
 
-I will eventually incorporate this method to all of my repositories, but that will _definitely_ take time.
-
 INTRODUCTION
 ------------
 
@@ -46,6 +44,8 @@ To restore your old files, remove mine and replace them with yours which were ba
 *NOTE: These instructions were tested using version 4.3 and 4.4 of bash.*
 
 I should also point out that I removed /etc/profile, /etc/bash.bashrc, and various other system files related to bash, as they are either redundant (why source and test for bash_completion every which where possible?!); I've yet to experience any negatives from this. I prefer my root account and any other local account I create be set to mostly standard bash defaults. If you wanted to do the same, be sure to back up your files beforehand!
+
+Alternatively, check out the installit repository.
 
 REQUIREMENTS
 ------------
