@@ -45,7 +45,7 @@ To restore your old files, remove mine and replace them with yours which were ba
 
 I should also point out that I removed /etc/profile, /etc/bash.bashrc, and various other system files related to bash, as they are either redundant (why source and test for bash_completion every which where possible?!); I've yet to experience any negatives from this. I prefer my root account and any other local account I create be set to mostly standard bash defaults. If you wanted to do the same, be sure to back up your files beforehand!
 
-Alternatively, check out the installit repository.
+You can also check out the installit repository for the new insit installer.
 
 REQUIREMENTS
 ------------
