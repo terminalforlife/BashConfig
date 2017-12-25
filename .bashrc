@@ -248,7 +248,7 @@ fi
 
 # Sets the command history options. See: man bash
 [ "$DEFAULT_HISTORY" == "true" ] || {
-	HISTIGNORE="ls *:exit *:clear:cd *::pwd:history *"
+	#HISTIGNORE="ls *:exit *:clear:cd *::pwd:history *"
 	HISTTIMEFORMAT="[%F_%X]: "
 	HISTCONTROL=ignoreboth
 	HISTFILESIZE=0
