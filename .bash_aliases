@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 17 Dec 13:22:07 GMT 2017
+# Last Change       - Thu 11 Jan 17:44:41 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -144,7 +144,7 @@ alias ":q"="exit"
 [ -x /sbin/ip ] && alias iface='X=(`/sbin/ip route`) && echo ${X[4]}'
 
 # Get and display the distribution type. (original base first)
-{ [ -f /etc/os-release ] && [ -r /etc/os-release ]; } && {
+[ -f /etc/os-release -a -r /etc/os-release ] && {
 	alias distro='\
 		while read -a X; do
 			if [[ "${X[0]}" == ID_LIKE=* ]]; then
@@ -207,7 +207,7 @@ for DEP in\
 }
 
 # A simple dictionary lookup alias, similar to the look command.
-{ [ -f /usr/share/dict/words ] && [ -r /usr/share/dict/words ]; } && {
+[ -f /usr/share/dict/words -a -r /usr/share/dict/words ] && {
 	alias dict='\
 		DICT_LOOKUP(){
 			while read -r; do
@@ -234,7 +234,7 @@ for DEP in\
 
 # Watches a directory as its size and number of files increase. Useful while you're
 # downloading or making other sorts of changes to its contents, and want to watch.
-{ [ -x /bin/ls ] && [ -x /usr/bin/watch ]; } && {
+[ -x /bin/ls -a -x /usr/bin/watch ] && {
 	alias dwatch='\
 		/usr/bin/watch -n 0.1 "/bin/ls -SsCphq\
 			--color=auto --group-directories-first"
@@ -243,7 +243,7 @@ for DEP in\
 
 # Blast away all of the (global) configuration files of the previously uninstalled
 # packages using dpkg to detect them and apt-get to purge them.
-{ [ -x /usr/bin/apt-get ] && [ -x /usr/bin/dpkg ]; } && {
+[ -x /usr/bin/apt-get -a -x /usr/bin/dpkg ] && {
 	alias rmrc='\
 		local LIST=$(
 			while read -ra REPLY; do
@@ -269,7 +269,7 @@ for DEP in\
 }
 
 # Create or unmount a user-only RAM Disk (tmpfs, basically) of 512MB.
-{ [ -x /bin/mount ] && [ -x /bin/umount ]; } && {
+[ -x /bin/mount -a -x /bin/umount ] && {
 	RAMDISK="/media/$USER/RAMDisk_512M"
 
 	alias rd='\
@@ -325,7 +325,7 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 }
 
 # Enable a bunch of git aliases, if you have git installed.
-{ [ -x /usr/bin/git ] && [ -x /bin/date ]; } && {
+[ -x /usr/bin/git -a -x /bin/date ] && {
 	GIT_LOG_ALIAS(){
 		declare -i COUNT=0
 		local RESULT=`/usr/bin/git log`
@@ -404,12 +404,16 @@ for DEP in /usr/{local/bin,bin}/youtube-dl; {
 		alias ytdl-video="/usr/local/bin/youtube-dl -c --yes-playlist\
 			--sleep-interval 5 --max-sleep-interval 30 --format best\
 			--no-call-home --console-title --quiet --ignore-errors"
+
 		alias ytdl-audio="/usr/local/bin/youtube-dl -cx --audio-format mp3\
 			--sleep-interval 5 --max-sleep-interval 30 --no-call-home\
 			--console-title --quiet --ignore-errors"
-		alias ytpldl-audio="/usr/local/bin/youtube-dl -cix --audio-format mp3\
-			--sleep-interval 5 --max-sleep-interval 30 --yes-playlist\
-			--no-call-home --console-title --quiet --ignore-errors"
+
+		alias ytpldl-audio="/usr/local/bin/youtube-dl -cix\
+			--audio-format mp3 --sleep-interval 5\
+			--max-sleep-interval 30 --yes-playlist --no-call-home\
+			--console-title --quiet --ignore-errors"
+
 		alias ytpldl-video="/usr/local/bin/youtube-dl -ci --yes-playlist\
 			--sleep-interval 5 --max-sleep-interval 30 --format best\
 			--no-call-home --console-title --quiet --ignore-errors"
@@ -456,7 +460,7 @@ for DEP in /bin/{dd,pidof}; {
 
 # Display a detailed list of kernel modules currently in use.
 declare -i DEPCOUNT=0
-{ [ -x /sbin/lsmod ] && [ -x /sbin/modinfo ]; } && {
+[ -x /sbin/lsmod -a -x /sbin/modinfo ] && {
 	alias lsmodd='\
 		while read -a X; do
 			Y=`/sbin/modinfo -d "${X[0]}"`
@@ -469,7 +473,7 @@ declare -i DEPCOUNT=0
 [ -x /bin/dmesg ] && alias klog="/bin/dmesg -t -L=never -l err,crit,alert,emerg"
 
 # Enable the default hostkey when vboxsdl is used, if virtualbox GUI is not found.
-{ [ -x /usr/bin/vboxsdl ] && ! [ -x /usr/bin/virtualbox ]; } && {
+[ -x /usr/bin/vboxsdl -a ! -x /usr/bin/virtualbox ] && {
 	alias vboxsdl="/usr/bin/vboxsdl --hostkey 305 128"
 }
 
@@ -483,11 +487,15 @@ declare -i DEPCOUNT=0
 }
 
 # Get more functionality by default when using grep and ls.
-{ [ -x /bin/ls ] && [ -x /bin/grep ]; } && {
+[ -x /bin/ls -a -x /bin/grep ] && {
 	case "${TERM:-EMPTY}" in
 	        linux|xterm|xterm-256color)
-	                alias ls="/bin/ls -nphq --time-style=iso --color=auto --group-directories-first"
-	                alias lsa="/bin/ls -Anphq --time-style=iso --color=auto --group-directories-first"
+	                alias ls="/bin/ls -nphq --time-style=iso --color=auto\
+				--group-directories-first"
+
+	                alias lsa="/bin/ls -Anphq --time-style=iso --color=auto\
+				--group-directories-first"
+
 	                alias grep="/bin/grep --color=auto"
 	                alias egrep="/bin/egrep --color=auto"
 	                alias fgrep="/bin/fgrep --color=auto" ;;
@@ -530,17 +538,27 @@ for DIR in\
 	MPLAYER_FONT="$HOME/.mplayer/subfont.ttf"
 	alias mpa="/usr/bin/mplayer -nolirc -vo null -really-quiet &> /dev/null"
 
-	[ -f "$MPLAYER_FONT" ] && {
-		alias mpv="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc -font \"$MPLAYER_FONT\" -really-quiet &> /dev/null"
-		alias mpvdvd="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc -font \"$MPLAYER_FONT\" -really-quiet dvd://1//dev/sr1 &> /dev/null"
-	} || {
-		alias mpv="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc -really-quiet &> /dev/null &> /dev/null"
-		alias mpvdvd="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc --really-quiet dvd://1//dev/sr1 &> /dev/null"
-	}
+	if [ -f "$MPLAYER_FONT" ]; then
+		alias mpv="/usr/bin/mplayer -vo x11 -nomouseinput -noar\
+			-nojoystick -nogui -zoom -nolirc -font \"$MPLAYER_FONT\"\
+			-really-quiet &> /dev/null"
+
+		alias mpvdvd="/usr/bin/mplayer -vo x11 -nomouseinput -noar\
+			-nojoystick -nogui -zoom -nolirc -font \"$MPLAYER_FONT\"\
+			-really-quiet dvd://1//dev/sr1 &> /dev/null"
+	else
+		alias mpv="/usr/bin/mplayer -vo x11 -nomouseinput -noar\
+			-nojoystick -nogui -zoom -nolirc -really-quiet\
+			&> /dev/null &> /dev/null"
+
+		alias mpvdvd="/usr/bin/mplayer -vo x11 -nomouseinput -noar\
+			-nojoystick -nogui -zoom -nolirc --really-quiet\
+			dvd://1//dev/sr1 &> /dev/null"
+	fi
 }
 
 # Display only a certain type of package. Use: ls{ess,req,opt,ext}pkg
-{ [ -x /usr/bin/dpkg-query ] && [ -x /usr/bin/column ]; } && {
+[ -x /usr/bin/dpkg-query -a -x /usr/bin/column ] && {
 	LS_PKG_TYPE(){
 		while read -ra X; do
 		        [ "${X[0]}" == "$2" ] && B+=(${X[1]}) || continue
@@ -584,7 +602,7 @@ for DIR in\
 }
 
 # Some options I like to have by default for less and pager.
-{ [ -x /usr/bin/pager ] || [ -x /usr/bin/less ]; } && {
+[ -x /usr/bin/pager -o -x /usr/bin/less ] && {
 	alias pager='/usr/bin/pager -sN --tilde'
 	alias less='/usr/bin/pager -sN --tilde'
 }
@@ -637,11 +655,9 @@ for DIR in\
 }
 
 # When in a TTY, change to different ones.
-[[ `/usr/bin/tty` == /dev/tty* ]] && {
-	{ [ -x /usr/bin/tty ] && [ -x /bin/chvt ]; } && {
-		for TTY in {1..12}; {
-			alias $TTY="chvt $TTY"
-		}
+{ [[ `/usr/bin/tty` == /dev/tty* ]] && [ -x /usr/bin/tty -a -x /bin/chvt ]; } && {
+	for TTY in {1..12}; {
+		alias $TTY="chvt $TTY"
 	}
 }
 
