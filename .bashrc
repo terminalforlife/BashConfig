@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed 13 Dec 01:08:16 GMT 2017
+# Last Change       - Fri 12 Jan 17:24:15 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -300,6 +300,18 @@ export LESSSECURE=1
 		export SUDO_EDITOR="/bin/rnano"
 	fi
 }
+
+# Export these variables to add color to the manual pages.
+export LESS_TERMCAP_mb=$'\e[01;31m'
+export LESS_TERMCAP_md=$'\e[01;31m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_se=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[01;44;33m'
+export LESS_TERMCAP_ue=$'\e[0m'
+export LESS_TERMCAP_us=$'\e[01;32m'
+
+# Set the grep match color.
+export GREP_COLOR="1;31"
 
 #------------------------------------------------------------SOURCE BASH_COMPLETION
 
