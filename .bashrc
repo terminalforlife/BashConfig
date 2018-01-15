@@ -3,17 +3,15 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 12 Jan 17:24:15 GMT 2018
+# Last Change       - Sat 13 Jan 21:51:43 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
-
 # This is my .bashrc configuration file, but it has been written in such a way that
 # other people could use it, too. I've included easy-to-use configuration options
 # just below.
 #
 # Thank you for your interest.
-
 #---------------------------------------------------------------------USER SETTINGS
 
 # This is where you, the user, can change some settings within this .bashrc file.
