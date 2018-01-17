@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sat 13 Jan 21:51:43 GMT 2018
+# Last Change       - Mon 15 Jan 21:37:49 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -336,6 +336,11 @@ unset USRBC
 
 	unset TERMWATCH_LOG CURTERM
 }
+
+#--------------------------------------------------------------------INPUT-BINDINGS
+
+bind '"\e[1;5C": forward-word'
+bind '"\e[1;5D": backward-word'
 
 #---------------------------------------------------------------SOURCE BASH_ALIASES
 
