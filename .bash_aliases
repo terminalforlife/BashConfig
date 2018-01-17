@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Thu 11 Jan 17:44:41 GMT 2018
+# Last Change       - Wed 17 Jan 02:44:06 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -48,13 +48,14 @@ alias ":q"="exit"
 }
 
 # Very useful, quick alias to scan anything you specify, if you have clamscan.
-[ -x /usr/bin/clamscan ] && {
+[ -x /usr/bin/clamscan -a -x /usr/bin/tee ] && {
 	alias scan='\
 		/usr/bin/clamscan --bell -r --no-summary -i --detect-pua=yes\
 			--detect-structured=no --structured-cc-count=3\
 			--structured-ssn-count=3 --phishing-ssl=yes\
 			--phishing-cloak=yes --partition-intersection=yes\
-			--detect-broken=yes --block-macros=yes --max-filesize=256M
+			--detect-broken=yes --block-macros=yes --max-filesize=256M\
+			| /usr/bin/tee $HOME/Desktop/clamscan_`printf "%(%F_%X)T" "-1"`.log
 	'
 }
 
@@ -515,7 +516,8 @@ for DIR in\
 	"Music":mus "GitHub":gh "Videos":vid "Desktop":dt "Pictures":pic\
 	"Downloads":dl "Documents":doc "Documents/TT":tt "ShellPlugins":sp\
 	"GitHub/terminalforlife":ghtfl "GitHub/terminalforlife/Forks":ghtflf\
-	"GitHub/terminalforlife/Personal":ghtflp "DosBox":db
+	"GitHub/terminalforlife/Personal":ghtflp "DosBox":db "Archives":arc\
+	".i3a":i3a;
 {
 	[ -d "$HOME/${DIR%:*}" ] && alias ${DIR/*:}="cd $HOME/${DIR%:*}"
 }
