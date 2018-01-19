@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Mon 15 Jan 21:37:49 GMT 2018
+# Last Change       - Wed 17 Jan 23:27:18 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -270,7 +270,7 @@ unset FLIB FUNC
 #-------------------------------------------------------------ENVIRONMENT VARIABLES
 
 # Set the location where various VirtualBox settings and your VMs are stored.
-export VBOX_USER_HOME="/media/$USER/1TB Internal HDD/Linux Generals/VirtualBox VMs"
+export VBOX_USER_HOME="/media/$USER/Main Data/Linux Generals/VirtualBox VMs"
 
 # Set the format of the shell keyboard, time.
 export TIMEFORMAT=">>> real %3R | user %3U | sys %3S | pcpu %P <<<"
