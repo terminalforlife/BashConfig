@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Bell_Alarm
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Wed  1 Nov 21:12:06 GMT 2017
+# Last Change       - Fri 19 Jan 22:23:26 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -41,7 +41,6 @@ bell(){
 			/bin/sleep 1
 		done
 	else
-		# If module not loaded, output error and return 1.
 		ERR "$LINENO" "PulseAudio needs 'module-x11-bell' loaded."
 		return 1
 	fi

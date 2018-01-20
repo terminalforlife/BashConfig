@@ -3,29 +3,28 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/CD_Clear_LS
 # Started On        - Thu 14 Sep 20:15:25 BST 2017
-# Last Change       - Fri 13 Oct 23:44:08 BST 2017
+# Last Change       - Fri 19 Jan 22:22:40 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 CD_CLEAR_LS(){
-	ERR(){ echo "[L${1}] ERROR: $2" 1>&2; }
+	ERR(){ printf "ERROR: %s\n" "$2" 1>&2; }
 
-	# Continue if ls is found in PATH -- because you never know when.
-	type -P ls &> /dev/null && {
-		# If number of arguments is 0.
-		[ $# -eq 0 ] && {
-			# Simply change to home directory.
-			printf "\033c"; cd "$HOME"; ls
-		} || {
-			# Change to the directory specified by the user.
-			printf "\033c"; cd "$*"; ls
-		}
-	} || {
-		# If ls is not found, say so and return.
+	if [ -x /bin/ls ]; then
+		if [ $# -eq 0 ]; then
+			printf "\033c"
+			cd "$HOME"
+			/bin/ls
+		else
+			printf "\033c"
+			cd "$*"
+			/bin/ls
+		fi
+	else
 		ERR "$LINENO" "Dependency 'ls' not met."
 		return 1
-	}
+	fi
 }
 
 alias cd='CD_CLEAR_LS'

@@ -48,3 +48,5 @@ cpuhit(){
 		}
 	done <<< `/bin/ps ax --noheader -o pid,pcpu,comm`
 }
+
+cpuhit 10

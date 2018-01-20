@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Cleaner_RK_Scan
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Mon 23 Oct 13:10:19 BST 2017
+# Last Change       - Fri 19 Jan 22:24:07 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ rkc(){
 			\!\ *)
 				;;
 			*)
-				echo "$REPLY" ;;
+				printf "%s\n" "$REPLY" ;;
 		esac
 	done <<< "$(/usr/bin/sudo /usr/sbin/chkrootkit)"
 }
