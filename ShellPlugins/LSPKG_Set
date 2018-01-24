@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/LSPKG_Set
 # Started On        - Wed 24 Jan 17:31:41 GMT 2018
-# Last Change       - Wed 24 Jan 18:46:21 GMT 2018
+# Last Change       - Wed 24 Jan 18:51:59 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -20,11 +20,14 @@
 #               --required|-R         - Display the required packages.
 #               --optional|-o         - Display the optional packages.
 #               --important|-i        - Display the important packages.
+#
+# I may eventually incorporate this functionality into lspkg (see lspkg repository)
+# as it strikes me as the perfect place for it, but this will suffice for now.
 #----------------------------------------------------------------------------------
 
 lspkg-set(){
 	ERR(){ printf "ERROR: %s\n" "$1" 1>&2; }
-	
+
 	if [ $UID -eq 0 ]; then
 		ERR "Root access isn't required."
 		return 1
@@ -32,8 +35,32 @@ lspkg-set(){
 		ERR "Dependency '/usr/bin/dpkg-query' not met."
 		return 1
 	fi
-	
+
+	USAGE(){
+		while read -r; do
+			printf "%s\n" "$REPLY"
+		done <<-EOF
+			            LSPKG-SET (24th January 2018)
+			            Written by terminalforlife (terminalforlife@yahoo.com)
+
+			            Shell plugin to display sets of installed packages.
+
+			SYNTAX:     lspkg-set [OPT]
+
+			OPTS:       --help|-h|-?            - Displays this help information.
+			            --essential|-E          - Display the essential packages.
+			            --extra|-e              - Display the extra packages.
+			            --required|-R           - Display the required packages.
+			            --optional|-o           - Display the optional packages.
+			            --important|-i          - Display the important packages.
+
+			NOTE:       This small plugin parses /usr/bin/dpkg-query.
+		EOF
+	}
+
 	case "$*" in
+		--help|-h|-\?)
+			USAGE; exit 0 ;;
 		--essential|-E)
 			TYPE="Essential:yes" ;;
 		--extra|-e)
@@ -48,21 +75,21 @@ lspkg-set(){
 			ERR "Incorrect argument(s) specified."
 			return 1 ;;
 	esac
-	
+
 	FMT1="\${db:Status-Abbrev} \${${TYPE%:*}} "
 	FMT2="\${Package} - \${Binary:Summary}\n"
-	
+
 	while read -a X; do
 		if [ "${X[0]}" == "ii" -a "${X[1]}" == "${TYPE/*:}" ]; then
 			printf -v INUM "%d" "$((${#X[@]}-1))"
-	
+
 			OLD="$NEW"
 			NEW=$(
 				for FIELD in `eval echo {2..$INUM}`; {
 					printf "%s " "${X[$FIELD]}"
 				}
 			)
-	
+
 			[ "$NEW" == "$OLD" ] || printf "%s\n" "$NEW"
 		fi
 	done <<< "$(/usr/bin/dpkg-query --show -f="${FMT1}${FMT2}" \*)"
