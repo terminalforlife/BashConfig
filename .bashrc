@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed 17 Jan 23:27:18 GMT 2018
+# Last Change       - Wed 24 Jan 00:42:25 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -337,15 +337,19 @@ unset USRBC
 	unset TERMWATCH_LOG CURTERM
 }
 
-#--------------------------------------------------------------------INPUT-BINDINGS
+#--------------------------------------------------------------------INPUT BINDINGS
 
 bind '"\e[1;5C": forward-word'
 bind '"\e[1;5D": backward-word'
 
-#---------------------------------------------------------------SOURCE BASH_ALIASES
+#------------------------------------------------------SOURCE ALIASES AND FUNCTIONS
 
-# If the user's bash_aliases file is found, source it.
+# If the user's .bash_aliases file is found, source it.
 BASH_ALIASES="$HOME/.bash_aliases"
 [ -f "$BASH_ALIASES" -a -r "$BASH_ALIASES" ] && . "$BASH_ALIASES"
 
-unset BASH_ALIASES
+# If the user's .bash_functions file is found, source it.
+BASH_FUNCTIONS="$HOME/.bash_functions"
+[ -f "$BASH_FUNCTIONS" -a -r "$BASH_FUNCTIONS" ] && . "$BASH_FUNCTIONS"
+
+unset BASH_ALIASES BASH_FUNCTIONS
