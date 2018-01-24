@@ -3,9 +3,18 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Wed 17 Jan 02:44:06 GMT 2018
+# Last Change       - Wed 24 Jan 00:53:22 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
+# If you're looking for some aliases which were removed, look in the new file I
+# added to keep functions and aliases separate: $HOME/.bash_functions
+#
+# You may need to update insit if you're installing from there, but note that this
+# will of course blast away your current configurations:
+#
+#   sudo insit -S
+#   sudo insit -U bashconfig
 #----------------------------------------------------------------------------------
 
 # Just in-case.
@@ -18,6 +27,9 @@ alias sudo="sudo "
 # Sick of typing this in the termanal, out of habit!
 alias ":q"="exit"
 
+# Quick alias to clear out some junk from HOME.
+alias hsh="/bin/rm -rv $HOME/.{cache,thumbnails} 2> /dev/null"
+
 # Make the ffmpeg output less cluttered, but also ignore many errors.
 [ -x /usr/bin/ffmpeg ] && alias ffmpeg="ffmpeg -v 0 -stats"
 
@@ -25,7 +37,7 @@ alias ":q"="exit"
 [ -f "$HOME/Documents/TT/iih" ] && alias iih="/bin/bash $HOME/Documents/TT/iih"
 
 # Used to notify you of a job completion on the terminal.
-[ -x /usr/bin/notify-send -a -x /usr/bin/tty ] && {
+if [ -x /usr/bin/notify-send -a -x /usr/bin/tty ]; then
 	# Standard notification.
 	alias yo='\
 		/usr/bin/notify-send --urgency=normal\
@@ -37,18 +49,18 @@ alias ":q"="exit"
 		/usr/bin/notify-send --urgency=critical\
 			"Your critical job in `/usr/bin/tty` has completed."
 	'
-}
+fi
 
 # Used to use gpicview, until I realised feh could be used as an image viewer!
-[ -x /usr/bin/feh ] && {
+if [ -x /usr/bin/feh ]; then
 	alias img='\
 		/usr/bin/feh --fullscreen --hide-pointer --draw-filename\
 			--no-menus --preload 2> /dev/null
 	'
-}
+fi
 
 # Very useful, quick alias to scan anything you specify, if you have clamscan.
-[ -x /usr/bin/clamscan -a -x /usr/bin/tee ] && {
+if [ -x /usr/bin/clamscan -a -x /usr/bin/tee ]; then
 	alias scan='\
 		/usr/bin/clamscan --bell -r --no-summary -i --detect-pua=yes\
 			--detect-structured=no --structured-cc-count=3\
@@ -57,34 +69,10 @@ alias ":q"="exit"
 			--detect-broken=yes --block-macros=yes --max-filesize=256M\
 			| /usr/bin/tee $HOME/Desktop/clamscan_`printf "%(%F_%X)T" "-1"`.log
 	'
-}
-
-# Search the given path(s) for file types of TYPE. Ignores filename extension.
-[ -x /usr/bin/file ] && {
-	SEARCH_IN_FILE(){
-		[ $# -eq 0 ] && printf "%s\n"\
-			"USAGE: sif TYPE FILE1 [FILE2 FILE3...]" 1>&2
-
-		TYPE="$1"
-		shift
-
-	for FILE in $@; {
-		while read -a X; do
-			for I in ${X[@]}; {
-				#TODO - Why won't this match case?
-				if [[ "$I" == $TYPE ]]; then
-					printf "%s\n" "$FILE"
-				fi
-			}
-		done <<< "$(/usr/bin/mimetype -bd "$FILE")"
-	}
-}
-
-	alias sif='SEARCH_IN_FILE'
-}
+fi
 
 # Quickly flash the terminal and sound the bell 3 times.
-[ -x /bin/sleep ] && {
+if [ -x /bin/sleep ]; then
 	alias alertme='\
 		for I in {1..3}; {
 			/bin/sleep 0.03s
@@ -93,50 +81,7 @@ alias ":q"="exit"
 			printf "\a\e[?5l"
 		}
 	'
-}
-
-# Display the total data downloaded and uploaded on a given interface.
-[ -f /proc/net/dev ] && {
-	INOUT_FUNC(){
-		while read -a X; do
-			[ "${X[0]}" == "${1}:" ] && {
-				IN=${X[1]}
-				OUT=${X[9]}
-			}
-		done < /proc/net/dev
-
-		printf "IN:  %'14dK\nOUT: %'14dK\n"\
-			"$((IN/1024))" "$((OUT/1024))"
-	}
-
-	alias inout='INOUT_FUNC'
-}
-
-# Display the users on the system (parse /etc/passwd) in a more human-readable way.
-[ -f /etc/passwd ] && {
-	LSUSERS_FUNC(){
-		printf "%-20s %-7s %-7s %-25s %s\n"\
-			"USERNAME" "UID" "GID" "HOME" "SHELL"
-
-		while IFS=":" read -a X; do
-			if [ "$1" == "--nosys" ]; then
-				#TODO - Make this instead omit system ones by
-				#       testing for the shell used.
-				[[ "${X[5]/\/home\/syslog}" == /home/* ]] && {
-					printf "%-20s %-7d %-7d %-25s %s\n"\
-						"${X[0]}" "${X[2]}" "${X[3]}"\
-						"${X[5]}" "${X[6]}"
-				}
-			else
-				printf "%-20s %-7d %-7d %-25s %s\n" "${X[0]}"\
-					"${X[2]}" "${X[3]}" "${X[5]}" "${X[6]}"
-			fi
-		done < /etc/passwd
-	}
-
-	alias lsusers='LSUSERS_FUNC --nosys'
-	alias lsallusers='LSUSERS_FUNC'
-}
+fi
 
 # Remove trailing spaces or lines with only spaces. Tabs included. Needs testing.
 [ -x /bin/sed ] && alias nospace='/bin/sed -i s/^[\s\t]\+$//\;\ s/[\s\t]\+$//'
@@ -145,7 +90,7 @@ alias ":q"="exit"
 [ -x /sbin/ip ] && alias iface='X=(`/sbin/ip route`) && echo ${X[4]}'
 
 # Get and display the distribution type. (original base first)
-[ -f /etc/os-release -a -r /etc/os-release ] && {
+if [ -f /etc/os-release -a -r /etc/os-release ]; then
 	alias distro='\
 		while read -a X; do
 			if [[ "${X[0]}" == ID_LIKE=* ]]; then
@@ -155,72 +100,28 @@ alias ":q"="exit"
 			fi
 		done < /etc/os-release
 	'
-}
-
-# Handy alias to run before going off to bed, or before going out. I set this up
-# pretty quickly just before I went to bed, so it'll probably be revised soon.
-declare -i DEPCOUNT=0
-for DEP in\
-\
-	/sbin/shutdown /bin/{sh,sync,sleep} /usr/bin/{clamscan,rkhunter}\
-	/usr/sbin/{e4defrag,chkrootkit,unhide}
-{
-	[ -x "$DEP" ] && DEPCOUNT+=1
-
-	# Only execute if all 3 dependencies are found.
-	[ $DEPCOUNT -eq 10 ] && {
-		BEFORE_GOING_TO_BED(){
-			local SH_CMDS="/usr/bin/clamscan -riz /;\
-				       /usr/sbin/e4defrag / 1> /dev/null;\
-				       /usr/sbin/chkrootkit;\
-				       /usr/bin/rkhunter -c --cronjob --report-warnings-only;\
-				       /usr/sbin/unhide -m -d sys procall brute reverse"
-
-			/bin/sh -c "$SH_CMDS"\
-				&> $HOME/Desktop/b4bed_`printf '%(%F_%X)T'`.log
-
-			/bin/sync
-			/bin/sleep 10s
-			/sbin/shutdown now
-		}
-
-		alias b4bed='BEFORE_GOING_TO_BED'
-	}
-}
+fi
 
 # Quickly view all of your sd* storage device temperatures.
-[ -x /usr/sbin/hddtemp ] && {
+if [ -x /usr/sbin/hddtemp ]; then
 	alias temphdd='/usr/sbin/hddtemp /dev/sd{a..z} 2> /dev/null'
-}
+fi
 
 # Quickly download with wget, using some tider settings with -c.
-[ -x /usr/bin/wget ] && {
+if [ -x /usr/bin/wget ]; then
 	alias get='/usr/bin/wget -qc --show-progress'
-}
+fi
 
 # View the system boot log.
-[ -f /var/log/boot.log ] && {
+if [ -f /var/log/boot.log ]; then
 	alias bootlog='\
 		while read -r; do
 			printf "%s\n" "$REPLY"
 		done < /var/log/boot.log
 	'
-}
+fi
 
-# A simple dictionary lookup alias, similar to the look command.
-[ -f /usr/share/dict/words -a -r /usr/share/dict/words ] && {
-	alias dict='\
-		DICT_LOOKUP(){
-			while read -r; do
-				[[ "$REPLY" == *${1}* ]] && echo "$REPLY"
-			done < /usr/share/dict/words
-		}
-
-		DICT_LOOKUP
-	'
-}
-
-[ -x /usr/bin/newsbeuter ] && {
+if [ -x /usr/bin/newsbeuter ]; then
 	# Load newsbeuter more quickly to get access to RSS feeds.
 	alias news='\
 		/usr/bin/newsbeuter -qr\
@@ -231,20 +132,20 @@ for DEP in\
 
 	# Quickly edit RSS feed list.
 	alias rss='/usr/bin/vim $HOME/.newsbeuter/urls'
-}
+fi
 
 # Watches a directory as its size and number of files increase. Useful while you're
 # downloading or making other sorts of changes to its contents, and want to watch.
-[ -x /bin/ls -a -x /usr/bin/watch ] && {
+if [ -x /bin/ls -a -x /usr/bin/watch ]; then
 	alias dwatch='\
 		/usr/bin/watch -n 0.1 "/bin/ls -SsCphq\
 			--color=auto --group-directories-first"
 	'
-}
+fi
 
 # Blast away all of the (global) configuration files of the previously uninstalled
 # packages using dpkg to detect them and apt-get to purge them.
-[ -x /usr/bin/apt-get -a -x /usr/bin/dpkg ] && {
+if [ -x /usr/bin/apt-get -a -x /usr/bin/dpkg ]; then
 	alias rmrc='\
 		local LIST=$(
 			while read -ra REPLY; do
@@ -254,10 +155,10 @@ for DEP in\
 
 		/usr/bin/apt-get -s purge $LIST
 	'
-}
+fi
 
 # Fix all CWD file and directory permissions to match the safer 0077 umask.
-[ -x /bin/chmod ] && {
+if [ -x /bin/chmod ]; then
 	alias fixperms='\
 		for FILE in ./*; {
 			if [ -f "$FILE" ]; then
@@ -267,10 +168,10 @@ for DEP in\
 			fi
 		}
 	'
-}
+fi
 
 # Create or unmount a user-only RAM Disk (tmpfs, basically) of 512MB.
-[ -x /bin/mount -a -x /bin/umount ] && {
+if [ -x /bin/mount -a -x /bin/umount ]; then
 	RAMDISK="/media/$USER/RAMDisk_512M"
 
 	alias rd='\
@@ -282,29 +183,25 @@ for DEP in\
 	alias nord='\
 		/bin/sh -c /bin/umount\ "$RAMDISK"\ \&\&\ /bin/rmdir\ "$RAMDISK"
 	'
-}
-
-# Two possibly pointless functions to single- or double-quote a string of text.
-alias squo="QUOTE(){ printf \"'%s'\n\" \"\$*\"; }; QUOTE"
-alias dquo='QUOTE(){ printf "\"%s\"\n" "$*"; }; QUOTE'
+fi
 
 # Show the fan speeds using sensors.
-[ -x /usr/bin/sensors ] && {
+if [ -x /usr/bin/sensors ]; then
 	alias showfans='\
 		while read; do
 			[[ "$REPLY" == *[Ff][Aa][Nn]*RPM ]] && echo "$REPLY"
 		done <<< "$(/usr/bin/sensors)"
 	'
-}
+fi
 
 # Display a columnized list of bash builtins.
-[ -x /usr/bin/column ] && {
+if [ -x /usr/bin/column ]; then
 	alias builtins='\
 		while read -r; do
 			echo "${REPLY/* }"
 		done <<< "$(enable -a)" | /usr/bin/column
 	'
-}
+fi
 
 # Rip audio CDs with ease, then convert to ogg, name, and tag. Change the device
 # as fits your needs, same with the formats used. Needs testing.
@@ -313,7 +210,7 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 	[ -x "$DEP" ] && DEPCOUNT+=1
 
 	# Only execute if all 3 dependencies are found.
-	[ $DEPCOUNT -eq 4 ] && {
+	if [ $DEPCOUNT -eq 4 ]; then
 		alias cdrip='\
 			/usr/bin/cdparanoia -B 1- && {
 				for FILE in *; {
@@ -322,68 +219,11 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 				}
 			}
 		'
-	}
+	fi
 }
 
 # Enable a bunch of git aliases, if you have git installed.
-[ -x /usr/bin/git -a -x /bin/date ] && {
-	GIT_LOG_ALIAS(){
-		declare -i COUNT=0
-		local RESULT=`/usr/bin/git log`
-
-		[ "$RESULT" ] || return
-
-		while read X; do
-			#TODO - Include comment and name.
-			[[ "$X" == Date:\ \ \ [A-Z][a-z][a-z]\ * ]] && {
-				/bin/date -d "${X:8:24}" +%F\ \(%X\)
-				COUNT+=1
-			}
-		done <<< "$RESULT"
-
-		echo "TOTAL:    $COUNT"
-
-		unset COUNT X
-	}
-
-	alias log="GIT_LOG_ALIAS"
-
-	GIT_COMMIT_TOTALS(){
-		printf "%-7s  %s\n" "COMMITS" "REPOSITORY"
-
-		for DIR in *; {
-			[ -d "$DIR" ] && {
-				cd "$DIR"
-
-				GET_TTLS=`GIT_LOG_ALIAS`
-				[ -z "$GET_TTLS" ] && return
-
-				#TODO - Finish this. If CWD is not root of repo, -
-				#       then show only repo root's directory name.
-				#declare -i INUM=0
-				#for I in *; {
-				#	[ "$I" == ".git" ] && {
-				#		INUM+=1
-				#		cd - > /dev/null
-				#	}
-				#}
-				#
-				#[ $INUM -eq 0 ] && DIR="${CWD}"
-
-				while read -a REPLY; do
-					[[ "$REPLY" == TOTAL:* ]] && {
-						printf "%'-7d  %s\n"\
-							"${REPLY[1]}" "${PWD//*\/}"
-					}
-				done <<< "$GET_TTLS"
-
-				cd - > /dev/null
-			}
-		}
-	}
-
-	alias logttl="GIT_COMMIT_TOTALS"
-
+[ -x /usr/bin/git ] && {
 	for CMD in\
 	\
 		"rm":grm "add":add "tag":tag "push":push "pull":pull "diff":diff\
@@ -425,7 +265,7 @@ for DEP in /usr/{local/bin,bin}/youtube-dl; {
 }
 
 # Various [q]uick apt-get aliases to make life a bit easier.
-[ -x /usr/bin/apt-get ] && {
+if [ -x /usr/bin/apt-get ]; then
 	for CMD in\
 	\
 		quf:"-qq --show-progress remove --purge"\
@@ -440,14 +280,14 @@ for DEP in /usr/{local/bin,bin}/youtube-dl; {
 	{
 		alias ${CMD%:*}="/usr/bin/apt-get ${CMD/*:}"
 	}
-}
+fi
 
 # Various [q]uick apt-cache aliases to make lifeeasier still.
-[ -x /usr/bin/apt-cache ] && {
+if [ -x /usr/bin/apt-cache ]; then
 	for CMD in qse:"search" qsh:"show"; {
 		alias ${CMD%:*}="/usr/bin/apt-cache ${CMD/*:}"
 	}
-}
+fi
 
 # Workaround for older versions of dd; displays progress.
 declare -i DEPCOUNT=0
@@ -460,35 +300,34 @@ for DEP in /bin/{dd,pidof}; {
 }
 
 # Display a detailed list of kernel modules currently in use.
-declare -i DEPCOUNT=0
-[ -x /sbin/lsmod -a -x /sbin/modinfo ] && {
+if [ -x /sbin/lsmod -a -x /sbin/modinfo ]; then
 	alias lsmodd='\
 		while read -a X; do
 			Y=`/sbin/modinfo -d "${X[0]}"`
 			[ "$Y" ] && printf "%s - %s\n" "${X[0]}" "$Y"
 		done <<< "$(/sbin/lsmod)"
 	'
-}
+fi
 
 # These are just options I find the most useful when using dmesg.
 [ -x /bin/dmesg ] && alias klog="/bin/dmesg -t -L=never -l err,crit,alert,emerg"
 
 # Enable the default hostkey when vboxsdl is used, if virtualbox GUI is not found.
-[ -x /usr/bin/vboxsdl -a ! -x /usr/bin/virtualbox ] && {
+if [ -x /usr/bin/vboxsdl -a ! -x /usr/bin/virtualbox ]; then
 	alias vboxsdl="/usr/bin/vboxsdl --hostkey 305 128"
-}
+fi
 
 # Clear the clipboard using xclip.
-[ -x /usr/bin/xclip ] && {
+if [ -x /usr/bin/xclip ]; then
 	alias ccb='\
 		for X in "-i" "-i -selection clipboard"; {
 			printf "%s" "" | /usr/bin/xclip $X
 		}
 	'
-}
+fi
 
 # Get more functionality by default when using grep and ls.
-[ -x /bin/ls -a -x /bin/grep ] && {
+if [ -x /bin/ls -a -x /bin/grep ]; then
 	case "${TERM:-EMPTY}" in
 	        linux|xterm|xterm-256color)
 	                alias ls="/bin/ls -nphq --time-style=iso --color=auto\
@@ -501,7 +340,7 @@ declare -i DEPCOUNT=0
 	                alias egrep="/bin/egrep --color=auto"
 	                alias fgrep="/bin/fgrep --color=auto" ;;
 	esac
-}
+fi
 
 # Quick navigation aliases in absence of the autocd shell option.
 shopt -qp autocd || {
@@ -527,15 +366,15 @@ for DIR in\
 
 # For each found "sr" device, enables alias for opening and closing the tray. For
 # example, use ot0 to specific you want the tray for /dev/sr0 to open.
-[ -x /usr/bin/eject ] && {
+if [ -x /usr/bin/eject ]; then
 	for DEV in /dev/sr+([0-9]); {
 		alias ot${DEV/\/dev\/sr}="/usr/bin/eject $DEV"
 		alias ct${DEV/\/dev\/sr}="/usr/bin/eject -t $DEV"
 	}
-}
+fi
 
 # These aliases save a lot of typing and do away with the output.
-[ -x /usr/bin/mplayer ] && {
+if [ -x /usr/bin/mplayer ]; then
 	# If you're having issues with mpv/mplayer here, try -vo x11 instead.
 	MPLAYER_FONT="$HOME/.mplayer/subfont.ttf"
 	alias mpa="/usr/bin/mplayer -nolirc -vo null -really-quiet &> /dev/null"
@@ -557,60 +396,23 @@ for DIR in\
 			-nojoystick -nogui -zoom -nolirc --really-quiet\
 			dvd://1//dev/sr1 &> /dev/null"
 	fi
-}
-
-# Display only a certain type of package. Use: ls{ess,req,opt,ext}pkg
-[ -x /usr/bin/dpkg-query -a -x /usr/bin/column ] && {
-	LS_PKG_TYPE(){
-		while read -ra X; do
-		        [ "${X[0]}" == "$2" ] && B+=(${X[1]}) || continue
-		done <<< "$(/usr/bin/dpkg-query --show -f="\${$1} \${Package}\n" \*)"
-		
-		for P in ${B[@]}; {
-		        declare -i M=0
-		        Y+=($P)
-		
-		        for V in ${Y[@]}; {
-		                [ "$V" == "$P" ] && M+=1
-		        }
-		
-		        [ $M -eq 1 ] && echo "$P"
-		}
-	}
-
-	alias lsesspkg='LS_PKG_TYPE Essential yes | /usr/bin/column'
-	alias lsreqpkg='LS_PKG_TYPE Priority required | /usr/bin/column'
-	alias lsoptpkg='LS_PKG_TYPE Priority optional | /usr/bin/column'
-	alias lsextpkg='LS_PKG_TYPE Priority extra | /usr/bin/column'
-	alias lsimppkg='LS_PKG_TYPE Priority important | /usr/bin/column'
-}
-
-# My preferred links2 settings. Also allows you to quickly search with DDG.
-[ -x /usr/bin/links2 ] && {
-	L2_FUNC(){
-		/usr/bin/links2 -http.do-not-track 1 -html-tables 1\
-			-html-tables 1 -html-numbered-links 1\
-			http://duckduckgo.com/?q="$*"
-	}
-
-	alias l2='L2_FUNC'
-}
+fi
 
 # A more descriptive, yet concise lsblk; you'll miss it when it's gone.
-[ -x /bin/lsblk ] && {
+if [ -x /bin/lsblk ]; then
 	alias lsblkid='\
 		/bin/lsblk -o name,label,fstype,size,uuid,mountpoint --noheadings
 	'
-}
+fi
 
 # Some options I like to have by default for less and pager.
-[ -x /usr/bin/pager -o -x /usr/bin/less ] && {
+if [ -x /usr/bin/pager -o -x /usr/bin/less ]; then
 	alias pager='/usr/bin/pager -sN --tilde'
 	alias less='/usr/bin/pager -sN --tilde'
-}
+fi
 
 # Text files I occasionally like to view, but not edit.
-[ -x /usr/bin/pager ] && {
+if [ -x /usr/bin/pager ]; then
 	for FILE in\
 	\
 		"/var/log/apt/history.log":aptlog\
@@ -620,9 +422,9 @@ for DIR in\
 			alias ${FILE/*:}="/usr/bin/pager ${FILE%:*}"
 		}
 	}
-}
+fi
 
-[ -x /usr/bin/vim ] && {
+if [ -x /usr/bin/vim ]; then
 	# Many files I often edit; usually configuration files.
 	for FILE in\
 	\
@@ -654,18 +456,18 @@ for DIR in\
 		[ -f "${FILE%:*}" ] || continue
 		alias ${FILE/*:}="/usr/bin/rvim ${FILE%:*}"
 	}
-}
+fi
 
 # When in a TTY, change to different ones.
-{ [[ `/usr/bin/tty` == /dev/tty* ]] && [ -x /usr/bin/tty -a -x /bin/chvt ]; } && {
+if [[ `/usr/bin/tty` == /dev/tty* ]] && [ -x /usr/bin/tty -a -x /bin/chvt ]; then
 	for TTY in {1..12}; {
 		alias $TTY="chvt $TTY"
 	}
-}
+fi
 
-[ -x /usr/bin/evince ] && {
+if [ -x /usr/bin/evince ]; then
 	alias pdf="/usr/bin/evince &> /dev/null"
-}
+fi
 
 # Clean up functions and variables.
 unset -f FOR_THE_EDITOR
