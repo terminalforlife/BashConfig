@@ -18,34 +18,11 @@ If you have any issues or recommendations, for .bashrc or for anything else you 
 INSTALLATION
 ------------
 
-Paste these commands out into a terminal, using bash, line-by-line. But first off, let's back up your existing files, in-case of any conflicts:
+Before you install, you may want to back up any existing file beforehand!
 
-```bash
-for I in .bash{rc,_aliases}; { mv -i "$I"{,.bak}; }
-```
-
-This line is only relevant if you already have a directory in $HOME/ called ShellPlugins:
-
-```bash
-mv -i $HOME/ShellPlugins{,.bak}
-```
-
-Now that you've got your old files backed up, install mine, but note that this method will require git to be installed:
-
-```bash
-git clone https://github.com/terminalforlife/bashconfig /tmp/bashconfig && cd !$
-for I in ShellPlugins .{bash{rc,_aliases},profile}; { cp -ri /tmp/bashconfig/"$I" "$HOME"/; }
-```
-
-Alternatively, if you don't have or want to install git, then you can mimic the commands here with a GUI and use your browser to download the entire branch by clicking on the green "Clone or download" button. Both methods should work just fine. Either way, once that's done, you can restart bash (may need to relog) for the changes to take effect.
-
-To restore your old files, remove mine and replace them with yours which were backed up as described above.
-
-*NOTE: These instructions were tested using version 4.3 and 4.4 of bash.*
+Clone the repository (the green "Clone or download" button on this page) then drag the files into the right places. ShellPlugins directory (with its contents) goes in $HOME, .bash_aliases, .bash_functions, .bashrc, and (the sometimes used) .profile go in $HOME. You can also check out insit (via the installit repository) for to install and update bashconfig in a very easy, straight-forward way.
 
 I should also point out that I removed /etc/profile, /etc/bash.bashrc, and various other system files related to bash, as they are either redundant (why source and test for bash_completion every which where possible?!); I've yet to experience any negatives from this. I prefer my root account and any other local account I create be set to mostly standard bash defaults. If you wanted to do the same, be sure to back up your files beforehand!
-
-You can also check out the installit repository for the new insit installer.
 
 REQUIREMENTS
 ------------
