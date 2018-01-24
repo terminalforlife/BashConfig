@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Wed 24 Jan 00:52:55 GMT 2018
+# Last Change       - Wed 24 Jan 17:55:50 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -48,10 +48,10 @@ fi
 if [ -f /proc/net/dev ]; then
 	inout(){
 		while read -a X; do
-			[ "${X[0]}" == "${1}:" ] && {
+			if [ "${X[0]}" == "${1}:" ]; then
 				IN=${X[1]}
 				OUT=${X[9]}
-			}
+			fi
 		done < /proc/net/dev
 
 		printf "IN:  %'14dK\nOUT: %'14dK\n"\
@@ -82,21 +82,21 @@ if [ -f /etc/passwd ]; then
 	}
 fi
 
-# A simple dictionary lookup alias, similar to the look command.
-[ -f /usr/share/dict/words -a -r /usr/share/dict/words ] && {
+# A simple dictionary lookup function, similar to the look command.
+if [ -f /usr/share/dict/words -a -r /usr/share/dict/words ]; then
 	dict(){
 		while read -r X; do
 			[[ "$X" == *${1}* ]] && printf "%s\n" "$X"
 		done < /usr/share/dict/words
 	}
-}
+fi
 
 # Two possibly pointless functions to single- or double-quote a string of text.
 squo(){ printf "'%s'\n\" \"\$*"; }
 dquo(){ printf "\"%s\"\n" "$*"; }
 
 #TODO - Combine these two functions and make more concise somehow. Avoid date.
-[ -x /usr/bin/git -a -x /bin/date ] && {
+if [ -x /usr/bin/git -a -x /bin/date ]; then
 	log(){
 		declare -i COUNT=0
 		local RESULT=`/usr/bin/git log`
@@ -105,10 +105,10 @@ dquo(){ printf "\"%s\"\n" "$*"; }
 
 		while read X; do
 			#TODO - Include comment and name.
-			[[ "$X" == Date:\ \ \ [A-Z][a-z][a-z]\ * ]] && {
+			if [[ "$X" == Date:\ \ \ [A-Z][a-z][a-z]\ * ]]; then
 				/bin/date -d "${X:8:24}" +%F\ \(%X\)
 				COUNT+=1
-			}
+			fi
 		done <<< "$RESULT"
 
 		echo "TOTAL:    $COUNT"
@@ -120,7 +120,7 @@ dquo(){ printf "\"%s\"\n" "$*"; }
 		printf "%-7s  %s\n" "COMMITS" "REPOSITORY"
 
 		for DIR in *; {
-			[ -d "$DIR" ] && {
+			if [ -d "$DIR" ]; then
 				cd "$DIR"
 
 				GET_TTLS=`GIT_LOG_ALIAS`
@@ -139,44 +139,17 @@ dquo(){ printf "\"%s\"\n" "$*"; }
 				#[ $INUM -eq 0 ] && DIR="${CWD}"
 
 				while read -a REPLY; do
-					[[ "$REPLY" == TOTAL:* ]] && {
+					if [[ "$REPLY" == TOTAL:* ]]; then
 						printf "%'-7d  %s\n"\
 							"${REPLY[1]}" "${PWD//*\/}"
-					}
+					fi
 				done <<< "$GET_TTLS"
 
 				cd - > /dev/null
-			}
+			fi
 		}
 	}
-}
-
-#TODO - Add proper args to the function to allow removal of those old aliases.
-# Display only a certain type of package. Use: ls{ess,req,opt,ext}pkg
-[ -x /usr/bin/dpkg-query -a -x /usr/bin/column ] && {
-	LS_PKG_TYPE(){
-		while read -ra X; do
-		        [ "${X[0]}" == "$2" ] && B+=(${X[1]}) || continue
-		done <<< "$(/usr/bin/dpkg-query --show -f="\${$1} \${Package}\n" \*)"
-		
-		for P in ${B[@]}; {
-		        declare -i M=0
-		        Y+=($P)
-		
-		        for V in ${Y[@]}; {
-		                [ "$V" == "$P" ] && M+=1
-		        }
-		
-		        [ $M -eq 1 ] && echo "$P"
-		}
-	}
-
-	alias lsesspkg='LS_PKG_TYPE Essential yes | /usr/bin/column'
-	alias lsreqpkg='LS_PKG_TYPE Priority required | /usr/bin/column'
-	alias lsoptpkg='LS_PKG_TYPE Priority optional | /usr/bin/column'
-	alias lsextpkg='LS_PKG_TYPE Priority extra | /usr/bin/column'
-	alias lsimppkg='LS_PKG_TYPE Priority important | /usr/bin/column'
-}
+fi
 
 # My preferred links2 settings. Also allows you to quickly search with DDG.
 if [ -x /usr/bin/links2 ]; then
