@@ -18,7 +18,7 @@ If you have any issues or recommendations, for .bashrc or for anything else you 
 INSTALLATION
 ------------
 
-Before you install, you may want to back up any existing file beforehand!
+Before you install, you may want to back up any existing files beforehand!
 
 Clone the repository (the green "Clone or download" button on this page) then drag the files into the right places. ShellPlugins directory (with its contents) goes in $HOME, .bash_aliases, .bash_functions, .bashrc, and (the sometimes used) .profile go in $HOME. You can also check out insit (via the installit repository) for to install and update bashconfig in a very easy, straight-forward way.
 
