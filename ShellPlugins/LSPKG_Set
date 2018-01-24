@@ -1,0 +1,63 @@
+#!/bin/bash
+
+#----------------------------------------------------------------------------------
+# Project Name      - $HOME/ShellPlugins/LSPKG_Set
+# Started On        - Wed 24 Jan 17:31:41 GMT 2018
+# Last Change       - Wed 24 Jan 18:42:12 GMT 2018
+# Author E-Mail     - terminalforlife@yahoo.com
+# Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
+# This is a ShellPlugin based on a function/alias (ls{ess,req,opt,ext,imp}pkgs)
+# which used to be in $HOME/.bash_aliases but has since been revised and improved.
+#
+# The intention of this small plugin is to allow the user to enter the following
+# commands to display certain sets of packages, hence the name:
+#
+# lspkg-set
+#----------------------------------------------------------------------------------
+
+lspkg-set(){
+	ERR(){ printf "ERROR: %s\n" "$1" 1>&2; }
+	
+	if [ $UID -eq 0 ]; then
+		ERR "Root access isn't required."
+		return 1
+	elif ! [ -x "/usr/bin/dpkg-query" ]; then
+		ERR "Dependency '/usr/bin/dpkg-query' not met."
+		return 1
+	fi
+	
+	case "$*" in
+		--essential|-E)
+			TYPE="Essential:yes" ;;
+		--extra|-e)
+			TYPE="Priority:extra" ;;
+		--required|-R)
+			TYPE="Priority:required" ;;
+		--optional|-o)
+			TYPE="Priority:optional" ;;
+		--important|-I)
+			TYPE="Priority:important" ;;
+		*)
+			ERR "Incorrect argument(s) specified."
+			return 1 ;;
+	esac
+	
+	FMT1="\${db:Status-Abbrev} \${${TYPE%:*}} "
+	FMT2="\${Package} - \${Binary:Summary}\n"
+	
+	while read -a X; do
+		if [ "${X[0]}" == "ii" -a "${X[1]}" == "${TYPE/*:}" ]; then
+			printf -v INUM "%d" "$((${#X[@]}-1))"
+	
+			OLD="$NEW"
+			NEW=$(
+				for FIELD in `eval echo {2..$INUM}`; {
+					printf "%s " "${X[$FIELD]}"
+				}
+			)
+	
+			[ "$NEW" == "$OLD" ] || printf "%s\n" "$NEW"
+		fi
+	done <<< "$(/usr/bin/dpkg-query --show -f="${FMT1}${FMT2}" \*)"
+}
