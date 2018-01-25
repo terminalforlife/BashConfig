@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed 24 Jan 00:42:25 GMT 2018
+# Last Change       - Wed 24 Jan 19:35:55 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -80,6 +80,10 @@ PLUGINS=(
 # WARNING: Changing code below, without knowledge of shell, could easily break it!
 
 #--------------------------------------------------------------MAIN SETS AND SHOPTS
+
+#TODO - Around here needs to be a check for Bash restricted mode (-r, or
+#       /bin/rbash) to avoid some error messages related to permissions with this
+#       configuration file and/or other related files.
 
 { [ -d "$HOME/bin" ] && ! [[ "$PATH" == */home/"$USER"/bin* ]]; } && {
 	# If the directory exists and isn't already in PATH, set it so.
