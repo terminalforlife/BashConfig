@@ -81,3 +81,5 @@ bash: `_apport_collect': not a valid identifier
 ```
 
 I've also sadly noticed this bug on Ubuntu 17.10 with a similar, terminal-focused, i3-wm setup.
+
+On Ubuntu 16.04.3, using Bash 4.3.48(1)-release and the xfce4-terminal, I've noticed a strange bug causing some code from .bashrc to persistently display on the terminal after running the `bash -v` or `bash --version` commands, even after clearing the screen or using the reset command. Opening a new terminal gets things back to normal. This strikes me as a Bash bug, rather than my own code, but I have no idea at this time, but it seems to be related to PROMPT_COMMAND.
