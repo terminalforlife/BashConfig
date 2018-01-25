@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Wed 24 Jan 00:53:22 GMT 2018
+# Last Change       - Thu 25 Jan 15:32:45 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -26,6 +26,17 @@ alias sudo="sudo "
 
 # Sick of typing this in the termanal, out of habit!
 alias ":q"="exit"
+
+# Display the current DPI setting.
+if [ -x /usr/bin/xdpyinfo ]; then
+	alias dpi='\
+		while read -a X; do
+			if [ "${X[0]}" == "resolution:" ]; then
+				printf "%s\n" "${X[1]/*x}"
+			fi
+		done <<< "$(/usr/bin/xdpyinfo)"
+	'
+fi
 
 # Quick alias to clear out some junk from HOME.
 alias hsh="/bin/rm -rv $HOME/.{cache,thumbnails} 2> /dev/null"
@@ -437,7 +448,7 @@ if [ -x /usr/bin/vim ]; then
 		".maintain/changelog.txt":maintain-cl ".xbindkeysrc":xbkrc\
 		".maintain/maintain.man":maintain-man ".config/openbox/rc.xml":obc\
 		".maintain/usersettings.conf":maintain-set ".wgetrc":wgetrc\
-		".dosbox/dosbox-0.74.conf":dbc
+		".dosbox/dosbox-0.74.conf":dbc ".bash_functions":bashfunctions;
 	{
 		[ -f "${FILE%:*}" ] || continue
 		alias ${FILE/*:}="/usr/bin/vim $HOME/${FILE%:*}"
