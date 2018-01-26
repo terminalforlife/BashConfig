@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Git_Status_All
 # Started On        - Sat 16 Sep 14:19:06 BST 2017
-# Last Change       - Sun 29 Oct 14:20:07 GMT 2017
+# Last Change       - Fri 26 Jan 13:56:48 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ gitsa(){
 	for DIR in $MY_GIT_STORAGE/* 'D+LqTAFĴ{!'; do
 		#TODO - Remove that last empty space... somehow.
 		if [ "$B" ] || [ "$C" ] || [ "$D" ] || [ "$E" ]; then
-			[ "$DIR" == 'D+LqTAFĴ{!' ] && continue; echo
+			[ "$DIR" == 'D+LqTAFĴ{!' ] && continue; printf "\n"
 		fi
 
 		TITLE="false"
@@ -76,18 +76,18 @@ gitsa(){
 		[ "$TITLE" == "true" ] && {
 			IFLET(){
 				for LET in $@; { [ "$LET" ] && local DO="yes"; }
-				[ "$DO" == "yes" ] && echo "REPO: ${DIR//*\/}"
+				[ "$DO" == "yes" ] && printf "REPO: ${DIR//*\/}\n"
 			}
 
 			# If either of these letters (as args) are true.
 			IFLET B C D E F
 
-			#[ "$A" ] && echo "  ⏵ Clean; nothing to commit."
-			[ "$B" ] && echo "  ⏵ Changes to be committed."
-			[ "$C" ] && echo "  ⏵ Changes yet to be staged for commit."
-			[ "$D" ] && echo "  ⏵ Untracked files present."
-			[ "$E" ] && echo "  ⏵ Commit(s) ready to be sent upstream."
-			#[ "$F" ] && echo "  ⏵ Current branch is up-to-date with origin."
+			#[ "$A" ] && printf "  ⏵ Clean; nothing to commit.\n"
+			[ "$B" ] && printf "  ⏵ Changes to be committed.\n"
+			[ "$C" ] && printf "  ⏵ Changes yet to be staged for commit.\n"
+			[ "$D" ] && printf "  ⏵ Untracked files present.\n"
+			[ "$E" ] && printf "  ⏵ Commit(s) ready to be sent upstream.\n"
+			#[ "$F" ] && printf "  ⏵ Current branch is up-to-date with origin.\n"
 		}
 
 		# Change back to the previous directory.
