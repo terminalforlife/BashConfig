@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Thu 25 Jan 15:32:45 GMT 2018
+# Last Change       - Sat 27 Jan 03:34:21 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -171,13 +171,9 @@ fi
 # Fix all CWD file and directory permissions to match the safer 0077 umask.
 if [ -x /bin/chmod ]; then
 	alias fixperms='\
-		for FILE in ./*; {
-			if [ -f "$FILE" ]; then
-				/bin/chmod 600 "$FILE"
-			elif [ -d "$FILE" ]; then
-				/bin/chmod 700 "$FILE"
-			fi
-		}
+		/usr/bin/find -xdev \( -type f -exec /bin/chmod 600 "{}" \+ -o\
+			-type d -exec /bin/chmod 700 "{}" \+ \)\
+			-printf "FIXING: %p\n" 2> /dev/null
 	'
 fi
 
