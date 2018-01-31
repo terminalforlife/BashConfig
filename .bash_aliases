@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sat 27 Jan 03:34:21 GMT 2018
+# Last Change       - Wed 31 Jan 14:36:21 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -39,7 +39,16 @@ if [ -x /usr/bin/xdpyinfo ]; then
 fi
 
 # Quick alias to clear out some junk from HOME.
-alias hsh="/bin/rm -rv $HOME/.{cache,thumbnails} 2> /dev/null"
+if [ -x /bin/rm ]; then
+	PLACES=(\
+		"$HOME/.cache"
+		"$HOME/.thumbnails"
+		"$HOME/.mozilla/firefox/Crash Reports"
+		"$HOME/.mozilla/firefox/Pending Pings"
+	)
+
+	alias hsh="/bin/rm -rv ${PLACES[@]} 2> /dev/null"
+fi
 
 # Make the ffmpeg output less cluttered, but also ignore many errors.
 [ -x /usr/bin/ffmpeg ] && alias ffmpeg="ffmpeg -v 0 -stats"
