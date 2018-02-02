@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Wed 31 Jan 14:36:21 GMT 2018
+# Last Change       - Fri  2 Feb 22:46:53 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -26,6 +26,9 @@ alias sudo="sudo "
 
 # Sick of typing this in the termanal, out of habit!
 alias ":q"="exit"
+
+# Log by default all actions by insit into: /var/log/tfl_insit.log
+[ -x /usr/bin/insit ] && alias insit="insit -L"
 
 # Display the current DPI setting.
 if [ -x /usr/bin/xdpyinfo ]; then
