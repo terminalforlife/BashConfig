@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri  2 Feb 22:46:53 GMT 2018
+# Last Change       - Sun  4 Feb 10:47:13 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -29,6 +29,15 @@ alias ":q"="exit"
 
 # Log by default all actions by insit into: /var/log/tfl_insit.log
 [ -x /usr/bin/insit ] && alias insit="insit -L"
+
+# I'm done with the boring original apt-get output! I'm also sick of specifying
+# --purge --autoremove, so I want it to be assumed! A much more useful apt-get.
+if [ -x /usr/bin/apt-get ]; then
+	alias apt-get='\
+		/usr/bin/apt-get --quiet -o Dpkg::Progress=true\
+		-o Dpkg::Progress-Fancy=true -o APT::Get::AutomaticRemove=true\
+		-o APT::Get::Purge=true '
+fi
 
 # Display the current DPI setting.
 if [ -x /usr/bin/xdpyinfo ]; then
