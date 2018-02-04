@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Wed 24 Jan 17:55:50 GMT 2018
+# Last Change       - Sun  4 Feb 10:39:52 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -20,6 +20,20 @@
 
 if [ -x /usr/bin/awk ]; then
 	sc(){ printf "%f\n" "$(/usr/bin/awk "BEGIN{print($@)}" 2> /dev/null)"; }
+fi
+
+# The ago function is a handy alias for apt-get's -o options.
+if [ -x /usr/bin/apt-get ]; then
+	ago(){
+		#TODO - Why is there that initial blank line!?
+		for FIELD in `/bin/zcat /usr/share/man/man8/apt-get.8.gz`; {
+			if [[ "$FIELD" =~ ^(Dir|Acquire|Dpkg|APT):: ]]; then
+				CLEAN="${FIELD//[.\\&)(,]}"
+				[ "$OLD" == "$CLEAN" ] || printf "%s\n" "$OLD"
+				OLD="$CLEAN"
+			fi
+		}
+	}
 fi
 
 # Search the given path(s) for file types of TYPE. Ignores filename extension.
