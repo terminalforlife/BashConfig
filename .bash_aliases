@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun  4 Feb 10:47:13 GMT 2018
+# Last Change       - Tue  6 Feb 16:58:40 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -29,6 +29,12 @@ alias ":q"="exit"
 
 # Log by default all actions by insit into: /var/log/tfl_insit.log
 [ -x /usr/bin/insit ] && alias insit="insit -L"
+
+# This is where I usually have the main bulk of my music, and since I like to have
+# little in my $HOME, I might as well just point mplay/MOC to the one on Main Data.
+if [ -x /usr/bin/mplay ]; then
+	alias mplay='/usr/bin/mplay /media/$USER/Main\ Data/Linux\ Generals/Music'
+fi
 
 # I'm done with the boring original apt-get output! I'm also sick of specifying
 # --purge --autoremove, so I want it to be assumed! A much more useful apt-get.
@@ -457,7 +463,7 @@ if [ -x /usr/bin/vim ]; then
 	for FILE in\
 	\
 		".zshrc":zshrc ".vimrc":vimrc ".bashrc":bashrc ".conkyrc":conkyrc\
-		".profile":profile ".i3blocks.conf":i3b1 ".i3blocks2.conf":i3b2\
+		".profile":profile ".i3bbelow":i3b1 ".i3babove":i3b2\
 		".config/i3/config":i3c "bin/maintain":maintain-sh\
 		".bash_aliases":bashaliases ".config/compton.conf":compconf\
 		"Documents/TT/Useful_Commands":cn "i3blocks1.conf":i3cb1\
@@ -465,7 +471,8 @@ if [ -x /usr/bin/vim ]; then
 		".maintain/changelog.txt":maintain-cl ".xbindkeysrc":xbkrc\
 		".maintain/maintain.man":maintain-man ".config/openbox/rc.xml":obc\
 		".maintain/usersettings.conf":maintain-set ".wgetrc":wgetrc\
-		".dosbox/dosbox-0.74.conf":dbc ".bash_functions":bashfunctions;
+		".dosbox/dosbox-0.74.conf":dbc ".bash_functions":bashfunctions\
+		".libi3bview":li3bv;
 	{
 		[ -f "${FILE%:*}" ] || continue
 		alias ${FILE/*:}="/usr/bin/vim $HOME/${FILE%:*}"
