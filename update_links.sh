@@ -28,11 +28,11 @@ for DEP in /bin/{ln,rm}; {
 [ "${PWD//*\/}" == "bashconfig" ] || XERR "Not in the repository's root directory."
 
 for FILE in .bashrc .bash_aliases .bash_functions .profile; {
-	/bin/rm $HOME/$FILE 2> /dev/null
-	/bin/ln $FILE $HOME/$FILE 2> /dev/null
+	/bin/rm -v $HOME/$FILE 2> /dev/null
+	/bin/ln -v $FILE $HOME/$FILE 2> /dev/null
 }
 
 for FILE in ShellPlugins/*; {
-	/bin/rm $HOME/$FILE 2> /dev/null
-	/bin/ln $FILE $HOME/$FILE 2> /dev/null
+	/bin/rm -v $HOME/$FILE 2> /dev/null
+	/bin/ln -v $FILE $HOME/$FILE 2> /dev/null
 }
