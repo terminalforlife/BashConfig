@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue  6 Feb 16:58:40 GMT 2018
+# Last Change       - Wed  7 Feb 21:03:38 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -26,6 +26,11 @@ alias sudo="sudo "
 
 # Sick of typing this in the termanal, out of habit!
 alias ":q"="exit"
+
+# A less excessive, yet still very, very useful current-user-focused ps command.
+if [ -x /bin/ps ]; then
+	alias ps='/bin/ps -faxc -U $UID -o pid,uid,gid,pcpu,pmem,stat,comm'
+fi
 
 # Log by default all actions by insit into: /var/log/tfl_insit.log
 [ -x /usr/bin/insit ] && alias insit="insit -L"
