@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Wed  7 Feb 21:03:38 GMT 2018
+# Last Change       - Mon 12 Feb 17:59:46 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ if [ -x /bin/ps ]; then
 fi
 
 # Log by default all actions by insit into: /var/log/tfl_insit.log
-[ -x /usr/bin/insit ] && alias insit="insit -L"
+[ -x /usr/bin/insit ] && alias insit="/usr/bin/insit -L"
 
 # This is where I usually have the main bulk of my music, and since I like to have
 # little in my $HOME, I might as well just point mplay/MOC to the one on Main Data.
