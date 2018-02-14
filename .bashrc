@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed 24 Jan 19:35:55 GMT 2018
+# Last Change       - Tue 13 Feb 17:16:01 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -343,6 +343,7 @@ unset USRBC
 
 #--------------------------------------------------------------------INPUT BINDINGS
 
+# Comment out if you already have this set in /etc/inputrc or elsewhere.
 bind '"\e[1;5C": forward-word'
 bind '"\e[1;5D": backward-word'
 
