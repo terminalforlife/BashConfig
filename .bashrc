@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Tue 13 Feb 17:16:01 GMT 2018
+# Last Change       - Wed 14 Feb 16:31:05 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -358,17 +358,3 @@ BASH_FUNCTIONS="$HOME/.bash_functions"
 [ -f "$BASH_FUNCTIONS" -a -r "$BASH_FUNCTIONS" ] && . "$BASH_FUNCTIONS"
 
 unset BASH_ALIASES BASH_FUNCTIONS
-
-#-------------------------------------------------------------------SLOPPY REMINDER
-
-#TODO - Make this a ShellPlugin.
-case `printf "%(%F)T" -1` in
-	2018-02-14)
-		printf "REMINDER: It's St. Valentine's Day.\n" ;;
-	2018-12-24)
-		printf "REMINDER: It's Christmas Eve.\n" ;;
-	2018-12-25)
-		printf "REMINDER: It's Christmas Day.\n" ;;
-	2019-01-01)
-		printf "REMINDER: It's New Year's day.\n" ;;
-esac
