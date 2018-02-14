@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sun  4 Feb 10:39:52 GMT 2018
+# Last Change       - Tue 13 Feb 20:09:49 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -20,6 +20,17 @@
 
 if [ -x /usr/bin/awk ]; then
 	sc(){ printf "%f\n" "$(/usr/bin/awk "BEGIN{print($@)}" 2> /dev/null)"; }
+fi
+
+# Search for & output files not found which were installed with a given package.
+if [ -x /usr/bin/dpkg-query ]; then
+	missing-pkg-files(){
+		while read X; do
+			if ! [ -e "$X" -a "$X" ]; then
+				printf "%s\n" "$X"
+			fi
+		done <<< "$(/usr/bin/dpkg-query -L $@)"
+	}
 fi
 
 # The ago function is a handy alias for apt-get's -o options.
