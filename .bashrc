@@ -358,3 +358,5 @@ BASH_FUNCTIONS="$HOME/.bash_functions"
 [ -f "$BASH_FUNCTIONS" -a -r "$BASH_FUNCTIONS" ] && . "$BASH_FUNCTIONS"
 
 unset BASH_ALIASES BASH_FUNCTIONS
+
+# vim: noexpandtab colorcolumn=80 tabstop=8 noswapfile nobackup
