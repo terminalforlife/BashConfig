@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 12 Feb 17:59:46 GMT 2018
+# Last Change       - Thu 15 Feb 23:13:05 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -26,6 +26,11 @@ alias sudo="sudo "
 
 # Sick of typing this in the termanal, out of habit!
 alias ":q"="exit"
+
+# ???
+if [ -x /usr/bin/xdm -a -f /etc/X11/xdm/Xresources ]; then
+	alias xdm-xresources='/usr/bin/rvim /etc/X11/xdm/Xresources'
+fi
 
 # A less excessive, yet still very, very useful current-user-focused ps command.
 if [ -x /bin/ps ]; then
@@ -127,7 +132,7 @@ if [ -x /bin/sleep ]; then
 fi
 
 # Remove trailing spaces or lines with only spaces. Tabs included. Needs testing.
-[ -x /bin/sed ] && alias nospace='/bin/sed -i s/^[\s\t]\+$//\;\ s/[\s\t]\+$//'
+[ -x /bin/sed ] && alias nospace='/bin/sed -i s/^[\\s\\t]\\+$//\;\ s/[\\s\\t]\\+$//'
 
 # Efficient and fairly portable way to display the current iface.
 [ -x /sbin/ip ] && alias iface='X=(`/sbin/ip route`) && echo ${X[4]}'
