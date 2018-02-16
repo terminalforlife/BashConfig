@@ -98,3 +98,5 @@ gitsa(){
 	# directory you were in when you called this function.
 	cd "$CURRENT_DIRECTORY"
 }
+
+# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup

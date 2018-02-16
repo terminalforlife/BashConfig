@@ -28,3 +28,5 @@ loop(){
 		$@
 	done
 }
+
+# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup

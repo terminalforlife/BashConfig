@@ -117,3 +117,5 @@ mkvm(){
 
 	# --hostkey 305 128
 }
+
+# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup

@@ -28,3 +28,5 @@ l2f(){
 		return 1
 	}
 }
+
+# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup

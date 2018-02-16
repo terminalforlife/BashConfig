@@ -20,3 +20,5 @@ tentt(){
 	printf "%4d" {9..90..9}; echo
 	printf "%4d" {10..100..10}; echo
 }
+
+# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup

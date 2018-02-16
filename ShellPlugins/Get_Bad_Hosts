@@ -44,3 +44,5 @@ gbh(){
 		}
 	done <<< "$(/usr/bin/wget -q "$URL" -O -)" > ./Bad\ Hosts.txt
 }
+
+# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup

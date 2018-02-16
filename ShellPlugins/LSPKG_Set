@@ -94,3 +94,5 @@ lspkg-set(){
 		fi
 	done <<< "$(/usr/bin/dpkg-query --show -f="${FMT1}${FMT2}" \*)"
 }
+
+# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup

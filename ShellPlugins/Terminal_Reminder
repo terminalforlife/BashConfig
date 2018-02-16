@@ -14,3 +14,5 @@ case `printf "%(%F)T" -1` in
 	2018-12-25) printf "REMINDER: It's Christmas Day.\n" ;;
 	2019-01-01) printf "REMINDER: It's New Year's day.\n" ;;
 esac
+
+# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
