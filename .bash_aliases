@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Thu 15 Feb 23:13:05 GMT 2018
+# Last Change       - Fri 16 Feb 20:07:52 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -286,22 +286,21 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 # Ease-of-use youtube-dl aliases; these save typing!
 for DEP in /usr/{local/bin,bin}/youtube-dl; {
 	[ -x "$DEP" ] && {
-		alias ytdl-video="/usr/local/bin/youtube-dl -c --yes-playlist\
-			--sleep-interval 5 --max-sleep-interval 30 --format best\
-			--no-call-home --console-title --quiet --ignore-errors"
+		alias ytdl-video="$DEP -c --yes-playlist --sleep-interval 5\
+			--format best --no-call-home --console-title --quiet\
+			--ignore-errors"
 
-		alias ytdl-audio="/usr/local/bin/youtube-dl -cx --audio-format mp3\
-			--sleep-interval 5 --max-sleep-interval 30 --no-call-home\
-			--console-title --quiet --ignore-errors"
+		alias ytdl-audio="$DEP -cx --audio-format mp3 --sleep-interval 5\
+			--max-sleep-interval 30 --no-call-home --console-title\
+			--quiet --ignore-errors"
 
-		alias ytpldl-audio="/usr/local/bin/youtube-dl -cix\
-			--audio-format mp3 --sleep-interval 5\
-			--max-sleep-interval 30 --yes-playlist --no-call-home\
-			--console-title --quiet --ignore-errors"
+		alias ytpldl-audio="$DEP -cix --audio-format mp3 --sleep-interval\
+			5 --yes-playlist --no-call-home --console-title --quiet\
+			--ignore-errors"
 
-		alias ytpldl-video="/usr/local/bin/youtube-dl -ci --yes-playlist\
-			--sleep-interval 5 --max-sleep-interval 30 --format best\
-			--no-call-home --console-title --quiet --ignore-errors"
+		alias ytpldl-video="$DEP -ci --yes-playlist --sleep-interval 5\
+			--format best --no-call-home --console-title --quiet\
+			--ignore-errors"
 
 		# Just use the first result.
 		break
@@ -517,3 +516,5 @@ fi
 # Clean up functions and variables.
 unset -f FOR_THE_EDITOR
 unset DEP FILE DEPCOUNT FOR_THE_EDITOR TTDIR DIR CHOSEN_EDITOR
+
+# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup

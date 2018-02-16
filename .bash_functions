@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 13 Feb 20:09:49 GMT 2018
+# Last Change       - Fri 16 Feb 20:07:57 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -184,3 +184,5 @@ if [ -x /usr/bin/links2 ]; then
 			http://duckduckgo.com/?q="$*"
 	}
 fi
+
+# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup

@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed 14 Feb 16:31:05 GMT 2018
+# Last Change       - Fri 16 Feb 20:03:52 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -359,4 +359,4 @@ BASH_FUNCTIONS="$HOME/.bash_functions"
 
 unset BASH_ALIASES BASH_FUNCTIONS
 
-# vim: noexpandtab colorcolumn=80 tabstop=8 noswapfile nobackup
+# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
