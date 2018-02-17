@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sat 17 Feb 20:34:28 GMT 2018
+# Last Change       - Sat 17 Feb 22:23:08 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -86,10 +86,10 @@ PLUGINS=(
 #       /bin/rbash) to avoid some error messages related to permissions with this
 #       configuration file and/or other related files.
 
-{ [ -d "$HOME/bin" ] && ! [[ "$PATH" == */home/"$USER"/bin* ]]; } && {
+if [ -d "$HOME/bin" ] && ! [[ "$PATH" == */home/"$USER"/bin* ]]; then
 	# If the directory exists and isn't already in PATH, set it so.
 	export PATH="/home/$USER/bin:${PATH}"
-}
+fi
 
 # The RHEL recommended umask for much more safety when creating new files and
 # directories. This is the equivalent of octal 700 and 600 for directories and
@@ -105,11 +105,11 @@ umask 0077
 [ -z "$PS1" ] && return
 
 # These commands don't work with zsh.
-[ -z "$ZSH_VERSION" ] && {
-	[ "$DEFAULT_HISTORY" == "true" ] || {
+if [ -z "$ZSH_VERSION" ]; then
+	if ! [ "$DEFAULT_HISTORY" == "true" ]; then
 		shopt -s histappend cmdhist lithist
 		set -o histexpand
-	}
+	fi
 
 	shopt -s checkwinsize globstar complete_fullquote expand_aliases extquote\
 		 extglob force_fignore hostcomplete interactive_comments xpg_echo\
@@ -119,7 +119,7 @@ umask 0077
 	set -o interactive-comments -o monitor -o hashall -o braceexpand -o emacs
 
 	[ "$POXIS_MODE" == "true" ] && set -o posix
-}
+fi
 
 #-------------------------------------------------------------------USER SET CHECKS
 
@@ -129,9 +129,9 @@ for OPT in\
 	COMMITS:$COMMITS PREFIX_DIR:$PREFIX_DIR\
 	SIMPLE:$SIMPLE STANDARD:$STANDARD POSIX_MODE:$POSIX_MODE
 {
-	[[ "${OPT/*:}" == @(true|false) ]] || {
+	if ! [[ "${OPT/*:}" == @(true|false) ]]; then
 		echo "ERROR: Incorrect setting at: ${OPT%:*}" 1>&2
-	}
+	fi
 }
 
 #----------------------------------------------------------------------------PROMPT
@@ -237,26 +237,28 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 		PS1="\$ "
 	fi
 else
-	[ -n "$ALT_TYPE" ] && {
+	if [ -n "$ALT_TYPE" ]; then
 		case "$ALT_TYPE" in
 			dsuveges)
 				PS1="\[\e[1;30m\]\A \u@\h\[\e[m\]:\[\e[1;32m\]\W\[\e[m\]$ " ;;
 			*)
 				echo "ERROR: Incorrect setting at: ALT_TYPE" 1>&2 ;;
 		esac
-	} || echo "ERROR: Missing setting at: ALT_TYPE" 1>&2
+	else
+		echo "ERROR: Missing setting at: ALT_TYPE" 1>&2
+	fi
 fi
 
 #---------------------------------------------------------------------------HISTORY
 
 # Sets the command history options. See: man bash
-[ "$DEFAULT_HISTORY" == "true" ] || {
+if [ "$DEFAULT_HISTORY" == "true" ]; then
 	#HISTIGNORE="ls *:exit *:clear:cd *::pwd:history *"
 	HISTTIMEFORMAT="[%F_%X]: "
 	HISTCONTROL=ignoreboth
 	HISTFILESIZE=0
 	HISTSIZE=1000
-}
+fi
 
 #--------------------------------------------------------------------SOURCE PLUGINS
 
@@ -264,11 +266,11 @@ fi
 FLIB="$HOME/ShellPlugins"
 
 # If the above directory is found, then source each plugin, if it's found.
-[ -d "$FLIB" ] && {
+if [ -d "$FLIB" ]; then
 	for FUNC in ${PLUGINS[@]}; {
 		[ -f "$FLIB/$FUNC" ] && . "$FLIB/$FUNC"
 	}
-}
+fi
 
 unset FLIB FUNC
 
@@ -296,13 +298,13 @@ export TERM="xterm-256color"
 export LESSSECURE=1
 
 # If sudo is found, set the sudo -e editor to rvim or rnano.
-[ -x /usr/bin/sudo ] && {
+if [ -x /usr/bin/sudo ]; then
 	if [ -x /usr/bin/rvim ]; then
 		export SUDO_EDITOR="/usr/bin/rvim"
 	elif [ -x /bin/rnano ]; then
 		export SUDO_EDITOR="/bin/rnano"
 	fi
-}
+fi
 
 # Export these variables to add color to the manual pages.
 export LESS_TERMCAP_mb=$'\e[01;31m'
@@ -328,19 +330,19 @@ unset USRBC
 #-------------------------------------------------------------------------TERMWATCH
 
 # Enable a feature I dub termwatch. It logs whenever the current opens a terminal.
-[ -x /usr/bin/tty ] && {
+if [ -x /usr/bin/tty ]; then
 	TERMWATCH_LOG="$HOME/.termwatch.log"
 	CURTERM=`/usr/bin/tty`
 	printf -v DATE '%(%F (%X))T'
 
-	[ -f "$TERMWATCH_LOG" -a -w "$TERMWATCH_LOG" ] && {
+	if [ -f "$TERMWATCH_LOG" -a -w "$TERMWATCH_LOG" ]; then
 		# Using "" to avoid argument miscount when using %()T.
 		printf 'Using %s on %s at %s as %s.\n' "${CURTERM:-Unknown}"\
 			"(${TERM-unknown})" "$DATE" "$USER" >> "$TERMWATCH_LOG"
-	}
+	fi
 
 	unset TERMWATCH_LOG CURTERM
-}
+fi
 
 #--------------------------------------------------------------------INPUT BINDINGS
 
