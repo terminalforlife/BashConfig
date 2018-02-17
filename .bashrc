@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 16 Feb 20:03:52 GMT 2018
+# Last Change       - Sat 17 Feb 20:34:28 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -75,6 +75,7 @@ PLUGINS=(
 	Git_Status_All            # Run 'gitsa' to show repos which need action.
 	Get_Bad_Hosts             # Run 'gbh' to download a list of bad domains.
 	List_Signals              # Run 'lsssig' for another way to list signals.
+	LSPKG_Set                 # Run 'lspkg-set' to list various package types.
 )
 
 # WARNING: Changing code below, without knowledge of shell, could easily break it!
