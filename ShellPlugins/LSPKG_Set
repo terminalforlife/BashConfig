@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/LSPKG_Set
 # Started On        - Wed 24 Jan 17:31:41 GMT 2018
-# Last Change       - Wed 24 Jan 18:51:59 GMT 2018
+# Last Change       - Sat 17 Feb 17:26:41 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -12,14 +12,6 @@
 #
 # The intention of this small plugin is to allow the user to enter the following
 # commands to display certain sets of packages, hence the name:
-#
-# SYNTAX:       lspkg-set [OPT]
-#
-# OPT:          --essential|-E        - Display the essential packages.
-#               --extra|-e            - Display the extra packages.
-#               --required|-R         - Display the required packages.
-#               --optional|-o         - Display the optional packages.
-#               --important|-i        - Display the important packages.
 #
 # I may eventually incorporate this functionality into lspkg (see lspkg repository)
 # as it strikes me as the perfect place for it, but this will suffice for now.
@@ -60,7 +52,7 @@ lspkg-set(){
 
 	case "$*" in
 		--help|-h|-\?)
-			USAGE; exit 0 ;;
+			USAGE; return 0 ;;
 		--essential|-E)
 			TYPE="Essential:yes" ;;
 		--extra|-e)
