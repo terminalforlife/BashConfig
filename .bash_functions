@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sat 17 Feb 20:32:24 GMT 2018
+# Last Change       - Sat 17 Feb 22:14:56 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -22,6 +22,20 @@ if [ -x /usr/bin/awk ]; then
 	sc(){ printf "%f\n" "$(/usr/bin/awk "BEGIN{print($@)}" 2> /dev/null)"; }
 fi
 
+# An alternative way to get and display the session uptime.
+if [ -f /proc/uptime -a -r /proc/uptime ]; then
+	up(){
+		read -a X < /proc/uptime
+		declare -i H=$((${X[0]%.*}/60/60))
+		declare -i M=$((${X[0]%.*}/60-(H*60)))
+		P(){ [ $1 -gt 1 -o $1 -eq 0 ] && printf "s"; }
+		printf "UP: $H hour%s and $M minute%s.\n" `P $H` `P $M`
+
+		unset X
+		unset -f P
+	}
+fi
+
 # An improvement of a code block found here:
 # https://forums.linuxmint.com/viewtopic.php?f=47&t=263770&p=1432658#p1432285
 suppress(){
@@ -30,16 +44,18 @@ suppress(){
 	done
 
 	return ${PIPESTATUS[0]}
+
+	unset X
 }
 
 # Search for & output files not found which were installed with a given package.
 if [ -x /usr/bin/dpkg-query ]; then
 	missing-pkg-files(){
 		while read X; do
-			if ! [ -e "$X" -a "$X" ]; then
-				printf "%s\n" "$X"
-			fi
+			[ -e "$X" -a "$X" ] || printf "%s\n" "$X"
 		done <<< "$(/usr/bin/dpkg-query -L $@)"
+
+		unset X
 	}
 fi
 
@@ -54,6 +70,8 @@ if [ -x /usr/bin/apt-get ]; then
 				OLD="$CLEAN"
 			fi
 		}
+
+		unset FIELD CLEAN OLD
 	}
 fi
 
@@ -76,6 +94,8 @@ if [ -x /usr/bin/mimetype ]; then
 				}
 			done <<< "$(/usr/bin/mimetype -bd "$FILE")"
 		}
+
+		unset TYPE FILE X I
 	}
 fi
 
@@ -84,13 +104,14 @@ if [ -f /proc/net/dev ]; then
 	inout(){
 		while read -a X; do
 			if [ "${X[0]}" == "${1}:" ]; then
-				IN=${X[1]}
-				OUT=${X[9]}
+				declare -i IN=${X[1]}
+				declare -i OUT=${X[9]}
 			fi
 		done < /proc/net/dev
 
-		printf "IN:  %'14dK\nOUT: %'14dK\n"\
-			"$((IN/1024))" "$((OUT/1024))"
+		printf "IN:  %'14dK\nOUT: %'14dK\n" "$((IN/1024))" "$((OUT/1024))"
+
+		unset X
 	}
 fi
 
@@ -114,6 +135,8 @@ if [ -f /etc/passwd ]; then
 					"${X[2]}" "${X[3]}" "${X[5]}" "${X[6]}"
 			fi
 		done < /etc/passwd
+
+		unset X
 	}
 fi
 
@@ -123,6 +146,8 @@ if [ -f /usr/share/dict/words -a -r /usr/share/dict/words ]; then
 		while read -r X; do
 			[[ "$X" == *${1}* ]] && printf "%s\n" "$X"
 		done < /usr/share/dict/words
+
+		unset X
 	}
 fi
 
@@ -148,7 +173,7 @@ if [ -x /usr/bin/git -a -x /bin/date ]; then
 
 		echo "TOTAL:    $COUNT"
 
-		unset COUNT X
+		unset X
 	}
 
 	logttl(){
@@ -158,7 +183,7 @@ if [ -x /usr/bin/git -a -x /bin/date ]; then
 			if [ -d "$DIR" ]; then
 				cd "$DIR"
 
-				GET_TTLS=`GIT_LOG_ALIAS`
+				local GET_TTLS=`GIT_LOG_ALIAS`
 				[ -z "$GET_TTLS" ] && return
 
 				#TODO - Finish this. If CWD is not root of repo, -
@@ -183,6 +208,8 @@ if [ -x /usr/bin/git -a -x /bin/date ]; then
 				cd - > /dev/null
 			fi
 		}
+
+		unset DIR
 	}
 fi
 
