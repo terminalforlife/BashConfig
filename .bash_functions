@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Fri 16 Feb 20:07:57 GMT 2018
+# Last Change       - Sat 17 Feb 20:30:09 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -21,6 +21,16 @@
 if [ -x /usr/bin/awk ]; then
 	sc(){ printf "%f\n" "$(/usr/bin/awk "BEGIN{print($@)}" 2> /dev/null)"; }
 fi
+
+# An improvement of a code block found here:
+# https://forums.linuxmint.com/viewtopic.php?f=47&t=263770&p=1432658#p1432285
+suppress(){
+	$1 |& while read b; do
+		[ "${b/$2}" ] && printf "%s\n" "${b/$2}"
+	done
+
+	return ${PIPESTATUS[0]}
+}
 
 # Search for & output files not found which were installed with a given package.
 if [ -x /usr/bin/dpkg-query ]; then
