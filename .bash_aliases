@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 16 Feb 20:07:52 GMT 2018
+# Last Change       - Mon 19 Feb 13:13:28 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -75,7 +75,7 @@ if [ -x /bin/rm ]; then
 		"$HOME/.mozilla/firefox/Pending Pings"
 	)
 
-	alias hsh="/bin/rm -rv ${PLACES[@]} 2> /dev/null"
+	alias hsh="/bin/rm --interactive=never -rv ${PLACES[@]} 2> /dev/null"
 fi
 
 # Make the ffmpeg output less cluttered, but also ignore many errors.
