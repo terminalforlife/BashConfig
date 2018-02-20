@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 19 Feb 13:13:28 GMT 2018
+# Last Change       - Tue 20 Feb 07:08:14 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -110,12 +110,16 @@ fi
 # Very useful, quick alias to scan anything you specify, if you have clamscan.
 if [ -x /usr/bin/clamscan -a -x /usr/bin/tee ]; then
 	alias scan='\
-		/usr/bin/clamscan --bell -r --no-summary -i --detect-pua=yes\
-			--detect-structured=no --structured-cc-count=3\
-			--structured-ssn-count=3 --phishing-ssl=yes\
-			--phishing-cloak=yes --partition-intersection=yes\
-			--detect-broken=yes --block-macros=yes --max-filesize=256M\
-			| /usr/bin/tee $HOME/Desktop/clamscan_`printf "%(%F_%X)T" "-1"`.log
+		{
+			printf "SCAN_START: %(%F (%X))T\n" -1
+			/usr/bin/clamscan --bell -r --no-summary -i\
+				--detect-pua=yes --detect-structured=no\
+				--structured-cc-count=3 --structured-ssn-count=3\
+				--phishing-ssl=yes --phishing-cloak=yes\
+				--partition-intersection=yes --detect-broken=yes\
+				--block-macros=yes --max-filesize=256M\
+				|& /usr/bin/tee -a $HOME/.scan_alias.log
+		} |& /usr/bin/tee -a $HOME/.scan_alias.log
 	'
 fi
 
