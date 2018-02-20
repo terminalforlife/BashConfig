@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sat 17 Feb 22:14:56 GMT 2018
+# Last Change       - Tue 20 Feb 08:05:25 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -43,9 +43,9 @@ suppress(){
 		[ "${X/$2}" ] && printf "%s\n" "${X/$2}"
 	done
 
-	return ${PIPESTATUS[0]}
-
 	unset X
+
+	return ${PIPESTATUS[0]}
 }
 
 # Search for & output files not found which were installed with a given package.
@@ -106,6 +106,7 @@ if [ -f /proc/net/dev ]; then
 			if [ "${X[0]}" == "${1}:" ]; then
 				declare -i IN=${X[1]}
 				declare -i OUT=${X[9]}
+				break
 			fi
 		done < /proc/net/dev
 
@@ -144,7 +145,7 @@ fi
 if [ -f /usr/share/dict/words -a -r /usr/share/dict/words ]; then
 	dict(){
 		while read -r X; do
-			[[ "$X" == *${1}* ]] && printf "%s\n" "$X"
+			[[ "$X" == *$1* ]] && printf "%s\n" "$X"
 		done < /usr/share/dict/words
 
 		unset X
@@ -154,64 +155,6 @@ fi
 # Two possibly pointless functions to single- or double-quote a string of text.
 squo(){ printf "'%s'\n\" \"\$*"; }
 dquo(){ printf "\"%s\"\n" "$*"; }
-
-#TODO - Combine these two functions and make more concise somehow. Avoid date.
-if [ -x /usr/bin/git -a -x /bin/date ]; then
-	log(){
-		declare -i COUNT=0
-		local RESULT=`/usr/bin/git log`
-
-		[ "$RESULT" ] || return
-
-		while read X; do
-			#TODO - Include comment and name.
-			if [[ "$X" == Date:\ \ \ [A-Z][a-z][a-z]\ * ]]; then
-				/bin/date -d "${X:8:24}" +%F\ \(%X\)
-				COUNT+=1
-			fi
-		done <<< "$RESULT"
-
-		echo "TOTAL:    $COUNT"
-
-		unset X
-	}
-
-	logttl(){
-		printf "%-7s  %s\n" "COMMITS" "REPOSITORY"
-
-		for DIR in *; {
-			if [ -d "$DIR" ]; then
-				cd "$DIR"
-
-				local GET_TTLS=`GIT_LOG_ALIAS`
-				[ -z "$GET_TTLS" ] && return
-
-				#TODO - Finish this. If CWD is not root of repo, -
-				#       then show only repo root's directory name.
-				#declare -i INUM=0
-				#for I in *; {
-				#	[ "$I" == ".git" ] && {
-				#		INUM+=1
-				#		cd - > /dev/null
-				#	}
-				#}
-				#
-				#[ $INUM -eq 0 ] && DIR="${CWD}"
-
-				while read -a REPLY; do
-					if [[ "$REPLY" == TOTAL:* ]]; then
-						printf "%'-7d  %s\n"\
-							"${REPLY[1]}" "${PWD//*\/}"
-					fi
-				done <<< "$GET_TTLS"
-
-				cd - > /dev/null
-			fi
-		}
-
-		unset DIR
-	}
-fi
 
 # My preferred links2 settings. Also allows you to quickly search with DDG.
 if [ -x /usr/bin/links2 ]; then
