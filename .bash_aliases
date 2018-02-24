@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sat 24 Feb 13:45:20 GMT 2018
+# Last Change       - Sat 24 Feb 13:50:53 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -345,17 +345,6 @@ for DEP in /bin/{dd,pidof}; {
 		alias ddp="kill -USR1 `/bin/pidof /bin/dd`"
 	}
 }
-
-# Display a detailed list of kernel modules currently in use.
-if [ -x /sbin/lsmod -a -x /sbin/modinfo ]; then
-	alias lsmodd='\
-		while read -a X; do
-			[ "${X[0]}" == "Module" ] && continue
-			Y=`/sbin/modinfo -d "${X[0]}"`
-			[ "$Y" ] && printf "%s - %s\n" "${X[0]}" "$Y"
-		done <<< "$(/sbin/lsmod)"
-	'
-fi
 
 # These are just options I find the most useful when using dmesg.
 [ -x /bin/dmesg ] && alias klog="/bin/dmesg -t -L=never -l err,crit,alert,emerg"
