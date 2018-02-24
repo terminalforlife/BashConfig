@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 20 Feb 08:05:25 GMT 2018
+# Last Change       - Sat 24 Feb 13:50:18 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -33,6 +33,19 @@ if [ -f /proc/uptime -a -r /proc/uptime ]; then
 
 		unset X
 		unset -f P
+	}
+fi
+
+#TODO - The list doesn't seem to be complete.
+#TODO - Fix the inability to pipe the output.
+# Display a descriptive list of kernel modules.
+if [ -x /sbin/lsmod -a -x /sbin/modinfo ]; then
+	lsmodd(){
+		while read -a X; do
+			[ "${X[0]}" == "Module" ] && continue
+			Y=`/sbin/modinfo -d "${X[0]}"`
+			[ "$Y" ] && printf "%s - %s\n" "${X[0]}" "$Y"
+		done <<< "$(/sbin/lsmod)"
 	}
 fi
 
