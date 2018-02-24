@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 20 Feb 07:08:14 GMT 2018
+# Last Change       - Sat 24 Feb 13:45:20 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -350,6 +350,7 @@ for DEP in /bin/{dd,pidof}; {
 if [ -x /sbin/lsmod -a -x /sbin/modinfo ]; then
 	alias lsmodd='\
 		while read -a X; do
+			[ "${X[0]}" == "Module" ] && continue
 			Y=`/sbin/modinfo -d "${X[0]}"`
 			[ "$Y" ] && printf "%s - %s\n" "${X[0]}" "$Y"
 		done <<< "$(/sbin/lsmod)"
