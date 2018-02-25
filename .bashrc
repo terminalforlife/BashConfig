@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 25 Feb 21:54:45 GMT 2018
+# Last Change       - Sun 25 Feb 21:55:42 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ umask 0077
 # It seems to just needs root access to raise this value, but not lower it.
 #ulimit -u 5000
 
-# If not running interactively or in restricted mode, then ignore the rest.
+# If not running interactively, or are in restricted mode, then ignore the rest.
 { ! [ "$PS1" ] || shopt -q restricted_shell; } && return
 
 # These commands don't work with zsh.
