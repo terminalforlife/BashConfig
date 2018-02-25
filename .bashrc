@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Mon 19 Feb 20:58:20 GMT 2018
+# Last Change       - Sun 25 Feb 21:54:45 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -82,10 +82,6 @@ PLUGINS=(
 
 #--------------------------------------------------------------MAIN SETS AND SHOPTS
 
-#TODO - Around here needs to be a check for Bash restricted mode (-r, or
-#       /bin/rbash) to avoid some error messages related to permissions with this
-#       configuration file and/or other related files.
-
 if [ -d "$HOME/bin" ] && ! [[ "$PATH" == */home/"$USER"/bin* ]]; then
 	# If the directory exists and isn't already in PATH, set it so.
 	export PATH="/home/$USER/bin:${PATH}"
@@ -101,8 +97,8 @@ umask 0077
 # It seems to just needs root access to raise this value, but not lower it.
 #ulimit -u 5000
 
-# If not running interactively, then ignore the rest of the file.
-[ "$PS1" ] || return
+# If not running interactively or in restricted mode, then ignore the rest.
+{ ! [ "$PS1" ] || shopt -q restricted_shell; } && return
 
 # These commands don't work with zsh.
 if [ -z "$ZSH_VERSION" ]; then
