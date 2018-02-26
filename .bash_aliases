@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sat 24 Feb 13:50:53 GMT 2018
+# Last Change       - Mon 26 Feb 19:08:25 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -192,20 +192,6 @@ if [ -x /bin/ls -a -x /usr/bin/watch ]; then
 	alias dwatch='\
 		/usr/bin/watch -n 0.1 "/bin/ls -SsCphq\
 			--color=auto --group-directories-first"
-	'
-fi
-
-# Blast away all of the (global) configuration files of the previously uninstalled
-# packages using dpkg to detect them and apt-get to purge them.
-if [ -x /usr/bin/apt-get -a -x /usr/bin/dpkg ]; then
-	alias rmrc='\
-		local LIST=$(
-			while read -ra REPLY; do
-				[[ "${REPLY[0]}" == rc ]] && echo "${REPLY[1]}"
-			done <<< "$(/usr/bin/dpkg -l 2> /dev/null)"
-		)
-
-		/usr/bin/apt-get -s purge $LIST
 	'
 fi
 
