@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 26 Feb 19:08:25 GMT 2018
+# Last Change       - Tue 27 Feb 00:53:46 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -419,6 +419,8 @@ if [ -x /usr/bin/mplayer ]; then
 			-nojoystick -nogui -zoom -nolirc --really-quiet\
 			dvd://1//dev/sr1 &> /dev/null"
 	fi
+elif [ -x /usr/bin/mpv ]; then
+	alias mpv="/usr/bin/mpv &> /dev/null"
 fi
 
 # A more descriptive, yet concise lsblk; you'll miss it when it's gone.
