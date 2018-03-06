@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 27 Feb 00:53:46 GMT 2018
+# Last Change       - Sun  4 Mar 22:53:41 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -26,6 +26,11 @@ alias sudo="sudo "
 
 # Sick of typing this in the termanal, out of habit!
 alias ":q"="exit"
+
+# View the entire (17,000+ lines) VIM User Guide.
+if [ -x /bin/cat -a -x /usr/bin/vim ]; then
+	alias vug='/bin/cat /usr/share/vim/vim74/doc/usr_*.txt | /usr/bin/vim -'
+fi
 
 # ???
 if [ -x /usr/bin/xdm -a -f /etc/X11/xdm/Xresources ]; then
