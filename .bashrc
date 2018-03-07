@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 25 Feb 21:55:42 GMT 2018
+# Last Change       - Wed  7 Mar 14:47:20 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -298,6 +298,9 @@ export LESS_TERMCAP_us=$'\e[01;32m'
 # Set the grep match color.
 export GREP_COLOR="1;31"
 
+# Made PS globally posixly correct, because why not?
+export PS_PERSONALITY="posix"
+
 #------------------------------------------------------------SOURCE BASH_COMPLETION
 
 USRBC="/usr/share/bash-completion/bash_completion"
@@ -336,5 +339,3 @@ BASH_FUNCTIONS="$HOME/.bash_functions"
 [ -f "$BASH_FUNCTIONS" -a -r "$BASH_FUNCTIONS" ] && . "$BASH_FUNCTIONS"
 
 unset BASH_ALIASES BASH_FUNCTIONS
-
-# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
