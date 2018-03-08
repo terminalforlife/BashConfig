@@ -3,13 +3,11 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/update_links.sh
 # Started On        - Sun 22 Oct 00:15:02 BST 2017
-# Last Change       - Wed 24 Jan 01:31:39 GMT 2018
+# Last Change       - Thu  8 Mar 05:28:12 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
-
 # Just a simple, quick script to update the hard links when changing branches.
-
 #------------------------------------------------------------------------------MAIN
 
 XERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; exit 1; }
