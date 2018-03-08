@@ -3,46 +3,38 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Get_Bad_Hosts
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Wed  1 Nov 14:50:29 GMT 2017
+# Last Change       - Thu  8 Mar 05:44:49 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 gbh(){
 	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
-	
-	[ $UID -eq 0 ] && {
-		ERR "$LINENO" "Root access isn't required."
-	}
-	
-	[ -x /usr/bin/wget ] || {
+
+	if ! [ -x /usr/bin/wget ]; then
 		ERR "$LINENO" "Dependency '/usr/bin/wget' not met."
 		return 1
-	}
-
-	[ $# -eq 0 ] || {
+	elif ! [ $# -eq 0 ]; then
 		ERR "$LINENO" "No arguments required."
 		return 1
-	}
+	fi
 
 	URL="http://www.montanamenagerie.org/hostsfile/hosts.txt"
 	DESTINATION="$HOME/Downloads/GBH.txt"
-
-	[ -d "${DESTINATION%\/*}" ] || {
+	if ! [ -d "${DESTINATION%\/*}" ]; then
 		ERR "$LINENO" "Destination directory not found."
 		return 1
-	}
-
-	[ -f "${DESTINATION}.gz" ] && {
+	elif [ -f "${DESTINATION}.gz" ]; then
 		ERR "$LINENO" "File already present."
 		return 1
-	}
-
-	while read -a X; do
-		[ "${X[0]}" == "127.0.0.1" ] && {
-			printf "%s %s\n" "${X[0]}" "${X[1]%}"
-		}
-	done <<< "$(/usr/bin/wget -q "$URL" -O -)" > ./Bad\ Hosts.txt
+	else
+		while read -a X; do
+			if [ "${X[0]}" == "127.0.0.1" ]; then
+				printf "%s %s\n" "${X[0]}" "${X[1]%}"
+			fi
+		done <<< "$(/usr/bin/wget $NOWARC -q "$URL" -O -)"\
+			> ./Bad\ Hosts.txt
+	fi
 }
 
 # vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
