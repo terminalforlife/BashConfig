@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Loop_This
 # Started On        - Thu  2 Nov 18:52:49 GMT 2017
-# Last Change       - Thu  2 Nov 19:03:28 GMT 2017
+# Last Change       - Thu  8 Mar 05:32:12 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -11,22 +11,20 @@
 loop(){
 	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
 
-	[ -x /bin/sleep ] || {
+	if ! [ -x /bin/sleep ]; then
 		ERR "$LINENO" "Dependency '/bin/sleep' not met."
 		return 1
-	}
-
-	[ $# -eq 0 ] && {
+	elif [ $# -eq 0 ]; then
 		ERR "$LINENO" "Command(s) required before looping can begin."
 		return 1
-	}
-
-	printf "\ec"
-	while :; do
-		printf "\ec\eH"
-		/bin/sleep 0.3
-		$@
-	done
+	else
+		printf "\ec"
+		while :; do
+			printf "\ec\eH"
+			/bin/sleep 0.3
+			$@
+		done
+	fi
 }
 
 # vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
