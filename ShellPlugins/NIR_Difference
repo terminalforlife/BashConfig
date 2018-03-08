@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/NIR_Difference
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Sat 13 Jan 22:27:03 GMT 2018
+# Last Change       - Thu  8 Mar 05:28:44 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -18,11 +18,6 @@
 nirdiff(){
 	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
 
-	[ $UID -eq 0 ] && {
-		ERR "$LINENO" "Root access isn't required."
-		return 1
-	}
-
 	[ $# -gt 1 ] || {
 		ERR "$LINENO" "Please specify a package name."
 		return 1
@@ -35,7 +30,7 @@ nirdiff(){
 			DEPCOUNT+=1
 		}
 	}
-	
+
 	[ $DEPCOUNT -eq 0 ] || return 1
 
 	if /usr/bin/dpkg-query --status "$1" &> /dev/null; then
