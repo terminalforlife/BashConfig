@@ -3,14 +3,14 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Cleaner_RK_Scan
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Fri 19 Jan 22:24:07 GMT 2018
+# Last Change       - Thu  8 Mar 05:30:28 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 rkc(){
 	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
-	
+
 	declare -i DEPCOUNT=0
 	for DEP in /usr/bin/{sudo,rkhunter} /usr/sbin/chkrootkit; {
 		[ -x "$DEP" ] || {
@@ -18,7 +18,7 @@ rkc(){
 			DEPCOUNT+=1
 		}
 	}
-	
+
 	[ $DEPCOUNT -eq 0 ] || return 1
 
 	/usr/bin/sudo /usr/bin/rkhunter -c --skip-keypress --rwo
@@ -46,5 +46,3 @@ rkc(){
 		esac
 	done <<< "$(/usr/bin/sudo /usr/sbin/chkrootkit)"
 }
-
-# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
