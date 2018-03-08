@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/LSPKG_Set
 # Started On        - Wed 24 Jan 17:31:41 GMT 2018
-# Last Change       - Sat 17 Feb 17:26:41 GMT 2018
+# Last Change       - Thu  8 Mar 05:41:07 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -18,21 +18,15 @@
 #----------------------------------------------------------------------------------
 
 lspkg-set(){
-	ERR(){ printf "ERROR: %s\n" "$1" 1>&2; }
+	local _VERSION_="2018-03-08"
 
-	if [ $UID -eq 0 ]; then
-		ERR "Root access isn't required."
-		return 1
-	elif ! [ -x "/usr/bin/dpkg-query" ]; then
-		ERR "Dependency '/usr/bin/dpkg-query' not met."
-		return 1
-	fi
+	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
 
 	USAGE(){
 		while read -r; do
 			printf "%s\n" "$REPLY"
 		done <<-EOF
-			            LSPKG-SET (24th January 2018)
+			            LSPKG-SET ($_VERSION_)
 			            Written by terminalforlife (terminalforlife@yahoo.com)
 
 			            Shell plugin to display sets of installed packages.
@@ -40,6 +34,7 @@ lspkg-set(){
 			SYNTAX:     lspkg-set [OPT]
 
 			OPTS:       --help|-h|-?            - Displays this help information.
+			            --version|-v            - Output only the version datestamp.
 			            --essential|-E          - Display the essential packages.
 			            --extra|-e              - Display the extra packages.
 			            --required|-R           - Display the required packages.
@@ -53,6 +48,9 @@ lspkg-set(){
 	case "$*" in
 		--help|-h|-\?)
 			USAGE; return 0 ;;
+		--version|-v)
+			printf "%s\n" "$_VERSION_"
+			exit 0 ;;
 		--essential|-E)
 			TYPE="Essential:yes" ;;
 		--extra|-e)
@@ -64,12 +62,17 @@ lspkg-set(){
 		--important|-I)
 			TYPE="Priority:important" ;;
 		*)
-			ERR "Incorrect argument(s) specified."
+			ERR "$LINENO" "Incorrect argument(s) specified."
 			return 1 ;;
 	esac
 
-	FMT1="\${db:Status-Abbrev} \${${TYPE%:*}} "
-	FMT2="\${Package} - \${Binary:Summary}\n"
+	if ! [ -x "/usr/bin/dpkg-query" ]; then
+		ERR "$LINENO" "Dependency '/usr/bin/dpkg-query' not met."
+		return 1
+	fi
+
+	local FMT1="\${db:Status-Abbrev} \${${TYPE%:*}} "
+	local FMT2="\${Package} - \${Binary:Summary}\n"
 
 	while read -a X; do
 		if [ "${X[0]}" == "ii" -a "${X[1]}" == "${TYPE/*:}" ]; then
