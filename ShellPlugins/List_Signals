@@ -3,26 +3,19 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/List_Signals
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Mon 30 Oct 02:01:03 GMT 2017
+# Last Change       - Thu  8 Mar 05:29:26 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
-
 # Admittedly, this probably isn't all that useful. There are various ways already
 # to list the various signal, but I used it as an educational exercise, more than
 # anything.
 #
 # Alternative, run "kill -l", "killall -l", trap -l, or "skill -L"
-
 #----------------------------------------------------------------------------------
 
 lssig(){
 	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
-
-	[ $UID -eq 0 ] && {
-		ERR "$LINENO" "Root access isn't required."
-		return 1
-	}
 
 	[ $# -gt 0 ] && {
 		ERR "$LINENO" "No arguments are required."
@@ -47,5 +40,3 @@ lssig(){
 		return 1
 	}
 }
-
-# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
