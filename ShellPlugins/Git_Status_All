@@ -3,46 +3,37 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/ShellPlugins/Git_Status_All
 # Started On        - Sat 16 Sep 14:19:06 BST 2017
-# Last Change       - Fri 26 Jan 13:56:48 GMT 2018
+# Last Change       - Thu  8 Mar 05:37:37 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 gitsa(){
 	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
-	
-	[ -x /usr/bin/git ] || {
+
+	if ! [ -x /usr/bin/git ]; then
 		ERR "$LINENO" "Dependency '/usr/bin/git' not met."
 		return 1
-	}
-
-	[ $UID -eq 0 ] && {
-		ERR "$LINENO" "Root access isn't required."
-		return 1
-	}
-
-	[ $# -eq 0 ] || {
+	elif ! [ $# -eq 0 ]; then
 		ERR "$LINENO" "Arguments not required."
 		return 1
-	}
+	fi
 
 	# Enter your own location where your repositories are stored. Each one is
 	# assumed to be its own directory by the name of the repository itself.
 	MY_GIT_STORAGE="$HOME/GitHub/terminalforlife/Personal"
 
-	[ -d "$MY_GIT_STORAGE" ] || {
+	if ! [ -d "$MY_GIT_STORAGE" ]; then
 		ERR "$LINENO" "Unable to locate: $MY_GIT_STORAGE"
 		return 1
-	}
+	fi
 
-	# Store the current working directory here for returning to at the end.
 	CURRENT_DIRECTORY="$PWD"
-
-	# Begin the main processing. Using gibberish to avoid conflicts.
 	for DIR in $MY_GIT_STORAGE/* 'D+LqTAFĴ{!'; do
 		#TODO - Remove that last empty space... somehow.
 		if [ "$B" ] || [ "$C" ] || [ "$D" ] || [ "$E" ]; then
-			[ "$DIR" == 'D+LqTAFĴ{!' ] && continue; printf "\n"
+			[ "$DIR" == 'D+LqTAFĴ{!' ] && continue
+			printf "\n"
 		fi
 
 		TITLE="false"
@@ -73,7 +64,7 @@ gitsa(){
 			esac
 		done <<< "$(/usr/bin/git status)"
 
-		[ "$TITLE" == "true" ] && {
+		if [ "$TITLE" == "true" ]; then
 			IFLET(){
 				for LET in $@; { [ "$LET" ] && local DO="yes"; }
 				[ "$DO" == "yes" ] && printf "REPO: ${DIR//*\/}\n"
@@ -88,14 +79,11 @@ gitsa(){
 			[ "$D" ] && printf "  ⏵ Untracked files present.\n"
 			[ "$E" ] && printf "  ⏵ Commit(s) ready to be sent upstream.\n"
 			#[ "$F" ] && printf "  ⏵ Current branch is up-to-date with origin.\n"
-		}
+		fi
 
-		# Change back to the previous directory.
 		cd ..
 	done
 
-	# When all iterations are done in the above for loop, change back to the
-	# directory you were in when you called this function.
 	cd "$CURRENT_DIRECTORY"
 }
 
