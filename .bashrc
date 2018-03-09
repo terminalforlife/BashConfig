@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed  7 Mar 14:47:20 GMT 2018
+# Last Change       - Thu  8 Mar 23:51:13 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -248,7 +248,9 @@ fi
 FLIB="$HOME/ShellPlugins"
 if [ -d "$FLIB" ]; then
 	for FUNC in ${PLUGINS[@]}; {
-		[ -f "$FLIB/$FUNC" ] && . "$FLIB/$FUNC"
+		if [ -f "$FLIB/$FUNC" -a -r "$FLIB/$FUNC" ]; then
+			source "$FLIB/$FUNC"
+		fi
 	}
 fi
 
