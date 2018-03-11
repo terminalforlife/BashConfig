@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun  4 Mar 22:53:41 GMT 2018
+# Last Change       - Sun 11 Mar 09:30:35 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -393,9 +393,10 @@ for DIR in\
 [ -d "/media/$USER" ] && alias sd="cd /media/$USER" || alias mnt="cd /mnt"
 
 # For each found "sr" device, enables alias for opening and closing the tray. For
-# example, use ot0 to specific you want the tray for /dev/sr0 to open.
-if [ -x /usr/bin/eject ]; then
-	for DEV in /dev/sr+([0-9]); {
+# example, use ot0 to specific you want the tray for /dev/sr0 to open. Testing for
+# /dev/sr0 to ensure at least the one device is available, to avoid errors.
+if [ -x /usr/bin/eject -a -b /dev/sr0 ]; then
+	for DEV in /dev/sr[0-9]*; {
 		alias ot${DEV/\/dev\/sr}="/usr/bin/eject $DEV"
 		alias ct${DEV/\/dev\/sr}="/usr/bin/eject -t $DEV"
 	}
