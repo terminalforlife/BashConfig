@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 11 Mar 09:30:35 GMT 2018
+# Last Change       - Sun 11 Mar 19:23:22 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -86,8 +86,11 @@ fi
 # Make the ffmpeg output less cluttered, but also ignore many errors.
 [ -x /usr/bin/ffmpeg ] && alias ffmpeg="ffmpeg -v 0 -stats"
 
-# Just points to a personal script for moving screenshots.
-[ -f "$HOME/Documents/TT/iih" ] && alias iih="/bin/bash $HOME/Documents/TT/iih"
+# Just points to a personal script for moving my screenshots.
+if [ -f "$HOME/Documents/TT/shotmngr.sh" ]; then
+	alias sm="/bin/bash $HOME/Documents/TT/shotmngr.sh"
+fi
+
 
 # Used to notify you of a job completion on the terminal.
 if [ -x /usr/bin/notify-send -a -x /usr/bin/tty ]; then
@@ -471,7 +474,7 @@ if [ -x /usr/bin/vim ]; then
 		".dosbox/dosbox-0.74.conf":dbc ".bash_functions":bashfunctions\
 		".libi3bview":li3bv;
 	{
-		[ -f "${FILE%:*}" ] || continue
+		[ -f "$HOME/${FILE%:*}" ] || continue
 		alias ${FILE/*:}="/usr/bin/vim $HOME/${FILE%:*}"
 	}
 
