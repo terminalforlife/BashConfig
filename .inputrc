@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.inputrc
 # Started On        - Tue 16 Jan 22:16:00 GMT 2018
-# Last Change       - Wed 14 Mar 21:48:54 GMT 2018
+# Last Change       - Wed 14 Mar 21:50:06 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -53,3 +53,5 @@ $if mode=emacs
 	"\e\e[C": forward-word
 	"\e\e[D": backward-word
 $endif
+
+# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
