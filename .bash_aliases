@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 11 Mar 19:23:22 GMT 2018
+# Last Change       - Wed 14 Mar 17:26:14 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -27,12 +27,17 @@ alias sudo="sudo "
 # Sick of typing this in the termanal, out of habit!
 alias ":q"="exit"
 
+# ???
+if [ -x /usr/bin/gvfs-ls ]; then
+	alias lstrash="/usr/bin/gvfs-ls -h trash:///"
+fi
+
 # View the entire (17,000+ lines) VIM User Guide.
-if [ -x /bin/cat -a -x /usr/bin/vim ]; then
+if [ -x /bin/cat -a -x /usr/bin/vim  ]; then
 	alias vug='/bin/cat /usr/share/vim/vim74/doc/usr_*.txt | /usr/bin/vim -'
 fi
 
-# ???
+# A useful file to edit, if you use the X Display Manager.
 if [ -x /usr/bin/xdm -a -f /etc/X11/xdm/Xresources ]; then
 	alias xdm-xresources='/usr/bin/rvim /etc/X11/xdm/Xresources'
 fi
