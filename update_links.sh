@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/update_links.sh
 # Started On        - Sun 22 Oct 00:15:02 BST 2017
-# Last Change       - Thu  8 Mar 05:28:12 GMT 2018
+# Last Change       - Wed 14 Mar 21:51:34 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -34,3 +34,6 @@ for FILE in ShellPlugins/*; {
 	/bin/rm -v $HOME/$FILE 2> /dev/null
 	/bin/ln -v $FILE $HOME/$FILE 2> /dev/null
 }
+
+/bin/rm -v $HOME/.initrc 2> /dev/null
+/bin/ln -v .inputrc $HOME/.inputrc 2> /dev/null
