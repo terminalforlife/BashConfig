@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sat 24 Feb 13:50:18 GMT 2018
+# Last Change       - Tue 20 Mar 01:27:32 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -20,6 +20,17 @@
 
 if [ -x /usr/bin/awk ]; then
 	sc(){ printf "%f\n" "$(/usr/bin/awk "BEGIN{print($@)}" 2> /dev/null)"; }
+fi
+
+# Get the display's resolution, per the geometry propert of the root window.
+if [ -x /usr/bin/xprop ]; then
+	getres(){
+		local P="_NET_DESKTOP_GEOMETRY"
+		IFS="=" read -a X <<< "$(/usr/bin/xprop -root $P)"
+		printf "Current Resolution: %dx%d\n" "${X[1]%,*}" "${X[1]/*, }"
+
+		unset X
+	}
 fi
 
 # An alternative way to get and display the session uptime.
