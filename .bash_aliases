@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Wed 14 Mar 17:26:14 GMT 2018
+# Last Change       - Tue 20 Mar 15:40:23 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -26,6 +26,11 @@ alias sudo="sudo "
 
 # Sick of typing this in the termanal, out of habit!
 alias ":q"="exit"
+
+# Display a list of all of the currently available font families.
+if [ -x /usr/bin/fc-list ]; then
+	alias lsfont="/usr/bin/fc-list : family"
+fi
 
 # ???
 if [ -x /usr/bin/gvfs-ls ]; then
@@ -217,14 +222,14 @@ if [ -x /bin/chmod ]; then
 	'
 fi
 
-# Create or unmount a user-only RAM Disk (tmpfs, basically) of 512MB.
+# Create or unmount a user-only RAM Disk (tmpfs, basically) of 32MB.
 if [ -x /bin/mount -a -x /bin/umount ]; then
-	RAMDISK="/media/$USER/RAMDisk_512M"
+	RAMDISK="/media/$USER/RAMDisk_32M"
 
 	alias rd='\
 		/bin/mount -t tmpfs tmpfs\
 			-o x-mount.mkdir=700,uid=1000,gid=1000,mode=700,nodev\
-			-o noexec,nosuid,size=512M "$RAMDISK"
+			-o noexec,nosuid,size=32M "$RAMDISK"
 	'
 
 	alias nord='\
@@ -367,10 +372,9 @@ if [ -x /bin/ls -a -x /bin/grep ]; then
 	case "${TERM:-EMPTY}" in
 	        linux|xterm|xterm-256color)
 	                alias ls="/bin/ls -nphq --time-style=iso --color=auto\
-				--group-directories-first"
+				--group-directories-first --show-control-chars"
 
-	                alias lsa="/bin/ls -Anphq --time-style=iso --color=auto\
-				--group-directories-first"
+	                alias lsa="ls -A"
 
 	                alias grep="/bin/grep --color=auto"
 	                alias egrep="/bin/egrep --color=auto"
@@ -434,7 +438,7 @@ if [ -x /usr/bin/mplayer ]; then
 			dvd://1//dev/sr1 &> /dev/null"
 	fi
 elif [ -x /usr/bin/mpv ]; then
-	alias mpv="/usr/bin/mpv &> /dev/null"
+	alias mpv="/usr/bin/mpv --vo opengl-hq --no-stop-screensaver &> /dev/null"
 fi
 
 # A more descriptive, yet concise lsblk; you'll miss it when it's gone.
