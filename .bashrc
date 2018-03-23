@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Thu  8 Mar 23:51:13 GMT 2018
+# Last Change       - Fri 23 Mar 01:15:37 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -132,8 +132,8 @@ for OPT in\
 
 #---------------------------------------------------------------CODE FOR THE PROMPT
 
-# When \w is used in PS1, this will set ../ when beyond depth 1.
-PROMPT_DIRTRIM=1
+# When \w is used in PS1, this will set ../ when beyond depth 1. (4.* or later)
+[ "${BASH_VERSINFO[0]}" -ge 4 ] && PROMPT_DIRTRIM=1
 
 if ! [ "$ALT_PROMPT" == "true" ]; then
 	if [ "$SIMPLE" == "false" -a -x /usr/bin/tty ]; then
