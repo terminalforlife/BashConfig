@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 23 Mar 01:34:27 GMT 2018
+# Last Change       - Fri 23 Mar 16:26:31 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -31,6 +31,7 @@ PREFIX_DIR="false"
 
 # If you use my custom prompt, use these top and bottom prompt pointers. These do
 # require the fonts-symbola package, if on Ubuntu, otherwise something similar.
+# Leave either or both empty to omit them from the prompt.
 TARR="⮣ "
 BARR="⮡ "
 
@@ -65,6 +66,9 @@ SHOW_LINES="false"
 
 # Set this to true in order to remove all history settings and use the defaults.
 DEFAULT_HISTORY="false"
+
+# If true, the manual pages will be endeavor to be colorful.
+MAN_COLORS="true"
 
 # Enter your chosen ShellPlugins here. They must exist in: $HOME/ShellPlugins/
 # Each entry must be separated by spaces, so ensure you escape or quote filenames
@@ -122,9 +126,9 @@ fi
 
 for OPT in\
 \
-	SHOW_LINES:$SHOW_LINES DO_GIT:$DO_GIT BRANCH:$BRANCH\
-	COMMITS:$COMMITS PREFIX_DIR:$PREFIX_DIR\
-	SIMPLE:$SIMPLE STANDARD:$STANDARD POSIX_MODE:$POSIX_MODE
+	SHOW_LINES:$SHOW_LINES DO_GIT:$DO_GIT BRANCH:$BRANCH COMMITS:$COMMITS\
+	PREFIX_DIR:$PREFIX_DIR SIMPLE:$SIMPLE STANDARD:$STANDARD\
+	POSIX_MODE:$POSIX_MODE MAN_COLORS:$MAN_COLORS
 {
 	if ! [[ "${OPT/*:}" == @(true|false) ]]; then
 		echo "ERROR: Incorrect setting at: ${OPT%:*}" 1>&2
@@ -140,7 +144,7 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 	if [ "$SIMPLE" == "false" -a -x /usr/bin/tty ]; then
 		GET_PC(){
 			# Get the previous command's exit status and update icon.
-			local X=$?; printf -v X "%0.3d" "$X"
+			local P X=$?; printf -v X "%0.3d" "$X"
 			[ $X -eq 0 ] && local A="  " || local A="  "
 
 			# This must come second to ensure $? above works.
@@ -200,20 +204,16 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 				[ "$PWD" == "/" ] && _PWD="/" || _PWD="../${PWD//*\/}"
 			fi
 
-			# These will be concatenated; more readable code, sort of.
-			if [ "$SHOW_LINES" == "true" ]; then
-				local PA="\e\[[2;38m\]${Y//0/━}\n\[\e[0m\]${TARR}\[\e[1;38m\]"
-			else
-				local PA="\[\e[0m\]${TARR}\[\e[1;38m\]"
-			fi
-
-			local PB="${X}${A}\[\e[2;33m\]${GB}\[\e[2;39m\]"
-			local PC="${GS/Your branch is }\[\033[2;32m\]${GC}"
-			local PD="\[\e[01;31m\]${_PWD/ }\[\e[0m\]\[\033[0m\]\n${BARR}"
+			[ "$SHOW_LINES" == "true" ] && P+="\e\[[2;38m\]${Y//0/━}\n"
+			[ "$TARR" ] && P+="\[\e[0m\]${TARR}\[\e[1;38m\]"
+			P+="${X}${A}\[\e[2;33m\]${GB}\[\e[2;39m\]"
+			P+="${GS/Your branch is }\[\033[2;32m\]${GC}"
+			P+="\[\e[01;31m\]${_PWD/ }\[\e[0m\]"
+			[ "$BARR" ] && P+="\[\033[0m\]\n${BARR}"
 
 			# Set the main prompt, using info from above.
 			if [ "$STANDARD" == "false" ]; then
-				PS1="${PA}${PB}${PC}${PD}"
+				PS1="$P"
 			elif [ "$STANDARD" == "true" ]; then
 				PS1="\[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w\[\e[00m\]\$ "
 			fi
@@ -262,7 +262,9 @@ unset FLIB FUNC
 #-------------------------------------------------------------ENVIRONMENT VARIABLES
 
 # Set the location where various VirtualBox settings and your VMs are stored.
-export VBOX_USER_HOME="/media/$USER/Main Data/Linux Generals/VirtualBox VMs"
+if [ -x /usr/bin/vboxsdl -a -x /usr/bin/vboxmanage ]; then
+	export VBOX_USER_HOME="/media/$USER/Main Data/Linux Generals/VirtualBox VMs"
+fi
 
 # Set the format of the shell keyboard, time.
 export TIMEFORMAT=">>> real %3R | user %3U | sys %3S | pcpu %P <<<"
@@ -270,8 +272,9 @@ export TIMEFORMAT=">>> real %3R | user %3U | sys %3S | pcpu %P <<<"
 # Set the colors to use for the ls command. This is a dark, simple theme.
 export LS_COLORS="di=1;31:ln=2;32:mh=1;32:ex=1;33:"
 
-# Remove /snap/bin from the end of the PATH.
-export PATH="${PATH%:\/snap\/bin}"
+# Remove /snap/bin from the end of the PATH. Uncomment if you need this, but
+# removing the snap functionality (packages) should remove it from PATH anyway.
+#export PATH="${PATH%:\/snap\/bin}"
 
 # Set the terminal color.
 export TERM="xterm-256color"
@@ -280,7 +283,7 @@ export TERM="xterm-256color"
 [ -x /usr/bin/tput ] && /usr/bin/tput init
 
 # Set less and the pager to be more secure by disabling certain features.
-export LESSSECURE=1
+[ -x /usr/bin/less ] && export LESSSECURE=1
 
 # If sudo is found, set the sudo -e editor to rvim or rnano.
 if [ -x /usr/bin/sudo ]; then
@@ -292,13 +295,15 @@ if [ -x /usr/bin/sudo ]; then
 fi
 
 # Export these variables to add color to the manual pages.
-export LESS_TERMCAP_mb=$'\e[01;31m'
-export LESS_TERMCAP_md=$'\e[01;31m'
-export LESS_TERMCAP_me=$'\e[0m'
-export LESS_TERMCAP_se=$'\e[0m'
-export LESS_TERMCAP_so=$'\e[01;44;33m'
-export LESS_TERMCAP_ue=$'\e[0m'
-export LESS_TERMCAP_us=$'\e[01;32m'
+if [ "$MAN_COLORS" == "true" ]; then
+	export LESS_TERMCAP_mb=$'\e[01;31m'
+	export LESS_TERMCAP_md=$'\e[01;31m'
+	export LESS_TERMCAP_me=$'\e[0m'
+	export LESS_TERMCAP_se=$'\e[0m'
+	export LESS_TERMCAP_so=$'\e[01;44;33m'
+	export LESS_TERMCAP_ue=$'\e[0m'
+	export LESS_TERMCAP_us=$'\e[01;32m'
+fi
 
 # Set the grep match color.
 export GREP_COLOR="1;31"
@@ -329,9 +334,8 @@ fi
 
 #--------------------------------------------------------------------INPUT BINDINGS
 
-# Comment out if you already have this set in /etc/inputrc or elsewhere.
-bind '"\e[1;5C": forward-word'
-bind '"\e[1;5D": backward-word'
+bind -q forward-word 2>&1 > /dev/null || bind '"\e[1;5C": forward-word'
+bind -q backward-word 2>&1 > /dev/null || bind '"\e[1;5D": backward-word'
 
 #------------------------------------------------------SOURCE ALIASES AND FUNCTIONS
 
