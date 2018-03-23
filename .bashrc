@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 23 Mar 01:15:37 GMT 2018
+# Last Change       - Fri 23 Mar 01:34:27 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -29,7 +29,8 @@ DO_GIT="true"
 # is displayed, unless you're of course in /. Alignment should be maintained.
 PREFIX_DIR="false"
 
-# If you use my custom prompt, use these top and bottom prompt pointers.
+# If you use my custom prompt, use these top and bottom prompt pointers. These do
+# require the fonts-symbola package, if on Ubuntu, otherwise something similar.
 TARR="⮣ "
 BARR="⮡ "
 
@@ -146,48 +147,50 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 			[ "$SHOW_LINES" == "true" ] && printf -v Y "%-.*d" "$COLUMNS"
 
 			if [ -x /usr/bin/git -a "$DO_GIT" == "true" ]; then
-				# Get a short, status description of the branch.
-				local GS=$(
-					U="Your branch is ahead of"
-					declare -i L=0
+				if /usr/bin/git rev-parse --is-inside-work-tree &> /dev/null; then
+					# Get a short, status description of the branch.
+					local GS=$(
+						U="Your branch is ahead of"
+						declare -i L=0
 
-					#TODO - Fix empty when new branch.
-					while read -ra X; do
-						L+=1
-
-						if [[ $L -eq 2 && "${X[*]}" == "$U"* ]]; then
-							printf "%s " "${X[@]//[:\'.]/}"
-							break
-						elif [ $L -eq 3 ]; then
-							printf "%s " "${X[@]//[:\'.]/}"
-							break
-						fi
-					done <<< "$(/usr/bin/git status 2> /dev/null)"
-				)
-
-				[ -n "$GS" ] && GS="${GS% } "
-
-				# Get the current branch name.
-				if [ "$BRANCH" == "true" -a "$DO_GIT" == "true" ]; then
-					local GB=$(
+						#TODO - Fix empty when new branch.
 						while read -ra X; do
-							if [[ "${X[@]}" == \*\ * ]]; then
-								printf " [%s] "  "${X[1]}"
+							L+=1
+
+							if [[ $L -eq 2 && "${X[*]}" == "$U"* ]]; then
+								printf "%s " "${X[@]//[:\'.]/}"
+								break
+							elif [ $L -eq 3 ]; then
+								printf "%s " "${X[@]//[:\'.]/}"
 								break
 							fi
-						done <<< "$(/usr/bin/git branch 2> /dev/null)"
+						done <<< "$(/usr/bin/git status 2> /dev/null)"
 					)
-				fi
 
-				# Count the number of commits.
-				if [ "$COMMITS" == "true" -a "$DO_GIT" == "true" ]; then
-					local GC=$(
-						declare -i L=0
-						while read -r; do
-							[[ "$REPLY" == commit* ]] && L+=1
-						done <<< "$(/usr/bin/git log 2> /dev/null)"
-						[ $L -eq 0 ] || printf "(%'d) " "$L" && printf "\n"
-					)
+					[ -n "$GS" ] && GS="${GS% } "
+
+					# Get the current branch name.
+					if [ "$BRANCH" == "true" -a "$DO_GIT" == "true" ]; then
+						local GB=$(
+							while read -ra X; do
+								if [[ "${X[@]}" == \*\ * ]]; then
+									printf " [%s] "  "${X[1]}"
+									break
+								fi
+							done <<< "$(/usr/bin/git branch 2> /dev/null)"
+						)
+					fi
+
+					# Count the number of commits.
+					if [ "$COMMITS" == "true" -a "$DO_GIT" == "true" ]; then
+						local GC=$(
+							declare -i L=0
+							while read -r; do
+								[[ "$REPLY" == commit* ]] && L+=1
+							done <<< "$(/usr/bin/git log 2> /dev/null)"
+							[ $L -eq 0 ] || printf "(%'d) " "$L" && printf "\n"
+						)
+					fi
 				fi
 			fi
 
