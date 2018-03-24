@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 20 Mar 15:40:23 GMT 2018
+# Last Change       - Sat 24 Mar 00:50:22 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -26,6 +26,20 @@ alias sudo="sudo "
 
 # Sick of typing this in the termanal, out of habit!
 alias ":q"="exit"
+
+# Grab a list of TODOs for git projects, per a specific method. This only works if
+# you use "#T0D0 - Note message here" syntax for your TODOs, where "0" is "O". If
+# you use a different style, but it's perfectly consistent, change the below match.
+GIT="$HOME/GitHub/terminalforlife/Personal"
+if [ -d "$GIT" -a -x /bin/grep ]; then
+	alias todo="\
+		if cd \"$GIT\"; then
+			/bin/grep --color=auto -R\
+				--exclude-dir=\".git\" \"[#\\\"]TODO - \"
+			cd - 2>&1 > /dev/null
+		fi
+	"
+fi
 
 # Display a list of all of the currently available font families.
 if [ -x /usr/bin/fc-list ]; then
@@ -515,6 +529,6 @@ fi
 
 # Clean up functions and variables.
 unset -f FOR_THE_EDITOR
-unset DEP FILE DEPCOUNT FOR_THE_EDITOR TTDIR DIR CHOSEN_EDITOR
+unset DEP FILE DEPCOUNT FOR_THE_EDITOR TTDIR DIR CHOSEN_EDITOR GIT
 
 # vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
