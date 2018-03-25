@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 23 Mar 16:26:31 GMT 2018
+# Last Change       - Sun 25 Mar 10:18:00 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ PREFIX_DIR="false"
 
 # If you use my custom prompt, use these top and bottom prompt pointers. These do
 # require the fonts-symbola package, if on Ubuntu, otherwise something similar.
-# Leave either or both empty to omit them from the prompt.
+# Leave either or both empty (or commented out) to omit them from the prompt.
 TARR="⮣ "
 BARR="⮡ "
 
@@ -67,7 +67,8 @@ SHOW_LINES="false"
 # Set this to true in order to remove all history settings and use the defaults.
 DEFAULT_HISTORY="false"
 
-# If true, the manual pages will be endeavor to be colorful.
+# If true, the manual pages will be endeavor to be colorful. The code for this
+# setting is actually stored in: $HOME/.bash_functions
 MAN_COLORS="true"
 
 # Enter your chosen ShellPlugins here. They must exist in: $HOME/ShellPlugins/
@@ -294,17 +295,6 @@ if [ -x /usr/bin/sudo ]; then
 	fi
 fi
 
-# Export these variables to add color to the manual pages.
-if [ "$MAN_COLORS" == "true" ]; then
-	export LESS_TERMCAP_mb=$'\e[01;31m'
-	export LESS_TERMCAP_md=$'\e[01;31m'
-	export LESS_TERMCAP_me=$'\e[0m'
-	export LESS_TERMCAP_se=$'\e[0m'
-	export LESS_TERMCAP_so=$'\e[01;44;33m'
-	export LESS_TERMCAP_ue=$'\e[0m'
-	export LESS_TERMCAP_us=$'\e[01;32m'
-fi
-
 # Set the grep match color.
 export GREP_COLOR="1;31"
 
@@ -348,3 +338,5 @@ BASH_FUNCTIONS="$HOME/.bash_functions"
 [ -f "$BASH_FUNCTIONS" -a -r "$BASH_FUNCTIONS" ] && . "$BASH_FUNCTIONS"
 
 unset BASH_ALIASES BASH_FUNCTIONS
+
+# vim: ft=sh noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
