@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 20 Mar 01:27:32 GMT 2018
+# Last Change       - Sun 25 Mar 10:17:40 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -44,6 +44,20 @@ if [ -f /proc/uptime -a -r /proc/uptime ]; then
 
 		unset X
 		unset -f P
+	}
+fi
+
+# Use these environment variables only for man, to give him some color.
+if [ "$MAN_COLORS" == "true" ] && [ -x /usr/bin/man ]; then
+	man(){
+		LESS_TERMCAP_mb=$'\e[01;31m'\
+		LESS_TERMCAP_md=$'\e[01;31m'\
+		LESS_TERMCAP_me=$'\e[0m'\
+		LESS_TERMCAP_se=$'\e[0m'\
+		LESS_TERMCAP_so=$'\e[01;44;33m'\
+		LESS_TERMCAP_ue=$'\e[0m'\
+		LESS_TERMCAP_us=$'\e[01;32m'\
+		/usr/bin/man $@
 	}
 fi
 
