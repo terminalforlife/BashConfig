@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sat 24 Mar 00:50:22 GMT 2018
+# Last Change       - Sun 25 Mar 21:35:25 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -452,7 +452,14 @@ if [ -x /usr/bin/mplayer ]; then
 			dvd://1//dev/sr1 &> /dev/null"
 	fi
 elif [ -x /usr/bin/mpv ]; then
-	alias mpv="/usr/bin/mpv --vo opengl-hq --no-stop-screensaver &> /dev/null"
+	alias mpve="\
+		/usr/bin/mpv --af=equalizer=8:7:6:5:0:6:0:5:5:5\
+			--vo opengl-hq --no-stop-screensaver &> /dev/null \
+	"
+
+	alias mpv="\
+		/usr/bin/mpv --vo opengl-hq --no-stop-screensaver &> /dev/null \
+	"
 fi
 
 # A more descriptive, yet concise lsblk; you'll miss it when it's gone.
