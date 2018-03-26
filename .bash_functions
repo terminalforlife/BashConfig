@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sun 25 Mar 10:17:40 BST 2018
+# Last Change       - Mon 26 Mar 19:32:30 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -21,6 +21,14 @@
 if [ -x /usr/bin/awk ]; then
 	sc(){ printf "%f\n" "$(/usr/bin/awk "BEGIN{print($@)}" 2> /dev/null)"; }
 fi
+
+# Make Firefox display input fields correctly, if using a dark theme. Obviously, -
+# use whichever GTK theme you actually have and is appropriate or desired for you.
+#if [ -x /usr/bin/firefox ]; then
+#	firefox(){
+#		GTK_THEME="Adwaita" /usr/bin/firefox $@
+#	}
+#fi
 
 # Get the display's resolution, per the geometry propert of the root window.
 if [ -x /usr/bin/xprop ]; then
