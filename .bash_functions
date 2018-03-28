@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon 26 Mar 19:32:30 BST 2018
+# Last Change       - Tue 27 Mar 21:21:23 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -27,6 +27,38 @@ fi
 #if [ -x /usr/bin/firefox ]; then
 #	firefox(){
 #		GTK_THEME="Adwaita" /usr/bin/firefox $@
+#	}
+#fi
+
+#TODO - Finish this pile of rubbish.
+# Interactively batch-rename a bunch of file names specified as arguments.
+#if [ -x /bin/mv ]; then
+#	batch-rename(){
+#		local FILE NEW
+#		while read FILE; do
+#			echo "$FILE"
+#			break
+#			while :; do
+#				if [ -f "$FILE" -a -w "$FILE" ]; then
+#					printf "%s\n" "$FILE"
+#					read -p "RENAME: " NEW
+#					if [ "$NEW" ]; then
+#						/bin/mv "$FILE" "$NEW" 2>&1 > /dev/null
+#						if [ $? -eq 0 ]; then
+#							printf " \e[32m[OK]\e[0m\n"
+#						else
+#							printf " \e[31m[ERROR]\e[0m\n"
+#						fi
+#
+#						break 1
+#					fi
+#				else
+#					printf "SKIP: %s\n" "$FILE"
+#				fi
+#			done
+#		done <<< "$@"
+#
+#		unset -f RN
 #	}
 #fi
 
