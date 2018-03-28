@@ -32,7 +32,7 @@ set mark-symlinked-directories On
 set match-hidden-files Off
 set menu-complete-display-prefix Off
 set output-meta Off
-set page-complations Off
+set page-completions Off
 set print-completions-horizontally On
 set revert-all-at-newline Off
 set show-all-if-ambiguous On
