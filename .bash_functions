@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 27 Mar 21:21:23 BST 2018
+# Last Change       - Sun  1 Apr 12:35:45 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -30,46 +30,27 @@ fi
 #	}
 #fi
 
-#TODO - Finish this pile of rubbish.
-# Interactively batch-rename a bunch of file names specified as arguments.
-#if [ -x /bin/mv ]; then
-#	batch-rename(){
-#		local FILE NEW
-#		while read FILE; do
-#			echo "$FILE"
-#			break
-#			while :; do
-#				if [ -f "$FILE" -a -w "$FILE" ]; then
-#					printf "%s\n" "$FILE"
-#					read -p "RENAME: " NEW
-#					if [ "$NEW" ]; then
-#						/bin/mv "$FILE" "$NEW" 2>&1 > /dev/null
-#						if [ $? -eq 0 ]; then
-#							printf " \e[32m[OK]\e[0m\n"
-#						else
-#							printf " \e[31m[ERROR]\e[0m\n"
-#						fi
-#
-#						break 1
-#					fi
-#				else
-#					printf "SKIP: %s\n" "$FILE"
-#				fi
-#			done
-#		done <<< "$@"
-#
-#		unset -f RN
-#	}
-#fi
+# Interactively batch-rename all files in the CWD. This can save time trying to
+# parse filenames for automation. Sometimes it's just more convenient and less
+# hassle to simply type the names out yourself, with assistance.
+if [ -x /bin/mv ]; then
+	batch-rename(){
+		for FILE in *; {
+			[ -f "$FILE" ] || continue
+			printf "%s\n" "$FILE"
+			read -e -p "--> "
+			mv "$FILE" "$REPLY"
+		}
+	}
+fi
 
-# Get the display's resolution, per the geometry propert of the root window.
-if [ -x /usr/bin/xprop ]; then
+# Get the display's resolution, per the geometry propert of the root window. This
+# doesn't seem to work in i3-wm, so don't enable getres() if in that.
+if [ -x /usr/bin/xprop -a ! "$XDG_CURRENT_DESKTOP" == "i3" ]; then
 	getres(){
-		local P="_NET_DESKTOP_GEOMETRY"
+		local X P="_NET_DESKTOP_GEOMETRY"
 		IFS="=" read -a X <<< "$(/usr/bin/xprop -root $P)"
 		printf "Current Resolution: %dx%d\n" "${X[1]%,*}" "${X[1]/*, }"
-
-		unset X
 	}
 fi
 
@@ -106,6 +87,7 @@ fi
 # Display a descriptive list of kernel modules.
 if [ -x /sbin/lsmod -a -x /sbin/modinfo ]; then
 	lsmodd(){
+		local X Y
 		while read -a X; do
 			[ "${X[0]}" == "Module" ] && continue
 			Y=`/sbin/modinfo -d "${X[0]}"`
@@ -120,25 +102,22 @@ suppress(){
 	$1 |& while read X; do
 		[ "${X/$2}" ] && printf "%s\n" "${X/$2}"
 	done
-
 	unset X
-
 	return ${PIPESTATUS[0]}
 }
 
 # Search for & output files not found which were installed with a given package.
 if [ -x /usr/bin/dpkg-query ]; then
 	missing-pkg-files(){
+		local X
 		while read X; do
 			[ -e "$X" -a "$X" ] || printf "%s\n" "$X"
 		done <<< "$(/usr/bin/dpkg-query -L $@)"
-
-		unset X
 	}
 fi
 
-# The ago function is a handy alias for apt-get's -o options.
-if [ -x /usr/bin/apt-get ]; then
+# The ago function is a handy way to output some of the apt-get's -o options.
+if [ -x /usr/bin/apt-get -a -x /bin/zcat ]; then
 	ago(){
 		#TODO - Why is there that initial blank line!?
 		for FIELD in `/bin/zcat /usr/share/man/man8/apt-get.8.gz`; {
@@ -180,6 +159,7 @@ fi
 # Display the total data downloaded and uploaded on a given interface.
 if [ -f /proc/net/dev ]; then
 	inout(){
+		local X
 		while read -a X; do
 			if [ "${X[0]}" == "${1}:" ]; then
 				declare -i IN=${X[1]}
@@ -189,8 +169,6 @@ if [ -f /proc/net/dev ]; then
 		done < /proc/net/dev
 
 		printf "IN:  %'14dK\nOUT: %'14dK\n" "$((IN/1024))" "$((OUT/1024))"
-
-		unset X
 	}
 fi
 
@@ -200,6 +178,7 @@ if [ -f /etc/passwd ]; then
 		printf "%-20s %-7s %-7s %-25s %s\n"\
 			"USERNAME" "UID" "GID" "HOME" "SHELL"
 
+		local X
 		while IFS=":" read -a X; do
 			if [ "$1" == "--nosys" ]; then
 				#TODO - Make this instead omit system ones by
@@ -214,19 +193,16 @@ if [ -f /etc/passwd ]; then
 					"${X[2]}" "${X[3]}" "${X[5]}" "${X[6]}"
 			fi
 		done < /etc/passwd
-
-		unset X
 	}
 fi
 
 # A simple dictionary lookup function, similar to the look command.
 if [ -f /usr/share/dict/words -a -r /usr/share/dict/words ]; then
 	dict(){
+		local X
 		while read -r X; do
 			[[ "$X" == *$1* ]] && printf "%s\n" "$X"
 		done < /usr/share/dict/words
-
-		unset X
 	}
 fi
 
@@ -243,4 +219,4 @@ if [ -x /usr/bin/links2 ]; then
 	}
 fi
 
-# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
+# vim: ft=sh noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
