@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun  1 Apr 19:15:54 BST 2018
+# Last Change       - Mon  2 Apr 16:58:41 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -35,6 +35,13 @@ if [ -x /bin/sed -a -x /bin/grep -a -x /usr/bin/shuf ]; then
 			| /bin/grep -v "^$"\
 			| /usr/bin/shuf -n 1
 	'
+fi
+
+# Use ubuntu-syschk verbosely and omit GRUB check, by default. If you want to use
+# this alias, you can install it via insit: sudo insit ubuntu-syschk
+# Or get it here: https://github.com/terminalforlife/ubuntu-syschk
+if [ -x /usr/bin/ubuntu-syschk ]; then
+	alias ubuntu-syschk='/usr/bin/ubuntu-syschk -V grub=0'
 fi
 
 # Grab a list of TODOs for git projects, per a specific method. This only works if
