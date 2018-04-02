@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 25 Mar 21:35:25 BST 2018
+# Last Change       - Sun  1 Apr 19:15:54 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -26,6 +26,16 @@ alias sudo="sudo "
 
 # Sick of typing this in the termanal, out of habit!
 alias ":q"="exit"
+
+# Quick and dirty personal alias to display a random note line from command notes.
+if [ -x /bin/sed -a -x /bin/grep -a -x /usr/bin/shuf ]; then
+	alias get-random-note='\
+		/bin/sed "1,/^#END/!d" $HOME/Documents/TT/Useful_Commands\
+			| /bin/grep -v "^#"\
+			| /bin/grep -v "^$"\
+			| /usr/bin/shuf -n 1
+	'
+fi
 
 # Grab a list of TODOs for git projects, per a specific method. This only works if
 # you use "#T0D0 - Note message here" syntax for your TODOs, where "0" is "O". If
