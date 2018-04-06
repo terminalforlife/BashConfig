@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri  6 Apr 20:12:43 BST 2018
+# Last Change       - Fri  6 Apr 20:14:53 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -201,11 +201,11 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 				P+="\e\[[2;38m\]${Y//0/━}\n"
 			fi
 
-			[ "$TARR" ] && P+="\[\e[0m\]${TARR}\[\e[1;38m\]"
+			[ "$TARR" ] && P+="\[\e[0m\]${TARR}\[\e[1;38m\] "
 			P+="${X}${A}\[\e[2;33m\]${GB}\[\e[2;39m\]"
 			P+="${GS/Your branch is }\[\033[2;32m\]${GC}"
 			P+="\[\e[01;31m\]${_PWD/ }\[\e[0m\]"
-			[ "$BARR" ] && P+="\[\033[0m\]\n${BARR}"
+			[ "$BARR" ] && P+="\[\033[0m\]\n${BARR} "
 
 			# Set the main prompt, using info from above.
 			if [ "$STANDARD" == "false" ]; then
