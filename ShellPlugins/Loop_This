@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #----------------------------------------------------------------------------------
-# Project Name      - $HOME/ShellPlugins/Loop_This
+# Project Name      - bashconfig/ShellPlugins/Loop_This
 # Started On        - Thu  2 Nov 18:52:49 GMT 2017
-# Last Change       - Thu  8 Mar 05:32:12 GMT 2018
+# Last Change       - Fri  6 Apr 19:54:36 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -27,4 +27,4 @@ loop(){
 	fi
 }
 
-# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
+# vim: ft=sh noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
