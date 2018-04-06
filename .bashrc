@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri  6 Apr 20:28:03 BST 2018
+# Last Change       - Fri  6 Apr 21:02:26 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -109,22 +109,19 @@ fi
 # If not running interactively, or are in restricted mode, then ignore the rest.
 { ! [ "$PS1" ] || shopt -q restricted_shell; } && return
 
-# These commands don't work with zsh.
-if ! [ "$ZSH_VERSION" ]; then
-	if ! [ "$DEFAULT_HISTORY" == "true" ]; then
-		shopt -s histappend cmdhist lithist
-		set -o histexpand
-	fi
-
-	shopt -s checkwinsize globstar complete_fullquote expand_aliases extquote\
-		 extglob force_fignore hostcomplete interactive_comments xpg_echo\
-		 promptvars sourcepath progcomp autocd cdspell dirspell direxpand\
-		 nocasematch
-
-	set -o interactive-comments -o monitor -o hashall -o braceexpand -o emacs
-
-	[ "$POXIS_MODE" == "true" ] && set -o posix
+if ! [ "$DEFAULT_HISTORY" == "true" ]; then
+	shopt -s histappend cmdhist lithist
+	set -o histexpand
 fi
+
+shopt -s checkwinsize globstar complete_fullquote expand_aliases extquote\
+	 extglob force_fignore hostcomplete interactive_comments xpg_echo\
+	 promptvars sourcepath progcomp autocd cdspell dirspell direxpand\
+	 nocasematch
+
+set -o interactive-comments -o monitor -o hashall -o braceexpand -o emacs
+
+[ "$POXIS_MODE" == "true" ] && set -o posix
 
 #-------------------------------------------------------------------USER SET CHECKS
 
