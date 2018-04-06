@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri  6 Apr 20:11:27 BST 2018
+# Last Change       - Fri  6 Apr 20:12:43 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -18,7 +18,7 @@
 # You won't need any programming knowledge or any major experience with a terminal.
 # Know that "true" is on and "false" is off -- but only replace the words!
 
-# Set this to false to not indicate that shell should above by posix standards.
+# Set this to false to not indicate that shell should abide by posix standards.
 POSIX_MODE="true"
 
 # If git is installed and you're in a git repository, then this .bashrc file will
