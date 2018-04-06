@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri  6 Apr 19:57:12 BST 2018
+# Last Change       - Fri  6 Apr 20:11:27 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -34,6 +34,9 @@ PREFIX_DIR="false"
 # Leave either or both empty (or commented out) to omit them from the prompt.
 TARR="⮣ "
 BARR="⮡ "
+
+# Show the icon representing the previous command's exit status.
+SHOW_ICON="false"
 
 #TODO - Fix this not working properly in Konsole, KDE Plasma 5.
 # By default, you should see a rather nice prompt. If you want something simple, -
@@ -129,7 +132,7 @@ for OPT in\
 \
 	SHOW_LINES:$SHOW_LINES DO_GIT:$DO_GIT BRANCH:$BRANCH COMMITS:$COMMITS\
 	PREFIX_DIR:$PREFIX_DIR SIMPLE:$SIMPLE STANDARD:$STANDARD\
-	POSIX_MODE:$POSIX_MODE MAN_COLORS:$MAN_COLORS
+	POSIX_MODE:$POSIX_MODE MAN_COLORS:$MAN_COLORS SHOW_ICON:$SHOW_ICON
 {
 	if ! [[ "${OPT/*:}" == @(true|false) ]]; then
 		printf "ERROR: Incorrect setting at: %s\n" "${OPT%:*}" 1>&2
@@ -142,50 +145,48 @@ for OPT in\
 [ "${BASH_VERSINFO[0]}" -ge 4 ] && PROMPT_DIRTRIM=1
 
 if ! [ "$ALT_PROMPT" == "true" ]; then
-	if [ "$SIMPLE" == "false" -a -x /usr/bin/tty ]; then
+	if [ "$SIMPLE" == "false" ]; then
 		PROMPT_PARSER(){
 			# Get the previous command's exit status and update icon.
 			local P X=$?; printf -v X "%0.3d" "$X"
-			[ $X -eq 0 ] && local A="  " || local A="  "
+			if [ "$SHOW_ICON" == "true" ]; then
+				[ $X -eq 0 ] && local A="  " || local A="  "
+			fi
 
-			# This must come second to ensure $? above works.
-			[ "$SHOW_LINES" == "true" ] && printf -v Y "%-.*d" "$COLUMNS"
+			if [ -x /usr/bin/git -a "$DO_GIT" == "true" ]\
+			&& /usr/bin/git rev-parse --is-inside-work-tree > /dev/null 2>&1 ; then
+				# Get a short, status description of the branch.
+				U="Your branch is ahead of"
+				declare -i L=0
+				while read -ra Z; do
+					L+=1
 
-			if [ -x /usr/bin/git -a "$DO_GIT" == "true" ]; then
-				if /usr/bin/git rev-parse --is-inside-work-tree &> /dev/null; then
-					# Get a short, status description of the branch.
-					U="Your branch is ahead of"
-					declare -i L=0
+					#TODO - Fix empty when new branch.
+					if [[ $L -eq 2  && "${Z[*]}" == "$U"* ]] || [ $L -eq 3 ]; then
+						local GS="${Z[@]//[:\'.]/} "
+						break
+					fi
+				done <<< "$(/usr/bin/git status 2> /dev/null)"
+				[ "$GS" ] && GS="${GS% } "
+
+				# Get the current branch name.
+				if [ "$BRANCH" == "true" -a "$DO_GIT" == "true" ]; then
 					while read -ra Z; do
-						L+=1
-
-						#TODO - Fix empty when new branch.
-						if [[ $L -eq 2  && "${Z[*]}" == "$U"* ]] || [ $L -eq 3 ]; then
-							local GS="${Z[@]//[:\'.]/} "
+						if [[ "${Z[@]}" == \*\ * ]]; then
+							local GB=" [${Z[1]}] "
 							break
 						fi
-					done <<< "$(/usr/bin/git status 2> /dev/null)"
-					[ "$GS" ] && GS="${GS% } "
+					done <<< "$(/usr/bin/git branch 2> /dev/null)"
+				fi
 
-					# Get the current branch name.
-					if [ "$BRANCH" == "true" -a "$DO_GIT" == "true" ]; then
-						while read -ra Z; do
-							if [[ "${Z[@]}" == \*\ * ]]; then
-								local GB=" [${Z[1]}] "
-								break
-							fi
-						done <<< "$(/usr/bin/git branch 2> /dev/null)"
-					fi
-
-					# Count the number of commits.
-					if [ "$COMMITS" == "true" -a "$DO_GIT" == "true" ]; then
-						declare -i L=0
-						while read -r; do
-							[[ "$REPLY" == commit* ]] && L+=1
-						done <<< "$(/usr/bin/git log 2> /dev/null)"
-						[ $L -eq 0 ] || printf -v GC "(%'d) " "$L"
-						#TODO - Needed? Appended above: && printf "\n"
-					fi
+				# Count the number of commits.
+				if [ "$COMMITS" == "true" -a "$DO_GIT" == "true" ]; then
+					declare -i L=0
+					while read -r; do
+						[[ "$REPLY" == commit* ]] && L+=1
+					done <<< "$(/usr/bin/git log 2> /dev/null)"
+					[ $L -eq 0 ] || printf -v GC "(%'d) " "$L"
+					#TODO - Needed? Appended above: && printf "\n"
 				fi
 			fi
 
@@ -195,7 +196,11 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 				[ "$PWD" == "/" ] && _PWD="/" || _PWD="../${PWD//*\/}"
 			fi
 
-			[ "$SHOW_LINES" == "true" ] && P+="\e\[[2;38m\]${Y//0/━}\n"
+			if [ "$SHOW_LINES" == "true" ]; then
+				printf -v Y "%-.*d" "$COLUMNS"
+				P+="\e\[[2;38m\]${Y//0/━}\n"
+			fi
+
 			[ "$TARR" ] && P+="\[\e[0m\]${TARR}\[\e[1;38m\]"
 			P+="${X}${A}\[\e[2;33m\]${GB}\[\e[2;39m\]"
 			P+="${GS/Your branch is }\[\033[2;32m\]${GC}"
