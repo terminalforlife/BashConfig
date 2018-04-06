@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri  6 Apr 20:16:03 BST 2018
+# Last Change       - Fri  6 Apr 20:28:03 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -110,7 +110,7 @@ fi
 { ! [ "$PS1" ] || shopt -q restricted_shell; } && return
 
 # These commands don't work with zsh.
-if [ -z "$ZSH_VERSION" ]; then
+if ! [ "$ZSH_VERSION" ]; then
 	if ! [ "$DEFAULT_HISTORY" == "true" ]; then
 		shopt -s histappend cmdhist lithist
 		set -o histexpand
@@ -134,7 +134,7 @@ for OPT in\
 	PREFIX_DIR:$PREFIX_DIR SIMPLE:$SIMPLE STANDARD:$STANDARD\
 	POSIX_MODE:$POSIX_MODE MAN_COLORS:$MAN_COLORS SHOW_ICON:$SHOW_ICON
 {
-	if ! [[ "${OPT/*:}" == @(true|false) ]]; then
+	if ! [[ "${OPT/*:}" =~ ^(true|false)$ ]]; then
 		printf "ERROR: Incorrect setting at: %s\n" "${OPT%:*}" 1>&2
 	fi
 }
@@ -181,9 +181,9 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 
 				# Count the number of commits.
 				if [ "$COMMITS" == "true" -a "$DO_GIT" == "true" ]; then
-					declare -i L=0
-					while read -r; do
-						[[ "$REPLY" == commit* ]] && L+=1
+					local GC; declare -i L=0
+					while read -r Z; do
+						[[ "$Z" == commit* ]] && L+=1
 					done <<< "$(/usr/bin/git log 2> /dev/null)"
 					[ $L -eq 0 ] || printf -v GC "(%'d) " "$L"
 					#TODO - Needed? Appended above: && printf "\n"
