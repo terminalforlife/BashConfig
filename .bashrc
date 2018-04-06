@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 25 Mar 11:09:02 BST 2018
+# Last Change       - Fri  6 Apr 19:57:12 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -48,7 +48,8 @@ STANDARD="false"
 ALT_PROMPT="false"
 
 # Requires ALT_PROMPT to be true. Choose the type of alternative prompt to use.
-# Valid prompt types:
+# Let me know if you want your prompt to be listed here. Valid prompt types:
+#
 #                                          dsuveges - https://pastebin.com/T43WuZqU
 ALT_TYPE="dsuveges"
 
@@ -62,7 +63,7 @@ COMMITS="true"
 
 # By default, each prompt will be separated by a tidy set of lines. To disable this
 # feature, even though it may be harder to see each, then just set this to false.
-SHOW_LINES="false"
+SHOW_LINES="true"
 
 # Set this to true in order to remove all history settings and use the defaults.
 DEFAULT_HISTORY="false"
@@ -75,6 +76,7 @@ MAN_COLORS="true"
 # Each entry must be separated by spaces, so ensure you escape or quote filenames
 # with spaces in them, or even special characters understood by the shell.
 PLUGINS=(
+	Terminal_Reminder         # Display reminders of user-specified dates.
 	Bell_Alarm                # Run 'bell' for simple alarm using the x11 bell.
 	Cleaner_RK_Scan           # Run 'rkc' to scan with rkhunter and chkrootkit.
 	Load_File_Links2          # Run 'l2f FILE' to load a file with links2.
@@ -82,9 +84,12 @@ PLUGINS=(
 	Get_Bad_Hosts             # Run 'gbh' to download a list of bad domains.
 	List_Signals              # Run 'lsssig' for another way to list signals.
 	LSPKG_Set                 # Run 'lspkg-set' to list various package types.
+	Loop_This                 # Run 'loop' followed by CMD(s) to loop them.
 )
 
 # WARNING: Changing code below, without knowledge of shell, could easily break it!
+#          Be sure to also back up the above user settings if you plan on updating
+#          this file with the bashconfig entry in insit.
 
 #--------------------------------------------------------------MAIN SETS AND SHOPTS
 
@@ -97,16 +102,6 @@ if [ -d "$HOME/bin" ] && ! [[ "$PATH" == */home/"$USER"/bin* ]]; then
 	# If the directory exists and isn't already in PATH, set it so.
 	export PATH="/home/$USER/bin:${PATH}"
 fi
-
-# The RHEL recommended umask for much more safety when creating new files and
-# directories. This is the equivalent of octal 700 and 600 for directories and
-# files, respectively; drwx------ and -rw-------.
-umask 0077
-
-# Set the maximum number of processes for the current user. May require root access
-# depending on your setup. Needed root access in Ubuntu 17.10 with a similar setup.
-# It seems to just needs root access to raise this value, but not lower it.
-#ulimit -u 5000
 
 # If not running interactively, or are in restricted mode, then ignore the rest.
 { ! [ "$PS1" ] || shopt -q restricted_shell; } && return
@@ -137,7 +132,7 @@ for OPT in\
 	POSIX_MODE:$POSIX_MODE MAN_COLORS:$MAN_COLORS
 {
 	if ! [[ "${OPT/*:}" == @(true|false) ]]; then
-		echo "ERROR: Incorrect setting at: ${OPT%:*}" 1>&2
+		printf "ERROR: Incorrect setting at: %s\n" "${OPT%:*}" 1>&2
 	fi
 }
 
@@ -148,7 +143,7 @@ for OPT in\
 
 if ! [ "$ALT_PROMPT" == "true" ]; then
 	if [ "$SIMPLE" == "false" -a -x /usr/bin/tty ]; then
-		GET_PC(){
+		PROMPT_PARSER(){
 			# Get the previous command's exit status and update icon.
 			local P X=$?; printf -v X "%0.3d" "$X"
 			[ $X -eq 0 ] && local A="  " || local A="  "
@@ -159,47 +154,37 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 			if [ -x /usr/bin/git -a "$DO_GIT" == "true" ]; then
 				if /usr/bin/git rev-parse --is-inside-work-tree &> /dev/null; then
 					# Get a short, status description of the branch.
-					local GS=$(
-						U="Your branch is ahead of"
-						declare -i L=0
+					U="Your branch is ahead of"
+					declare -i L=0
+					while read -ra Z; do
+						L+=1
 
 						#TODO - Fix empty when new branch.
-						while read -ra X; do
-							L+=1
-
-							if [[ $L -eq 2 && "${X[*]}" == "$U"* ]]; then
-								printf "%s " "${X[@]//[:\'.]/}"
-								break
-							elif [ $L -eq 3 ]; then
-								printf "%s " "${X[@]//[:\'.]/}"
-								break
-							fi
-						done <<< "$(/usr/bin/git status 2> /dev/null)"
-					)
-
-					[ -n "$GS" ] && GS="${GS% } "
+						if [[ $L -eq 2  && "${Z[*]}" == "$U"* ]] || [ $L -eq 3 ]; then
+							local GS="${Z[@]//[:\'.]/} "
+							break
+						fi
+					done <<< "$(/usr/bin/git status 2> /dev/null)"
+					[ "$GS" ] && GS="${GS% } "
 
 					# Get the current branch name.
 					if [ "$BRANCH" == "true" -a "$DO_GIT" == "true" ]; then
-						local GB=$(
-							while read -ra X; do
-								if [[ "${X[@]}" == \*\ * ]]; then
-									printf " [%s] "  "${X[1]}"
-									break
-								fi
-							done <<< "$(/usr/bin/git branch 2> /dev/null)"
-						)
+						while read -ra Z; do
+							if [[ "${Z[@]}" == \*\ * ]]; then
+								local GB=" [${Z[1]}] "
+								break
+							fi
+						done <<< "$(/usr/bin/git branch 2> /dev/null)"
 					fi
 
 					# Count the number of commits.
 					if [ "$COMMITS" == "true" -a "$DO_GIT" == "true" ]; then
-						local GC=$(
-							declare -i L=0
-							while read -r; do
-								[[ "$REPLY" == commit* ]] && L+=1
-							done <<< "$(/usr/bin/git log 2> /dev/null)"
-							[ $L -eq 0 ] || printf "(%'d) " "$L" && printf "\n"
-						)
+						declare -i L=0
+						while read -r; do
+							[[ "$REPLY" == commit* ]] && L+=1
+						done <<< "$(/usr/bin/git log 2> /dev/null)"
+						[ $L -eq 0 ] || printf -v GC "(%'d) " "$L"
+						#TODO - Needed? Appended above: && printf "\n"
 					fi
 				fi
 			fi
@@ -225,20 +210,22 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 			fi
 		}
 
-		PROMPT_COMMAND='GET_PC'
+		# Minor drawback to this method is the inability to reassign the
+		# value of PS1, unless you first unset or clear this one.
+		PROMPT_COMMAND='PROMPT_PARSER'
 	else
 		PS1="\$ "
 	fi
 else
-	if [ -n "$ALT_TYPE" ]; then
+	if [ "$ALT_TYPE" ]; then
 		case "$ALT_TYPE" in
 			dsuveges)
 				PS1="\[\e[1;30m\]\A \u@\h\[\e[m\]:\[\e[1;32m\]\W\[\e[m\]$ " ;;
 			*)
-				echo "ERROR: Incorrect setting at: ALT_TYPE" 1>&2 ;;
+				printf "ERROR: Incorrect setting at: ALT_TYPE\n" 1>&2 ;;
 		esac
 	else
-		echo "ERROR: Missing setting at: ALT_TYPE" 1>&2
+		printf "ERROR: Missing setting at: ALT_TYPE\n" 1>&2
 	fi
 fi
 
