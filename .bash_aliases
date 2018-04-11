@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri  6 Apr 13:40:36 BST 2018
+# Last Change       - Tue 10 Apr 10:21:00 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -26,6 +26,10 @@ alias sudo="sudo "
 
 # Sick of typing this in the termanal, out of habit!
 alias ":q"="exit"
+
+if [ -x /bin/df ]; then
+	alias df='/bin/df -lT -x devtmpfs -x tmpfs -x usbfs'
+fi
 
 # Quick and dirty personal alias to display a random note line from command notes.
 if [ -x /bin/sed -a -x /bin/grep -a -x /usr/bin/shuf ]; then
