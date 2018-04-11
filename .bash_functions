@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sun  1 Apr 12:35:45 BST 2018
+# Last Change       - Wed 11 Apr 18:50:03 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -41,6 +41,18 @@ if [ -x /bin/mv ]; then
 			read -e -p "--> "
 			mv "$FILE" "$REPLY"
 		}
+	}
+fi
+
+# Display all of the 'rc' packages, as determined by dpkg, parsed by the shell.
+# Using this within command substitution, sending it to apt-get, is very useful.
+if [ -x /usr/bin/dpkg ]; then
+	lsrc(){
+		while read -a X; do
+			if [ "${X[0]}" == "rc" ]; then
+				printf "%s\n" "${X[1]}"
+			fi
+		done <<< "$(/usr/bin/dpkg -l)"
 	}
 fi
 
