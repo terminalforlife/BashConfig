@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 10 Apr 10:21:00 BST 2018
+# Last Change       - Sat 14 Apr 01:47:25 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -465,11 +465,11 @@ if [ -x /usr/bin/mplayer ]; then
 elif [ -x /usr/bin/mpv ]; then
 	alias mpve="\
 		/usr/bin/mpv --af=equalizer=8:7:6:5:0:6:0:5:5:5\
-			--vo opengl-hq --no-stop-screensaver &> /dev/null \
+			--no-stop-screensaver &> /dev/null \
 	"
 
 	alias mpv="\
-		/usr/bin/mpv --vo opengl-hq --no-stop-screensaver &> /dev/null \
+		/usr/bin/mpv --no-stop-screensaver &> /dev/null \
 	"
 fi
 
