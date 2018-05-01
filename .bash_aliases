@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sat 14 Apr 01:47:25 BST 2018
+# Last Change       - Fri 20 Apr 09:36:44 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -421,7 +421,7 @@ for DIR in\
 	"Downloads":dl "Documents":doc "Documents/TT":tt "ShellPlugins":sp\
 	"GitHub/terminalforlife":ghtfl "GitHub/terminalforlife/Forks":ghtflf\
 	"GitHub/terminalforlife/Personal":ghtflp "DosBox":db "Archives":arc\
-	".i3a":i3a;
+	".i3a":i3a "LearnLinux":ll;
 {
 	[ -d "$HOME/${DIR%:*}" ] && alias ${DIR/*:}="cd $HOME/${DIR%:*}"
 }
