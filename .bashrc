@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri  6 Apr 21:02:26 BST 2018
+# Last Change       - Wed 16 May 21:19:20 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ TARR="⮣ "
 BARR="⮡ "
 
 # Show the icon representing the previous command's exit status.
-SHOW_ICON="false"
+SHOW_ICON="true"
 
 #TODO - Fix this not working properly in Konsole, KDE Plasma 5.
 # By default, you should see a rather nice prompt. If you want something simple, -
@@ -109,7 +109,7 @@ fi
 # If not running interactively, or are in restricted mode, then ignore the rest.
 { ! [ "$PS1" ] || shopt -q restricted_shell; } && return
 
-if ! [ "$DEFAULT_HISTORY" == "true" ]; then
+if [ "$DEFAULT_HISTORY" == "false" ]; then
 	shopt -s histappend cmdhist lithist
 	set -o histexpand
 fi
@@ -144,6 +144,9 @@ for OPT in\
 if ! [ "$ALT_PROMPT" == "true" ]; then
 	if [ "$SIMPLE" == "false" ]; then
 		PROMPT_PARSER(){
+			#TODO - Opting to not show the exit status icon when you're
+			#       also using the Git prompt, will cause the two
+			#       fields to become concatenated.
 			# Get the previous command's exit status and update icon.
 			local P X=$?; printf -v X "%0.3d" "$X"
 			if [ "$SHOW_ICON" == "true" ]; then
@@ -233,7 +236,7 @@ fi
 
 #---------------------------------------------------------------------------HISTORY
 
-if [ "$DEFAULT_HISTORY" == "true" ]; then
+if [ "$DEFAULT_HISTORY" == "false" ]; then
 	#HISTIGNORE="ls *:exit *:clear:cd *::pwd:history *"
 	HISTTIMEFORMAT="[%F_%X]: "
 	HISTCONTROL=ignoreboth
