@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Wed 11 Apr 18:50:03 BST 2018
+# Last Change       - Fri 10 Aug 21:30:43 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -29,20 +29,6 @@ fi
 #		GTK_THEME="Adwaita" /usr/bin/firefox $@
 #	}
 #fi
-
-# Interactively batch-rename all files in the CWD. This can save time trying to
-# parse filenames for automation. Sometimes it's just more convenient and less
-# hassle to simply type the names out yourself, with assistance.
-if [ -x /bin/mv ]; then
-	batch-rename(){
-		for FILE in *; {
-			[ -f "$FILE" ] || continue
-			printf "%s\n" "$FILE"
-			read -e -p "--> "
-			mv "$FILE" "$REPLY"
-		}
-	}
-fi
 
 # Display all of the 'rc' packages, as determined by dpkg, parsed by the shell.
 # Using this within command substitution, sending it to apt-get, is very useful.
@@ -228,6 +214,29 @@ if [ -x /usr/bin/links2 ]; then
 		/usr/bin/links2 -http.do-not-track 1 -html-tables 1\
 			-html-tables 1 -html-numbered-links 1\
 			http://duckduckgo.com/?q="$*"
+	}
+fi
+
+# Prompt to somewhat programmatically rename each file within the current
+# directory. To skip one, simply submit an empty string. Output is fairly quiet.
+# Does not work recursively, nor will it try to name anything but files. Uses color
+# in output to make it quick and easy to read; may not work on all terminals.
+if [ -x /bin/mv ]; then
+	brn(){ # [B]atch [R]e[n]ame
+		for FILE in *; {
+			if [ -f "$FILE" ]; then
+				printf "\e[2;31mFILE:\e[0m %s\n" "$FILE"
+
+				read -ep "NAME: "
+				if [ "$REPLY" ]; then
+					if /bin/mv "$FILE" "$REPLY" 2> /dev/null; then
+						printf "\e[2;32mFile successfully renamed.\e[0m\n"
+					else
+						printf "\e[2;31mUnable to rename file.\e[0m\n"
+					fi
+				fi
+			fi
+		}
 	}
 fi
 
