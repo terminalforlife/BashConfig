@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Fri 10 Aug 21:30:43 BST 2018
+# Last Change       - Sat 11 Aug 16:54:55 BST 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -220,19 +220,38 @@ fi
 # Prompt to somewhat programmatically rename each file within the current
 # directory. To skip one, simply submit an empty string. Output is fairly quiet.
 # Does not work recursively, nor will it try to name anything but files. Uses color
-# in output to make it quick and easy to read; may not work on all terminals.
+# in output to make it quick and easy to read; may not work on all terminals. The
+# changes are made the moment you press Enter, so be mindful! Ctrl + C to cancel.
+# Use OPT -d or --directories to instead match those.
 if [ -x /bin/mv ]; then
 	brn(){ # [B]atch [R]e[n]ame
+		printf "NOTE: To match directories instead, use -d|--directories OPTs.\n"
+
+		while [ "$1" ]; do
+			case "$1" in
+				--directories|-d)
+					USE_DIRS="true" ;;
+				"")
+					;;
+				*)
+					printf "ERROR: Incorrect argument(s) specified." ;;
+			esac
+			shift
+		done
+
+		declare -i NUM=0
 		for FILE in *; {
-			if [ -f "$FILE" ]; then
+			if { ! [ "$USE_DIRS" == "true" ] && [ -f "$FILE" ]; }\
+			|| { [ "$USE_DIRS" == "true" ] && [ -d "$FILE" ]; }; then
+				NUM+=1
 				printf "\e[2;31mFILE:\e[0m %s\n" "$FILE"
 
-				read -ep "NAME: "
+				read -ep " >> "
 				if [ "$REPLY" ]; then
 					if /bin/mv "$FILE" "$REPLY" 2> /dev/null; then
-						printf "\e[2;32mFile successfully renamed.\e[0m\n"
+						printf "\e[2;32mItem #%d successfully renamed.\e[0m\n" $NUM
 					else
-						printf "\e[2;31mUnable to rename file.\e[0m\n"
+						printf "\e[2;31mUnable to rename item #%d.\e[0m\n" $NUM
 					fi
 				fi
 			fi
