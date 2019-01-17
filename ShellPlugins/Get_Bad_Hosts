@@ -3,11 +3,12 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/ShellPlugins/Get_Bad_Hosts
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Fri  6 Apr 19:54:21 BST 2018
+# Last Change       - Thu 17 Jan 17:22:45 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
+#TODO - Broken. Just downloads 0-size file.
 gbh(){
 	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
 

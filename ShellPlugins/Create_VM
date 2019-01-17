@@ -3,9 +3,17 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/ShellPlugins/Create_VM
 # Started On        - Thu 14 Sep 20:16:42 BST 2017
-# Last Change       - Fri  6 Apr 19:54:17 BST 2018
+# Last Change       - Sun  9 Dec 20:28:49 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
+# A personal script I wrote when I used Virtualbox via the terminal. Some basic
+# scripting knowledge might be useful here, so you could edit the relevant info to
+# suit your needs.
+#
+# NOTE: This was used with an older version of Virtualbox, since I created it, so I
+#       cannot guarantee it'll still work, as vboxmanage may now have different
+#       syntax.
 #----------------------------------------------------------------------------------
 
 # $1 = Name

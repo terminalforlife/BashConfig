@@ -3,9 +3,12 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/ShellPlugins/Loop_This
 # Started On        - Thu  2 Nov 18:52:49 GMT 2017
-# Last Change       - Fri  6 Apr 19:54:36 BST 2018
+# Last Change       - Sun  9 Dec 20:20:00 GMT 2018
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
+# Doesn't seem to work, unless I've just forgotten something key. I believe the
+# purpose of this script was to somewhat mimic the watch command, albeit basically.
 #----------------------------------------------------------------------------------
 
 loop(){
