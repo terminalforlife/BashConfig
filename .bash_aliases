@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 20 Apr 09:36:44 BST 2018
+# Last Change       - Sun 31 Mar 11:55:04 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -127,7 +127,7 @@ if [ -f "$HOME/Documents/TT/shotmngr.sh" ]; then
 fi
 
 
-# Used to notify you of a job completion on the terminal.
+# Used to notify you of a job completion on the terminal. I use this with dunst.
 if [ -x /usr/bin/notify-send -a -x /usr/bin/tty ]; then
 	# Standard notification.
 	alias yo='\
@@ -182,16 +182,16 @@ fi
 [ -x /bin/sed ] && alias nospace='/bin/sed -i s/^[\\s\\t]\\+$//\;\ s/[\\s\\t]\\+$//'
 
 # Efficient and fairly portable way to display the current iface.
-[ -x /sbin/ip ] && alias iface='X=(`/sbin/ip route`) && echo ${X[4]}'
+[ -x /sbin/ip ] && alias iface='X=(`/sbin/ip route`) && printf "%s\n" ${X[4]}'
 
 # Get and display the distribution type. (original base first)
 if [ -f /etc/os-release -a -r /etc/os-release ]; then
 	alias distro='\
 		while read -a X; do
 			if [[ "${X[0]}" == ID_LIKE=* ]]; then
-				echo "${X[0]/*=}"; break
+				printf "%s\n" "${X[0]/*=}"; break
 			elif [[ "${X[0]}" == ID=* ]]; then
-				echo "${X[0]/*=}"; break
+				printf "%s\n" "${X[0]/*=}"; break
 			fi
 		done < /etc/os-release
 	'
@@ -266,7 +266,9 @@ fi
 if [ -x /usr/bin/sensors ]; then
 	alias showfans='\
 		while read; do
-			[[ "$REPLY" == *[Ff][Aa][Nn]*RPM ]] && echo "$REPLY"
+			if [[ "$REPLY" == *[Ff][Aa][Nn]*RPM ]]; then
+				printf "%s\n" "$REPLY"
+			fi
 		done <<< "$(/usr/bin/sensors)"
 	'
 fi
@@ -275,7 +277,7 @@ fi
 if [ -x /usr/bin/column ]; then
 	alias builtins='\
 		while read -r; do
-			echo "${REPLY/* }"
+			printf "%s\n" "${REPLY/* }"
 		done <<< "$(enable -a)" | /usr/bin/column
 	'
 fi
@@ -319,13 +321,13 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 # Ease-of-use youtube-dl aliases; these save typing!
 for DEP in /usr/{local/bin,bin}/youtube-dl; {
 	[ -x "$DEP" ] && {
-		alias ytdl-video="$DEP -c --yes-playlist --sleep-interval 5\
+		alias ytdl-video="$DEP -c --no-playlist --sleep-interval 5\
 			--format best --no-call-home --console-title --quiet\
 			--ignore-errors"
 
-		alias ytdl-audio="$DEP -cx --audio-format mp3 --sleep-interval 5\
-			--max-sleep-interval 30 --no-call-home --console-title\
-			--quiet --ignore-errors"
+		alias ytdl-audio="$DEP -cx --no-playlist --audio-format mp3\
+			--sleep-interval 5 --max-sleep-interval 30 --no-call-home\
+			--console-title --quiet --ignore-errors"
 
 		alias ytpldl-audio="$DEP -cix --audio-format mp3 --sleep-interval\
 			5 --yes-playlist --no-call-home --console-title --quiet\
@@ -335,7 +337,7 @@ for DEP in /usr/{local/bin,bin}/youtube-dl; {
 			--format best --no-call-home --console-title --quiet\
 			--ignore-errors"
 
-		# Just use the first result.
+		# Just use the first result; no need to check for more.
 		break
 	}
 }
@@ -513,7 +515,7 @@ if [ -x /usr/bin/vim ]; then
 		".maintain/maintain.man":maintain-man ".config/openbox/rc.xml":obc\
 		".maintain/usersettings.conf":maintain-set ".wgetrc":wgetrc\
 		".dosbox/dosbox-0.74.conf":dbc ".bash_functions":bashfunctions\
-		".libi3bview":li3bv;
+		".libi3bview":li3bv ".config/herbstluftwm/autostart":hla
 	{
 		[ -f "$HOME/${FILE%:*}" ] || continue
 		alias ${FILE/*:}="/usr/bin/vim $HOME/${FILE%:*}"
