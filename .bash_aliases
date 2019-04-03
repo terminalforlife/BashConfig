@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 31 Mar 11:55:04 BST 2019
+# Last Change       - Tue  2 Apr 16:45:57 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -515,7 +515,8 @@ if [ -x /usr/bin/vim ]; then
 		".maintain/maintain.man":maintain-man ".config/openbox/rc.xml":obc\
 		".maintain/usersettings.conf":maintain-set ".wgetrc":wgetrc\
 		".dosbox/dosbox-0.74.conf":dbc ".bash_functions":bashfunctions\
-		".libi3bview":li3bv ".config/herbstluftwm/autostart":hla
+		".libi3bview":li3bv ".config/herbstluftwm/autostart":hla\
+		".config/herbstluftwm/panel.sh":panel;
 	{
 		[ -f "$HOME/${FILE%:*}" ] || continue
 		alias ${FILE/*:}="/usr/bin/vim $HOME/${FILE%:*}"
