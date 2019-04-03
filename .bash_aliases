@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue  2 Apr 16:45:57 BST 2019
+# Last Change       - Wed  3 Apr 14:18:32 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -398,7 +398,8 @@ fi
 if [ -x /bin/ls -a -x /bin/grep ]; then
 	case "${TERM:-EMPTY}" in
 	        linux|xterm|xterm-256color)
-	                alias ls="/bin/ls -nphq --time-style=iso --color=auto\
+	                alias ls="/bin/ls --quoting-style=literal -nphq\
+				--time-style=iso --color=auto\
 				--group-directories-first --show-control-chars"
 
 	                alias lsa="ls -A"
