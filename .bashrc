@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed 16 May 21:19:20 BST 2018
+# Last Change       - Wed  3 Apr 23:04:11 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -143,6 +143,12 @@ for OPT in\
 
 if ! [ "$ALT_PROMPT" == "true" ]; then
 	if [ "$SIMPLE" == "false" ]; then
+		# Needed to ensure the git stuff shows correctly. In 18.04, the git
+		# version has slightly different output, so needed a workaround.
+		readarray T < /etc/lsb-release
+		[ "${T[2]#*=}" == bionic$'\n' ] && R=4 || R=3
+		#TODO - If file isn't found, should os-release be checked?
+
 		PROMPT_PARSER(){
 			#TODO - Opting to not show the exit status icon when you're
 			#       also using the Git prompt, will cause the two
@@ -162,7 +168,7 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 					L+=1
 
 					#TODO - Fix empty when new branch.
-					if [[ $L -eq 2  && "${Z[*]}" == "$U"* ]] || [ $L -eq 3 ]; then
+					if [[ $L -eq 2  && "${Z[*]}" == "$U"* ]] || [ $L -eq $R ]; then
 						local GS="${Z[@]//[:\'.]/} "
 						break
 					fi
