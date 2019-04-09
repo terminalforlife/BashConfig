@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue  9 Apr 18:24:14 BST 2019
+# Last Change       - Tue  9 Apr 19:01:36 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -13,6 +13,15 @@
 #
 #   sudo insit -S
 #   sudo insit -U bashconfig
+#
+# IMPORTANT:
+#
+#   All functions you wish to be listed with lad (bashconfig/lad) MUST be
+#   one-liners and have ' #: ' appended to each alias line, followed by its brief
+#   description.
+#
+#   Those which you don't, must be at least 3 tabs in to be ignored by lad. This
+#   may change in future versions of lad.
 #----------------------------------------------------------------------------------
 
 # Just in-case.

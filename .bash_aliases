@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue  9 Apr 18:54:21 BST 2019
+# Last Change       - Tue  9 Apr 19:00:52 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -15,6 +15,14 @@
 #
 #   sudo insit -S
 #   sudo insit -U bashconfig
+#
+# IMPORTANT:
+#
+#   All aliases you wish to be listed with lad (bashconfig/lad) MUST be one-liners
+#   and have ' #: ' appended to each alias line, followed by its brief description.
+#
+#   Those which you don't, must be at least 3 tabs in to be ignored by lad. This
+#   may change in future versions of lad.
 #----------------------------------------------------------------------------------
 
 # Just in-case.
