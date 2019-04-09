@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sat 11 Aug 16:54:55 BST 2018
+# Last Change       - Tue  9 Apr 16:03:07 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -19,7 +19,9 @@
 [ -z "$BASH_VERSION" ] && return 1
 
 if [ -x /usr/bin/awk ]; then
-	sc(){ printf "%f\n" "$(/usr/bin/awk "BEGIN{print($@)}" 2> /dev/null)"; }
+	sc(){ #: Perform mathematical calculations via AWK.
+		printf "%f\n" "$(/usr/bin/awk "BEGIN{print($@)}" 2> /dev/null)"
+	}
 fi
 
 # Make Firefox display input fields correctly, if using a dark theme. Obviously, -
@@ -33,7 +35,7 @@ fi
 # Display all of the 'rc' packages, as determined by dpkg, parsed by the shell.
 # Using this within command substitution, sending it to apt-get, is very useful.
 if [ -x /usr/bin/dpkg ]; then
-	lsrc(){
+	lsrc(){ #:Search for and list all 'rc' packages detected by dpkg.
 		while read -a X; do
 			if [ "${X[0]}" == "rc" ]; then
 				printf "%s\n" "${X[1]}"
@@ -43,18 +45,21 @@ if [ -x /usr/bin/dpkg ]; then
 fi
 
 # Get the display's resolution, per the geometry propert of the root window. This
-# doesn't seem to work in i3-wm, so don't enable getres() if in that.
+# doesn't seem to work in i3-wm, so don't enable getres() if in that. Probably
+# won't work if you're using a mult-monitor setup.
 if [ -x /usr/bin/xprop -a ! "$XDG_CURRENT_DESKTOP" == "i3" ]; then
-	getres(){
-		local X P="_NET_DESKTOP_GEOMETRY"
-		IFS="=" read -a X <<< "$(/usr/bin/xprop -root $P)"
-		printf "Current Resolution: %dx%d\n" "${X[1]%,*}" "${X[1]/*, }"
-	}
+	if ! [ "$DESKTOP_SESSION" == "i3" ]; then
+		getres(){ #: Fetch the screen resolution via root window.
+			local X P="_NET_DESKTOP_GEOMETRY"
+			IFS="=" read -a X <<< "$(/usr/bin/xprop -root $P)"
+			printf "Current Resolution: %dx%d\n" "${X[1]%,*}" "${X[1]/*, }"
+		}
+	fi
 fi
 
 # An alternative way to get and display the session uptime.
 if [ -f /proc/uptime -a -r /proc/uptime ]; then
-	up(){
+	up(){ #: Alternative way to display session uptime.
 		read -a X < /proc/uptime
 		declare -i H=$((${X[0]%.*}/60/60))
 		declare -i M=$((${X[0]%.*}/60-(H*60)))
@@ -68,7 +73,7 @@ fi
 
 # Use these environment variables only for man, to give him some color.
 if [ "$MAN_COLORS" == "true" ] && [ -x /usr/bin/man ]; then
-	man(){
+	man(){ #: Display man pages with a little color.
 		LESS_TERMCAP_mb=$'\e[01;31m'\
 		LESS_TERMCAP_md=$'\e[01;31m'\
 		LESS_TERMCAP_me=$'\e[0m'\
@@ -84,7 +89,7 @@ fi
 #TODO - Fix the inability to pipe the output.
 # Display a descriptive list of kernel modules.
 if [ -x /sbin/lsmod -a -x /sbin/modinfo ]; then
-	lsmodd(){
+	lsmodd(){ #: List and describe (most) detected kernel modules.
 		local X Y
 		while read -a X; do
 			[ "${X[0]}" == "Module" ] && continue
@@ -96,7 +101,7 @@ fi
 
 # An improvement of a code block found here:
 # https://forums.linuxmint.com/viewtopic.php?f=47&t=263770&p=1432658#p1432285
-suppress(){
+suppress(){ #: Execute command ($1) and omit specified ($2) output.
 	$1 |& while read X; do
 		[ "${X/$2}" ] && printf "%s\n" "${X/$2}"
 	done
@@ -106,7 +111,7 @@ suppress(){
 
 # Search for & output files not found which were installed with a given package.
 if [ -x /usr/bin/dpkg-query ]; then
-	missing-pkg-files(){
+	missing-pkg-files(){ #: Check for missing files installed from a given package(s).
 		local X
 		while read X; do
 			[ -e "$X" -a "$X" ] || printf "%s\n" "$X"
@@ -116,7 +121,7 @@ fi
 
 # The ago function is a handy way to output some of the apt-get's -o options.
 if [ -x /usr/bin/apt-get -a -x /bin/zcat ]; then
-	ago(){
+	ago(){ #: List out various apt-get options for the -o flag.
 		#TODO - Why is there that initial blank line!?
 		for FIELD in `/bin/zcat /usr/share/man/man8/apt-get.8.gz`; {
 			if [[ "$FIELD" =~ ^(Dir|Acquire|Dpkg|APT):: ]]; then
@@ -132,7 +137,7 @@ fi
 
 # Search the given path(s) for file types of TYPE. Ignores filename extension.
 if [ -x /usr/bin/mimetype ]; then
-	sif(){
+	sif(){ #: Search given path(s) for files of a specified type.
 		[ $# -eq 0 ] && printf "%s\n"\
 			"USAGE: sif TYPE FILE1 [FILE2 FILE3...]" 1>&2
 
@@ -156,7 +161,7 @@ fi
 
 # Display the total data downloaded and uploaded on a given interface.
 if [ -f /proc/net/dev ]; then
-	inout(){
+	inout(){ #: Display total network data transfer this session.
 		local X
 		while read -a X; do
 			if [ "${X[0]}" == "${1}:" ]; then
@@ -172,7 +177,7 @@ fi
 
 # Display the users on the system (parse /etc/passwd) in a more human-readable way.
 if [ -f /etc/passwd ]; then
-	lsusers(){
+	lsusers(){ #: List users on the system, according to '/etc/passwd'.
 		printf "%-20s %-7s %-7s %-25s %s\n"\
 			"USERNAME" "UID" "GID" "HOME" "SHELL"
 
@@ -196,7 +201,7 @@ fi
 
 # A simple dictionary lookup function, similar to the look command.
 if [ -f /usr/share/dict/words -a -r /usr/share/dict/words ]; then
-	dict(){
+	dict(){ #: A dictionary tool akin to the look command.
 		local X
 		while read -r X; do
 			[[ "$X" == *$1* ]] && printf "%s\n" "$X"
@@ -205,12 +210,17 @@ if [ -f /usr/share/dict/words -a -r /usr/share/dict/words ]; then
 fi
 
 # Two possibly pointless functions to single- or double-quote a string of text.
-squo(){ printf "'%s'\n\" \"\$*"; }
-dquo(){ printf "\"%s\"\n" "$*"; }
+squo(){ #: Surround ($@) text in single quotion marks.
+	printf "'%s'\n\" \"\$*"
+}
+
+dquo(){ #: Surround ($@) text in double quotation marks.
+	printf "\"%s\"\n" "$*"
+}
 
 # My preferred links2 settings. Also allows you to quickly search with DDG.
 if [ -x /usr/bin/links2 ]; then
-	l2(){
+	l2(){ #: A tweaked links2 experience, opening with DuckDuckGo.
 		/usr/bin/links2 -http.do-not-track 1 -html-tables 1\
 			-html-tables 1 -html-numbered-links 1\
 			http://duckduckgo.com/?q="$*"
@@ -224,7 +234,7 @@ fi
 # changes are made the moment you press Enter, so be mindful! Ctrl + C to cancel.
 # Use OPT -d or --directories to instead match those.
 if [ -x /bin/mv ]; then
-	brn(){ # [B]atch [R]e[n]ame
+	brn(){ #: Batch-rename a bunch of files or directories.
 		printf "NOTE: To match directories instead, use -d|--directories OPTs.\n"
 
 		while [ "$1" ]; do
