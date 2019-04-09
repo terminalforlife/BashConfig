@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/lad
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Tue  9 Apr 18:56:16 BST 2019
+# Last Change       - Tue  9 Apr 19:30:36 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -29,12 +29,47 @@ USAGE(){
 		            --version|-v            - Output only the version datestamp.
 		            --debug|-D              - Enables the built-in bash debugging.
 
-		FILES:      The following files are scanned:
+		RULES:      In order for lad to correctly list functions and aliases, various rules
+		            must be followed; these are listed below:
 
-		              \$HOME/.bash_functions
-		              \$HOME/.bash_aliases
+		              1. ' #: ', sans quotes, must be appended to alias lines.
 
-		LINK:       https://github.com/terminalforlife
+		                 For example:
+
+		                   alias do='echo "Some random stuff."' #: Print some text.
+
+		              2. Alias setting MUST be single-line only.
+
+		              3. ' #: ', sans quotes, must be appended to function declaration.
+
+		                 For example:
+
+		                   func_name(){ #: Print some text.
+		                           echo "Some random stuff."
+		                   }
+
+		              4. The alias must be the first command on its line.
+
+		                 Example of incorrect usage:
+
+		                   [ -x /bin/thing ] && alias do="thing" #: Do thing.
+
+		                 Example of correct usage:
+
+		                   if [ -x /bin/thing ]; then
+		                           alias do="thing" #: Do thing.
+		                   fi
+
+		              5. Aliases must be put into: \$HOME/.bash_aliases
+
+		              6. Functions must be put into: \$HOME/.bash_functions
+
+FILES:      The following files are scanned:
+
+              \$HOME/.bash_functions
+              \$HOME/.bash_aliases
+
+LINK:       https://github.com/terminalforlife
 	EOF
 }
 
