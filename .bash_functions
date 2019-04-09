@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue  9 Apr 16:03:07 BST 2019
+# Last Change       - Tue  9 Apr 18:24:14 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -24,13 +24,89 @@ if [ -x /usr/bin/awk ]; then
 	}
 fi
 
-# Make Firefox display input fields correctly, if using a dark theme. Obviously, -
-# use whichever GTK theme you actually have and is appropriate or desired for you.
-#if [ -x /usr/bin/firefox ]; then
-#	firefox(){
-#		GTK_THEME="Adwaita" /usr/bin/firefox $@
-#	}
-#fi
+if [ -x /usr/bin/column ]; then
+	builtins(){ #: Display a columnized list of bash builtins.
+		while read -r; do
+			printf "%s\n" "${REPLY/* }"
+		done <<< "$(enable -a)" | /usr/bin/column
+	}
+fi
+
+# Display the current DPI setting.
+if [ -x /usr/bin/xdpyinfo ]; then
+	dpi(){ #: Display the current DPI setting.
+		while read -a X; do
+			if [ "${X[0]}" == "resolution:" ]; then
+				printf "%s\n" "${X[1]/*x}"
+			fi
+		done <<< "$(/usr/bin/xdpyinfo)"
+	}
+fi
+
+if [ -x /usr/bin/sensors ]; then
+	showfans(){ #: Show the available system fan speeds using sensors.
+		while read; do
+			if [[ "$REPLY" == *[Ff][Aa][Nn]*RPM ]]; then
+				printf "%s\n" "$REPLY"
+			fi
+		done <<< "$(/usr/bin/sensors)"
+	}
+fi
+
+# Get and display the distribution type. (original base first)
+if [ -f /etc/os-release -a -r /etc/os-release ]; then
+	distro(){ #: Get and display the distribution type.
+		while read -a X; do
+			if [[ "${X[0]}" == ID_LIKE=* ]]; then
+				printf "%s\n" "${X[0]/*=}"; break
+			elif [[ "${X[0]}" == ID=* ]]; then
+				printf "%s\n" "${X[0]/*=}"; break
+			fi
+		done < /etc/os-release
+	}
+fi
+
+# Very useful, quick function to scan the current directory, if you have clamscan.
+if [ -x /usr/bin/clamscan -a -x /usr/bin/tee ]; then
+	scan(){ #: Scan the CWD with clamscan. Logs in: ~/.scan_func.log
+		{
+			printf "SCAN_START: %(%F (%X))T\n" -1
+			/usr/bin/clamscan --bell -r --no-summary -i\
+				--detect-pua=yes --detect-structured=no\
+				--structured-cc-count=3 --structured-ssn-count=3\
+				--phishing-ssl=yes --phishing-cloak=yes\
+				--partition-intersection=yes --detect-broken=yes\
+				--block-macros=yes --max-filesize=256M\
+				|& /usr/bin/tee -a $HOME/.scan_alias.log
+		} |& /usr/bin/tee -a $HOME/.scan_func.log
+	}
+fi
+
+# Grab a list of TODOs for git projects, per a specific method. This only works if
+# you use "#T0D0 - Note message here" syntax for your TODOs, where "0" is "O". If
+# you use a different style, but it's perfectly consistent, change the below match.
+GIT="$HOME/GitHub/terminalforlife/Personal"
+if [ -d "$GIT" -a -x /bin/grep ]; then
+	todo(){ #: Grab list of TODOs from GitHub projects.
+		if cd "$GIT"; then
+			/bin/grep --color=auto -R\
+				--exclude-dir=".git" "[#\"]TODO - "
+			cd - 2>&1 > /dev/null
+		fi
+	}
+fi
+
+# Quick and dirty function to display a random note line from command notes.
+if { [ "$USER" == "ichy" ] && [ $UID -eq 1000 ]; }\
+&& { [ -x /bin/sed -a -x /bin/grep -a -x /usr/bin/shuf ]; }\
+&& [ -f $HOME/Documents/TT/Useful_Commands ]; then
+	get-random-note(){ #: Display a random note line from command notes.
+		/bin/sed "1,/^#END/!d" $HOME/Documents/TT/Useful_Commands\
+			| /bin/grep -v "^#"\
+			| /bin/grep -v "^$"\
+			| /usr/bin/shuf -n 1
+	}
+fi
 
 # Display all of the 'rc' packages, as determined by dpkg, parsed by the shell.
 # Using this within command substitution, sending it to apt-get, is very useful.
