@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Wed  3 Apr 14:18:32 BST 2019
+# Last Change       - Tue  9 Apr 18:54:21 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -22,88 +22,50 @@
 
 # Nifty trick to allow aliases to work with sudo. This avoids needing sudo in these
 # configuration files, since using sudo within a bash script/program is not great.
-alias sudo="sudo "
+alias sudo="sudo " #: Allows for aliases to work with sudo.
 
 # Sick of typing this in the termanal, out of habit!
-alias ":q"="exit"
+alias ":q"="exit" #: Act expectedly, if it were actually VIM.
 
 if [ -x /bin/df ]; then
-	alias df='/bin/df -lT -x devtmpfs -x tmpfs -x usbfs'
-fi
-
-# Quick and dirty personal alias to display a random note line from command notes.
-if [ -x /bin/sed -a -x /bin/grep -a -x /usr/bin/shuf ]; then
-	alias get-random-note='\
-		/bin/sed "1,/^#END/!d" $HOME/Documents/TT/Useful_Commands\
-			| /bin/grep -v "^#"\
-			| /bin/grep -v "^$"\
-			| /usr/bin/shuf -n 1
-	'
-fi
-
-# Grab a list of TODOs for git projects, per a specific method. This only works if
-# you use "#T0D0 - Note message here" syntax for your TODOs, where "0" is "O". If
-# you use a different style, but it's perfectly consistent, change the below match.
-GIT="$HOME/GitHub/terminalforlife/Personal"
-if [ -d "$GIT" -a -x /bin/grep ]; then
-	alias todo="\
-		if cd \"$GIT\"; then
-			/bin/grep --color=auto -R\
-				--exclude-dir=\".git\" \"[#\\\"]TODO - \"
-			cd - 2>&1 > /dev/null
-		fi
-	"
+	alias df='/bin/df -lT -x devtmpfs -x tmpfs -x usbfs' #: More relevant output than the default.
 fi
 
 # Display a list of all of the currently available font families.
 if [ -x /usr/bin/fc-list ]; then
-	alias lsfont="/usr/bin/fc-list : family"
+	alias lsfont="/usr/bin/fc-list : family" #: List all of the currently available font families.
 fi
 
-# ???
+# List the contents of the trash bin. (Including hidden files?)
 if [ -x /usr/bin/gvfs-ls ]; then
-	alias lstrash="/usr/bin/gvfs-ls -h trash:///"
+	alias lstrash="/usr/bin/gvfs-ls -h trash:///" #: List all contents of the trash bin.
 fi
 
 # View the entire (17,000+ lines) VIM User Guide.
 if [ -x /bin/cat -a -x /usr/bin/vim  ]; then
-	alias vug='/bin/cat /usr/share/vim/vim74/doc/usr_*.txt | /usr/bin/vim -'
+	alias vug='/bin/cat /usr/share/vim/vim74/doc/usr_*.txt | /usr/bin/vim -' #: View the entire VIM User Guide.
 fi
 
 # A useful file to edit, if you use the X Display Manager.
 if [ -x /usr/bin/xdm -a -f /etc/X11/xdm/Xresources ]; then
-	alias xdm-xresources='/usr/bin/rvim /etc/X11/xdm/Xresources'
+	alias xdm-xresources='/usr/bin/rvim /etc/X11/xdm/Xresources' #: Useful file to edit if you use the X Display Manager.
 fi
 
 # A less excessive, yet still very, very useful current-user-focused ps command.
 if [ -x /bin/ps ]; then
-	alias ps='/bin/ps -faxc -U $UID -o pid,uid,gid,pcpu,pmem,stat,comm'
+	alias ps='/bin/ps -faxc -U $UID -o pid,uid,gid,pcpu,pmem,stat,comm' #: Less excessive, current-user-focused ps alternative.
 fi
 
 # This is where I usually have the main bulk of my music, and since I like to have
 # little in my $HOME, I might as well just point mplay/MOC to the one on Main Data.
 if [ -x /usr/bin/mplay ]; then
-	alias mplay='/usr/bin/mplay /media/$USER/Main\ Data/Linux\ Generals/Music'
+	alias mplay='/usr/bin/mplay /media/$USER/Main\ Data/Linux\ Generals/Music' #: Execute mplay (uses MOC) with a pre-specified directory.
 fi
 
 # I'm done with the boring original apt-get output! I'm also sick of specifying
 # --purge --autoremove, so I want it to be assumed! A much more useful apt-get.
 if [ -x /usr/bin/apt-get ]; then
-	alias apt-get='\
-		/usr/bin/apt-get --quiet -o Dpkg::Progress=true\
-		-o Dpkg::Progress-Fancy=true -o APT::Get::AutomaticRemove=true\
-		-o APT::Get::Purge=true '
-fi
-
-# Display the current DPI setting.
-if [ -x /usr/bin/xdpyinfo ]; then
-	alias dpi='\
-		while read -a X; do
-			if [ "${X[0]}" == "resolution:" ]; then
-				printf "%s\n" "${X[1]/*x}"
-			fi
-		done <<< "$(/usr/bin/xdpyinfo)"
-	'
+	alias apt-get='/usr/bin/apt-get --quiet -o Dpkg::Progress=true -o Dpkg::Progress-Fancy=true -o APT::Get::AutomaticRemove=true -o APT::Get::Purge=true ' #: Much nicer output for the apt-get command.
 fi
 
 # Quick alias to clear out some junk from HOME.
@@ -115,191 +77,106 @@ if [ -x /bin/rm ]; then
 		"$HOME/.mozilla/firefox/Pending Pings"
 	)
 
-	alias hsh="/bin/rm --interactive=never -rv ${PLACES[@]} 2> /dev/null"
+	alias hsh="/bin/rm --interactive=never -rv ${PLACES[@]} 2> /dev/null" #: Clear out some junk from the current user's HOME.
 fi
 
 # Make the ffmpeg output less cluttered, but also ignore many errors.
-[ -x /usr/bin/ffmpeg ] && alias ffmpeg="ffmpeg -v 0 -stats"
+if [ -x /usr/bin/ffmpeg ]; then
+	alias ffmpeg="ffmpeg -v 0 -stats" #: De-clutter this program's output, but not entirely.
+fi
 
 # Just points to a personal script for moving my screenshots.
-if [ -f "$HOME/Documents/TT/shotmngr.sh" ]; then
-	alias sm="/bin/bash $HOME/Documents/TT/shotmngr.sh"
+if { [ "$USER" == "ichy" ] && [ $UID -eq 1000 ]; }\
+&& [ -f "$HOME/Documents/TT/shotmngr.sh" ]; then
+	alias sm="/bin/bash $HOME/Documents/TT/shotmngr.sh" #: Personal script for managing screenshots.
 fi
 
 
 # Used to notify you of a job completion on the terminal. I use this with dunst.
 if [ -x /usr/bin/notify-send -a -x /usr/bin/tty ]; then
 	# Standard notification.
-	alias yo='\
-		/usr/bin/notify-send --urgency=normal\
-			"Your normal job in `/usr/bin/tty` has completed."
-	'
+	alias yo='/usr/bin/notify-send --urgency=normal "Your normal job in `/usr/bin/tty` has completed."' #: Perform a standard notify-send notification.
 
 	# Urgent notification.
-	alias YO='\
-		/usr/bin/notify-send --urgency=critical\
-			"Your critical job in `/usr/bin/tty` has completed."
-	'
+	alias YO='/usr/bin/notify-send --urgency=critical "Your critical job in `/usr/bin/tty` has completed."' #: Perform an urgent notify-send notification.
 fi
 
 # Used to use gpicview, until I realised feh could be used as an image viewer!
 if [ -x /usr/bin/feh ]; then
-	alias img='\
-		/usr/bin/feh --fullscreen --hide-pointer --draw-filename\
-			--no-menus --preload 2> /dev/null
-	'
-fi
-
-# Very useful, quick alias to scan anything you specify, if you have clamscan.
-if [ -x /usr/bin/clamscan -a -x /usr/bin/tee ]; then
-	alias scan='\
-		{
-			printf "SCAN_START: %(%F (%X))T\n" -1
-			/usr/bin/clamscan --bell -r --no-summary -i\
-				--detect-pua=yes --detect-structured=no\
-				--structured-cc-count=3 --structured-ssn-count=3\
-				--phishing-ssl=yes --phishing-cloak=yes\
-				--partition-intersection=yes --detect-broken=yes\
-				--block-macros=yes --max-filesize=256M\
-				|& /usr/bin/tee -a $HOME/.scan_alias.log
-		} |& /usr/bin/tee -a $HOME/.scan_alias.log
-	'
+	alias img='/usr/bin/feh --fullscreen --hide-pointer --draw-filename --no-menus --preload 2> /dev/null' #: Slide-show images in current directory using feh.
 fi
 
 # Quickly flash the terminal and sound the bell 3 times.
 if [ -x /bin/sleep ]; then
-	alias alertme='\
-		for I in {1..3}; {
-			/bin/sleep 0.03s
-			printf "\a\e[?5h"
-			/bin/sleep 0.03s
-			printf "\a\e[?5l"
-		}
-	'
+	alias alertme='for I in {1..3}; { /bin/sleep 0.03s; printf "\a\e[?5h"; /bin/sleep 0.03s; printf "\a\e[?5l"; }' #: Sound the bell and flash the terminal (white) thrice.
 fi
 
 # Remove trailing spaces or lines with only spaces. Tabs included. Needs testing.
-[ -x /bin/sed ] && alias nospace='/bin/sed -i s/^[\\s\\t]\\+$//\;\ s/[\\s\\t]\\+$//'
-
-# Efficient and fairly portable way to display the current iface.
-[ -x /sbin/ip ] && alias iface='X=(`/sbin/ip route`) && printf "%s\n" ${X[4]}'
-
-# Get and display the distribution type. (original base first)
-if [ -f /etc/os-release -a -r /etc/os-release ]; then
-	alias distro='\
-		while read -a X; do
-			if [[ "${X[0]}" == ID_LIKE=* ]]; then
-				printf "%s\n" "${X[0]/*=}"; break
-			elif [[ "${X[0]}" == ID=* ]]; then
-				printf "%s\n" "${X[0]/*=}"; break
-			fi
-		done < /etc/os-release
-	'
+if [ -x /bin/sed ]; then
+	alias nospace='/bin/sed s/^[\\s\\t]\\+$//\;\ s/[\\s\\t]\\+$//' #: Remove trailing spaces/tabs from given file(s).
+	alias nospacei='/bin/sed -i s/^[\\s\\t]\\+$//\;\ s/[\\s\\t]\\+$//' #: Remove (saves!) trailing spaces/tabs from given file(s).
 fi
 
-# Quickly view all of your sd* storage device temperatures.
+# Efficient and fairly portable way to display the current iface, using 'ip'.
+if [ -x /sbin/ip ]; then
+	alias iface='X=(`/sbin/ip route`) && printf "%s\n" ${X[4]}' #: Display the current iface, using the 'ip' command.
+fi
+
 if [ -x /usr/sbin/hddtemp ]; then
-	alias temphdd='/usr/sbin/hddtemp /dev/sd{a..z} 2> /dev/null'
+	alias temphdd='/usr/sbin/hddtemp /dev/sd{a..z} 2> /dev/null' #: View all sd* storage device temperatures.
 fi
 
-# Quickly download with wget, using some tider settings with -c.
 if [ -x /usr/bin/wget ]; then
-	alias get='/usr/bin/wget -qc --show-progress'
+	alias get='/usr/bin/wget -qc --show-progress' #: Download with wget, using some tidier settings with -c.
 fi
 
-# View the system boot log.
 if [ -f /var/log/boot.log ]; then
-	alias bootlog='\
-		while read -r; do
-			printf "%s\n" "$REPLY"
-		done < /var/log/boot.log
-	'
+	alias bootlog='while read -r; do printf "%s\n" "$REPLY"; done < /var/log/boot.log' #: View the system boot log, with colors.
 fi
 
 if [ -x /usr/bin/newsbeuter ]; then
-	# Load newsbeuter more quickly to get access to RSS feeds.
-	alias news='\
-		/usr/bin/newsbeuter -qr\
-			-c "$HOME/.newsbeuter/cache.db"\
-			-u "$HOME/.newsbeuter/urls"\
-			-C "$HOME/.newsbeuter/newsbeuter.conf"
-	'
-
-	# Quickly edit RSS feed list.
-	alias rss='/usr/bin/vim $HOME/.newsbeuter/urls'
+	alias news='/usr/bin/newsbeuter -qr -c "$HOME/.newsbeuter/cache.db" -u "$HOME/.newsbeuter/urls" -C "$HOME/.newsbeuter/newsbeuter.conf"' #: Load newsbeuter more quickly to get access to RSS feeds.
+	alias rss='/usr/bin/vim $HOME/.newsbeuter/urls' #: Edit a list of RSS feeds, using VIM.
 fi
 
 # Watches a directory as its size and number of files increase. Useful while you're
 # downloading or making other sorts of changes to its contents, and want to watch.
 if [ -x /bin/ls -a -x /usr/bin/watch ]; then
-	alias dwatch='\
-		/usr/bin/watch -n 0.1 "/bin/ls -SsCphq\
-			--color=auto --group-directories-first"
-	'
+	alias dwatch='/usr/bin/watch -n 0.1 "/bin/ls -SsCphq --color=auto --group-directories-first"' #: Watche a directory for changes in size and number of files.
 fi
 
 # Fix all CWD file and directory permissions to match the safer 0077 umask.
 if [ -x /bin/chmod ]; then
-	alias fixperms='\
-		/usr/bin/find -xdev \( -type f -exec /bin/chmod 600 "{}" \+ -o\
-			-type d -exec /bin/chmod 700 "{}" \+ \)\
-			-printf "FIXING: %p\n" 2> /dev/null
-	'
+	alias fixperms='/usr/bin/find -xdev \( -type f -exec /bin/chmod 600 "{}" \+ -o -type d -exec /bin/chmod 700 "{}" \+ \) -printf "FIXING: %p\n" 2> /dev/null' #: Recursive fix of permissions in the CWD. (F:600 D:700)
 fi
 
 # Create or unmount a user-only RAM Disk (tmpfs, basically) of 32MB.
 if [ -x /bin/mount -a -x /bin/umount ]; then
 	RAMDISK="/media/$USER/RAMDisk_32M"
 
-	alias rd='\
-		/bin/mount -t tmpfs tmpfs\
-			-o x-mount.mkdir=700,uid=1000,gid=1000,mode=700,nodev\
-			-o noexec,nosuid,size=32M "$RAMDISK"
-	'
-
-	alias nord='\
-		/bin/sh -c /bin/umount\ "$RAMDISK"\ \&\&\ /bin/rmdir\ "$RAMDISK"
-	'
+	alias rd='/bin/mount -t tmpfs tmpfs -o x-mount.mkdir=700,uid=1000,gid=1000,mode=700,nodev -o noexec,nosuid,size=32M "$RAMDISK"' #: Create a user-only RAM Disk (tmpfs) of 32MB.
+	alias nord='/bin/sh -c /bin/umount\ "$RAMDISK"\ \&\&\ /bin/rmdir\ "$RAMDISK"' #: Remove a RAM Disk created with the 'rd' alias.
 fi
 
-# Show the fan speeds using sensors.
-if [ -x /usr/bin/sensors ]; then
-	alias showfans='\
-		while read; do
-			if [[ "$REPLY" == *[Ff][Aa][Nn]*RPM ]]; then
-				printf "%s\n" "$REPLY"
-			fi
-		done <<< "$(/usr/bin/sensors)"
-	'
-fi
-
-# Display a columnized list of bash builtins.
-if [ -x /usr/bin/column ]; then
-	alias builtins='\
-		while read -r; do
-			printf "%s\n" "${REPLY/* }"
-		done <<< "$(enable -a)" | /usr/bin/column
-	'
-fi
-
+#TODO - Needs testing and possibly finishing; incomplete?
 # Rip audio CDs with ease, then convert to ogg, name, and tag. Change the device
-# as fits your needs, same with the formats used. Needs testing.
-declare -i DEPCOUNT=0
-for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
-	[ -x "$DEP" ] && DEPCOUNT+=1
-
-	# Only execute if all 3 dependencies are found.
-	if [ $DEPCOUNT -eq 4 ]; then
-		alias cdrip='\
-			/usr/bin/cdparanoia -B 1- && {
-				for FILE in *; {
-					/usr/bin/ffmpeg -i "$FILE"\
-						"${FILE%.wav}.ogg" &> /dev/null
-				}
-			}
-		'
-	fi
-}
+# as fits your needs, same with the formats used.
+#declare -i DEPCOUNT=0
+#for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
+#	[ -x "$DEP" ] && DEPCOUNT+=1
+#
+#	# Only execute if all 3 dependencies are found.
+#	if [ $DEPCOUNT -eq 4 ]; then
+#		alias cdrip='\
+#			/usr/bin/cdparanoia -B 1- && {
+#				for FILE in *; {
+#					/usr/bin/ffmpeg -i "$FILE"\
+#						"${FILE%.wav}.ogg" &> /dev/null
+#				}
+#			}
+#		'
+#	fi
+#}
 
 # Enable a bunch of git aliases, if you have git installed.
 [ -x /usr/bin/git ] && {
@@ -316,26 +193,15 @@ for DEP in /usr/bin/{eject,kid3,ffmpeg,cdparanoia}; {
 }
 
 # If you have gvfs-trash available, be safe with that.
-[ -x /usr/bin/gvfs-trash ] && alias rm="/usr/bin/gvfs-trash"
+[ -x /usr/bin/gvfs-trash ] && alias rm="/usr/bin/gvfs-trash" #: ??? #: Use gvfs-trash in place of rm, if available.
 
 # Ease-of-use youtube-dl aliases; these save typing!
 for DEP in /usr/{local/bin,bin}/youtube-dl; {
 	[ -x "$DEP" ] && {
-		alias ytdl-video="$DEP -c --no-playlist --sleep-interval 5\
-			--format best --no-call-home --console-title --quiet\
-			--ignore-errors"
-
-		alias ytdl-audio="$DEP -cx --no-playlist --audio-format mp3\
-			--sleep-interval 5 --max-sleep-interval 30 --no-call-home\
-			--console-title --quiet --ignore-errors"
-
-		alias ytpldl-audio="$DEP -cix --audio-format mp3 --sleep-interval\
-			5 --yes-playlist --no-call-home --console-title --quiet\
-			--ignore-errors"
-
-		alias ytpldl-video="$DEP -ci --yes-playlist --sleep-interval 5\
-			--format best --no-call-home --console-title --quiet\
-			--ignore-errors"
+		alias ytdl-video="$DEP -c --no-playlist --sleep-interval 5 --format best --no-call-home --console-title --quiet --ignore-errors" #: Download HQ videos from YouTube, using youtube-dl.
+		alias ytdl-audio="$DEP -cx --no-playlist --audio-format mp3 --sleep-interval 5 --max-sleep-interval 30 --no-call-home --console-title --quiet --ignore-errors" #: Download HQ audio from YouTube, using youtube-dl.
+		alias ytpldl-audio="$DEP -cix --audio-format mp3 --sleep-interval 5 --yes-playlist --no-call-home --console-title --quiet --ignore-errors" #: Download HQ videos from YouTube playlist, using youtube-dl.
+		alias ytpldl-video="$DEP -ci --yes-playlist --sleep-interval 5 --format best --no-call-home --console-title --quiet --ignore-errors" #: Download HQ audio from YouTube playlist, using youtube-dl.
 
 		# Just use the first result; no need to check for more.
 		break
@@ -356,14 +222,14 @@ if [ -x /usr/bin/apt-get ]; then
 		qdupg:"-qq --show-progress dist-upgrade"\
 		qupd:"-q update"
 	{
-		alias ${CMD%:*}="/usr/bin/apt-get ${CMD/*:}"
+		alias ${CMD%:*}="/usr/bin/apt-get ${CMD/*:}" #: ???
 	}
 fi
 
 # Various [q]uick apt-cache aliases to make lifeeasier still.
 if [ -x /usr/bin/apt-cache ]; then
 	for CMD in qse:"search" qsh:"show"; {
-		alias ${CMD%:*}="/usr/bin/apt-cache ${CMD/*:}"
+		alias ${CMD%:*}="/usr/bin/apt-cache ${CMD/*:}" #: ???
 	}
 fi
 
@@ -373,47 +239,43 @@ for DEP in /bin/{dd,pidof}; {
 	[ -x "$DEP" ] && DEPCOUNT+=1
 
 	[ $DEPCOUNT -gt 3 ] && {
-		alias ddp="kill -USR1 `/bin/pidof /bin/dd`"
+		alias ddp="kill -USR1 `/bin/pidof /bin/dd`" #: Workaround for older versions of dd; displays progress.
 	}
 }
 
 # These are just options I find the most useful when using dmesg.
-[ -x /bin/dmesg ] && alias klog="/bin/dmesg -t -L=never -l err,crit,alert,emerg"
+if [ -x /bin/dmesg ]; then
+	alias klog="/bin/dmesg -t -L=never -l err,crit,alert,emerg" #: Potentially useful option for viewing the kernel log.
+fi
 
-# Enable the default hostkey when vboxsdl is used, if virtualbox GUI is not found.
+# Enable the default hostkey when vboxsdl is used, if virtualbox gui is not found.
 if [ -x /usr/bin/vboxsdl -a ! -x /usr/bin/virtualbox ]; then
-	alias vboxsdl="/usr/bin/vboxsdl --hostkey 305 128"
+	alias vboxsdl="/usr/bin/vboxsdl --hostkey 305 128" #: Enable the default hostkey when only vboxsdl is found.
 fi
 
 # Clear the clipboard using xclip.
 if [ -x /usr/bin/xclip ]; then
-	alias ccb='\
-		for X in "-i" "-i -selection clipboard"; {
-			printf "%s" "" | /usr/bin/xclip $X
-		}
-	'
+	alias ccb='for X in "-i" "-i -selection clipboard"; { printf "%s" "" | /usr/bin/xclip $X}' #: Clear the clipboard using xclip.
 fi
 
 # Get more functionality by default when using grep and ls.
 if [ -x /bin/ls -a -x /bin/grep ]; then
 	case "${TERM:-EMPTY}" in
 	        linux|xterm|xterm-256color)
-	                alias ls="/bin/ls --quoting-style=literal -nphq\
-				--time-style=iso --color=auto\
-				--group-directories-first --show-control-chars"
+	                alias ls="/bin/ls --quoting-style=literal -nphq --time-style=iso --color=auto --group-directories-first --show-control-chars" #: A stylish, informative alternative to the 'ls' standard.
+			alias lsa="ls -A" #: As the previously set 'ls' alias, but show all files.
 
-	                alias lsa="ls -A"
-
-	                alias grep="/bin/grep --color=auto"
-	                alias egrep="/bin/egrep --color=auto"
-	                alias fgrep="/bin/fgrep --color=auto" ;;
+			alias grep="/bin/grep --color=auto" #: Colorful (auto) 'grep' output.
+			alias egrep="/bin/egrep --color=auto" #: Colorful (auto) 'egrep' output.
+			alias fgrep="/bin/fgrep --color=auto" #: Colorful (auto) 'fgrep' output.
+			;;
 	esac
 fi
 
 # Quick navigation aliases in absence of the autocd shell option.
 shopt -qp autocd || {
-	alias ~="cd $HOME"
-	alias ..="cd .."
+	alias ~="cd $HOME" #: ???
+	alias ..="cd .." #: ???
 }
 
 # For each directory listed to the left of :, create an alias you see on the right
@@ -430,7 +292,11 @@ for DIR in\
 }
 
 # When dealing with udisksctl or mount, these are very useful!
-[ -d "/media/$USER" ] && alias sd="cd /media/$USER" || alias mnt="cd /mnt"
+if [ -d "/media/$USER" ]; then
+	alias sd="cd /media/$USER" #: Change the CWD to: /media/$USER
+else
+	alias mnt="cd /mnt" #: Change the CWD to: /mnt
+fi
 
 # For each found "sr" device, enables alias for opening and closing the tray. For
 # example, use ot0 to specific you want the tray for /dev/sr0 to open. Testing for
@@ -445,48 +311,27 @@ fi
 # These aliases save a lot of typing and do away with the output.
 if [ -x /usr/bin/mplayer ]; then
 	# If you're having issues with mpv/mplayer here, try -vo x11 instead.
-	MPLAYER_FONT="$HOME/.mplayer/subfont.ttf"
-	alias mpa="/usr/bin/mplayer -nolirc -vo null -really-quiet &> /dev/null"
+	alias mpa="/usr/bin/mplayer -nolirc -vo null -really-quiet &> /dev/null" #: Use 'mplayer' to play audio files, sans window or output.
 
-	if [ -f "$MPLAYER_FONT" ]; then
-		alias mpv="/usr/bin/mplayer -vo x11 -nomouseinput -noar\
-			-nojoystick -nogui -zoom -nolirc -font \"$MPLAYER_FONT\"\
-			-really-quiet &> /dev/null"
-
-		alias mpvdvd="/usr/bin/mplayer -vo x11 -nomouseinput -noar\
-			-nojoystick -nogui -zoom -nolirc -font \"$MPLAYER_FONT\"\
-			-really-quiet dvd://1//dev/sr1 &> /dev/null"
-	else
-		alias mpv="/usr/bin/mplayer -vo x11 -nomouseinput -noar\
-			-nojoystick -nogui -zoom -nolirc -really-quiet\
-			&> /dev/null &> /dev/null"
-
-		alias mpvdvd="/usr/bin/mplayer -vo x11 -nomouseinput -noar\
-			-nojoystick -nogui -zoom -nolirc --really-quiet\
-			dvd://1//dev/sr1 &> /dev/null"
+	declare -a MPLAYER_FONT=("-font" "$HOME/.mplayer/subfont.ttf")
+	if ! [ -f "${MPLAYER_FONT[0]}" ] || ! [ -r "${MPLAYER_FONT[0]}" ]; then
+		unset MPLAYER_FONT
 	fi
+
+	alias mpv="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet &> /dev/null" #: Use 'mplayer' to play video files, sans output.
+	alias mpvdvd="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet dvd://1//dev/sr1 &> /dev/null" #: Use 'mplayer' to play DVDs, sans output.
 elif [ -x /usr/bin/mpv ]; then
-	alias mpve="\
-		/usr/bin/mpv --af=equalizer=8:7:6:5:0:6:0:5:5:5\
-			--no-stop-screensaver &> /dev/null \
-	"
-
-	alias mpv="\
-		/usr/bin/mpv --no-stop-screensaver &> /dev/null \
-	"
+	#alias mpvve="/usr/bin/mpv --af=equalizer=8:7:6:5:0:6:0:5:5:5 --no-stop-screensaver &> /dev/null "
+	alias mpvv="/usr/bin/mpv --no-stop-screensaver &> /dev/null " #: Use 'mpv' to play video files, sans output.
 fi
 
-# A more descriptive, yet concise lsblk; you'll miss it when it's gone.
 if [ -x /bin/lsblk ]; then
-	alias lsblkid='\
-		/bin/lsblk -o name,label,fstype,size,uuid,mountpoint --noheadings
-	'
+	alias lsblkid='/bin/lsblk -o name,label,fstype,size,uuid,mountpoint --noheadings' #: A more descriptive, yet concise lsblk.
 fi
 
-# Some options I like to have by default for less and pager.
 if [ -x /usr/bin/pager -o -x /usr/bin/less ]; then
-	alias pager='/usr/bin/pager -sN --tilde'
-	alias less='/usr/bin/pager -sN --tilde'
+	alias pager='/usr/bin/pager -sN --tilde' #: Useful options included with 'pager'.
+	alias less='/usr/bin/pager -sN --tilde' #: Useful options included with 'less'.
 fi
 
 # Text files I occasionally like to view, but not edit.
@@ -546,7 +391,7 @@ if [[ `/usr/bin/tty` == /dev/tty* ]] && [ -x /usr/bin/tty -a -x /bin/chvt ]; the
 fi
 
 if [ -x /usr/bin/evince ]; then
-	alias pdf="/usr/bin/evince &> /dev/null"
+	alias pdf="/usr/bin/evince &> /dev/null" #: Use 'evince' to display PDF documents.
 fi
 
 # Clean up functions and variables.
