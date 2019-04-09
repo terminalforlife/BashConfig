@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #----------------------------------------------------------------------------------
-# Project Name      - miscellaneous/list_commands
+# Project Name      - bashconfig/lc
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Tue  9 Apr 15:39:03 BST 2019
+# Last Change       - Tue  9 Apr 16:08:21 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -17,17 +17,22 @@ USAGE(){
 	while read -r; do
 		printf "%s\n" "$REPLY"
 	done <<-EOF
-		            LIST_COMMANDS ($_VERSION_)
+		            LC - LIST COMMANDS ($_VERSION_)
 		            Written by terminalforlife (terminalforlife@yahoo.com)
 
-		            List available commands made available from the bashconfig repository
-		            found through the link below.
+		            List commands made available from the bashconfig repository, found
+		            through the GitHub link below.
 
-		SYNTAX:     list_commands [OPTS]
+		SYNTAX:     lc [OPTS]
 
 		OPTS:       --help|-h|-?            - Displays this help information.
 		            --version|-v            - Output only the version datestamp.
 		            --debug|-D              - Enables the built-in bash debugging.
+
+		FILES:      The following files are scanned:
+
+		              \$HOME/.bash_functions
+		              \$HOME/.bash_aliases
 
 		LINK:       https://github.com/terminalforlife
 	EOF
