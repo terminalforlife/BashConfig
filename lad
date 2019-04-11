@@ -3,12 +3,12 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/lad
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Wed 10 Apr 20:53:23 BST 2019
+# Last Change       - Thu 11 Apr 01:29:06 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-_VERSION_="2019-04-10"
+_VERSION_="2019-04-11"
 
 XERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; exit 1; }
 ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
@@ -92,7 +92,7 @@ while [ "$1" ]; do
 			DEBUGME="true" ;;
 		--search|-s)
 			shift; SEARCH="$1"
-			if [ -s "$SEARCH" ] && ! [[ "$SEARCH" =~ ^[AFE]{1}: ]]; then
+			if ! [[ "$SEARCH" =~ ^[AFE]{1}: ]]; then
 				XERR "$LINENO" "Invalid search query. See 'lad --help' for information."
 			fi
 
@@ -112,19 +112,19 @@ FILE_BA="$HOME/.bash_aliases"
 #------------------------------------------------------------------GATHER FUNCTIONS
 
 if [ -f "$FILE_BF" ] && [ -r "$FILE_BF" ]; then
-	printf "FUNCTIONS ($FILE_BF)\n\n"
+	[ -z "$SEARCH" ] && printf "FUNCTIONS ($FILE_BF)\n\n"
 
 	while read; do
 		if ! [ -z "$REPLY" ] && ! [[ "$REPLY" =~ ^\# ]]; then
 			if [[ "$REPLY" =~ [a-Z0-9_-]+\(\)\{ ]]; then
 				NAME="${REPLY%%\(\)\{*}"
+				NAME="${NAME//\	/}"
 
 				# A description of " #: TEXT" must be appended to
 				# the function call line for each function. This
 				# will NOT work otherwise.
 				DESC="${REPLY#*\#\:}"
 
-# YOU WERE HERE
 				# Only functions found 0-1 tabs in are counted.
 				if ! [[ "$NAME" =~ \	{2,} ]]; then
 					if [ "${SEARCH%%:*}" == "F" ] && [ "$NAME" == "${SEARCH#F:}" ]; then
@@ -145,7 +145,7 @@ fi
 #--------------------------------------------------------------------GATHER ALIASES
 
 if [ -f "$FILE_BA" ] && [ -r "$FILE_BA" ]; then
-	printf "\nALIASES ($FILE_BA)\n\n"
+	[ -z "$SEARCH" ] && printf "\nALIASES ($FILE_BA)\n\n"
 
 	while read; do
 		if ! [ -z "$REPLY" ] && ! [[ "$REPLY" =~ ^\# ]]; then
