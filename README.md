@@ -22,7 +22,7 @@ If you have any issues or recommendations for anything you see here, please let 
 
 Before you install, you may want to back up any existing files beforehand, either manually or relying on insit's own backup feature.
 
-Use either `insit bashconfig` or manually clone this repository and copy over files yourself; insit method recommended, for its logging, backup, and an overall far easier time.
+Use either `insit bashconfig` or manually clone this repository and copy over files yourself; insit method recommended, for its logging, backup, and overall far easier time.
 
 I should also point out that I remove /etc/profile, /etc/bash.bashrc, and various other system files related to bash, as, for me, they are usually not needed. I've yet to experience any negatives from this. I prefer my root account and any other local account I create be set to mostly standard bash defaults. If you wanted to do the same, be sure to back up your files beforehand!
 
