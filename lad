@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/lad
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Thu 11 Apr 02:21:32 BST 2019
+# Last Change       - Thu 11 Apr 20:24:32 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -113,9 +113,7 @@ done
 FILE_BF="$HOME/.bash_functions"
 FILE_BA="$HOME/.bash_aliases"
 
-PRINT(){
-	[ -z "$SEARCH" ] && printf "  %s - %s\n" $@
-}
+PRINT(){ [ -z "$SEARCH" ] && printf "  %s - %s\n" "$@"; }
 
 #------------------------------------------------------------------GATHER FUNCTIONS
 
@@ -190,3 +188,8 @@ else
 fi
 
 [ "$A_FOUND" == "true" ] && { [ "$BOOLEAN" == "true" ] && printf "true\n"; exit 0; }
+
+#------------------------------------------------------------------------------NOTE
+
+# Next step is to figure out why E: isn't working. After that's fixed, work on
+# having the function or alias names sorted alphanumerically.
