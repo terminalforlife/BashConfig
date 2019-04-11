@@ -20,11 +20,11 @@ If you have any issues or recommendations for anything you see here, please let 
 
 ## INSTALLATION
 
-Before you install, you may want to back up any existing files beforehand!
+Before you install, you may want to back up any existing files beforehand, either manually or relying on insit's own backup feature.
 
-Clone the repository (the green "Clone or download" button on this page) then drag the files into the right places. .shplugs directory (with its contents) goes in $HOME, .bash\_aliases, .bash\_functions, .bashrc, and (the sometimes used) .profile go in $HOME. You can also check out insit (via the installit repository) for to install and update bashconfig in a very easy, straight-forward way.
+Use either `insit bashconfig` or manually clone this repository and copy over files yourself; insit method recommended, for its logging, backup, and an overall far easier time.
 
-I should also point out that I removed /etc/profile, /etc/bash.bashrc, and various other system files related to bash, as they are either redundant (why source and test for bash\_completion every which where possible?!); I've yet to experience any negatives from this. I prefer my root account and any other local account I create be set to mostly standard bash defaults. If you wanted to do the same, be sure to back up your files beforehand!
+I should also point out that I remove /etc/profile, /etc/bash.bashrc, and various other system files related to bash, as, for me, they are usually not needed. I've yet to experience any negatives from this. I prefer my root account and any other local account I create be set to mostly standard bash defaults. If you wanted to do the same, be sure to back up your files beforehand!
 
 ## REQUIREMENTS
 
