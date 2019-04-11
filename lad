@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/lad
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Thu 11 Apr 21:36:25 BST 2019
+# Last Change       - Thu 11 Apr 22:14:59 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -87,6 +87,7 @@ USAGE(){
 }
 
 BOOLEAN="true"
+NL="\n"
 
 while [ "$1" ]; do
 	case "$1" in
@@ -107,7 +108,7 @@ while [ "$1" ]; do
 		--only-funcs|-F)
 			ONLY_FUNCS="true" ;;
 		--only-aliases|-A)
-			ONLY_ALIASES="true" ;;
+			ONLY_ALIASES="true"; unset NL ;;
 		*)
 			XERR "$LINENO" "Incorrect argument(s) specified." ;;
 	esac
@@ -168,7 +169,7 @@ fi
 
 if [ "$ONLY_ALIASES" == "true" ] || [ -z "$ONLY_FUNCS" -a -z "$ONLY_ALIASES" ]; then
 	if [ -f "$FILE_BA" ] && [ -r "$FILE_BA" ]; then
-		[ -z "$SEARCH" ] && printf "\nALIASES ($FILE_BA)\n\n"
+		[ -z "$SEARCH" ] && printf "${NL}ALIASES ($FILE_BA)\n\n"
 
 		while read; do
 			if ! [ -z "$REPLY" ] && ! [[ "$REPLY" =~ ^\# ]]; then
