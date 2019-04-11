@@ -291,7 +291,7 @@ shopt -qp autocd || {
 for DIR in\
 \
 	"Music":mus "GitHub":gh "Videos":vid "Desktop":dt "Pictures":pic\
-	"Downloads":dl "Documents":doc "Documents/TT":tt "ShellPlugins":sp\
+	"Downloads":dl "Documents":doc "Documents/TT":tt ".shplugs":sp\
 	"GitHub/terminalforlife":ghtfl "GitHub/terminalforlife/Forks":ghtflf\
 	"GitHub/terminalforlife/Personal":ghtflp "DosBox":db "Archives":arc\
 	".i3a":i3a "LearnLinux":ll;

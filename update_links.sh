@@ -30,7 +30,7 @@ for FILE in .bashrc .bash_aliases .bash_functions .profile; {
 	/bin/ln -v $FILE $HOME/$FILE 2> /dev/null
 }
 
-for FILE in ShellPlugins/*; {
+for FILE in .shplugs/*; {
 	/bin/rm -v $HOME/$FILE 2> /dev/null
 	/bin/ln -v $FILE $HOME/$FILE 2> /dev/null
 }

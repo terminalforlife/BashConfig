@@ -3,12 +3,12 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/lad
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Tue  9 Apr 19:30:36 BST 2019
+# Last Change       - Wed 10 Apr 20:53:23 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-_VERSION_="2019-04-09"
+_VERSION_="2019-04-10"
 
 XERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; exit 1; }
 ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
@@ -23,11 +23,19 @@ USAGE(){
 		            List and describe functions and aliases made available from the
 		            bashconfig repository, found through the GitHub link below.
 
-		SYNTAX:     lad [OPTS]
+		SYNTAX:     lad [OPTS] [STRING]
 
 		OPTS:       --help|-h|-?            - Displays this help information.
 		            --version|-v            - Output only the version datestamp.
 		            --debug|-D              - Enables the built-in bash debugging.
+		            --search|-s [E|F|A]:S   - Where S is the string for which to search. If
+		                                      searching through the functions, prepend
+		                                      'F:', or for aliases, use 'A:'; for either, -
+		                                      use 'E:'.
+
+		NOTE:       If a function or alias for which you're searching with the respective
+		            flag, begins with E, F, or A, followed by a colon, note that this will
+		            be ignored as an argument, so should not cause confusion.
 
 		RULES:      In order for lad to correctly list functions and aliases, various rules
 		            must be followed; these are listed below:
@@ -64,12 +72,12 @@ USAGE(){
 
 		              6. Functions must be put into: \$HOME/.bash_functions
 
-FILES:      The following files are scanned:
+		FILES:      The following files are scanned:
 
-              \$HOME/.bash_functions
-              \$HOME/.bash_aliases
+		              \$HOME/.bash_functions
+		              \$HOME/.bash_aliases
 
-LINK:       https://github.com/terminalforlife
+		LINK:       https://github.com/terminalforlife
 	EOF
 }
 
@@ -82,6 +90,13 @@ while [ "$1" ]; do
 			exit 0 ;;
 		--debug|-D)
 			DEBUGME="true" ;;
+		--search|-s)
+			shift; SEARCH="$1"
+			if [ -s "$SEARCH" ] && ! [[ "$SEARCH" =~ ^[AFE]{1}: ]]; then
+				XERR "$LINENO" "Invalid search query. See 'lad --help' for information."
+			fi
+
+			;;
 		*)
 			XERR "$LINENO" "Incorrect argument(s) specified." ;;
 	esac
@@ -92,6 +107,7 @@ done
 
 FILE_BF="$HOME/.bash_functions"
 FILE_BA="$HOME/.bash_aliases"
+
 
 #------------------------------------------------------------------GATHER FUNCTIONS
 
@@ -108,9 +124,16 @@ if [ -f "$FILE_BF" ] && [ -r "$FILE_BF" ]; then
 				# will NOT work otherwise.
 				DESC="${REPLY#*\#\:}"
 
+# YOU WERE HERE
 				# Only functions found 0-1 tabs in are counted.
 				if ! [[ "$NAME" =~ \	{2,} ]]; then
-					printf "  %s - %s\n" $NAME "${DESC#\ }"
+					if [ "${SEARCH%%:*}" == "F" ] && [ "$NAME" == "${SEARCH#F:}" ]; then
+						exit 0
+					elif [ "${SEARCH%%:*}" == "F" ] && ! [ "$NAME" == "${SEARCH#F:}" ]; then
+						exit 1
+					else
+						printf "  %s - %s\n" $NAME "${DESC#\ }"
+					fi
 				fi
 			fi
 		fi

@@ -75,7 +75,7 @@ DEFAULT_HISTORY="false"
 # setting is actually stored in: $HOME/.bash_functions
 MAN_COLORS="true"
 
-# Enter your chosen ShellPlugins here. They must exist in: $HOME/ShellPlugins/
+# Enter your chosen .shplugs here. They must exist in: $HOME/.shplugs/
 # Each entry must be separated by spaces, so ensure you escape or quote filenames
 # with spaces in them, or even special characters understood by the shell.
 PLUGINS=(
@@ -252,7 +252,7 @@ fi
 
 #--------------------------------------------------------------------SOURCE PLUGINS
 
-FLIB="$HOME/ShellPlugins"
+FLIB="$HOME/.shplugs"
 if [ -d "$FLIB" ]; then
 	for FUNC in ${PLUGINS[@]}; {
 		if [ -f "$FLIB/$FUNC" -a -r "$FLIB/$FUNC" ]; then

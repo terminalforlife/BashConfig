@@ -18,7 +18,7 @@ If you have any issues or recommendations, for .bashrc or for anything else you 
 
 Before you install, you may want to back up any existing files beforehand!
 
-Clone the repository (the green "Clone or download" button on this page) then drag the files into the right places. ShellPlugins directory (with its contents) goes in $HOME, .bash_aliases, .bash_functions, .bashrc, and (the sometimes used) .profile go in $HOME. You can also check out insit (via the installit repository) for to install and update bashconfig in a very easy, straight-forward way.
+Clone the repository (the green "Clone or download" button on this page) then drag the files into the right places. .shplugs directory (with its contents) goes in $HOME, .bash_aliases, .bash_functions, .bashrc, and (the sometimes used) .profile go in $HOME. You can also check out insit (via the installit repository) for to install and update bashconfig in a very easy, straight-forward way.
 
 I should also point out that I removed /etc/profile, /etc/bash.bashrc, and various other system files related to bash, as they are either redundant (why source and test for bash_completion every which where possible?!); I've yet to experience any negatives from this. I prefer my root account and any other local account I create be set to mostly standard bash defaults. If you wanted to do the same, be sure to back up your files beforehand!
 
@@ -60,4 +60,4 @@ Aside from that, I've tried to keep assumptions down to a minimum. For example, 
 
 If needed, be sure to back your own files up beforehand! Otherwise you may blast away useful functionality which is applicable or required for your setup. While they work for me just fine, they may cause unknown issues for you. Back up your files beforehand, as shown above.
 
-Some things are still a work in progress, perhaps even abandoned or forgotten, such as the odd ShellPlugins. I may wind up removing scripts I find useless, but I back things up a lot, so if you wind up missing them, let me know and I'll probably return them, perhaps in a separate directory within the repository.
+Some things are still a work in progress, perhaps even abandoned or forgotten, such as the odd .shplugs. I may wind up removing scripts I find useless, but I back things up a lot, so if you wind up missing them, let me know and I'll probably return them, perhaps in a separate directory within the repository.
