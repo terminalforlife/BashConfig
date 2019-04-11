@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/lad
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Thu 11 Apr 20:56:17 BST 2019
+# Last Change       - Thu 11 Apr 21:20:23 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -114,14 +114,7 @@ FILE_BF="$HOME/.bash_functions"
 FILE_BA="$HOME/.bash_aliases"
 
 PRINT(){ [ -z "$SEARCH" ] && printf "  %s - %s\n" "$@"; }
-
-CHK_TEMP(){
-	if [ "$1" == "$2" ]; then
-		A_FOUND="true"
-	elif ! [ "$1" == "$2" ]; then
-		return 1
-	fi
-}
+CHK_TEMP(){ [ "$1" == "$2" ] && A_FOUND="true" || return 1; }
 
 #------------------------------------------------------------------GATHER FUNCTIONS
 
@@ -143,7 +136,7 @@ if [ -f "$FILE_BF" ] && [ -r "$FILE_BF" ]; then
 				# Only functions found 0-1 tabs in are counted.
 				if ! [[ "$NAME" =~ \	{2,} ]]; then
 					if [[ "${SEARCH%%:*}" == [FE] ]]; then
-						CHK_TEMP "$NAME" "${SEARCH#F:}" || continue
+						CHK_TEMP "$NAME" "${SEARCH#[FE]:}" || continue
 					else
 						PRINT "$NAME" "${DESC#\ }"
 					fi
@@ -175,7 +168,7 @@ if [ -f "$FILE_BA" ] && [ -r "$FILE_BA" ]; then
 
 				if [ "${TEMP[0]}" == "alias" ]; then
 					if [[ "${SEARCH%%:*}" == [AE] ]]; then
-						CHK_TEMP "${TEMP[1]//[\"\']}" "${SEARCH#A:}" || continue
+						CHK_TEMP "${TEMP[1]//[\"\']}" "${SEARCH#[AE]:}" || continue
 					else
 						PRINT "${TEMP[1]//[\"\']}" "${DESC#\ }"
 					fi
