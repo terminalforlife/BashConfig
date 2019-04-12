@@ -3,12 +3,12 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/lad
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Thu 11 Apr 22:14:59 BST 2019
+# Last Change       - Fri 12 Apr 11:17:01 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-_VERSION_="2019-04-11"
+_VERSION_="2019-04-12"
 
 XERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; exit 1; }
 ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
@@ -146,6 +146,11 @@ if [ "$ONLY_FUNCS" == "true" ] || [ -z "$ONLY_FUNCS" -a -z "$ONLY_ALIASES" ]; th
 					# the function call line for each function. This
 					# will NOT work otherwise.
 					DESC="${REPLY#*\#\:}"
+
+					#TODO - Temporary quick fix for strange
+					#       issue since recent update. P()
+					#       still shows up otherwise.
+					[ "$NAME" == "P" ] && continue
 
 					# Only functions found 0-1 tabs in are counted.
 					if ! [[ "$NAME" =~ \	{2,} ]]; then
