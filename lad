@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/lad
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Fri 12 Apr 11:17:01 BST 2019
+# Last Change       - Fri 12 Apr 12:34:14 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -77,6 +77,8 @@ USAGE(){
 
 		              6. Functions must be put into: \$HOME/.bash_functions
 
+		              7. Functions must use '(){', without spacing.
+
 		FILES:      The following files are scanned:
 
 		              \$HOME/.bash_functions
@@ -140,7 +142,6 @@ if [ "$ONLY_FUNCS" == "true" ] || [ -z "$ONLY_FUNCS" -a -z "$ONLY_ALIASES" ]; th
 			if ! [ -z "$REPLY" ] && ! [[ "$REPLY" =~ ^\# ]]; then
 				if [[ "$REPLY" =~ [a-Z0-9_-]+\(\)\{ ]]; then
 					NAME="${REPLY%%\(\)\{*}"
-					NAME="${NAME//\	/}"
 
 					# A description of " #: TEXT" must be appended to
 					# the function call line for each function. This
@@ -150,10 +151,11 @@ if [ "$ONLY_FUNCS" == "true" ] || [ -z "$ONLY_FUNCS" -a -z "$ONLY_ALIASES" ]; th
 					#TODO - Temporary quick fix for strange
 					#       issue since recent update. P()
 					#       still shows up otherwise.
-					[ "$NAME" == "P" ] && continue
+					#[ "$NAME" == "P" ] && continue
 
 					# Only functions found 0-1 tabs in are counted.
-					if ! [[ "$NAME" =~ \	{2,} ]]; then
+					if [[ "$NAME" =~ ^\	{0,1}[a-Z_-] ]]; then
+						NAME="${NAME//\	/}"
 						if [[ "${SEARCH%%:*}" == [FE] ]]; then
 							CHK_TEMP "$NAME" "${SEARCH#[FE]:}" || continue
 						else
