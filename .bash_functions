@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Fri 12 Apr 12:34:05 BST 2019
+# Last Change       - Fri 12 Apr 12:40:25 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -132,8 +132,8 @@ fi
 # Get the display's resolution, per the geometry propert of the root window. This
 # doesn't seem to work in i3-wm, so don't enable getres() if in that. Probably
 # won't work if you're using a mult-monitor setup.
-if [ -x /usr/bin/xprop -a ! "$XDG_CURRENT_DESKTOP" == "i3" ]\
-&& ! [ "$DESKTOP_SESSION" == "i3" ]; then
+if [ -x /usr/bin/xprop ]\
+&& ! [ "$XDG_CURRENT_DESKTOP" == "i3" -o "$DESKTOP_SESSION" == "i3" ]; then
 	getres(){ #: Fetch the screen resolution via root window.
 		local X P="_NET_DESKTOP_GEOMETRY"
 		IFS="=" read -a X <<< "$(/usr/bin/xprop -root $P)"
