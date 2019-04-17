@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed  3 Apr 23:04:11 BST 2019
+# Last Change       - Wed 17 Apr 11:22:50 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -161,6 +161,8 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 
 			if [ -x /usr/bin/git -a "$DO_GIT" == "true" ]\
 			&& /usr/bin/git rev-parse --is-inside-work-tree > /dev/null 2>&1 ; then
+				#TODO - Broken if it's a local git repository.
+
 				# Get a short, status description of the branch.
 				U="Your branch is ahead of"
 				declare -i L=0
