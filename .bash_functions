@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Fri 12 Apr 12:40:25 BST 2019
+# Last Change       - Sat 20 Apr 16:37:33 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -30,6 +30,20 @@
 if [ -x /usr/bin/awk ]; then
 	sc(){ #: Perform mathematical calculations via AWK.
 		printf "%f\n" "$(/usr/bin/awk "BEGIN{print($@)}" 2> /dev/null)"
+	}
+fi
+
+if [ -x /usr/bin/mplayer ]; then
+	mpvi(){ #: In i3-wm, play a video inside the active window.
+		WID="$(
+			/usr/bin/xprop -root _NET_ACTIVE_WINDOW\
+				| /usr/bin/cut -d "#" -f 2
+		)"
+
+		/usr/bin/mplayer -msglevel "all=-1" -nolirc -wid "$WID" "$@" 2>&1 > /dev/null
+
+		# Addresses bug. The window will otherwise fill with last frame.
+		wait; clear
 	}
 fi
 
