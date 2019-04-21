@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sat 20 Apr 16:37:33 BST 2019
+# Last Change       - Sun 21 Apr 23:33:43 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -30,6 +30,13 @@
 if [ -x /usr/bin/awk ]; then
 	sc(){ #: Perform mathematical calculations via AWK.
 		printf "%f\n" "$(/usr/bin/awk "BEGIN{print($@)}" 2> /dev/null)"
+	}
+fi
+
+if [ -x /usr/bin/watch -a -x /usr/bin/tail ]; then
+	watch19(){ #: Clear, fast, 19-line, tailed watch of a given shell program.
+		/usr/bin/watch -t -c -n 0.1\
+			"/bin/bash \"$@\" | /usr/bin/tail -n 19"
 	}
 fi
 
