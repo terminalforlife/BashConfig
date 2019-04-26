@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue  9 Apr 19:00:52 BST 2019
+# Last Change       - Fri 26 Apr 14:01:23 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ if [ -x /bin/rm ]; then
 		"$HOME/.mozilla/firefox/Pending Pings"
 	)
 
-	alias hsh="/bin/rm --interactive=never -rv ${PLACES[@]} 2> /dev/null" #: Clear out some junk from the current user's HOME.
+	alias hsh="/bin/rm --interactive=never -rv ${PLACES[@]} 2>&-" #: Clear out some junk from the current user's HOME.
 fi
 
 # Make the ffmpeg output less cluttered, but also ignore many errors.
@@ -111,7 +111,7 @@ fi
 
 # Used to use gpicview, until I realised feh could be used as an image viewer!
 if [ -x /usr/bin/feh ]; then
-	alias img='/usr/bin/feh --fullscreen --hide-pointer --draw-filename --no-menus --preload 2> /dev/null' #: Slide-show images in current directory using feh.
+	alias img='/usr/bin/feh --fullscreen --hide-pointer --draw-filename --no-menus --preload 2>&-' #: Slide-show images in current directory using feh.
 fi
 
 # Quickly flash the terminal and sound the bell 3 times.
@@ -131,7 +131,7 @@ if [ -x /sbin/ip ]; then
 fi
 
 if [ -x /usr/sbin/hddtemp ]; then
-	alias temphdd='/usr/sbin/hddtemp /dev/sd{a..z} 2> /dev/null' #: View all sd* storage device temperatures.
+	alias temphdd='/usr/sbin/hddtemp /dev/sd{a..z} 2>&-' #: View all sd* storage device temperatures.
 fi
 
 if [ -x /usr/bin/wget ]; then
@@ -155,7 +155,7 @@ fi
 
 # Fix all CWD file and directory permissions to match the safer 0077 umask.
 if [ -x /bin/chmod ]; then
-	alias fixperms='/usr/bin/find -xdev \( -type f -exec /bin/chmod 600 "{}" \+ -o -type d -exec /bin/chmod 700 "{}" \+ \) -printf "FIXING: %p\n" 2> /dev/null' #: Recursive fix of permissions in the CWD. (F:600 D:700)
+	alias fixperms='/usr/bin/find -xdev \( -type f -exec /bin/chmod 600 "{}" \+ -o -type d -exec /bin/chmod 700 "{}" \+ \) -printf "FIXING: %p\n" 2>&-' #: Recursive fix of permissions in the CWD. (F:600 D:700)
 fi
 
 # Create or unmount a user-only RAM Disk (tmpfs, basically) of 32MB.
@@ -179,7 +179,7 @@ fi
 #			/usr/bin/cdparanoia -B 1- && {
 #				for FILE in *; {
 #					/usr/bin/ffmpeg -i "$FILE"\
-#						"${FILE%.wav}.ogg" &> /dev/null
+#						"${FILE%.wav}.ogg" >&- 2>&-
 #				}
 #			}
 #		'
@@ -319,18 +319,18 @@ fi
 # These aliases save a lot of typing and do away with the output.
 if [ -x /usr/bin/mplayer ]; then
 	# If you're having issues with mpv/mplayer here, try -vo x11 instead.
-	alias mpa="/usr/bin/mplayer -nolirc -vo null -really-quiet &> /dev/null" #: Use 'mplayer' to play audio files, sans window or output.
+	alias mpa="/usr/bin/mplayer -nolirc -vo null -really-quiet >&- 2>&-" #: Use 'mplayer' to play audio files, sans window or output.
 
 	declare -a MPLAYER_FONT=("-font" "$HOME/.mplayer/subfont.ttf")
 	if ! [ -f "${MPLAYER_FONT[0]}" ] || ! [ -r "${MPLAYER_FONT[0]}" ]; then
 		unset MPLAYER_FONT
 	fi
 
-	alias mpv="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet &> /dev/null" #: Use 'mplayer' to play video files, sans output.
-	alias mpvdvd="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet dvd://1//dev/sr1 &> /dev/null" #: Use 'mplayer' to play DVDs, sans output.
+	alias mpv="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet >&- 2>&-" #: Use 'mplayer' to play video files, sans output.
+	alias mpvdvd="/usr/bin/mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet dvd://1//dev/sr1 >&- 2>&-" #: Use 'mplayer' to play DVDs, sans output.
 elif [ -x /usr/bin/mpv ]; then
-	#alias mpvve="/usr/bin/mpv --af=equalizer=8:7:6:5:0:6:0:5:5:5 --no-stop-screensaver &> /dev/null "
-	alias mpvv="/usr/bin/mpv --no-stop-screensaver &> /dev/null " #: Use 'mpv' to play video files, sans output.
+	#alias mpvve="/usr/bin/mpv --af=equalizer=8:7:6:5:0:6:0:5:5:5 --no-stop-screensaver >&- 2>&- "
+	alias mpvv="/usr/bin/mpv --no-stop-screensaver >&- 2>&- " #: Use 'mpv' to play video files, sans output.
 fi
 
 if [ -x /bin/lsblk ]; then
@@ -399,7 +399,7 @@ if [[ `/usr/bin/tty` == /dev/tty* ]] && [ -x /usr/bin/tty -a -x /bin/chvt ]; the
 fi
 
 if [ -x /usr/bin/evince ]; then
-	alias pdf="/usr/bin/evince &> /dev/null" #: Use 'evince' to display PDF documents.
+	alias pdf="/usr/bin/evince >&- 2>&-" #: Use 'evince' to display PDF documents.
 fi
 
 # Clean up functions and variables.
