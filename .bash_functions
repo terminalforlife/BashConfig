@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sun 21 Apr 23:33:43 BST 2019
+# Last Change       - Fri 26 Apr 14:03:10 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -29,7 +29,7 @@
 
 if [ -x /usr/bin/awk ]; then
 	sc(){ #: Perform mathematical calculations via AWK.
-		printf "%f\n" "$(/usr/bin/awk "BEGIN{print($@)}" 2> /dev/null)"
+		printf "%f\n" "$(/usr/bin/awk "BEGIN{print($@)}" 2>&-)"
 	}
 fi
 
@@ -47,7 +47,7 @@ if [ -x /usr/bin/mplayer ]; then
 				| /usr/bin/cut -d "#" -f 2
 		)"
 
-		/usr/bin/mplayer -msglevel "all=-1" -nolirc -wid "$WID" "$@" 2>&1 > /dev/null
+		/usr/bin/mplayer -msglevel "all=-1" -nolirc -wid "$WID" "$@" >&- 2>&-
 
 		# Addresses bug. The window will otherwise fill with last frame.
 		wait; clear
@@ -121,7 +121,7 @@ if [ -d "$GIT" -a -x /bin/grep ]; then
 		if cd "$GIT"; then
 			/bin/grep --color=auto -R\
 				--exclude-dir=".git" "[#\"]TODO - "
-			cd - 2>&1 > /dev/null
+			cd - >&- 2>&-
 		fi
 	}
 fi
@@ -363,7 +363,7 @@ if [ -x /bin/mv ]; then
 
 				read -ep " >> "
 				if [ "$REPLY" ]; then
-					if /bin/mv "$FILE" "$REPLY" 2> /dev/null; then
+					if /bin/mv "$FILE" "$REPLY" 2>&-; then
 						printf "\e[2;32mItem #%d successfully renamed.\e[0m\n" $NUM
 					else
 						printf "\e[2;31mUnable to rename item #%d.\e[0m\n" $NUM
