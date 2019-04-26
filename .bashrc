@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed 17 Apr 11:22:50 BST 2019
+# Last Change       - Fri 26 Apr 14:04:25 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -160,7 +160,7 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 			fi
 
 			if [ -x /usr/bin/git -a "$DO_GIT" == "true" ]\
-			&& /usr/bin/git rev-parse --is-inside-work-tree > /dev/null 2>&1 ; then
+			&& /usr/bin/git rev-parse --is-inside-work-tree >&- 2>&-; then
 				#TODO - Broken if it's a local git repository.
 
 				# Get a short, status description of the branch.
@@ -174,7 +174,7 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 						local GS="${Z[@]//[:\'.]/} "
 						break
 					fi
-				done <<< "$(/usr/bin/git status 2> /dev/null)"
+				done <<< "$(/usr/bin/git status 2>&-)"
 				[ "$GS" ] && GS="${GS% } "
 
 				# Get the current branch name.
@@ -184,7 +184,7 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 							local GB=" [${Z[1]}] "
 							break
 						fi
-					done <<< "$(/usr/bin/git branch 2> /dev/null)"
+					done <<< "$(/usr/bin/git branch 2>&-)"
 				fi
 
 				# Count the number of commits.
@@ -192,7 +192,7 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 					local GC; declare -i L=0
 					while read -r Z; do
 						[[ "$Z" == commit* ]] && L+=1
-					done <<< "$(/usr/bin/git log 2> /dev/null)"
+					done <<< "$(/usr/bin/git log 2>&-)"
 					[ $L -eq 0 ] || printf -v GC "(%'d) " "$L"
 					#TODO - Needed? Appended above: && printf "\n"
 				fi
@@ -329,8 +329,8 @@ fi
 
 #--------------------------------------------------------------------INPUT BINDINGS
 
-bind -q forward-word 2>&1 > /dev/null || bind '"\e[1;5C": forward-word'
-bind -q backward-word 2>&1 > /dev/null || bind '"\e[1;5D": backward-word'
+bind -q forward-word >&- 2>&- || bind '"\e[1;5C": forward-word'
+bind -q backward-word >&- 2>&- || bind '"\e[1;5D": backward-word'
 
 #------------------------------------------------------SOURCE ALIASES AND FUNCTIONS
 
