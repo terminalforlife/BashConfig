@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/.shplugs/Bell_Alarm
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Fri  6 Apr 19:54:00 BST 2018
+# Last Change       - Fri 26 Apr 14:05:39 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ bell(){
 	# Infinitely sound the bell every second.
 	if [ "$STATUS" == "true" ]; then
 		while :; do
-			/usr/bin/pactl play-sample x11-alert &> /dev/null
+			/usr/bin/pactl play-sample x11-alert >&- 2>&-
 			/bin/sleep 1s
 		done
 	else
