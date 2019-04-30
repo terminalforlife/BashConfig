@@ -1,0 +1,47 @@
+#!/bin/bash
+
+#----------------------------------------------------------------------------------
+# Project Name      - bashconfig/.shplugs/CH_Ext
+# Started On        - Tue 30 Apr 02:26:19 BST 2019
+# Last Change       - Tue 30 Apr 02:40:48 BST 2019
+# Author E-Mail     - terminalforlife@yahoo.com
+# Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
+# Bulk-renames all the NON-HIDDEN files' extentions in the CWD.
+#----------------------------------------------------------------------------------
+
+chext(){
+	if [ $# -eq 2 ]; then
+		printf "Renaming (non-hidden) file extensions from '.%s' to '.%s'.\n" $1 $2
+		read -n 1 -p "[C]ontinue? "
+		[[ "$REPLY" == [cC] ]] || return 0
+
+		# In-case user prepends full-stops to extension arguments. Using this could
+		# leave some weird results if the file names actually contain full-stops.
+		#set -- ${1#.} ${2#.}
+
+		declare -i TTL_COUNT=0
+		declare -i SUCC_COUNT=0
+		for FILE in *.$1; {
+			if [ -f "$FILE" ]; then
+				TTL_COUNT+=1
+
+				if /bin/mv "$FILE" "${FILE%.$1}.$2" 2>&- >&-; then
+					printf "[X] FILE: '%s'\n" "${FILE%.$1}.$2"
+
+					SUCC_COUNT+=1
+				else
+					# Where [ ] is not renamed, and [X] is.
+					printf "[ ] FILE: '%s'\n" "${FILE%.$1}.$2"
+				fi
+			fi
+		}
+
+		printf "Done -- %d/%d files successfully renamed.\n" $SUCC_COUNT $TTL_COUNT
+	else
+		printf "USAGE: chext EXT_IN EXT_OUT\n"
+		return 1
+	fi
+}
+
+# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
