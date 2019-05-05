@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Fri 26 Apr 14:03:10 BST 2019
+# Last Change       - Sun  5 May 11:44:26 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -37,6 +37,22 @@ if [ -x /usr/bin/watch -a -x /usr/bin/tail ]; then
 	watch19(){ #: Clear, fast, 19-line, tailed watch of a given shell program.
 		/usr/bin/watch -t -c -n 0.1\
 			"/bin/bash \"$@\" | /usr/bin/tail -n 19"
+	}
+fi
+
+if [ -x /usr/bin/feh ]; then
+	bgtest(){ #: Cyclicly test-run all CWD JPGs as a background.
+		declare -i NUM=0
+		for FILE in *$1*.jpg; {
+			[ -f "$FILE" ] || continue
+			NUM+=1; [ $NUM -lt $2 ] && continue
+
+			printf "\r%${COLUMNS}s\r%d: %s" ' ' "$NUM"  "$FILE"
+			/usr/bin/feh --bg-center "$FILE"
+			read -n 1 -s
+		}
+
+		[ $NUM == 0 ] || printf "\n"
 	}
 fi
 
@@ -159,20 +175,6 @@ if [ -x /usr/bin/xprop ]\
 		local X P="_NET_DESKTOP_GEOMETRY"
 		IFS="=" read -a X <<< "$(/usr/bin/xprop -root $P)"
 		printf "Current Resolution: %dx%d\n" "${X[1]%,*}" "${X[1]/*, }"
-	}
-fi
-
-# An alternative way to get and display the session uptime.
-if [ -f /proc/uptime -a -r /proc/uptime ]; then
-	up(){ #: Alternative way to display session uptime.
-		read -a X < /proc/uptime
-		declare -i H=$((${X[0]%.*}/60/60))
-		declare -i M=$((${X[0]%.*}/60-(H*60)))
-		P(){ [ $1 -gt 1 -o $1 -eq 0 ] && printf "s"; }
-		printf "UP: $H hour%s and $M minute%s.\n" `P $H` `P $M`
-
-		unset X
-		unset -f P
 	}
 fi
 
