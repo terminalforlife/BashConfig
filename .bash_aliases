@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 26 Apr 14:01:23 BST 2019
+# Last Change       - Wed  8 May 07:41:39 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -37,6 +37,10 @@ alias ":q"="exit" #: Act expectedly, if it were actually VIM.
 
 if [ -x /bin/df ]; then
 	alias df='/bin/df -lT -x devtmpfs -x tmpfs -x usbfs' #: More relevant output than the default.
+fi
+
+if [ -x /usr/bin/perl ]; then
+	alias perl-lib-path="/usr/bin/perl -e 'print(\"\$_\n\") foreach @INC'" #: List directories in which Perl looks for library files.
 fi
 
 # Display a list of all of the currently available font families.
