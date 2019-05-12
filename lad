@@ -3,27 +3,30 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/lad
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Fri 12 Apr 12:34:14 BST 2019
+# Last Change       - Mon 13 May 00:06:08 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-_VERSION_="2019-04-12"
+_VERSION_="2019-05-13"
+_PROJECT_="${0##*/}"
 
-XERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; exit 1; }
-ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
+FAIL(){
+	printf "[L%0.4d] ERROR: %s\n" "$2" "$3" 1>&2
+	[ $1 -eq 1 ] && exit 1
+}
 
 USAGE(){
 	while read -r; do
 		printf "%s\n" "$REPLY"
 	done <<-EOF
-		            LAD - LIST AND DESCRIBE ($_VERSION_)
+		            ${_PROJECT_^^} - LIST AND DESCRIBE ($_VERSION_)
 		            Written by terminalforlife (terminalforlife@yahoo.com)
 
 		            List and describe functions and aliases made available from the
 		            bashconfig repository, found through the GitHub link below.
 
-		SYNTAX:     lad [OPTS] [STRING]
+		SYNTAX:     $_PROJECT_ [OPTS] [STRING]
 
 		OPTS:       --help|-h|-?            - Displays this help information.
 		            --version|-v            - Output only the version datestamp.
@@ -42,7 +45,7 @@ USAGE(){
 		            flag, begins with E, F, or A, followed by a colon, note that this will
 		            be ignored as an argument, so should not cause confusion.
 
-		RULES:      In order for lad to correctly list functions and aliases, various rules
+		RULES:      In order for $_PROJECT_ to correctly list functions and aliases, various rules
 		            must be followed; these are listed below:
 
 		              1. ' #: ', sans quotes, must be appended to alias lines.
@@ -103,7 +106,7 @@ while [ "$1" ]; do
 		--search|-s)
 			shift; SEARCH="$1"
 			if ! [[ "$SEARCH" =~ ^[AFE]{1}: ]]; then
-				XERR "$LINENO" "Invalid search query. See 'lad --help' for information."
+				FAIL 1 "$LINENO" "Invalid search query. See '$_PROJECT_ --help' for information."
 			fi ;;
 		--exit-only|-e)
 			BOOLEAN="false" ;;
@@ -112,15 +115,15 @@ while [ "$1" ]; do
 		--only-aliases|-A)
 			ONLY_ALIASES="true"; unset NL ;;
 		*)
-			XERR "$LINENO" "Incorrect argument(s) specified." ;;
+			FAIL 1 "$LINENO" "Incorrect argument(s) specified." ;;
 	esac
 	shift
 done
 
 if [ -s "$ONLY_FUNCS" -a -s "$ONLY_ALIASES" ]; then
-	XERR "$LINENO" "Either '--only-funcs|-F' or '--only-aliases|-A' may used at one time."
+	FAIL 1 "$LINENO" "Either '--only-funcs|-F' or '--only-aliases|-A' may used at one time."
 elif [ "$BOOLEAN" == "false" -a -z "$SEARCH" ]; then
-	XERR "$LINENO" "The '--exit-only' option strictly applies to the '--search|-s' flag."
+	FAIL 1 "$LINENO" "The '--exit-only' option strictly applies to the '--search|-s' flag."
 fi
 
 FILE_BF="$HOME/.bash_functions"
@@ -128,7 +131,7 @@ FILE_BA="$HOME/.bash_aliases"
 
 [ "$DEBUGME" == "true" ] && set -x
 
-PRINT(){ [ -z "$SEARCH" ] && printf "  %s - %s\n" "$@"; }
+PRINT(){ [ "$SEARCH" ] || printf "  %s - %s\n" "$@"; }
 CHK_TEMP(){ [ "$1" == "$2" ] && A_FOUND="true" || return 1; }
 
 #------------------------------------------------------------------GATHER FUNCTIONS
@@ -166,7 +169,7 @@ if [ "$ONLY_FUNCS" == "true" ] || [ -z "$ONLY_FUNCS" -a -z "$ONLY_ALIASES" ]; th
 			fi
 		done < "$FILE_BF"
 	else
-		XERR "$LINENO" "File '$FILE_BF' not found."
+		FAIL 1 "$LINENO" "File '$FILE_BF' not found."
 	fi
 fi
 
@@ -201,8 +204,10 @@ if [ "$ONLY_ALIASES" == "true" ] || [ -z "$ONLY_FUNCS" -a -z "$ONLY_ALIASES" ]; 
 			fi
 		done < "$FILE_BA"
 	else
-		XERR "$LINENO" "File '$FILE_BA' not found."
+		FAIL 1 "$LINENO" "File '$FILE_BA' not found."
 	fi
 fi
 
-[ "$A_FOUND" == "true" ] && { [ "$BOOLEAN" == "true" ] && printf "true\n"; exit 0; }
+#[ "$A_FOUND" == "true" ] && { [ "$BOOLEAN" == "true" ] && printf "true\n"; exit 0; }
+
+# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
