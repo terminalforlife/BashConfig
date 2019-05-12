@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sun 12 May 20:04:45 BST 2019
+# Last Change       - Mon 13 May 00:35:34 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -25,22 +25,22 @@
 #----------------------------------------------------------------------------------
 
 # Just in-case.
-[ -z "$BASH_VERSION" ] && return 1
+[ "$BASH_VERSION" ] || return 1
 
-if [ -x /usr/bin/awk ]; then
+if type -fP awk > /dev/null 2>&1; then
 	sc(){ #: Perform mathematical calculations via AWK.
-		printf "%f\n" "$(/usr/bin/awk "BEGIN{print($@)}" 2>&-)"
+		printf "%f\n" "$(awk "BEGIN{print($@)}" 2>&-)"
 	}
 fi
 
-if [ -x /usr/bin/watch -a -x /usr/bin/tail ]; then
+if type -fP watch tail > /dev/null 2>&1; then
 	watch19(){ #: Clear, fast, 19-line, tailed watch of a given shell program.
-		/usr/bin/watch -t -c -n 0.1\
-			"/bin/bash \"$@\" | /usr/bin/tail -n 19"
+		watch -t -c -n 0.1\
+			"bash \"$@\" | tail -n 19"
 	}
 fi
 
-if [ -x /usr/bin/feh ]; then
+if type -fP feh > /dev/null 2>&1; then
 	bgtest(){ #: Cyclicly test-run all CWD JPGs as a background.
 		declare -i NUM=0
 		for FILE in *$1*.jpg; {
@@ -48,7 +48,7 @@ if [ -x /usr/bin/feh ]; then
 			NUM+=1; [ $NUM -lt $2 ] && continue
 
 			printf "\r%${COLUMNS}s\r%d: %s" ' ' "$NUM"  "$FILE"
-			/usr/bin/feh --bg-center "$FILE"
+			feh --bg-center "$FILE"
 			read -n 1 -s
 		}
 
@@ -56,46 +56,42 @@ if [ -x /usr/bin/feh ]; then
 	}
 fi
 
-if [ -x /usr/bin/mplayer ]; then
+if type -fP mplayer > /dev/null 2>&1; then
 	mpvi(){ #: In i3-wm, play a video inside the active window.
-		WID="$(
-			/usr/bin/xprop -root _NET_ACTIVE_WINDOW\
-				| /usr/bin/cut -d "#" -f 2
-		)"
-
-		/usr/bin/mplayer -msglevel "all=-1" -nolirc -wid "$WID" "$@" >&- 2>&-
+		WID="$(xprop -root _NET_ACTIVE_WINDOW | cut -d "#" -f 2)"
+		mplayer -msglevel "all=-1" -nolirc -wid "$WID" "$@" >&- 2>&-
 
 		# Addresses bug. The window will otherwise fill with last frame.
 		wait; clear
 	}
 fi
 
-if [ -x /usr/bin/column ]; then
+if type -fP column > /dev/null 2>&1; then
 	builtins(){ #: Display a columnized list of bash builtins.
 		while read -r; do
 			printf "%s\n" "${REPLY/* }"
-		done <<< "$(enable -a)" | /usr/bin/column
+		done <<< "$(enable -a)" | column
 	}
 fi
 
 # Display the current DPI setting.
-if [ -x /usr/bin/xdpyinfo ]; then
+if type -fP xdpyinfo > /dev/null 2>&1; then
 	dpi(){ #: Display the current DPI setting.
 		while read -a X; do
 			if [ "${X[0]}" == "resolution:" ]; then
 				printf "%s\n" "${X[1]/*x}"
 			fi
-		done <<< "$(/usr/bin/xdpyinfo)"
+		done <<< "$(xdpyinfo)"
 	}
 fi
 
-if [ -x /usr/bin/sensors ]; then
+if type -fP sensors > /dev/null 2>&1; then
 	showfans(){ #: Show the available system fan speeds using sensors.
 		while read; do
 			if [[ "$REPLY" == *[Ff][Aa][Nn]*RPM ]]; then
 				printf "%s\n" "$REPLY"
 			fi
-		done <<< "$(/usr/bin/sensors)"
+		done <<< "$(sensors)"
 	}
 fi
 
@@ -113,18 +109,18 @@ if [ -f /etc/os-release -a -r /etc/os-release ]; then
 fi
 
 # Very useful, quick function to scan the current directory, if you have clamscan.
-if [ -x /usr/bin/clamscan -a -x /usr/bin/tee ]; then
+if type -fP clamscan tee > /dev/null 2>&1; then
 	scan(){ #: Scan the CWD with clamscan. Logs in: ~/.scan_func.log
 		{
 			printf "SCAN_START: %(%F (%X))T\n" -1
-			/usr/bin/clamscan --bell -r --no-summary -i\
+			clamscan --bell -r --no-summary -i\
 				--detect-pua=yes --detect-structured=no\
 				--structured-cc-count=3 --structured-ssn-count=3\
 				--phishing-ssl=yes --phishing-cloak=yes\
 				--partition-intersection=yes --detect-broken=yes\
 				--block-macros=yes --max-filesize=256M\
-				|& /usr/bin/tee -a $HOME/.scan_alias.log
-		} |& /usr/bin/tee -a $HOME/.scan_func.log
+				|& tee -a $HOME/.scan_alias.log
+		} |& tee -a $HOME/.scan_func.log
 	}
 fi
 
@@ -132,10 +128,10 @@ fi
 # you use "#T0D0 - Note message here" syntax for your TODOs, where "0" is "O". If
 # you use a different style, but it's perfectly consistent, change the below match.
 GIT="$HOME/GitHub/terminalforlife/Personal"
-if [ -d "$GIT" -a -x /bin/grep ]; then
+if [ -d "$GIT" ] && type -fP grep > /dev/null 2>&1; then
 	todo(){ #: Grab list of TODOs from GitHub projects.
 		if cd "$GIT"; then
-			/bin/grep --color=auto -R\
+			grep --color=auto -R\
 				--exclude-dir=".git" "[#\"]TODO - "
 			cd - >&- 2>&-
 		fi
@@ -143,43 +139,45 @@ if [ -d "$GIT" -a -x /bin/grep ]; then
 fi
 
 # Quick and dirty function to display a random note line from command notes.
-if { [ "$USER" == "ichy" ] && [ $UID -eq 1000 ]; }\
-&& { [ -x /bin/sed -a -x /bin/grep -a -x /usr/bin/shuf ]; }\
-&& [ -f $HOME/Documents/TT/Useful_Commands ]; then
-	get-random-note(){ #: Display a random note line from command notes.
-		/bin/sed "1,/^#END/!d" $HOME/Documents/TT/Useful_Commands\
-			| /bin/grep -v "^#"\
-			| /bin/grep -v "^$"\
-			| /usr/bin/shuf -n 1
-	}
+if [ "$USER" == "ichy" -a $UID -eq 1000 ]; then
+	if type -fP sed grep shuf > /dev/null 2>&1; then
+		if [ -f $HOME/Documents/TT/Useful_Commands ]; then
+			get-random-note(){ #: Display a random note line from command notes.
+				sed "1,/^#END/!d" $HOME/Documents/TT/Useful_Commands\
+					| grep -v "^#"\
+					| grep -v "^$"\
+					| shuf -n 1
+			}
+		fi
+	fi
 fi
 
 # Display all of the 'rc' packages, as determined by dpkg, parsed by the shell.
 # Using this within command substitution, sending it to apt-get, is very useful.
-if [ -x /usr/bin/dpkg ]; then
+if type -fP dpkg > /dev/null 2>&1; then
 	lsrc(){ #:Search for and list all 'rc' packages detected by dpkg.
 		while read -a X; do
 			if [ "${X[0]}" == "rc" ]; then
 				printf "%s\n" "${X[1]}"
 			fi
-		done <<< "$(/usr/bin/dpkg -l)"
+		done <<< "$(dpkg -l)"
 	}
 fi
 
 # Get the display's resolution, per the geometry propert of the root window. This
 # doesn't seem to work in i3-wm, so don't enable getres() if in that. Probably
 # won't work if you're using a mult-monitor setup.
-if [ -x /usr/bin/xprop ]\
+if type -fP xprop > /dev/null 2>&1\
 && ! [ "$XDG_CURRENT_DESKTOP" == "i3" -o "$DESKTOP_SESSION" == "i3" ]; then
 	getres(){ #: Fetch the screen resolution via root window.
 		local X P="_NET_DESKTOP_GEOMETRY"
-		IFS="=" read -a X <<< "$(/usr/bin/xprop -root $P)"
+		IFS="=" read -a X <<< "$(xprop -root $P)"
 		printf "Current Resolution: %dx%d\n" "${X[1]%,*}" "${X[1]/*, }"
 	}
 fi
 
 # Use these environment variables only for man, to give him some color.
-if [ "$MAN_COLORS" == "true" ] && [ -x /usr/bin/man ]; then
+if [ "$MAN_COLORS" == "true" ] && type -fP man > /dev/null 2>&1; then
 	man(){ #: Display man pages with a little color.
 		LESS_TERMCAP_mb=$'\e[01;31m'\
 		LESS_TERMCAP_md=$'\e[01;31m'\
@@ -188,14 +186,14 @@ if [ "$MAN_COLORS" == "true" ] && [ -x /usr/bin/man ]; then
 		LESS_TERMCAP_so=$'\e[01;44;33m'\
 		LESS_TERMCAP_ue=$'\e[0m'\
 		LESS_TERMCAP_us=$'\e[01;32m'\
-		/usr/bin/man $@
+		man $@
 	}
 fi
 
 #TODO - The list doesn't seem to be complete.
 #TODO - Fix the inability to pipe the output.
 # Display a descriptive list of kernel modules.
-if [ -x /sbin/lsmod -a -x /sbin/modinfo ]; then
+if type -fP lsmod modinfo > /dev/null 2>&1; then
 	lsmodd(){ #: List and describe (most) detected kernel modules.
 		local X Y
 		while read -a X; do
@@ -217,20 +215,20 @@ suppress(){ #: Execute command ($1) and omit specified ($2) output.
 }
 
 # Search for & output files not found which were installed with a given package.
-if [ -x /usr/bin/dpkg-query ]; then
+if type -fP dpkg-query > /dev/null 2>&1; then
 	missing-pkg-files(){ #: Check for missing files installed from a given package(s).
 		local X
 		while read X; do
 			[ -e "$X" -a "$X" ] || printf "%s\n" "$X"
-		done <<< "$(/usr/bin/dpkg-query -L $@)"
+		done <<< "$(dpkg-query -L $@)"
 	}
 fi
 
 # The ago function is a handy way to output some of the apt-get's -o options.
-if [ -x /usr/bin/apt-get -a -x /bin/zcat ]; then
+if type -fP apt-get zcat > /dev/null 2>&1; then
 	ago(){ #: List out various apt-get options for the -o flag.
 		#TODO - Why is there that initial blank line!?
-		for FIELD in `/bin/zcat /usr/share/man/man8/apt-get.8.gz`; {
+		for FIELD in `zcat /usr/share/man/man8/apt-get.8.gz`; {
 			if [[ "$FIELD" =~ ^(Dir|Acquire|Dpkg|APT):: ]]; then
 				CLEAN="${FIELD//[.\\&)(,]}"
 				[ "$OLD" == "$CLEAN" ] || printf "%s\n" "$OLD"
@@ -243,7 +241,7 @@ if [ -x /usr/bin/apt-get -a -x /bin/zcat ]; then
 fi
 
 # Search the given path(s) for file types of TYPE. Ignores filename extension.
-if [ -x /usr/bin/mimetype ]; then
+if type -fP mimetype > /dev/null 2>&1; then
 	sif(){ #: Search given path(s) for files of a specified type.
 		[ $# -eq 0 ] && printf "%s\n"\
 			"USAGE: sif TYPE FILE1 [FILE2 FILE3...]" 1>&2
@@ -259,7 +257,7 @@ if [ -x /usr/bin/mimetype ]; then
 						printf "%s\n" "$FILE"
 					fi
 				}
-			done <<< "$(/usr/bin/mimetype -bd "$FILE")"
+			done <<< "$(mimetype -bd "$FILE")"
 		}
 
 		unset TYPE FILE X I
@@ -326,9 +324,9 @@ dquo(){ #: Surround ($@) text in double quotation marks.
 }
 
 # My preferred links2 settings. Also allows you to quickly search with DDG.
-if [ -x /usr/bin/links2 ]; then
+if type -fP links2 > /dev/null 2>&1; then
 	l2(){ #: A tweaked links2 experience, opening with DuckDuckGo.
-		/usr/bin/links2 -http.do-not-track 1 -html-tables 1\
+		links2 -http.do-not-track 1 -html-tables 1\
 			-html-tables 1 -html-numbered-links 1\
 			http://duckduckgo.com/?q="$*"
 	}
@@ -340,7 +338,7 @@ fi
 # in output to make it quick and easy to read; may not work on all terminals. The
 # changes are made the moment you press Enter, so be mindful! Ctrl + C to cancel.
 # Use OPT -d or --directories to instead match those.
-if [ -x /bin/mv ]; then
+if type -fP mv > /dev/null 2>&1; then
 	brn(){ #: Batch-rename a bunch of files or directories.
 		printf "NOTE: To match directories instead, use -d|--directories OPTs.\n"
 
@@ -365,7 +363,7 @@ if [ -x /bin/mv ]; then
 
 				read -ep " >> "
 				if [ "$REPLY" ]; then
-					if /bin/mv "$FILE" "$REPLY" 2>&-; then
+					if mv "$FILE" "$REPLY" 2>&-; then
 						printf "\e[2;32mItem #%d successfully renamed.\e[0m\n" $NUM
 					else
 						printf "\e[2;31mUnable to rename item #%d.\e[0m\n" $NUM
@@ -376,20 +374,20 @@ if [ -x /bin/mv ]; then
 	}
 fi
 
-if [ -x /usr/bin/perl ]; then
+if type -fP perl > /dev/null 2>&1; then
 	search-git-log(){ #: Search through 'git log' for file ($1) and commit string ($2).
 		if [ $# -eq 0 -o $# -ge 3 ]; then
 			printf "USAGE: search-git-log FILE [REGEX]\n" >&2
 			return 1
 		fi
 
-		/usr/bin/perl <<-EOF
+		perl <<-EOF
 			use strict;
 			use warnings;
 			use autodie;
 
 			my \$DATE;
-			foreach(@{[readpipe('/usr/bin/git log')]}){
+			foreach(@{[readpipe('git log')]}){
 			        chomp(\$_);
 
 			        if(\$_ =~ /^Date:\\s+/){
@@ -403,13 +401,13 @@ if [ -x /usr/bin/perl ]; then
 	}
 fi
 
-if [ -x /usr/bin/espeak ]; then
+if type -fP espeak > /dev/null 2>&1; then
 	sayit(){ #: Say something with espeak; good for quick alerts.
-		/usr/bin/espeak -v en-scottish -g 5 -p 13 -s 0.7 "$*"
+		espeak -v en-scottish -g 5 -p 13 -s 0.7 "$*"
 	}
 
 	readit(){ #: Read a text file with espeak.
-		/usr/bin/espeak -v en-scottish -g 5 -p 13 -s 0.7 < "$*"
+		espeak -v en-scottish -g 5 -p 13 -s 0.7 < "$*"
 	}
 fi
 
