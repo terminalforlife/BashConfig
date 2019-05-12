@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sun  5 May 11:44:26 BST 2019
+# Last Change       - Sun 12 May 20:04:45 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -376,4 +376,41 @@ if [ -x /bin/mv ]; then
 	}
 fi
 
-# vim: ft=sh noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
+if [ -x /usr/bin/perl ]; then
+	search-git-log(){ #: Search through 'git log' for file ($1) and commit string ($2).
+		if [ $# -eq 0 -o $# -ge 3 ]; then
+			printf "USAGE: search-git-log FILE [REGEX]\n" >&2
+			return 1
+		fi
+
+		/usr/bin/perl <<-EOF
+			use strict;
+			use warnings;
+			use autodie;
+
+			my \$DATE;
+			foreach(@{[readpipe('/usr/bin/git log')]}){
+			        chomp(\$_);
+
+			        if(\$_ =~ /^Date:\\s+/){
+			                \$DATE = \$_ . "\\n"
+			        }elsif(\$_ =~ /Updated\\ $1;\\s/ and \$_ =~ /$2/){
+			                print(\$_ =~ s/^.*;\s/------+ /r . "\\n");
+			                print(\$DATE) if defined(\$DATE)
+			        }
+			}
+		EOF
+	}
+fi
+
+if [ -x /usr/bin/espeak ]; then
+	sayit(){ #: Say something with espeak; good for quick alerts.
+		/usr/bin/espeak -v en-scottish -g 5 -p 13 -s 0.7 "$*"
+	}
+
+	readit(){ #: Read a text file with espeak.
+		/usr/bin/espeak -v en-scottish -g 5 -p 13 -s 0.7 < "$*"
+	}
+fi
+
+# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
