@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 26 Apr 14:04:25 BST 2019
+# Last Change       - Mon 13 May 00:58:35 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -159,8 +159,8 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 				[ $X -eq 0 ] && local A="  " || local A="  "
 			fi
 
-			if [ -x /usr/bin/git -a "$DO_GIT" == "true" ]\
-			&& /usr/bin/git rev-parse --is-inside-work-tree >&- 2>&-; then
+			if type -fP git > /dev/null 2>&1 && [ "$DO_GIT" == "true" ]\
+			&& git rev-parse --is-inside-work-tree >&- 2>&-; then
 				#TODO - Broken if it's a local git repository.
 
 				# Get a short, status description of the branch.
@@ -174,7 +174,7 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 						local GS="${Z[@]//[:\'.]/} "
 						break
 					fi
-				done <<< "$(/usr/bin/git status 2>&-)"
+				done <<< "$(git status 2>&-)"
 				[ "$GS" ] && GS="${GS% } "
 
 				# Get the current branch name.
@@ -184,7 +184,7 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 							local GB=" [${Z[1]}] "
 							break
 						fi
-					done <<< "$(/usr/bin/git branch 2>&-)"
+					done <<< "$(git branch 2>&-)"
 				fi
 
 				# Count the number of commits.
@@ -192,7 +192,7 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 					local GC; declare -i L=0
 					while read -r Z; do
 						[[ "$Z" == commit* ]] && L+=1
-					done <<< "$(/usr/bin/git log 2>&-)"
+					done <<< "$(git log 2>&-)"
 					[ $L -eq 0 ] || printf -v GC "(%'d) " "$L"
 					#TODO - Needed? Appended above: && printf "\n"
 				fi
@@ -268,7 +268,7 @@ unset FLIB FUNC
 #-------------------------------------------------------------ENVIRONMENT VARIABLES
 
 # Set the location where various VirtualBox settings and your VMs are stored.
-if [ -x /usr/bin/vboxsdl -a -x /usr/bin/vboxmanage ]; then
+if type -fP vboxsdl vboxmanage > /dev/null 2>&1; then
 	export VBOX_USER_HOME="/media/$USER/Main Data/Linux Generals/VirtualBox VMs"
 fi
 
@@ -286,13 +286,13 @@ export LS_COLORS="di=1;31:ln=2;32:mh=1;32:ex=1;33:"
 export TERM="xterm-256color"
 
 # Supposedly, this should be run after the above line, according to: man 1 tput
-[ -x /usr/bin/tput ] && /usr/bin/tput init
+type -fP tput > /dev/null 2>&1 && /usr/bin/tput init
 
 # Set less and the pager to be more secure by disabling certain features.
-[ -x /usr/bin/less ] && export LESSSECURE=1
+type -fP less > /dev/null 2>&1 && export LESSSECURE=1
 
 # If sudo is found, set the sudo -e editor to rvim or rnano.
-if [ -x /usr/bin/sudo ]; then
+if type -fP sudo > /dev/null 2>&1; then
 	if [ -x /usr/bin/rvim ]; then
 		export SUDO_EDITOR="/usr/bin/rvim"
 	elif [ -x /bin/rnano ]; then
@@ -316,7 +316,7 @@ unset USRBC
 #-------------------------------------------------------------------------TERMWATCH
 
 # Enable termwatch; it logs whenever the current user opens a terminal.
-if [ -x /usr/bin/tty ]; then
+if type -fP tty > /dev/null 2>&1; then
 	CURTERM=`/usr/bin/tty`
 	TERMWATCH_LOG="$HOME/.termwatch.log"
 	if [ -f "$TERMWATCH_LOG" -a -w "$TERMWATCH_LOG" ]; then
