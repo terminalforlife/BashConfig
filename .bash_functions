@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon 13 May 00:35:34 BST 2019
+# Last Change       - Mon 13 May 11:13:50 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -179,6 +179,9 @@ fi
 # Use these environment variables only for man, to give him some color.
 if [ "$MAN_COLORS" == "true" ] && type -fP man > /dev/null 2>&1; then
 	man(){ #: Display man pages with a little color.
+		# This was needed else it wouldn't work, unless absolute path.
+		read MAN_EXEC <<< "$(type -fP man 2>&-)"
+
 		LESS_TERMCAP_mb=$'\e[01;31m'\
 		LESS_TERMCAP_md=$'\e[01;31m'\
 		LESS_TERMCAP_me=$'\e[0m'\
@@ -186,7 +189,7 @@ if [ "$MAN_COLORS" == "true" ] && type -fP man > /dev/null 2>&1; then
 		LESS_TERMCAP_so=$'\e[01;44;33m'\
 		LESS_TERMCAP_ue=$'\e[0m'\
 		LESS_TERMCAP_us=$'\e[01;32m'\
-		man $@
+		$MAN_EXEC $@
 	}
 fi
 
