@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Mon 13 May 00:58:35 BST 2019
+# Last Change       - Tue 14 May 17:18:00 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -101,9 +101,9 @@ if ! [ "${BASH_VERSINFO[0]}" -ge 4 ]; then
 	return 1
 fi
 
-if [ -d "$HOME/bin" ] && ! [[ "$PATH" == */home/"$USER"/bin* ]]; then
+if [ -d "$HOME/bin" ] && ! [[ "$PATH" == *"/home/$USER/bin"* ]]; then
 	# If the directory exists and isn't already in PATH, set it so.
-	export PATH="/home/$USER/bin:${PATH}"
+	export PATH+=":/home/$USER/bin"
 fi
 
 # If not running interactively, or are in restricted mode, then ignore the rest.
