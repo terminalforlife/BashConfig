@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 13 May 00:54:10 BST 2019
+# Last Change       - Mon 13 May 18:34:27 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -213,7 +213,7 @@ if type -fP youtube-dl > /dev/null 2>&1; then
 	alias ytpldl-video="$DEP -ci --yes-playlist --sleep-interval 5 --format best --no-call-home --console-title --quiet --ignore-errors" #: Download HQ audio from YouTube playlist, using youtube-dl.
 fi
 
-# Various [q]uick apt-cache aliases to make lifeeasier still.
+# Various [q]uick apt-cache aliases to make life easier still.
 if type -fP apt-cache > /dev/null 2>&1; then
 	for CMD in qse:"search" qsh:"show"; {
 		alias ${CMD%:*}="apt-cache ${CMD/*:}" #: ???
@@ -255,10 +255,10 @@ if type -fP ls grep > /dev/null 2>&1; then
 fi
 
 # Quick navigation aliases in absence of the autocd shell option.
-shopt -qp autocd || {
+if ! shopt -qp autocd; then
 	alias ~="cd $HOME" #: ???
 	alias ..="cd .." #: ???
-}
+fi
 
 # For each directory listed to the left of :, create an alias you see on the right
 # of :. This is a key=value style approach, like dictionaries in Python. HOME only.
