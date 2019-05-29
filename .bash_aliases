@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 13 May 18:34:27 BST 2019
+# Last Change       - Wed 29 May 17:19:25 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -287,6 +287,11 @@ if type -fP ls eject > /dev/null 2>&1 && [ -b /dev/sr0 ]; then
 	for DEV in /dev/sr[0-9]*; {
 		alias ot${DEV/\/dev\/sr}="eject $DEV"
 		alias ct${DEV/\/dev\/sr}="eject -t $DEV"
+
+		if type -fP udisksctl > /dev/null 2>&1; then
+			alias mcd${DEV/\/dev\/sr}="udisksctl mount -b $DEV"
+			alias umcd${DEV/\/dev\/sr}="udisksctl unmount -b $DEV"
+		fi
 	}
 fi
 
