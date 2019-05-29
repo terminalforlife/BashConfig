@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon 13 May 11:13:50 BST 2019
+# Last Change       - Wed 29 May 17:10:30 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -230,9 +230,8 @@ fi
 # The ago function is a handy way to output some of the apt-get's -o options.
 if type -fP apt-get zcat > /dev/null 2>&1; then
 	ago(){ #: List out various apt-get options for the -o flag.
-		#TODO - Why is there that initial blank line!?
 		for FIELD in `zcat /usr/share/man/man8/apt-get.8.gz`; {
-			if [[ "$FIELD" =~ ^(Dir|Acquire|Dpkg|APT):: ]]; then
+			if [[ "$FIELD" =~ ($^|^(Dir|Acquire|Dpkg|APT)::) ]]; then
 				CLEAN="${FIELD//[.\\&)(,]}"
 				[ "$OLD" == "$CLEAN" ] || printf "%s\n" "$OLD"
 				OLD="$CLEAN"
