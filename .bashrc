@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Tue 14 May 17:18:00 BST 2019
+# Last Change       - Sun 27 Oct 23:41:22 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -150,9 +150,6 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 		#TODO - If file isn't found, should os-release be checked?
 
 		PROMPT_PARSER(){
-			#TODO - Opting to not show the exit status icon when you're
-			#       also using the Git prompt, will cause the two
-			#       fields to become concatenated.
 			# Get the previous command's exit status and update icon.
 			local P X=$?; printf -v X "%0.3d" "$X"
 			if [ "$SHOW_ICON" == "true" ]; then
