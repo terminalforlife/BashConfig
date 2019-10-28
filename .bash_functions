@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Wed 29 May 17:10:30 BST 2019
+# Last Change       - Fri 25 Oct 12:11:10 BST 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -193,17 +193,44 @@ if [ "$MAN_COLORS" == "true" ] && type -fP man > /dev/null 2>&1; then
 	}
 fi
 
-#TODO - The list doesn't seem to be complete.
 #TODO - Fix the inability to pipe the output.
 # Display a descriptive list of kernel modules.
 if type -fP lsmod modinfo > /dev/null 2>&1; then
 	lsmodd(){ #: List and describe (most) detected kernel modules.
-		local X Y
-		while read -a X; do
-			[ "${X[0]}" == "Module" ] && continue
-			Y=`/sbin/modinfo -d "${X[0]}"`
-			[ "$Y" ] && printf "%s - %s\n" "${X[0]}" "$Y"
-		done <<< "$(/sbin/lsmod)"
+		#TODO - Add user option (argument) for this.
+		# Non-'true' equals parseable data.
+		FANCY='true'
+
+		while read -a MOD_LINE; do
+			# While I could use redirect to null to avoid parsing the following header
+			# text, it would then end up catching ALL errors, which is unwanted.
+			if ! [[ "${MOD_LINE[0]}" =~ (Module|Size|Use|By) ]]; then
+				if [ "$FANCY" == 'true' ]; then
+					MOD_DESC=$(modinfo -d "${MOD_LINE[0]}")
+					printf -- "['%s']\n" "${MOD_LINE[0]}"
+
+					if [ -n "$MOD_DESC" ]; then
+						# Compensating for multi-line descriptions.
+						while read INFO; do
+							printf "    "
+
+							for I in $INFO; {
+								printf "%s " "$I"
+							}
+
+							printf "\n"
+						done <<< "$MOD_DESC"
+
+						printf "\n"
+					else
+						printf "    %s\n\n" "N/A"
+					fi
+				else
+					MOD_DESC="$(modinfo -d "${MOD_LINE[0]}")"
+					printf "%s=%s\n" "${MOD_LINE[0]}" "${MOD_DESC:-N/A}"
+				fi
+			fi
+		done <<< "$(lsmod)"
 	}
 fi
 
