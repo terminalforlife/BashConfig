@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun  3 Nov 14:08:26 GMT 2019
+# Last Change       - Sun  3 Nov 14:21:27 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -192,11 +192,12 @@ fi
 if type -fP git > /dev/null 2>&1; then
 	for CMD in\
 	\
-		"rm":grm "add":add "tag":tag "push":push "pull":pull "diff":diff\
+		"remote add upstream":raddup "rm":grm "add":add "tag":tag\
+		"push":push "pull":pull "pull upstream":pullup "diff":diff\
 		"init":init "clone":clone "merge":merge "branch":branch\
 		"config":config "rm --cached":grmc "commit -m":commit\
 		"status -s":status "checkout":checkout "config --list":gcl\
-		"describe --long --tag":describe "mv":gmv;
+		"describe --long --tag":describe "mv":gmv "show":show;
 	{
 		alias "${CMD/*:}"="git ${CMD%:*}"
 	}
