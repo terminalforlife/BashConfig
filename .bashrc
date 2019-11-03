@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun  3 Nov 19:54:14 GMT 2019
+# Last Change       - Sun  3 Nov 20:01:26 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -135,7 +135,7 @@ else
 				GI[3]='≺' # New file(s).
 				GI[4]='⊀' # Removed file(s).
 				GI[5]='≔' # Conflict(s) detected.
-				GI[6]='∾' # Unknown
+				GI[6]='∾' # Branch is ahead.
 
 				STATUS=`git status 2>&-`
 
