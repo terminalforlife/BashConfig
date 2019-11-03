@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun  3 Nov 16:07:13 GMT 2019
+# Last Change       - Sun  3 Nov 19:54:14 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -22,54 +22,17 @@
 POSIX_MODE="true"
 
 # If git is installed and you're in a git repository, then this .bashrc file will
-# by default display various git-related information. Change to false to disable.
+# by default display various pretty-printed git-related information. Change to
+# false to disable.
 DO_GIT="true"
 
-# The old TFL prompt style can be used if you're not a fan of the newer one.
-OLD_TFL_PROMPT="false"
-
-# Set this to false to disable the prefixed ../ where the current working directory
-# is displayed, unless you're of course in /. Alignment should be maintained.
-PREFIX_DIR="false"
-
-# If you use my custom prompt, use these top and bottom prompt pointers. These do
-# require the fonts-symbola package, if on Ubuntu, otherwise something similar.
-# Leave either or both empty (or commented out) to omit them from the prompt.
-TARR="⮣ "
-BARR="⮡ "
-
-# Show the icon representing the previous command's exit status.
-SHOW_ICON="true"
-
-#TODO - Fix this not working properly in Konsole, KDE Plasma 5.
 # By default, you should see a rather nice prompt. If you want something simple, -
 # akin to the Bourne Shell prompt, set this option to true.
 SIMPLE="false"
 
-# Instead of a simple prompt, use the standard, Debian PS1 prompt, if set to true.
-STANDARD="false"
-
-# Set ALT_PROMPT to true if you want to use one of the alternative prompts I've
-# either written myself or pasted from random places online, just to add veriety.
-ALT_PROMPT="false"
-
-# Requires ALT_PROMPT to be true. Choose the type of alternative prompt to use.
-# Let me know if you want your prompt to be listed here. Valid prompt types:
-#
-#                                          dsuveges - https://pastebin.com/T43WuZqU
-ALT_TYPE="dsuveges"
-
 # If DO_GIT is true, and this option is true, then the current, active branch will
 # be shown if you're currently in a git repository.
 BRANCH="true"
-
-# If DO_GIT is true, and this option is true, then output the total number of
-# commits in parentheses. This will be placed to the right of the status message.
-COMMITS="true"
-
-# By default, each prompt will be separated by a tidy set of lines. To disable this
-# feature, even though it may be harder to see each, then just set this to false.
-SHOW_LINES="false"
 
 # Set this to true in order to remove all history settings and use the defaults.
 DEFAULT_HISTORY="false"
@@ -130,10 +93,8 @@ set -o interactive-comments -o monitor -o hashall -o braceexpand -o emacs
 
 for OPT in\
 \
-	SHOW_LINES:$SHOW_LINES DO_GIT:$DO_GIT BRANCH:$BRANCH COMMITS:$COMMITS\
-	PREFIX_DIR:$PREFIX_DIR SIMPLE:$SIMPLE STANDARD:$STANDARD\
-	POSIX_MODE:$POSIX_MODE MAN_COLORS:$MAN_COLORS SHOW_ICON:$SHOW_ICON\
-	OLD_TFL_PROMPT:$OLD_TFL_PROMPT
+	DO_GIT:$DO_GIT BRANCH:$BRANCH SIMPLE:$SIMPLE POSIX_MODE:$POSIX_MODE\
+	MAN_COLORS:$MAN_COLORS
 {
 	if ! [[ "${OPT/*:}" =~ ^(true|false)$ ]]; then
 		printf "ERROR: Incorrect setting at: %s\n" "${OPT%:*}" 1>&2
@@ -145,111 +106,96 @@ for OPT in\
 # When \w is used in PS1, this will set ../ when beyond depth 1. (4.* or later)
 [ "${BASH_VERSINFO[0]}" -ge 4 ] && PROMPT_DIRTRIM=1
 
-if ! [ "$ALT_PROMPT" == "true" ]; then
-	if [ "$SIMPLE" == "false" ]; then
-		# Needed to ensure the git stuff shows correctly. In 18.04, the git
-		# version has slightly different output, so needed a workaround.
-		readarray T < /etc/lsb-release
-		[ "${T[2]#*=}" == bionic$'\n' ] && R=4 || R=3
-		#TODO - If file isn't found, should os-release be checked?
+if [ "$SIMPLE" == "true" ]; then
+	PS1="\$ "
+else
+	# Needed to ensure the git stuff shows correctly. In 18.04, the git
+	# version has slightly different output, so needed a workaround.
+	readarray T < /etc/lsb-release
+	[ "${T[2]#*=}" == bionic$'\n' ] && R=4 || R=3
+	#TODO - If file isn't found, should os-release be checked?
 
-		if ! [ "$OLD_TFL_PROMPT" == "true" ]; then
-			# Newer, more concise prompt.
-			PROMPT_PARSER(){
-				PS1='$ '
-			}
-		else
-			# Old git-supported Prompt, as of 2019-11-03.
-			PROMPT_PARSER(){
-				# Get the previous command's exit status and update icon.
-				local P X=$?; printf -v X "%0.3d" "$X"
-				if [ "$SHOW_ICON" == "true" ]; then
-					[ $X -eq 0 ] && local A="  " || local A="  "
-				fi
+	# Newer, more concise prompt.
+	PROMPT_PARSER(){
+		printf -v X "%.3d" $?
+		local OFF='▫' ON='▪' P
 
-				if type -fP git > /dev/null 2>&1 && [ "$DO_GIT" == "true" ]\
-				&& git rev-parse --is-inside-work-tree >&- 2>&-; then
-					#TODO - Broken if it's a local git repository.
-
-					# Get a short, status description of the branch.
-					U="Your branch is ahead of"
-					declare -i L=0
-					while read -ra Z; do
-						L+=1
-
-						#TODO - Fix empty when new branch.
-						if [[ $L -eq 2  && "${Z[*]}" == "$U"* ]] || [ $L -eq $R ]; then
-							local GS="${Z[@]//[:\'.]/} "
-							break
-						fi
-					done <<< "$(git status 2>&-)"
-					[ "$GS" ] && GS="${GS% } "
-
-					# Get the current branch name.
-					if [ "$BRANCH" == "true" -a "$DO_GIT" == "true" ]; then
-						while read -ra Z; do
-							if [[ "${Z[@]}" == \*\ * ]]; then
-								local GB=" [${Z[1]}] "
-								break
-							fi
-						done <<< "$(git branch 2>&-)"
-					fi
-
-					# Count the number of commits.
-					if [ "$COMMITS" == "true" -a "$DO_GIT" == "true" ]; then
-						local GC; declare -i L=0
-						while read -r Z; do
-							[[ "$Z" == commit* ]] && L+=1
-						done <<< "$(git log 2>&-)"
-						[ $L -eq 0 ] || printf -v GC "(%'d) " "$L"
-						#TODO - Needed? Appended above: && printf "\n"
-					fi
-				fi
-
-				# Avoids showing "..//". The _PWD var is for prompt only.
-				# Changing PWD directory also breaks features like "cd -".
-				if [ "$PREFIX_DIR" == "true" ]; then
-					[ "$PWD" == "/" ] && _PWD="/" || _PWD="../${PWD//*\/}"
-				fi
-
-				if [ "$SHOW_LINES" == "true" ]; then
-					printf -v Y "%-.*d" "$COLUMNS"
-					P+="\e\[[2;38m\]${Y//0/━}\n"
-				fi
-
-				[ "$TARR" ] && P+="\[\e[0m\]${TARR}\[\e[1;38m\] "
-				P+="${X}${A}\[\e[2;33m\]${GB}\[\e[2;39m\]"
-				P+="${GS/Your branch is }\[\033[2;32m\]${GC}"
-				P+="\[\e[01;31m\]${_PWD/ }\[\e[0m\]"
-				[ "$BARR" ] && P+="\[\033[0m\]\n${BARR} "
-
-				# Set the main prompt, using info from above.
-				if [ "$STANDARD" == "false" ]; then
-					PS1="$P"
-				elif [ "$STANDARD" == "true" ]; then
-					PS1="\[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w\[\e[00m\]\$ "
-				fi
-			}
+		if [ "$SHOW_ICON" == "true" ]; then
+			[ $X -eq 0 ] && local A="+" || local A="!"
 		fi
 
-		# Minor drawback to this method is the inability to reassign the
-		# value of PS1, unless you first unset or clear this one.
-		PROMPT_COMMAND='PROMPT_PARSER'
-	else
-		PS1="\$ "
-	fi
-else
-	if [ "$ALT_TYPE" ]; then
-		# Want your prompt here? As long as it's not too much, let me know!
-		case "$ALT_TYPE" in
-			dsuveges)
-				PS1="\[\e[1;30m\]\A \u@\h\[\e[m\]:\[\e[1;32m\]\W\[\e[m\]$ " ;;
-			*)
-				printf "ERROR: Incorrect setting at: ALT_TYPE\n" 1>&2 ;;
-		esac
-	else
-		printf "ERROR: Missing setting at: ALT_TYPE\n" 1>&2
-	fi
+		P+="\[\e[0m\]╭──╼${X}╾──☉ \[\e[1;31m\] "
+
+		if [ "$DO_GIT" == "true" ] && type -fP git > /dev/null 2>&1; then
+			if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+				declare -a GI=()
+				GI[0]='≎' # Clean.
+				GI[1]='≍' # Uncommitted changes.
+				GI[2]='≭' # Unstaged changes.
+				GI[3]='≺' # New file(s).
+				GI[4]='⊀' # Removed file(s).
+				GI[5]='≔' # Conflict(s) detected.
+				GI[6]='∾' # Unknown
+
+				STATUS=`git status 2>&-`
+
+				# While loops in special order:
+				while read -ra Z; do
+					if [ "${Z[0]}${Z[1]}${Z[2]}" == 'nothingtocommit,' ]; then
+						GIC="${GI[0]}"; break
+					fi
+				done <<<  "$STATUS"
+
+				while read -ra Z; do
+					if [ "${Z[0]}${Z[1]}${Z[3]}" == 'Yourbranchahead' ]; then
+						GIC="${GI[6]}"; break
+					fi
+				done <<<  "$STATUS"
+
+				while read -ra Z; do
+					if [ "${Z[0]}${Z[1]}${Z[2]}${Z[3]}" == 'Changestobecommitted:' ]; then
+						GIC="${GI[2]}"; break
+					fi
+				done <<<  "$STATUS"
+
+				while read -ra Z; do
+					if [ "${Z[0]}${Z[1]}" == 'Untrackedfiles:' ]; then
+						GIC="${GI[3]}"; break
+					fi
+				done <<<  "$STATUS"
+
+				while read -ra Z; do
+					if [ "${Z[0]}" == 'modified:' ]; then
+						GIC="${GI[2]}"; break
+					fi
+				done <<<  "$STATUS"
+				# End of specially-ordered while loops.
+
+				if [ "$BRANCH" == "true" ]; then
+					# Get the current branch name.
+					while read -ra Z; do
+						if [[ "${Z[@]}" == \*\ * ]]; then
+							local GB=" Working on the '${Z[1]}' branch."
+							break
+						fi
+					done <<< "$(git branch 2>&-)"
+				fi
+			else
+				P+="☡  \[\e[2;37m\]Sleepy git...\[\033[0m\]"
+			fi
+
+			P+="${GIC} \[\e[2;37m\]${GB}\[\033[0m\]"
+		fi
+
+		P+="\[\033[0m\]\n╰─☉  "
+
+		PS1="$P"
+
+		unset X G
+	}
+	# Minor drawback to this method is the inability to reassign the
+	# value of PS1, unless you first unset or clear this one.
+	PROMPT_COMMAND='PROMPT_PARSER'
 fi
 
 #---------------------------------------------------------------------------HISTORY
