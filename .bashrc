@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun  3 Nov 20:11:39 GMT 2019
+# Last Change       - Sun  3 Nov 20:30:02 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -134,12 +134,18 @@ else
 				GI[2]='≭' # Unstaged changes.
 				GI[3]='≺' # New file(s).
 				GI[4]='⊀' # Removed file(s).
-				GI[5]='≔' # Conflict(s) detected.
+				GI[5]='≔' # Initial commit.
 				GI[6]='∾' # Branch is ahead.
 
 				STATUS=`git status 2>&-`
 
 				# While loops in special order:
+				while read -ra Z; do
+					if [ "${Z[0]}${Z[1]}" == 'Initialcommit' ]; then
+						GIC="${GI[5]}"; break
+					fi
+				done <<<  "$STATUS"
+
 				while read -ra Z; do
 					if [ "${Z[0]}${Z[1]}${Z[2]}" == 'nothingtocommit,' ]; then
 						GIC="${GI[0]}"; break
@@ -179,9 +185,16 @@ else
 							break
 						fi
 					done <<< "$(git branch 2>&-)"
+
+					# If offline repo, above won't work, try:
+					if ! [ "$GB" ]; then
+						local GB
+						read -a GB <<< "$STATUS"
+						GB=" Working on the '${GB[2]}' branch."
+					fi
 				fi
 
-				P+="${GIC}"
+				P+="${GIC} "
 			else
 				P+="☡  \[\e[2;37m\]Sleepy git...\[\033[0m\]"
 			fi
