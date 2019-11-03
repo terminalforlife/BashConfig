@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 27 Oct 23:41:22 GMT 2019
+# Last Change       - Sun  3 Nov 16:07:13 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -24,6 +24,9 @@ POSIX_MODE="true"
 # If git is installed and you're in a git repository, then this .bashrc file will
 # by default display various git-related information. Change to false to disable.
 DO_GIT="true"
+
+# The old TFL prompt style can be used if you're not a fan of the newer one.
+OLD_TFL_PROMPT="false"
 
 # Set this to false to disable the prefixed ../ where the current working directory
 # is displayed, unless you're of course in /. Alignment should be maintained.
@@ -129,7 +132,8 @@ for OPT in\
 \
 	SHOW_LINES:$SHOW_LINES DO_GIT:$DO_GIT BRANCH:$BRANCH COMMITS:$COMMITS\
 	PREFIX_DIR:$PREFIX_DIR SIMPLE:$SIMPLE STANDARD:$STANDARD\
-	POSIX_MODE:$POSIX_MODE MAN_COLORS:$MAN_COLORS SHOW_ICON:$SHOW_ICON
+	POSIX_MODE:$POSIX_MODE MAN_COLORS:$MAN_COLORS SHOW_ICON:$SHOW_ICON\
+	OLD_TFL_PROMPT:$OLD_TFL_PROMPT
 {
 	if ! [[ "${OPT/*:}" =~ ^(true|false)$ ]]; then
 		printf "ERROR: Incorrect setting at: %s\n" "${OPT%:*}" 1>&2
@@ -149,76 +153,84 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 		[ "${T[2]#*=}" == bionic$'\n' ] && R=4 || R=3
 		#TODO - If file isn't found, should os-release be checked?
 
-		PROMPT_PARSER(){
-			# Get the previous command's exit status and update icon.
-			local P X=$?; printf -v X "%0.3d" "$X"
-			if [ "$SHOW_ICON" == "true" ]; then
-				[ $X -eq 0 ] && local A="  " || local A="  "
-			fi
+		if ! [ "$OLD_TFL_PROMPT" == "true" ]; then
+			# Newer, more concise prompt.
+			PROMPT_PARSER(){
+				PS1='$ '
+			}
+		else
+			# Old git-supported Prompt, as of 2019-11-03.
+			PROMPT_PARSER(){
+				# Get the previous command's exit status and update icon.
+				local P X=$?; printf -v X "%0.3d" "$X"
+				if [ "$SHOW_ICON" == "true" ]; then
+					[ $X -eq 0 ] && local A="  " || local A="  "
+				fi
 
-			if type -fP git > /dev/null 2>&1 && [ "$DO_GIT" == "true" ]\
-			&& git rev-parse --is-inside-work-tree >&- 2>&-; then
-				#TODO - Broken if it's a local git repository.
+				if type -fP git > /dev/null 2>&1 && [ "$DO_GIT" == "true" ]\
+				&& git rev-parse --is-inside-work-tree >&- 2>&-; then
+					#TODO - Broken if it's a local git repository.
 
-				# Get a short, status description of the branch.
-				U="Your branch is ahead of"
-				declare -i L=0
-				while read -ra Z; do
-					L+=1
-
-					#TODO - Fix empty when new branch.
-					if [[ $L -eq 2  && "${Z[*]}" == "$U"* ]] || [ $L -eq $R ]; then
-						local GS="${Z[@]//[:\'.]/} "
-						break
-					fi
-				done <<< "$(git status 2>&-)"
-				[ "$GS" ] && GS="${GS% } "
-
-				# Get the current branch name.
-				if [ "$BRANCH" == "true" -a "$DO_GIT" == "true" ]; then
+					# Get a short, status description of the branch.
+					U="Your branch is ahead of"
+					declare -i L=0
 					while read -ra Z; do
-						if [[ "${Z[@]}" == \*\ * ]]; then
-							local GB=" [${Z[1]}] "
+						L+=1
+
+						#TODO - Fix empty when new branch.
+						if [[ $L -eq 2  && "${Z[*]}" == "$U"* ]] || [ $L -eq $R ]; then
+							local GS="${Z[@]//[:\'.]/} "
 							break
 						fi
-					done <<< "$(git branch 2>&-)"
+					done <<< "$(git status 2>&-)"
+					[ "$GS" ] && GS="${GS% } "
+
+					# Get the current branch name.
+					if [ "$BRANCH" == "true" -a "$DO_GIT" == "true" ]; then
+						while read -ra Z; do
+							if [[ "${Z[@]}" == \*\ * ]]; then
+								local GB=" [${Z[1]}] "
+								break
+							fi
+						done <<< "$(git branch 2>&-)"
+					fi
+
+					# Count the number of commits.
+					if [ "$COMMITS" == "true" -a "$DO_GIT" == "true" ]; then
+						local GC; declare -i L=0
+						while read -r Z; do
+							[[ "$Z" == commit* ]] && L+=1
+						done <<< "$(git log 2>&-)"
+						[ $L -eq 0 ] || printf -v GC "(%'d) " "$L"
+						#TODO - Needed? Appended above: && printf "\n"
+					fi
 				fi
 
-				# Count the number of commits.
-				if [ "$COMMITS" == "true" -a "$DO_GIT" == "true" ]; then
-					local GC; declare -i L=0
-					while read -r Z; do
-						[[ "$Z" == commit* ]] && L+=1
-					done <<< "$(git log 2>&-)"
-					[ $L -eq 0 ] || printf -v GC "(%'d) " "$L"
-					#TODO - Needed? Appended above: && printf "\n"
+				# Avoids showing "..//". The _PWD var is for prompt only.
+				# Changing PWD directory also breaks features like "cd -".
+				if [ "$PREFIX_DIR" == "true" ]; then
+					[ "$PWD" == "/" ] && _PWD="/" || _PWD="../${PWD//*\/}"
 				fi
-			fi
 
-			# Avoids showing "..//". The _PWD var is for prompt only.
-			# Changing PWD directory also breaks features like "cd -".
-			if [ "$PREFIX_DIR" == "true" ]; then
-				[ "$PWD" == "/" ] && _PWD="/" || _PWD="../${PWD//*\/}"
-			fi
+				if [ "$SHOW_LINES" == "true" ]; then
+					printf -v Y "%-.*d" "$COLUMNS"
+					P+="\e\[[2;38m\]${Y//0/━}\n"
+				fi
 
-			if [ "$SHOW_LINES" == "true" ]; then
-				printf -v Y "%-.*d" "$COLUMNS"
-				P+="\e\[[2;38m\]${Y//0/━}\n"
-			fi
+				[ "$TARR" ] && P+="\[\e[0m\]${TARR}\[\e[1;38m\] "
+				P+="${X}${A}\[\e[2;33m\]${GB}\[\e[2;39m\]"
+				P+="${GS/Your branch is }\[\033[2;32m\]${GC}"
+				P+="\[\e[01;31m\]${_PWD/ }\[\e[0m\]"
+				[ "$BARR" ] && P+="\[\033[0m\]\n${BARR} "
 
-			[ "$TARR" ] && P+="\[\e[0m\]${TARR}\[\e[1;38m\] "
-			P+="${X}${A}\[\e[2;33m\]${GB}\[\e[2;39m\]"
-			P+="${GS/Your branch is }\[\033[2;32m\]${GC}"
-			P+="\[\e[01;31m\]${_PWD/ }\[\e[0m\]"
-			[ "$BARR" ] && P+="\[\033[0m\]\n${BARR} "
-
-			# Set the main prompt, using info from above.
-			if [ "$STANDARD" == "false" ]; then
-				PS1="$P"
-			elif [ "$STANDARD" == "true" ]; then
-				PS1="\[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w\[\e[00m\]\$ "
-			fi
-		}
+				# Set the main prompt, using info from above.
+				if [ "$STANDARD" == "false" ]; then
+					PS1="$P"
+				elif [ "$STANDARD" == "true" ]; then
+					PS1="\[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w\[\e[00m\]\$ "
+				fi
+			}
+		fi
 
 		# Minor drawback to this method is the inability to reassign the
 		# value of PS1, unless you first unset or clear this one.
@@ -228,6 +240,7 @@ if ! [ "$ALT_PROMPT" == "true" ]; then
 	fi
 else
 	if [ "$ALT_TYPE" ]; then
+		# Want your prompt here? As long as it's not too much, let me know!
 		case "$ALT_TYPE" in
 			dsuveges)
 				PS1="\[\e[1;30m\]\A \u@\h\[\e[m\]:\[\e[1;32m\]\W\[\e[m\]$ " ;;
