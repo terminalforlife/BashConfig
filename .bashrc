@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun  3 Nov 20:30:02 GMT 2019
+# Last Change       - Sun  3 Nov 21:02:35 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -135,7 +135,9 @@ else
 				GI[3]='≺' # New file(s).
 				GI[4]='⊀' # Removed file(s).
 				GI[5]='≔' # Initial commit.
+				GI[5]='!' # Initial commit.
 				GI[6]='∾' # Branch is ahead.
+				GI[7]='⮂' # Fix conflicts.
 
 				STATUS=`git status 2>&-`
 
@@ -143,6 +145,12 @@ else
 				while read -ra Z; do
 					if [ "${Z[0]}${Z[1]}" == 'Initialcommit' ]; then
 						GIC="${GI[5]}"; break
+					fi
+				done <<<  "$STATUS"
+
+				while read -ra Z; do
+					if [ "${Z[0]}${Z[1]}${Z[2]}" == '(fixconflictsand' ]; then
+						GIC="${GI[7]}"; break
 					fi
 				done <<<  "$STATUS"
 
