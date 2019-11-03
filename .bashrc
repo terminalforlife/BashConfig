@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun  3 Nov 20:01:26 GMT 2019
+# Last Change       - Sun  3 Nov 20:11:39 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -180,11 +180,13 @@ else
 						fi
 					done <<< "$(git branch 2>&-)"
 				fi
+
+				P+="${GIC}"
 			else
 				P+="☡  \[\e[2;37m\]Sleepy git...\[\033[0m\]"
 			fi
 
-			P+="${GIC} \[\e[2;37m\]${GB}\[\033[0m\]"
+			P+="\[\e[2;37m\]${GB}\[\033[0m\]"
 		fi
 
 		P+="\[\033[0m\]\n╰─☉  "
