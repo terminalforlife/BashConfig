@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 28 Oct 14:13:30 GMT 2019
+# Last Change       - Sun  3 Nov 14:08:26 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -173,9 +173,11 @@ if type -fP ls watch > /dev/null 2>&1; then
 	alias dwatch='watch -n 0.1 "ls -SsCphq --color=auto --group-directories-first"' #: Watche a directory for changes in size and number of files.
 fi
 
-# Fix all CWD file and directory permissions to match the safer 0077 umask.
+# Fix all CWD file and directory permissions to match the safer 0077 umask. The
+# GitHub directory (/home/$USER/GitHub/) and its contents are protected from
+# this, as it could cause quite the problem.
 if type -fP chmod > /dev/null 2>&1; then
-	alias fixperms='find -xdev \( -type f -exec chmod 600 "{}" \+ -o -type d -exec chmod 700 "{}" \+ \) -printf "FIXING: %p\n" 2>&-' #: Recursive fix of permissions in the CWD. (F:600 D:700)
+	alias fixperms='[[ "$PWD" == "/home/$USER/GitHub/"* ]] || find -xdev -not -path "*/GitHub/*" \( -type f -exec chmod 600 {} \+ -o -type d -exec chmod 700 "{}" \+ \) -printf "FIXING: %p\n" 2>&-' #: Recursive fix of permissions in the CWD. (F:600 D:700)
 fi
 
 # Create or unmount a user-only RAM Disk (tmpfs, basically) of 32MB.
