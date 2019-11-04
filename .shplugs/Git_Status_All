@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/.shplugs/Git_Status_All
 # Started On        - Sat 16 Sep 14:19:06 BST 2017
-# Last Change       - Mon  4 Nov 13:57:41 GMT 2019
+# Last Change       - Mon  4 Nov 15:01:20 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 #
 #----------------------------------------------------------------------------------
 
-gitsa(){
+gitsa()(
 	GH_NAME='terminalforlife'
 
 	PARSER(){
@@ -136,8 +136,10 @@ gitsa(){
 		fi
 	}
 
+	unset -f PARSER
+
 	printf "\n"
-}
+)
 
 # Old version, as of 2019-11-04.
 #gitsa(){
