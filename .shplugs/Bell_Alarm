@@ -3,20 +3,20 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/.shplugs/Bell_Alarm
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Fri 26 Apr 14:05:39 BST 2019
+# Last Change       - Mon  4 Nov 15:05:26 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-bell(){
+bell()(
 	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
 
 	declare -i DEPCOUNT=0
-	for DEP in /usr/bin/pactl /bin/sleep; {
-		[ -x "$DEP" ] || {
+	for DEP in pactl sleep; {
+		if ! type -fP "$DEP" > /dev/null 2>&1; then
 			ERR "$LINENO" "Dependency '$DEP' not met."
 			DEPCOUNT+=1
-		}
+		fi
 	}
 
 	[ $DEPCOUNT -eq 0 ] || return 1
@@ -27,18 +27,18 @@ bell(){
 			STATUS="true"
 			break
 		fi
-	done <<< "$(/usr/bin/pactl list modules short)"
+	done <<< "$(pactl list modules short)"
 
 	# Infinitely sound the bell every second.
 	if [ "$STATUS" == "true" ]; then
 		while :; do
-			/usr/bin/pactl play-sample x11-alert >&- 2>&-
-			/bin/sleep 1s
+			pactl play-sample x11-alert >&- 2>&-
+			sleep 1s
 		done
 	else
 		ERR "$LINENO" "PulseAudio needs 'module-x11-bell' loaded."
 		return 1
 	fi
-}
+)
 
 # vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
