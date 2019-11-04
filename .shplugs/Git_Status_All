@@ -3,88 +3,220 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/.shplugs/Git_Status_All
 # Started On        - Sat 16 Sep 14:19:06 BST 2017
-# Last Change       - Fri  6 Apr 19:54:24 BST 2018
+# Last Change       - Mon  4 Nov 13:57:41 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
+# Example of assumed directory structure:
+#
+#   /home/ichy
+#   └── GitHub
+#       ├── mig
+#       │   └── gedit-themes
+#       │       ├── autumn.xml
+#       │       └── zenburn.xml
+#       └── terminalforlife
+#           ├── Forks
+#           │   └── bashone
+#           │       ├── 1.sh
+#           │       └── README.md
+#           └── Personal
+#               └── i3Config
+#                   ├── config
+#                   ├── get_packages
+#                   ├── LICENSE
+#                   ├── README.md
+#                   └── update_links.sh
+#
+#----------------------------------------------------------------------------------
 
 gitsa(){
-	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
+	GH_NAME='terminalforlife'
 
-	if ! [ -x /usr/bin/git ]; then
-		ERR "$LINENO" "Dependency '/usr/bin/git' not met."
-		return 1
-	elif ! [ $# -eq 0 ]; then
-		ERR "$LINENO" "Arguments not required."
-		return 1
-	fi
+	PARSER(){
+		declare -a GI=()
+		GI[0]='≎' # Clean.
+		GI[1]='≍' # Uncommitted changes.
+		GI[2]='≭' # Unstaged changes.
+		GI[3]='≺' # New file(s).
+		GI[4]='⊀' # Removed file(s).
+		GI[5]='≔' # Initial commit.
+		GI[6]='∾' # Branch is ahead.
+		GI[7]='⮂' # Fix conflicts.
 
-	# Enter your own location where your repositories are stored. Each one is
-	# assumed to be its own directory by the name of the repository itself.
-	MY_GIT_STORAGE="$HOME/GitHub/terminalforlife/Personal"
+		STATUS=`git status 2>&-`
 
-	if ! [ -d "$MY_GIT_STORAGE" ]; then
-		ERR "$LINENO" "Unable to locate: $MY_GIT_STORAGE"
-		return 1
-	fi
+		# While loops in special order:
+		while read -ra Z; do
+			if [ "${Z[0]}${Z[1]}" == 'Initialcommit' ]; then
+				GIC="${GI[5]}"; break
+			fi
+		done <<<  "$STATUS"
 
-	CURRENT_DIRECTORY="$PWD"
-	for DIR in $MY_GIT_STORAGE/* 'D+LqTAFĴ{!'; do
-		#TODO - Remove that last empty space... somehow.
-		if [ "$B" ] || [ "$C" ] || [ "$D" ] || [ "$E" ]; then
-			[ "$DIR" == 'D+LqTAFĴ{!' ] && continue
-			printf "\n"
+		while read -ra Z; do
+			if [ "${Z[0]}${Z[1]}${Z[2]}" == '(fixconflictsand' ]; then
+				GIC="${GI[7]}"; break
+			fi
+		done <<<  "$STATUS"
+
+		while read -ra Z; do
+			if [ "${Z[0]}${Z[1]}${Z[2]}" == 'nothingtocommit,' ]; then
+				GIC="${GI[0]}"; break
+			fi
+		done <<<  "$STATUS"
+
+		while read -ra Z; do
+			if [ "${Z[0]}${Z[1]}${Z[3]}" == 'Yourbranchahead' ]; then
+				GIC="${GI[6]}"; break
+			fi
+		done <<<  "$STATUS"
+
+		while read -ra Z; do
+			if [ "${Z[0]}${Z[1]}${Z[2]}${Z[3]}" == 'Changestobecommitted:' ]; then
+				GIC="${GI[2]}"; break
+			fi
+		done <<<  "$STATUS"
+
+		while read -ra Z; do
+			if [ "${Z[0]}${Z[1]}" == 'Untrackedfiles:' ]; then
+				GIC="${GI[3]}"; break
+			fi
+		done <<<  "$STATUS"
+
+		while read -ra Z; do
+			if [ "${Z[0]}" == 'modified:' ]; then
+				GIC="${GI[2]}"; break
+			fi
+		done <<<  "$STATUS"
+		# End of specially-ordered while loops.
+
+		# Get the current branch name.
+		while read -ra Z; do
+			if [[ "${Z[@]}" == \*\ * ]]; then
+				GB=" Working on the '${Z[1]}' branch."
+				break
+			fi
+		done <<< "$(git branch 2>&-)"
+
+		# If offline repo, above won't work, try:
+		if ! [ "$GB" ]; then
+			read -a GB <<< "$STATUS"
+			GB=" Working on the '${GB[2]}' branch."
 		fi
 
-		TITLE="false"
-		unset B C D E
+		printf "%24s \e[1;31m%s\e[0m \e[2;37m%s\e[0m\n" "$1" "$GIC" "$GB"
+	}
 
-		[ -d "$DIR" ] || continue && cd "$DIR"
+	FIRST="true"
+	for GROUP in "$HOME/GitHub/$GH_NAME/"*; {
+		if [ -d "$GROUP" ]; then
+			[ "$FIRST" == "true" ] || printf "\n" && unset FIRST
 
-		while read -ra X; do
-			case "${X[*]}" in
-				#*nothing\ to\ commit,\ working\ directory\ clean*)
-				#	A="true"
-				#	[ "$TITLE" == "true" ] || TITLE="true" ;;
-				Changes\ to\ be\ committed\:)
-					B="true"
-					[ "$TITLE" == "true" ] || TITLE="true" ;;
-				Changes\ not\ staged\ for\ commit\:)
-					C="true"
-					[ "$TITLE" == "true" ] || TITLE="true" ;;
-				*nothing\ added\ to\ commit\ but\ untracked*)
-					D="true"
-					[ "$TITLE" == "true" ] || TITLE="true" ;;
-				Your\ branch\ is\ ahead\ of*)
-					E="true"
-					[ "$TITLE" == "true" ] || TITLE="true" ;;
-				#Your\ branch\ is\ up-to-date\ with*)
-				#	F="true"
-				#	[ "$TITLE" == "true" ] || TITLE="true" ;;
-			esac
-		done <<< "$(/usr/bin/git status)"
+			printf "Listing git '%s' repositories:\n\n" "${GROUP##*/}"
+			cd "$GROUP"
 
-		if [ "$TITLE" == "true" ]; then
-			IFLET(){
-				for LET in $@; { [ "$LET" ] && local DO="yes"; }
-				[ "$DO" == "yes" ] && printf "REPO: ${DIR//*\/}\n"
+			for DIR in *; {
+				if [ -d "$DIR" ]; then
+					for REPO in *; {
+						if [ -d "$REPO" ]; then
+
+							cd "$REPO"
+
+							PARSER "$REPO"
+
+							cd ..
+						fi
+					}
+
+					cd ..
+				fi
 			}
 
-			# If either of these letters (as args) are true.
-			IFLET B C D E F
-
-			#[ "$A" ] && printf "  ⏵ Clean; nothing to commit.\n"
-			[ "$B" ] && printf "  ⏵ Changes to be committed.\n"
-			[ "$C" ] && printf "  ⏵ Changes yet to be staged for commit.\n"
-			[ "$D" ] && printf "  ⏵ Untracked files present.\n"
-			[ "$E" ] && printf "  ⏵ Commit(s) ready to be sent upstream.\n"
-			#[ "$F" ] && printf "  ⏵ Current branch is up-to-date with origin.\n"
+			cd ..
 		fi
+	}
 
-		cd ..
-	done
-
-	cd "$CURRENT_DIRECTORY"
+	printf "\n"
 }
+
+# Old version, as of 2019-11-04.
+#gitsa(){
+#	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
+#
+#	if ! [ -x /usr/bin/git ]; then
+#		ERR "$LINENO" "Dependency '/usr/bin/git' not met."
+#		return 1
+#	elif ! [ $# -eq 0 ]; then
+#		ERR "$LINENO" "Arguments not required."
+#		return 1
+#	fi
+#
+#	# Enter your own location where your repositories are stored. Each one is
+#	# assumed to be its own directory by the name of the repository itself.
+#	MY_GIT_STORAGE="$HOME/GitHub/$GH_NAME/Personal"
+#
+#	if ! [ -d "$MY_GIT_STORAGE" ]; then
+#		ERR "$LINENO" "Unable to locate: $MY_GIT_STORAGE"
+#		return 1
+#	fi
+#
+#	CURRENT_DIRECTORY="$PWD"
+#	for DIR in $MY_GIT_STORAGE/* 'D+LqTAFĴ{!'; do
+#		#TODO - Remove that last empty space... somehow.
+#		if [ "$B" ] || [ "$C" ] || [ "$D" ] || [ "$E" ]; then
+#			[ "$DIR" == 'D+LqTAFĴ{!' ] && continue
+#			printf "\n"
+#		fi
+#
+#		TITLE="false"
+#		unset B C D E
+#
+#		[ -d "$DIR" ] || continue && cd "$DIR"
+#
+#		while read -ra X; do
+#			case "${X[*]}" in
+#				#*nothing\ to\ commit,\ working\ directory\ clean*)
+#				#	A="true"
+#				#	[ "$TITLE" == "true" ] || TITLE="true" ;;
+#				Changes\ to\ be\ committed\:)
+#					B="true"
+#					[ "$TITLE" == "true" ] || TITLE="true" ;;
+#				Changes\ not\ staged\ for\ commit\:)
+#					C="true"
+#					[ "$TITLE" == "true" ] || TITLE="true" ;;
+#				*nothing\ added\ to\ commit\ but\ untracked*)
+#					D="true"
+#					[ "$TITLE" == "true" ] || TITLE="true" ;;
+#				Your\ branch\ is\ ahead\ of*)
+#					E="true"
+#					[ "$TITLE" == "true" ] || TITLE="true" ;;
+#				#Your\ branch\ is\ up-to-date\ with*)
+#				#	F="true"
+#				#	[ "$TITLE" == "true" ] || TITLE="true" ;;
+#			esac
+#		done <<< "$(/usr/bin/git status)"
+#
+#		if [ "$TITLE" == "true" ]; then
+#			IFLET(){
+#				for LET in $@; { [ "$LET" ] && local DO="yes"; }
+#				[ "$DO" == "yes" ] && printf "REPO: ${DIR//*\/}\n"
+#			}
+#
+#			# If either of these letters (as args) are true.
+#			IFLET B C D E F
+#
+#			#[ "$A" ] && printf "  ⏵ Clean; nothing to commit.\n"
+#			[ "$B" ] && printf "  ⏵ Changes to be committed.\n"
+#			[ "$C" ] && printf "  ⏵ Changes yet to be staged for commit.\n"
+#			[ "$D" ] && printf "  ⏵ Untracked files present.\n"
+#			[ "$E" ] && printf "  ⏵ Commit(s) ready to be sent upstream.\n"
+#			#[ "$F" ] && printf "  ⏵ Current branch is up-to-date with origin.\n"
+#		fi
+#
+#		cd ..
+#	done
+#
+#	cd "$CURRENT_DIRECTORY"
+#}
 
 # vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
