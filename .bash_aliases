@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun  3 Nov 23:57:55 GMT 2019
+# Last Change       - Mon  4 Nov 00:03:45 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -198,7 +198,8 @@ if type -fP git > /dev/null 2>&1; then
 		"config":config "rm --cached":grmc "commit -m":commit\
 		"status -s":status "checkout":checkout "config --list":gcl\
 		"describe --long --tag":describe "mv":gmv\
-		"show --pretty='%Cred%ci%Creset | %Cgreen%cn%Creset | %s'":show
+		"show --pretty='%Cred%ci%Creset (%Cgreen%cn%Creset)%n--| %s%n'":show\
+		"log --pretty='%Cred%ci%Creset (%Cgreen%cn%Creset)%n--| %s%n'":log
 	{
 		alias "${CMD/*:}"="git ${CMD%:*} 2> /dev/null"
 	}
