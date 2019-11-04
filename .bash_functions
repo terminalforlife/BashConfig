@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Fri 25 Oct 12:11:10 BST 2019
+# Last Change       - Mon  4 Nov 02:31:25 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -28,6 +28,18 @@
 [ "$BASH_VERSION" ] || return 1
 
 if type -fP awk > /dev/null 2>&1; then
+
+	topmem(){ #: Nice, brief, and clean output showing the top 50 memory-hogging processes.
+		awk "
+			{
+				M=\$1/1024
+				if(NR<50 && M>1){
+					printf(\"%'7dM %s\\n\", M, \$2)
+				}
+			}
+		" <<< "$(\ps ax -o rss= -o comm= --sort -rss)"
+	}
+
 	sc(){ #: Perform mathematical calculations via AWK.
 		printf "%f\n" "$(awk "BEGIN{print($@)}" 2>&-)"
 	}
