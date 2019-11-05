@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon  4 Nov 00:03:45 GMT 2019
+# Last Change       - Tue  5 Nov 14:43:08 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -201,7 +201,10 @@ if type -fP git > /dev/null 2>&1; then
 		"show --pretty='%Cred%ci%Creset (%Cgreen%cn%Creset)%n--| %s%n'":show\
 		"log --pretty='%Cred%ci%Creset (%Cgreen%cn%Creset)%n--| %s%n'":log
 	{
-		alias "${CMD/*:}"="git ${CMD%:*} 2> /dev/null"
+		alias "${CMD/*:}"="git --no-pager ${CMD%:*} 2> /dev/null"
+
+		# Use this instead, if you want pager support:
+		#alias "${CMD/*:}"="git ${CMD%:*} 2> /dev/null"
 	}
 fi
 
