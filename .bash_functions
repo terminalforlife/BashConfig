@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon  4 Nov 02:31:25 GMT 2019
+# Last Change       - Tue  5 Nov 13:51:45 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -27,8 +27,22 @@
 # Just in-case.
 [ "$BASH_VERSION" ] || return 1
 
-if type -fP awk > /dev/null 2>&1; then
+if type -fP grep uniq sed > /dev/null 2>&1; then
+	noab(){ #: No absolutes for executables found in PATH directories and the given file.
+		if ! [ -f "$1" -a -r "$1" -a -w "$1" ]; then
+			printf "ERROR: File missing or insufficent permissions.\n"
+			return 1
+		fi
 
+		printf "WARNING: The file will be irreversably changed!\n"
+		read -n 1 -e -p "Press any key to continue, or Ctrl+C to cancel... "
+
+		P=(`grep -Eo "(${PATH//://|})[a-Z0-9_-]+" "$1" 2>&- | uniq 2>&-`)
+		for F in ${P[@]}; { sed -i "s|$F |${F##*/} |g" "$1" 2>&-; }
+	}
+fi
+
+if type -fP awk > /dev/null 2>&1; then
 	topmem(){ #: Nice, brief, and clean output showing the top 50 memory-hogging processes.
 		awk "
 			{
