@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue  5 Nov 14:43:08 GMT 2019
+# Last Change       - Wed  6 Nov 00:00:29 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -195,11 +195,11 @@ if type -fP git > /dev/null 2>&1; then
 		"remote add upstream":raddup "rm":grm "add":add "tag":tag\
 		"push":push "pull":pull "pull upstream":pullup "diff":diff\
 		"init":init "clone":clone "merge":merge "branch":branch\
-		"config":config "rm --cached":grmc "commit -m":commit\
+		"config":config "rm --cached":grmc "commit":commit\
 		"status -s":status "checkout":checkout "config --list":gcl\
-		"describe --long --tag":describe "mv":gmv\
-		"show --pretty='%Cred%ci%Creset (%Cgreen%cn%Creset)%n--| %s%n'":show\
-		"log --pretty='%Cred%ci%Creset (%Cgreen%cn%Creset)%n--| %s%n'":log
+		"describe --long --tag":describe "mv":gmv "commit -m":scommit\
+		"show --pretty='%Cred%ci%Creset (%Cgreen%cn%Creset)%n%H%n%n───☉%n%B%n───☉%n'":show\
+		"--no-pager log --pretty='%Cred%ci%Creset (%Cgreen%cn%Creset)%n%H%n%n───☉%n%B%n───☉%n' 2> /dev/null":log
 	{
 		alias "${CMD/*:}"="git --no-pager ${CMD%:*} 2> /dev/null"
 
