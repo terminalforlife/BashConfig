@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Mon  4 Nov 13:38:40 GMT 2019
+# Last Change       - Thu  7 Nov 00:39:02 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -137,6 +137,7 @@ else
 				GI[5]='≔' # Initial commit.
 				GI[6]='∾' # Branch is ahead.
 				GI[7]='⮂' # Fix conflicts.
+				GI[8]='!' # Fix conflicts.
 
 				STATUS=`git status 2>&-`
 
@@ -184,14 +185,27 @@ else
 				done <<<  "$STATUS"
 				# End of specially-ordered while loops.
 
+				# If above while loops fail, exclaim!
+				[ -z "$GIC" ] && GIC="!"
+
 				if [ "$BRANCH" == "true" ]; then
 					# Get the current branch name.
-					while read -ra Z; do
-						if [[ "${Z[@]}" == \*\ * ]]; then
-							local GB=" Working on the '${Z[1]}' branch."
-							break
-						fi
-					done <<< "$(git branch 2>&-)"
+					TOP=`git rev-parse --show-toplevel`
+					IFS='/' read -a A < "$TOP/.git/HEAD"
+					local GB=" Working on the '${A[${#A[@]}-1]}' branch."
+
+					if [ -n "$TOP" -a -z "$GB" ]; then
+						# If above fails, try old method.
+						while read -ra Z; do
+							if [[ "${Z[@]}" == \*\ * ]]; then
+								local GB=" Working on the '${Z[1]}' branch."
+								break
+							fi
+						done <<< "$(git branch 2>&-)"
+
+						# If all else fails: wink-wink, nudge-nudge.
+						[ -z "$GB" ] && GB=" Uh-oh! Branch name unavailable."
+					fi
 
 					# If offline repo, above won't work, try:
 					if ! [ "$GB" ]; then
