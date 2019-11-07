@@ -3,17 +3,10 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Thu  7 Nov 00:03:17 GMT 2019
+# Last Change       - Thu  7 Nov 15:58:04 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
-# If you got this file without using insit, then you probably should get/use init
-# to update bashconfig, via the following commands, to avoid conflicts. This will
-# of course blast away your current configurations:
-#
-#   sudo insit -S
-#   sudo insit -U bashconfig
-#
 # IMPORTANT:
 #
 #   All functions you wish to be listed with lad (bashconfig/lad) MUST be
@@ -27,8 +20,71 @@
 # Just in-case.
 [ "$BASH_VERSION" ] || return 1
 
+if type -fP git > /dev/null 2>&1; then
+	pullup-forks()( #: For all forks, pull upstream changes to the current branch.
+		if [ $UID -eq 1000 -a "$USER" == 'ichy' ]; then
+			FORKS="$HOME/GitHub/terminalforlife/Forks"
+		else
+			if [ -z "$1" ]; then
+				printf "ERROR: The GitHub username is required.\n"
+				return 1
+			else
+				# If not me, enter your GitHub forks path.
+				FORKS="${1%/}"
+			fi
+		fi
+
+		# Pull, from upstream, each directory (repository) in FORKS.
+		for DIR in "$FORKS"/*; {
+			if [ -d "$DIR" ]; then
+				cd "$DIR" 2>&- || continue
+
+				# If not a git repo, go back, then skip to next iteration.
+				if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+					cd "$FORKS" 2>&- || return 1
+					continue
+				fi
+
+				# Get the current branch name.
+				IFS='/' read -a A < "$DIR/.git/HEAD"
+				GB="${A[${#A[@]}-1]}"
+
+				if [ -z "$GB" ]; then
+					# If above fails, try old method.
+					while read -ra Z; do
+						if [[ "${Z[@]}" == \*\ * ]]; then
+							GB="${Z[1]}"
+							break
+						fi
+					done <<< "$(git branch 2>&-)"
+				fi
+
+				# If offline repo, above won't work, try:
+				if [ -z "$GB" ]; then
+					read -a GB <<< "$STATUS"
+					GB="${GB[2]}"
+
+					# If all else fails, bail.
+					if [ -z "$GB" ]; then
+						printf "ERROR: Branch name detection failed.\n"
+						continue
+					fi
+				fi
+
+				printf "Repository '%s' updating... " "${DIR##*/}"
+
+				if git --no-pager pull upstream "$GB" > /dev/null 2>&1; then
+					printf "[\e[1;32mOK\e[0m]\n\n"
+				else
+					printf "[\e[1;31mERR\e[0m]\n\n"
+				fi
+			fi
+		}
+	)
+fi
+
 if type -fP dmenu > /dev/null 2>&1; then
-	dnote(){
+	dnote(){ #: Save a note to the desktop, using a simple form of dmenu.
 		local FILE="$HOME/Desktop/Saved Notes.txt"
 		if ! [ -f "$FILE" ]; then
 			> "$FILE"
