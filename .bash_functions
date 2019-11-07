@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue  5 Nov 13:51:45 GMT 2019
+# Last Change       - Thu  7 Nov 00:03:17 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -26,6 +26,28 @@
 
 # Just in-case.
 [ "$BASH_VERSION" ] || return 1
+
+if type -fP dmenu > /dev/null 2>&1; then
+	dnote(){
+		local FILE="$HOME/Desktop/Saved Notes.txt"
+		if ! [ -f "$FILE" ]; then
+			> "$FILE"
+		else
+			if ! [ -w "$FILE" ]; then
+				printf "ERROR: No write access to notes file.\n"
+				return 1
+			fi
+		fi
+
+		local NOTE=`printf '' | dmenu -p 'NOTE:' -l 1`
+		if [ -z "$NOTE" ]; then
+			printf "ERROR: Cannot save an empty note.\n"
+			return 1
+		else
+			printf "%(%F_%X)T: %s\n" -1 "$NOTE" >> "$FILE"
+		fi
+	}
+fi
 
 if type -fP grep uniq sed > /dev/null 2>&1; then
 	noab(){ #: No absolutes for executables found in PATH directories and the given file.
