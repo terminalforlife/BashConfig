@@ -3,12 +3,12 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/lad
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Mon 13 May 00:06:08 BST 2019
+# Last Change       - Thu  7 Nov 16:12:19 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-_VERSION_="2019-05-13"
+_VERSION_="2019-11-07"
 _PROJECT_="${0##*/}"
 
 FAIL(){
@@ -80,7 +80,8 @@ USAGE(){
 
 		              6. Functions must be put into: \$HOME/.bash_functions
 
-		              7. Functions must use '(){', without spacing.
+		              7. Functions must use '(){', without spacing. You can, however, use
+		                 parentheses instead of braces, for use of sub-shells.
 
 		FILES:      The following files are scanned:
 
@@ -143,8 +144,8 @@ if [ "$ONLY_FUNCS" == "true" ] || [ -z "$ONLY_FUNCS" -a -z "$ONLY_ALIASES" ]; th
 
 		while read; do
 			if ! [ -z "$REPLY" ] && ! [[ "$REPLY" =~ ^\# ]]; then
-				if [[ "$REPLY" =~ [a-Z0-9_-]+\(\)\{ ]]; then
-					NAME="${REPLY%%\(\)\{*}"
+				if [[ "$REPLY" =~ [a-Z0-9_-]+\(\)[\{\(] ]]; then
+					NAME="${REPLY%%\(\)[\(\{]*}"
 
 					# A description of " #: TEXT" must be appended to
 					# the function call line for each function. This
