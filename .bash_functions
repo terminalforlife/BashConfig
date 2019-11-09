@@ -74,9 +74,9 @@ if type -fP git > /dev/null 2>&1; then
 				printf "Repository '%s' updating... " "${DIR##*/}"
 
 				if git --no-pager pull upstream "$GB" > /dev/null 2>&1; then
-					printf "[\e[1;32mOK\e[0m]\n\n"
+					printf "[\e[1;32mOK\e[0m]\n"
 				else
-					printf "[\e[1;31mERR\e[0m]\n\n"
+					printf "[\e[1;31mERR\e[0m]\n"
 				fi
 			fi
 		}
