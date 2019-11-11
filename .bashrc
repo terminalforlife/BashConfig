@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Thu  7 Nov 00:39:02 GMT 2019
+# Last Change       - Mon 11 Nov 19:58:03 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -193,26 +193,6 @@ else
 					TOP=`git rev-parse --show-toplevel`
 					IFS='/' read -a A < "$TOP/.git/HEAD"
 					local GB=" Working on the '${A[${#A[@]}-1]}' branch."
-
-					if [ -n "$TOP" -a -z "$GB" ]; then
-						# If above fails, try old method.
-						while read -ra Z; do
-							if [[ "${Z[@]}" == \*\ * ]]; then
-								local GB=" Working on the '${Z[1]}' branch."
-								break
-							fi
-						done <<< "$(git branch 2>&-)"
-
-						# If all else fails: wink-wink, nudge-nudge.
-						[ -z "$GB" ] && GB=" Uh-oh! Branch name unavailable."
-					fi
-
-					# If offline repo, above won't work, try:
-					if ! [ "$GB" ]; then
-						local GB
-						read -a GB <<< "$STATUS"
-						GB=" Working on the '${GB[2]}' branch."
-					fi
 				fi
 
 				P+="${GIC} "
