@@ -45,6 +45,7 @@ gitsa()(
 		GI[5]='≔' # Initial commit.
 		GI[6]='∾' # Branch is ahead.
 		GI[7]='⮂' # Fix conflicts.
+		GI[8]='!' # Fix conflicts.
 
 		STATUS=`git status 2>&-`
 
@@ -93,18 +94,9 @@ gitsa()(
 		# End of specially-ordered while loops.
 
 		# Get the current branch name.
-		while read -ra Z; do
-			if [[ "${Z[@]}" == \*\ * ]]; then
-				GB=" Working on the '${Z[1]}' branch."
-				break
-			fi
-		done <<< "$(git branch 2>&-)"
-
-		# If offline repo, above won't work, try:
-		if ! [ "$GB" ]; then
-			read -a GB <<< "$STATUS"
-			GB=" Working on the '${GB[2]}' branch."
-		fi
+		TOP=`git rev-parse --show-toplevel`
+		IFS='/' read -a A < "$TOP/.git/HEAD"
+		local GB=" Working on the '${A[${#A[@]}-1]}' branch."
 
 		printf "%24s \e[1;31m%s\e[0m \e[2;37m%s\e[0m\n" "$1" "$GIC" "$GB"
 	}
