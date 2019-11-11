@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Wed  6 Nov 00:00:29 GMT 2019
+# Last Change       - Mon 11 Nov 19:33:57 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -131,6 +131,11 @@ fi
 
 # Used to use gpicview, until I realised feh could be used as an image viewer!
 if type -fP feh > /dev/null 2>&1; then
+	if type -fP wget > /dev/null 2>&1; then
+		alias getsetwall='wget -qO - "https://source.unsplash.com/random/1920x1080" | feh --bg-center -' # Fetch and set a random 1920x1080 wallpaper.
+		alias get='wget -qc --show-progress' #: Download with wget, using some tidier settings with -c.
+	fi
+
 	alias img='feh --fullscreen --hide-pointer --draw-filename --no-menus --preload 2>&-' #: Slide-show images in current directory using feh.
 fi
 
@@ -152,10 +157,6 @@ fi
 
 if type -fP hddtemp > /dev/null 2>&1; then
 	alias temphdd='hddtemp /dev/sd{a..z} 2>&-' #: View all sd* storage device temperatures.
-fi
-
-if type -fP wget > /dev/null 2>&1; then
-	alias get='wget -qc --show-progress' #: Download with wget, using some tidier settings with -c.
 fi
 
 if [ -f /var/log/boot.log ]; then
