@@ -1,14 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/lad
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Thu  7 Nov 16:12:19 GMT 2019
+# Last Change       - Fri 15 Nov 15:15:18 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-_VERSION_="2019-11-07"
+_VERSION_="2019-11-15"
 _PROJECT_="${0##*/}"
 
 FAIL(){
@@ -96,7 +96,7 @@ BOOLEAN="true"
 NL="\n"
 
 while [ "$1" ]; do
-	case "$1" in
+	case $1 in
 		--help|-h|-\?)
 			USAGE; exit 0 ;;
 		--version|-v)
@@ -106,7 +106,7 @@ while [ "$1" ]; do
 			DEBUGME="true" ;;
 		--search|-s)
 			shift; SEARCH="$1"
-			if ! [[ "$SEARCH" =~ ^[AFE]{1}: ]]; then
+			if ! [[ $SEARCH =~ ^[AFE]{1}: ]]; then
 				FAIL 1 "$LINENO" "Invalid search query. See '$_PROJECT_ --help' for information."
 			fi ;;
 		--exit-only|-e)
@@ -133,10 +133,9 @@ FILE_BA="$HOME/.bash_aliases"
 [ "$DEBUGME" == "true" ] && set -x
 
 PRINT(){ [ "$SEARCH" ] || printf "  %s - %s\n" "$@"; }
-CHK_TEMP(){ [ "$1" == "$2" ] && A_FOUND="true" || return 1; }
+CHK_TEMP(){ [ "$1" == "$2" ] && A_FOUND='true' || return 1; }
 
 #------------------------------------------------------------------GATHER FUNCTIONS
-
 
 if [ "$ONLY_FUNCS" == "true" ] || [ -z "$ONLY_FUNCS" -a -z "$ONLY_ALIASES" ]; then
 	if [ -f "$FILE_BF" ] && [ -r "$FILE_BF" ]; then
@@ -144,13 +143,13 @@ if [ "$ONLY_FUNCS" == "true" ] || [ -z "$ONLY_FUNCS" -a -z "$ONLY_ALIASES" ]; th
 
 		while read; do
 			if ! [ -z "$REPLY" ] && ! [[ "$REPLY" =~ ^\# ]]; then
-				if [[ "$REPLY" =~ [a-Z0-9_-]+\(\)[\{\(] ]]; then
-					NAME="${REPLY%%\(\)[\(\{]*}"
+				if [[ $REPLY =~ [a-Z0-9_-]+\(\)[\{\(] ]]; then
+					NAME=${REPLY%%\(\)[\(\{]*}
 
 					# A description of " #: TEXT" must be appended to
 					# the function call line for each function. This
 					# will NOT work otherwise.
-					DESC="${REPLY#*\#\:}"
+					DESC=${REPLY#*\#\:}
 
 					#TODO - Temporary quick fix for strange
 					#       issue since recent update. P()
@@ -158,9 +157,9 @@ if [ "$ONLY_FUNCS" == "true" ] || [ -z "$ONLY_FUNCS" -a -z "$ONLY_ALIASES" ]; th
 					#[ "$NAME" == "P" ] && continue
 
 					# Only functions found 0-1 tabs in are counted.
-					if [[ "$NAME" =~ ^\	{0,1}[a-Z_-] ]]; then
-						NAME="${NAME//\	/}"
-						if [[ "${SEARCH%%:*}" == [FE] ]]; then
+					if [[ $NAME =~ ^\	{0,1}[a-Z_-] ]]; then
+						NAME=${NAME//\	/}
+						if [[ ${SEARCH%%:*} == [FE] ]]; then
 							CHK_TEMP "$NAME" "${SEARCH#[FE]:}" || continue
 						else
 							PRINT "$NAME" "${DESC#\ }"
@@ -183,18 +182,18 @@ if [ "$ONLY_ALIASES" == "true" ] || [ -z "$ONLY_FUNCS" -a -z "$ONLY_ALIASES" ]; 
 		[ -z "$SEARCH" ] && printf "${NL}ALIASES ($FILE_BA)\n\n"
 
 		while read; do
-			if ! [ -z "$REPLY" ] && ! [[ "$REPLY" =~ ^\# ]]; then
-				if [[ "$REPLY" =~ alias\ [:\"\']{0,}[a-Z0-9_-]+[\'\"]{0,}\= ]]; then
+			if ! [ -z "$REPLY" ] && ! [[ $REPLY =~ ^\# ]]; then
+				if [[ $REPLY =~ alias\ [:\"\']{0,}[a-Z0-9_-]+[\'\"]{0,}\= ]]; then
 					declare -a TEMP=(${REPLY%%\=*})
 
 					#TODO - A cleaner system is preferable.
 					# A description of " #: TEXT" must be appended to
 					# the alias set line for each function. This will
 					# NOT work otherwise, as with the functions.
-					DESC="${REPLY#*\#\:}"
+					DESC=${REPLY#*\#\:}
 
 					if [ "${TEMP[0]}" == "alias" ]; then
-						if [[ "${SEARCH%%:*}" == [AE] ]]; then
+						if [[ ${SEARCH%%:*} == [AE] ]]; then
 							CHK_TEMP "${TEMP[1]//[\"\']}" "${SEARCH#[AE]:}" || continue
 						else
 							PRINT "${TEMP[1]//[\"\']}" "${DESC#\ }"
