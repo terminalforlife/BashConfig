@@ -132,7 +132,7 @@ fi
 # Used to use gpicview, until I realised feh could be used as an image viewer!
 if type -fP feh > /dev/null 2>&1; then
 	if type -fP wget > /dev/null 2>&1; then
-		alias getsetwall='wget -qO - "https://source.unsplash.com/random/1920x1080" | feh --bg-center -' # Fetch and set a random 1920x1080 wallpaper.
+		alias getsetwall='wget -qO - "https://source.unsplash.com/random/1920x1080" | feh --bg-center -' #: Fetch and set a random 1920x1080 wallpaper.
 		alias get='wget -qc --show-progress' #: Download with wget, using some tidier settings with -c.
 	fi
 
