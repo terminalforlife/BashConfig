@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Thu  7 Nov 15:58:04 GMT 2019
+# Last Change       - Fri 15 Nov 15:06:03 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -133,7 +133,7 @@ if type -fP awk > /dev/null 2>&1; then
 	}
 
 	sc(){ #: Perform mathematical calculations via AWK.
-		printf "%f\n" "$(awk "BEGIN{print($@)}" 2>&-)"
+		awk "BEGIN{print($@)}" 2>&-
 	}
 fi
 
