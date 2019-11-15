@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Mon 11 Nov 19:58:03 GMT 2019
+# Last Change       - Fri 15 Nov 15:26:48 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ if ! [ "${BASH_VERSINFO[0]}" -ge 4 ]; then
 	return 1
 fi
 
-if [ -d "$HOME/bin" ] && ! [[ "$PATH" == *"/home/$USER/bin"* ]]; then
+if [ -d "$HOME/bin" ] && ! [[ $PATH == *"/home/$USER/bin"* ]]; then
 	# If the directory exists and isn't already in PATH, set it so.
 	export PATH+=":/home/$USER/bin"
 fi
@@ -96,7 +96,7 @@ for OPT in\
 	DO_GIT:$DO_GIT BRANCH:$BRANCH SIMPLE:$SIMPLE POSIX_MODE:$POSIX_MODE\
 	MAN_COLORS:$MAN_COLORS
 {
-	if ! [[ "${OPT/*:}" =~ ^(true|false)$ ]]; then
+	if ! [[ ${OPT/*:} =~ ^(true|false)$ ]]; then
 		printf "ERROR: Incorrect setting at: %s\n" "${OPT%:*}" 1>&2
 	fi
 }
@@ -121,12 +121,12 @@ else
 		local OFF='▫' ON='▪' P
 
 		if [ "$SHOW_ICON" == "true" ]; then
-			[ $X -eq 0 ] && local A="+" || local A="!"
+			[ $X -eq 0 ] && local A='+' || local A='!'
 		fi
 
 		P+="\[\e[0m\]╭──╼${X}╾──☉ \[\e[1;31m\] "
 
-		if [ "$DO_GIT" == "true" ] && type -fP git > /dev/null 2>&1; then
+		if [ "$DO_GIT" == 'true' ] && type -fP git > /dev/null 2>&1; then
 			if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
 				declare -a GI=()
 				GI[0]='≎' # Clean.
@@ -144,49 +144,49 @@ else
 				# While loops in special order:
 				while read -ra Z; do
 					if [ "${Z[0]}${Z[1]}" == 'Initialcommit' ]; then
-						GIC="${GI[5]}"; break
+						GIC=${GI[5]}; break
 					fi
-				done <<<  "$STATUS"
+				done <<< "$STATUS"
 
 				while read -ra Z; do
 					if [ "${Z[0]}${Z[1]}${Z[2]}" == '(fixconflictsand' ]; then
-						GIC="${GI[7]}"; break
+						GIC=${GI[7]}; break
 					fi
-				done <<<  "$STATUS"
+				done <<< "$STATUS"
 
 				while read -ra Z; do
 					if [ "${Z[0]}${Z[1]}${Z[2]}" == 'nothingtocommit,' ]; then
-						GIC="${GI[0]}"; break
+						GIC=${GI[0]}; break
 					fi
-				done <<<  "$STATUS"
+				done <<< "$STATUS"
 
 				while read -ra Z; do
 					if [ "${Z[0]}${Z[1]}${Z[3]}" == 'Yourbranchahead' ]; then
-						GIC="${GI[6]}"; break
+						GIC=${GI[6]}; break
 					fi
-				done <<<  "$STATUS"
+				done <<< "$STATUS"
 
 				while read -ra Z; do
 					if [ "${Z[0]}${Z[1]}${Z[2]}${Z[3]}" == 'Changestobecommitted:' ]; then
-						GIC="${GI[2]}"; break
+						GIC=${GI[2]}; break
 					fi
-				done <<<  "$STATUS"
+				done <<< "$STATUS"
 
 				while read -ra Z; do
 					if [ "${Z[0]}${Z[1]}" == 'Untrackedfiles:' ]; then
-						GIC="${GI[3]}"; break
+						GIC=${GI[3]}; break
 					fi
-				done <<<  "$STATUS"
+				done <<< "$STATUS"
 
 				while read -ra Z; do
 					if [ "${Z[0]}" == 'modified:' ]; then
-						GIC="${GI[2]}"; break
+						GIC=${GI[2]}; break
 					fi
-				done <<<  "$STATUS"
+				done <<< "$STATUS"
 				# End of specially-ordered while loops.
 
 				# If above while loops fail, exclaim!
-				[ -z "$GIC" ] && GIC="!"
+				[ -z "$GIC" ] && GIC='!'
 
 				if [ "$BRANCH" == "true" ]; then
 					# Get the current branch name.
@@ -216,10 +216,10 @@ fi
 
 #---------------------------------------------------------------------------HISTORY
 
-if [ "$DEFAULT_HISTORY" == "false" ]; then
+if [ "$DEFAULT_HISTORY" == 'false' ]; then
 	#HISTIGNORE="ls *:exit *:clear:cd *::pwd:history *"
 	HISTTIMEFORMAT="[%F_%X]: "
-	HISTCONTROL=ignoreboth
+	HISTCONTROL='ignoreboth'
 	HISTFILESIZE=0
 	HISTSIZE=1000
 fi
@@ -228,9 +228,9 @@ fi
 
 FLIB="$HOME/.shplugs"
 if [ -d "$FLIB" ]; then
-	for FUNC in ${PLUGINS[@]}; {
-		if [ -f "$FLIB/$FUNC" -a -r "$FLIB/$FUNC" ]; then
-			source "$FLIB/$FUNC"
+	for FUNC in "${PLUGINS[@]}"; {
+		if [ -f "$FLIB/$FUNC" ] && [ -r "$FLIB/$FUNC" ]; then
+			. "$FLIB/$FUNC"
 		fi
 	}
 fi
@@ -245,17 +245,17 @@ if type -fP vboxsdl vboxmanage > /dev/null 2>&1; then
 fi
 
 # Set the format of the shell keyboard, time.
-export TIMEFORMAT=">>> real %3R | user %3U | sys %3S | pcpu %P <<<"
+export TIMEFORMAT='>>> real %3R | user %3U | sys %3S | pcpu %P <<<'
 
 # Set the colors to use for the ls command. This is a dark, simple theme.
-export LS_COLORS="di=1;31:ln=2;32:mh=1;32:ex=1;33:"
+export LS_COLORS='di=1;31:ln=2;32:mh=1;32:ex=1;33:'
 
 # Remove /snap/bin from the end of the PATH. Uncomment if you need this, but
 # removing the snap functionality (packages) should remove it from PATH anyway.
 #export PATH="${PATH%:\/snap\/bin}"
 
 # Set the terminal color.
-export TERM="xterm-256color"
+export TERM='xterm-256color'
 
 # Supposedly, this should be run after the above line, according to: man 1 tput
 type -fP tput > /dev/null 2>&1 && /usr/bin/tput init
@@ -281,7 +281,7 @@ export PS_PERSONALITY="posix"
 #------------------------------------------------------------SOURCE BASH_COMPLETION
 
 USRBC="/usr/share/bash-completion/bash_completion"
-[ -f "$USRBC" -a -r "$USRBC" ] && source "$USRBC"
+[ -f "$USRBC" -a -r "$USRBC" ] && . "$USRBC"
 
 unset USRBC
 
