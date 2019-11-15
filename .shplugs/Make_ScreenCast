@@ -1,0 +1,68 @@
+#!/bin/bash
+
+mksc(){
+	local FN DIR="$HOME/Videos/MKSC"
+	printf -v FN "%s/screencast-%(%F_%X)T.mp4" "$DIR" -1
+
+	if [ -z "$RES" ]; then
+		local LINE RES
+		while read -a LINE; do
+			if [ "${LINE[0]}" == '-geometry' ]; then
+				RES="${LINE[1]}"
+				break
+			fi
+		done <<< "$(xwininfo -root)"
+	fi
+
+	if [ -f "$FN" ]; then
+		if ! [ -w "$FN" ]; then
+			printf "ERROR: File exists, but unable to overwrite.\n" >&2
+			return 1
+		fi
+	else
+		printf "File exists -- overwriting...\n"
+	fi
+
+	[ -d "$DIR" ] || mkdir -vp "$DIR"
+
+	printf "Press 'q' when finished.\n"
+
+	ffmpeg -y -f x11grab -s "${RES:-1024x768}" -i "${DISPLAY:-:0.0}" -f pulse\
+		-i default "$FN" > /dev/null 2>&1
+
+	if ! [ $? -eq 0 ]; then
+		printf "ERROR: Recording with 'ffmpeg' failed.\n" >&2
+		return 1
+	fi
+
+	if [ -n "$PS1" ]; then
+		while :; do
+			while read; do
+				printf "%s\n" "$REPLY"
+			done <<-EOF
+				SAVED: '$FN'
+
+				What will you do with the file now?
+
+				  1. Play
+				  8. Delete
+
+				  0. Quit mksc
+
+			EOF
+
+			read -n 1 -e -p "PROMPT: "
+
+			case $REPLY in
+				1)
+					mplayer -vo x11 -nomouseinput -noar -zoom\
+						-nojoystick -nogui -really-quiet\
+						-nolirc "$FN" > /dev/null 2>&1 ;;
+				8)
+					rm -vi "$FN" ;;
+				0)
+					break ;;
+			esac
+		done
+	fi
+}
