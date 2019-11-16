@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/.shplugs/Git_Status_All
 # Started On        - Sat 16 Sep 14:19:06 BST 2017
-# Last Change       - Mon 11 Nov 19:50:55 GMT 2019
+# Last Change       - Sat 16 Nov 15:43:36 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -33,73 +33,17 @@
 gitsa()(
 	GH_NAME='terminalforlife'
 
-	PARSER(){
-		[ -d '.git' ] || return 1
+	declare -a GI=()
+	GI[0]='≎' # Clean.
+	GI[1]='≍' # Uncommitted changes.
+	GI[2]='≭' # Unstaged changes.
+	GI[3]='≺' # New file(s).
+	GI[4]='⊀' # Removed file(s).
+	GI[5]='≔' # Initial commit.
+	GI[6]='∾' # Branch is ahead.
+	GI[7]='⮂' # Fix conflicts.
+	GI[8]='!' # Unknown (ERROR).
 
-		declare -a GI=()
-		GI[0]='≎' # Clean.
-		GI[1]='≍' # Uncommitted changes.
-		GI[2]='≭' # Unstaged changes.
-		GI[3]='≺' # New file(s).
-		GI[4]='⊀' # Removed file(s).
-		GI[5]='≔' # Initial commit.
-		GI[6]='∾' # Branch is ahead.
-		GI[7]='⮂' # Fix conflicts.
-		GI[8]='!' # Fix conflicts.
-
-		STATUS=`git status 2>&-`
-
-		# While loops in special order:
-		while read -ra Z; do
-			if [ "${Z[0]}${Z[1]}" == 'Initialcommit' ]; then
-				GIC="${GI[5]}"; break
-			fi
-		done <<<  "$STATUS"
-
-		while read -ra Z; do
-			if [ "${Z[0]}${Z[1]}${Z[2]}" == '(fixconflictsand' ]; then
-				GIC="${GI[7]}"; break
-			fi
-		done <<<  "$STATUS"
-
-		while read -ra Z; do
-			if [ "${Z[0]}${Z[1]}${Z[2]}" == 'nothingtocommit,' ]; then
-				GIC="${GI[0]}"; break
-			fi
-		done <<<  "$STATUS"
-
-		while read -ra Z; do
-			if [ "${Z[0]}${Z[1]}${Z[3]}" == 'Yourbranchahead' ]; then
-				GIC="${GI[6]}"; break
-			fi
-		done <<<  "$STATUS"
-
-		while read -ra Z; do
-			if [ "${Z[0]}${Z[1]}${Z[2]}${Z[3]}" == 'Changestobecommitted:' ]; then
-				GIC="${GI[2]}"; break
-			fi
-		done <<<  "$STATUS"
-
-		while read -ra Z; do
-			if [ "${Z[0]}${Z[1]}" == 'Untrackedfiles:' ]; then
-				GIC="${GI[3]}"; break
-			fi
-		done <<<  "$STATUS"
-
-		while read -ra Z; do
-			if [ "${Z[0]}" == 'modified:' ]; then
-				GIC="${GI[2]}"; break
-			fi
-		done <<<  "$STATUS"
-		# End of specially-ordered while loops.
-
-		# Get the current branch name.
-		TOP=`git rev-parse --show-toplevel`
-		IFS='/' read -a A < "$TOP/.git/HEAD"
-		local GB=" Working on the '${A[${#A[@]}-1]}' branch."
-
-		printf "%24s \e[1;31m%s\e[0m \e[2;37m%s\e[0m\n" "$1" "$GIC" "$GB"
-	}
 
 	FIRST="true"
 	for GROUP in "$HOME/GitHub/$GH_NAME/"*; {
@@ -116,7 +60,81 @@ gitsa()(
 
 							cd "$REPO"
 
-							PARSER "$REPO"
+							[ -d '.git' ] || continue
+
+							STATUS=`git status 2>&-`
+
+							if [ "$BRANCH" == "true" ]; then
+								# Get the current branch name.
+								TOP=`git rev-parse --show-toplevel`
+								IFS='/' read -a A < "$TOP/.git/HEAD"
+								local GB="${A[${#A[@]}-1]}"
+							fi
+
+							# While loops in special order:
+							while read -ra Z; do
+								if [ "${Z[0]}${Z[1]}" == 'Initialcommit' ]; then
+									printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has no commits, yet." "${GI[5]}" "$GB"
+									break
+								fi
+							done <<< "$STATUS"
+
+							while read -ra Z; do
+								if [ "${Z[0]}${Z[1]}${Z[2]}" == '(fixconflictsand' ]; then
+									printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has conflict(s)." "${GI[7]}" "$GB"
+									break
+								fi
+							done <<< "$STATUS"
+
+							while read -ra Z; do
+								if [ "${Z[0]}${Z[1]}${Z[2]}" == 'nothingtocommit,' ]; then
+									local TTL_COMS
+									readarray TTL_COMS <<< "$(git --no-pager log --format='oneline')"
+									printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' is %d commit(s) clean." "${GI[0]}" "$GB" "${#TTL_COMS[@]}"
+									break
+								fi
+							done <<< "$STATUS"
+
+							while read -ra Z; do
+								if [ "${Z[0]}${Z[1]}${Z[3]}" == 'Yourbranchahead' ]; then
+									printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' leads by %d commit(s)." "${GI[6]}" "$GB" "${Z[7]}"
+									break
+								fi
+							done <<< "$STATUS"
+
+							while read -ra Z; do
+								if [ "${Z[0]}${Z[1]}" == 'Untrackedfiles:' ]; then
+									#TODO: Sloppy method needs improving.
+									local LINE NFTTL=0
+									while read -a LINE; do
+										[ "${LINE[0]}" == '??' ] && let NFTTL+=1
+									done <<< "$(git status --short)"
+
+									printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has %d new file(s)." "${GI[3]}" "$GB" "$NFTTL"
+									break
+								fi
+							done <<< "$STATUS"
+
+							while read -ra Z; do
+								if [ "${Z[0]}" == 'modified:' ]; then
+									local TEMP
+									read -a TEMP <<< `git diff --shortstat`
+									printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has %d modified file(s)." "${GI[2]}" "$GB" "${TEMP[0]}"
+									break
+								fi
+							done <<< "$STATUS"
+
+							while read -ra Z; do
+								if [ "${Z[0]}${Z[1]}${Z[2]}${Z[3]}" == 'Changestobecommitted:' ]; then
+									#TODO: Have a counter for this, too.
+									printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has changes to commit." "${GI[1]}" "$GB"
+									break
+								fi
+							done <<< "$STATUS"
+							# End of specially-ordered while loops.
+
+							#printf "  \e[0m%10s %s \n" "'$REPO'" "$DESC"
+							printf "%24s \e[1;31m%s\e[0m %s\n" "$REPO" "$DESC"
 
 							cd ..
 						fi
@@ -134,85 +152,5 @@ gitsa()(
 
 	printf "\n"
 )
-
-# Old version, as of 2019-11-04.
-#gitsa(){
-#	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
-#
-#	if ! [ -x /usr/bin/git ]; then
-#		ERR "$LINENO" "Dependency '/usr/bin/git' not met."
-#		return 1
-#	elif ! [ $# -eq 0 ]; then
-#		ERR "$LINENO" "Arguments not required."
-#		return 1
-#	fi
-#
-#	# Enter your own location where your repositories are stored. Each one is
-#	# assumed to be its own directory by the name of the repository itself.
-#	MY_GIT_STORAGE="$HOME/GitHub/$GH_NAME/Personal"
-#
-#	if ! [ -d "$MY_GIT_STORAGE" ]; then
-#		ERR "$LINENO" "Unable to locate: $MY_GIT_STORAGE"
-#		return 1
-#	fi
-#
-#	CURRENT_DIRECTORY="$PWD"
-#	for DIR in $MY_GIT_STORAGE/* 'D+LqTAFĴ{!'; do
-#		#TODO - Remove that last empty space... somehow.
-#		if [ "$B" ] || [ "$C" ] || [ "$D" ] || [ "$E" ]; then
-#			[ "$DIR" == 'D+LqTAFĴ{!' ] && continue
-#			printf "\n"
-#		fi
-#
-#		TITLE="false"
-#		unset B C D E
-#
-#		[ -d "$DIR" ] || continue && cd "$DIR"
-#
-#		while read -ra X; do
-#			case "${X[*]}" in
-#				#*nothing\ to\ commit,\ working\ directory\ clean*)
-#				#	A="true"
-#				#	[ "$TITLE" == "true" ] || TITLE="true" ;;
-#				Changes\ to\ be\ committed\:)
-#					B="true"
-#					[ "$TITLE" == "true" ] || TITLE="true" ;;
-#				Changes\ not\ staged\ for\ commit\:)
-#					C="true"
-#					[ "$TITLE" == "true" ] || TITLE="true" ;;
-#				*nothing\ added\ to\ commit\ but\ untracked*)
-#					D="true"
-#					[ "$TITLE" == "true" ] || TITLE="true" ;;
-#				Your\ branch\ is\ ahead\ of*)
-#					E="true"
-#					[ "$TITLE" == "true" ] || TITLE="true" ;;
-#				#Your\ branch\ is\ up-to-date\ with*)
-#				#	F="true"
-#				#	[ "$TITLE" == "true" ] || TITLE="true" ;;
-#			esac
-#		done <<< "$(/usr/bin/git status)"
-#
-#		if [ "$TITLE" == "true" ]; then
-#			IFLET(){
-#				for LET in $@; { [ "$LET" ] && local DO="yes"; }
-#				[ "$DO" == "yes" ] && printf "REPO: ${DIR//*\/}\n"
-#			}
-#
-#			# If either of these letters (as args) are true.
-#			IFLET B C D E F
-#
-#			#[ "$A" ] && printf "  ⏵ Clean; nothing to commit.\n"
-#			[ "$B" ] && printf "  ⏵ Changes to be committed.\n"
-#			[ "$C" ] && printf "  ⏵ Changes yet to be staged for commit.\n"
-#			[ "$D" ] && printf "  ⏵ Untracked files present.\n"
-#			[ "$E" ] && printf "  ⏵ Commit(s) ready to be sent upstream.\n"
-#			#[ "$F" ] && printf "  ⏵ Current branch is up-to-date with origin.\n"
-#		fi
-#
-#		cd ..
-#	done
-#
-#	cd "$CURRENT_DIRECTORY"
-#}
 
 # vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
