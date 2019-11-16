@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sat 16 Nov 02:45:26 GMT 2019
+# Last Change       - Sat 16 Nov 15:46:02 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -125,7 +125,7 @@ else
 			[ $X -eq 0 ] && local A='+' || local A='!'
 		fi
 
-		P+="\[\e[0m\]╭──╼${X}╾──☉ \[\e[1;31m\] "
+		P+="\[\e[0m\]╭──╼${X}╾──☉  "
 
 		if [ "$DO_GIT" == 'true' ] && type -fP git > /dev/null 2>&1; then
 			if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
@@ -138,73 +138,84 @@ else
 				GI[5]='≔' # Initial commit.
 				GI[6]='∾' # Branch is ahead.
 				GI[7]='⮂' # Fix conflicts.
-				GI[8]='!' # Fix conflicts.
+				GI[8]='!' # Unknown (ERROR).
 
 				STATUS=`git status 2>&-`
-
-				# While loops in special order:
-				while read -ra Z; do
-					if [ "${Z[0]}${Z[1]}" == 'Initialcommit' ]; then
-						GIC=${GI[5]}; break
-					fi
-				done <<< "$STATUS"
-
-				while read -ra Z; do
-					if [ "${Z[0]}${Z[1]}${Z[2]}" == '(fixconflictsand' ]; then
-						GIC=${GI[7]}; break
-					fi
-				done <<< "$STATUS"
-
-				while read -ra Z; do
-					if [ "${Z[0]}${Z[1]}${Z[2]}" == 'nothingtocommit,' ]; then
-						GIC=${GI[0]}; break
-					fi
-				done <<< "$STATUS"
-
-				while read -ra Z; do
-					if [ "${Z[0]}${Z[1]}${Z[3]}" == 'Yourbranchahead' ]; then
-						GIC=${GI[6]}; break
-					fi
-				done <<< "$STATUS"
-
-				while read -ra Z; do
-					if [ "${Z[0]}${Z[1]}${Z[2]}${Z[3]}" == 'Changestobecommitted:' ]; then
-						GIC=${GI[2]}; break
-					fi
-				done <<< "$STATUS"
-
-				while read -ra Z; do
-					if [ "${Z[0]}${Z[1]}" == 'Untrackedfiles:' ]; then
-						GIC=${GI[3]}; break
-					fi
-				done <<< "$STATUS"
-
-				while read -ra Z; do
-					if [ "${Z[0]}" == 'modified:' ]; then
-						GIC=${GI[2]}; break
-					fi
-				done <<< "$STATUS"
-				# End of specially-ordered while loops.
-
-				# If above while loops fail, exclaim!
-				[ -z "$GIC" ] && GIC='!'
 
 				if [ "$BRANCH" == "true" ]; then
 					# Get the current branch name.
 					TOP=`git rev-parse --show-toplevel`
 					IFS='/' read -a A < "$TOP/.git/HEAD"
-					local GB=" Working on the '${A[${#A[@]}-1]}' branch."
+					local GB="${A[${#A[@]}-1]}"
 				fi
 
-				P+="${GIC} "
-			else
-				P+="☡  \[\e[2;37m\]Sleepy git...\[\033[0m\]"
-			fi
+				# While loops in special order:
+				while read -ra Z; do
+					if [ "${Z[0]}${Z[1]}" == 'Initialcommit' ]; then
+						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has no commits, yet." "${GI[5]}" "$GB"
+						break
+					fi
+				done <<< "$STATUS"
 
-			P+="\[\e[2;37m\]${GB}\[\033[0m\]"
+				while read -ra Z; do
+					if [ "${Z[0]}${Z[1]}${Z[2]}" == '(fixconflictsand' ]; then
+						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has conflict(s)." "${GI[7]}" "$GB"
+						break
+					fi
+				done <<< "$STATUS"
+
+				while read -ra Z; do
+					if [ "${Z[0]}${Z[1]}${Z[2]}" == 'nothingtocommit,' ]; then
+						local TTL_COMS
+						readarray TTL_COMS <<< "$(git --no-pager log --format='oneline')"
+						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' is %d commit(s) clean." "${GI[0]}" "$GB" "${#TTL_COMS[@]}"
+						break
+					fi
+				done <<< "$STATUS"
+
+				while read -ra Z; do
+					if [ "${Z[0]}${Z[1]}${Z[3]}" == 'Yourbranchahead' ]; then
+						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' leads by %d commit(s)." "${GI[6]}" "$GB" "${Z[7]}"
+						break
+					fi
+				done <<< "$STATUS"
+
+				while read -ra Z; do
+					if [ "${Z[0]}${Z[1]}" == 'Untrackedfiles:' ]; then
+						#TODO: Sloppy method needs improving.
+						local LINE NFTTL=0
+						while read -a LINE; do
+							[ "${LINE[0]}" == '??' ] && let NFTTL+=1
+						done <<< "$(git status --short)"
+
+						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has %d new file(s)." "${GI[3]}" "$GB" "$NFTTL"
+						break
+					fi
+				done <<< "$STATUS"
+
+				while read -ra Z; do
+					if [ "${Z[0]}" == 'modified:' ]; then
+						local TEMP
+						read -a TEMP <<< `git diff --shortstat`
+						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has %d modified file(s)." "${GI[2]}" "$GB" "${TEMP[0]}"
+						break
+					fi
+				done <<< "$STATUS"
+
+				while read -ra Z; do
+					if [ "${Z[0]}${Z[1]}${Z[2]}${Z[3]}" == 'Changestobecommitted:' ]; then
+						#TODO: Have a counter for this, too.
+						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has changes to commit." "${GI[1]}" "$GB"
+						break
+					fi
+				done <<< "$STATUS"
+				# End of specially-ordered while loops.
+			else
+				printf -v DESC "\e[1;31m☡  \e[2;37mSleepy git..."
+			fi
 		fi
 
-		P+="\[\033[0m\]\n╰─☉  "
+		P+="${DESC}\[\033[0m\]\n╰─☉  "
 
 		PS1="$P"
 
