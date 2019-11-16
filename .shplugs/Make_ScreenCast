@@ -3,64 +3,71 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/.shplugs/Make_ScreenCast
 # Started On        - Fri 15 Nov 21:06:34 GMT 2019
-# Last Change       - Sat 16 Nov 01:16:11 GMT 2019
+# Last Change       - Sat 16 Nov 02:57:00 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
+# This script requires the following DEB packages:
+#
+#   alsa-utils, x11-utils, ffmpeg, sox
+#
+# You'll first need to run this command, to create a noise profile:
+#
+#   sox -q -c 1 -d /tmp/_tempfile_.wav noiseprof > "$HOME/.screencast-noise.prof"
+#
+# Then wait for about 30 seconds to a minute, and be as silent as you can, allowing
+# for all of the standards static and noise to play, such as computer fans.
+#
+# This command will remove the temporary file created above:
+#
+#   rm /tmp/_tempfile_.wav
+#----------------------------------------------------------------------------------
 
 mksc(){
-	printf -v DATE "%(%F_%X)T" -1
-	local DIR="$HOME/Videos/MKSC"
-	local FNV="$DIR/screencast-video-$DATE.mp4"
-	local FNA="$DIR/screencast-audio-$DATE.wav"
-	local FNAT="$DIR/screencast-audio-$DATE.tmp.wav"
-	local SNP="$DIR/screencast-noise-$DATE.prof"
-	local TMP=`mktemp --suffix='.wav'`
+	printf "Recording audio and video -- type 'q' to quit...\n"
 
-	printf "[01/10] Getting display resolution...\n"
+	(
+		local MAILPATH='/dev/null'
+		printf -v DATE "%(%F_%X)T" -1
+		local DIR="$HOME/Videos/MKSC"
+		local FNV="$DIR/screencast-video-$DATE.mp4"
+		local FNA="$DIR/screencast-audio-$DATE.wav"
+		local FNAT="$DIR/screencast-audio-$DATE.tmp.wav"
+		local SNP="$HOME/.screencast-noise.prof"
+		local TMP=`mktemp --suffix='.wav'`
 
-	if [ -z "$RES" ]; then
-		local LINE RES
-		while read -a LINE; do
-			if [ "${LINE[0]}" == '-geometry' ]; then
-				RES=${LINE[1]%+*+*}
-				break
-			fi
-		done <<< "$(xwininfo -root)"
-	fi
+		if [ -z "$RES" ]; then
+			local LINE RES
+			while read -a LINE; do
+				if [ "${LINE[0]}" == '-geometry' ]; then
+					RES=${LINE[1]%+*+*}
+					break
+				fi
+			done <<< "$(xwininfo -root)"
+		fi
 
-	[ -d "$DIR" ] || mkdir -vp "$DIR"
+		[ -z "$RES" ] && return 1
+		[ -d "$DIR" ] || mkdir -vp "$DIR"
 
-	printf "[02/10] Generating noise profile...\n"
-	sox -q -c 1 -d "$TMP" noiseprof > "$SNP" || return 1
+		arecord -q -D default -r 44100 -f cd -t wav "$FNAT" &
+		local AR_PID=$!
 
-	printf "[03/10] Recording audio stream...\n"
-	{
-		arecord -q -D default -r 44000 -f cd -t wav "$FNAT" & disown
-	} > /dev/null 2>&1
-	local AR_PID=$!
+		ffmpeg -y -loglevel 16 -f x11grab -s "$RES" -framerate 60\
+			-i "${DISPLAY:-:0.0}" -vcodec mpeg4 -b:v 60000k\
+			-threads 12 -preset veryfast -crf 22 "$FNV" || return 1
 
-	printf "[04/10] Recording video stream...\n"
-	ffmpeg -y -loglevel 16 -f x11grab -s "${RES:-1024x768}" -framerate 60\
-		-i "${DISPLAY:-:0.0}" -vcodec mpeg4 -b:v 40000k -threads 12\
-		-preset veryfast -crf 22 "$FNV" || return 1
+		kill -s SIGINT $AR_PID || return 1
 
-	printf "[05/10] Stopping audio recording...\n"
-	kill -s SIGINT $AR_PID || return 1
+		sox -q -c 1 -t wav "$FNAT" "$FNA" noisered\
+			"$SNP" 0.23 2>&- || return 1
 
-	printf "[06/10] De-noising audio stream...\n"
-	sox -q -c 1 -t wav "$FNAT" "$FNA" noisered "$SNP" 0.23 || return 1
+		rm -v "$FNAT" || return 1
 
-	printf "[07/10] Removing noise profile...\n"
-	rm "$SNP" "$TMP" "$FNAT" || return 1
+		ffmpeg -y -loglevel 16 -i "$FNV" -i "$FNA" -acodec libvorbis\
+			-b:a 128k -ac 1 -ar 44100 "${FNV/-video}" || return 1
 
-	printf "[08/10] Merging both streams...\n"
-	ffmpeg -y -loglevel 16 -i "$FNV" -i "$FNA" -acodec libvorbis -b:a 128k\
-		-ac 1 -ar 44100 "${FNV/-video}" || return 1
+		rm -v "$FNV" "$FNA" || return 1
 
-	printf "[09/10] Removing individual streams...\n"
-	rm "$FNV" "$FNA" || return 1
-
-	printf "[10/10] Synchronizing cached writes...\n"
-	sync "${FNV/-video}" || return 1
+		sync "${FNV/-video}" || return 1
+	)
 }
