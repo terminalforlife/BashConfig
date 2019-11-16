@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 15 Nov 15:26:48 GMT 2019
+# Last Change       - Fri 15 Nov 20:32:04 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -45,6 +45,7 @@ MAN_COLORS="true"
 # Each entry must be separated by spaces, so ensure you escape or quote filenames
 # with spaces in them, or even special characters understood by the shell.
 PLUGINS=(
+	Make_ScreenCast           # Use 'mksc' to make a screencast.
 	Terminal_Reminder         # Display reminders of user-specified dates.
 	Bell_Alarm                # Run 'bell' for simple alarm using the x11 bell.
 	Cleaner_RK_Scan           # Run 'rkc' to scan with rkhunter and chkrootkit.
