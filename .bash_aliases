@@ -178,7 +178,7 @@ fi
 # GitHub directory (/home/$USER/GitHub/) and its contents are protected from
 # this, as it could cause quite the problem.
 if type -fP chmod > /dev/null 2>&1; then
-	alias fixperms='[[ "$PWD" == "/home/$USER/GitHub/"* ]] || find -xdev -not -path "*/GitHub/*" \( -type f -exec chmod 600 {} \+ -o -type d -exec chmod 700 "{}" \+ \) -printf "FIXING: %p\n" 2>&-' #: Recursive fix of permissions in the CWD. (F:600 D:700)
+	alias fixperms='[[ "$PWD" == "/home/$USER/GitHub/"* ]] || find -xdev -not -path "*/GitHub/*" \( -type f -exec chmod 600 {} \+ -o -type d -exec chmod 700 "{}" \+ \) -exec chown $UID:$UID {} \+ -printf "FIXING: %p\n" 2>&-' #: Recursively fix permissions and ownership. (F:600 D:700, UID:UID)
 fi
 
 # Create or unmount a user-only RAM Disk (tmpfs, basically) of 32MB.
