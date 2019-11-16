@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 15 Nov 20:32:04 GMT 2019
+# Last Change       - Sat 16 Nov 02:45:26 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -86,7 +86,7 @@ shopt -s checkwinsize globstar complete_fullquote expand_aliases extquote\
 	 promptvars sourcepath progcomp autocd cdspell dirspell direxpand\
 	 nocasematch
 
-set -o interactive-comments -o monitor -o hashall -o braceexpand -o emacs
+set -o interactive-comments +o monitor -o hashall -o braceexpand -o emacs
 
 [ "$POXIS_MODE" == "true" ] && set -o posix
 
