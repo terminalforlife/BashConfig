@@ -1,68 +1,66 @@
 #!/bin/bash
 
+#----------------------------------------------------------------------------------
+# Project Name      - BashConfig/.shplugs/Make_ScreenCast
+# Started On        - Fri 15 Nov 21:06:34 GMT 2019
+# Last Change       - Sat 16 Nov 01:16:11 GMT 2019
+# Author E-Mail     - terminalforlife@yahoo.com
+# Author GitHub     - https://github.com/terminalforlife
+#----------------------------------------------------------------------------------
+
 mksc(){
-	local FN DIR="$HOME/Videos/MKSC"
-	printf -v FN "%s/screencast-%(%F_%X)T.mp4" "$DIR" -1
+	printf -v DATE "%(%F_%X)T" -1
+	local DIR="$HOME/Videos/MKSC"
+	local FNV="$DIR/screencast-video-$DATE.mp4"
+	local FNA="$DIR/screencast-audio-$DATE.wav"
+	local FNAT="$DIR/screencast-audio-$DATE.tmp.wav"
+	local SNP="$DIR/screencast-noise-$DATE.prof"
+	local TMP=`mktemp --suffix='.wav'`
+
+	printf "[01/10] Getting display resolution...\n"
 
 	if [ -z "$RES" ]; then
 		local LINE RES
 		while read -a LINE; do
 			if [ "${LINE[0]}" == '-geometry' ]; then
-				RES="${LINE[1]}"
+				RES=${LINE[1]%+*+*}
 				break
 			fi
 		done <<< "$(xwininfo -root)"
 	fi
 
-	if [ -f "$FN" ]; then
-		if ! [ -w "$FN" ]; then
-			printf "ERROR: File exists, but unable to overwrite.\n" >&2
-			return 1
-		fi
-	else
-		printf "File exists -- overwriting...\n"
-	fi
-
 	[ -d "$DIR" ] || mkdir -vp "$DIR"
 
-	printf "Press 'q' when finished.\n"
+	printf "[02/10] Generating noise profile...\n"
+	sox -q -c 1 -d "$TMP" noiseprof > "$SNP" || return 1
 
-	ffmpeg -y -f x11grab -s "${RES:-1024x768}" -i "${DISPLAY:-:0.0}" -f pulse\
-		-i default "$FN" > /dev/null 2>&1
+	printf "[03/10] Recording audio stream...\n"
+	{
+		arecord -q -D default -r 44000 -f cd -t wav "$FNAT" & disown
+	} > /dev/null 2>&1
+	local AR_PID=$!
 
-	if ! [ $? -eq 0 ]; then
-		printf "ERROR: Recording with 'ffmpeg' failed.\n" >&2
-		return 1
-	fi
+	printf "[04/10] Recording video stream...\n"
+	ffmpeg -y -loglevel 16 -f x11grab -s "${RES:-1024x768}" -framerate 60\
+		-i "${DISPLAY:-:0.0}" -vcodec mpeg4 -b:v 40000k -threads 12\
+		-preset veryfast -crf 22 "$FNV" || return 1
 
-	if [ -n "$PS1" ]; then
-		while :; do
-			while read; do
-				printf "%s\n" "$REPLY"
-			done <<-EOF
-				SAVED: '$FN'
+	printf "[05/10] Stopping audio recording...\n"
+	kill -s SIGINT $AR_PID || return 1
 
-				What will you do with the file now?
+	printf "[06/10] De-noising audio stream...\n"
+	sox -q -c 1 -t wav "$FNAT" "$FNA" noisered "$SNP" 0.23 || return 1
 
-				  1. Play
-				  8. Delete
+	printf "[07/10] Removing noise profile...\n"
+	rm "$SNP" "$TMP" "$FNAT" || return 1
 
-				  0. Quit mksc
+	printf "[08/10] Merging both streams...\n"
+	ffmpeg -y -loglevel 16 -i "$FNV" -i "$FNA" -acodec libvorbis -b:a 128k\
+		-ac 1 -ar 44100 "${FNV/-video}" || return 1
 
-			EOF
+	printf "[09/10] Removing individual streams...\n"
+	rm "$FNV" "$FNA" || return 1
 
-			read -n 1 -e -p "PROMPT: "
-
-			case $REPLY in
-				1)
-					mplayer -vo x11 -nomouseinput -noar -zoom\
-						-nojoystick -nogui -really-quiet\
-						-nolirc "$FN" > /dev/null 2>&1 ;;
-				8)
-					rm -vi "$FN" ;;
-				0)
-					break ;;
-			esac
-		done
-	fi
+	printf "[10/10] Synchronizing cached writes...\n"
+	sync "${FNV/-video}" || return 1
 }
