@@ -544,4 +544,3 @@ if type -fP espeak > /dev/null 2>&1; then
 	}
 fi
 
-# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
