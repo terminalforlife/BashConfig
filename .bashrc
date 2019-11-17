@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sat 16 Nov 15:46:02 GMT 2019
+# Last Change       - Sun 17 Nov 01:20:57 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -195,9 +195,9 @@ else
 
 				while read -ra Z; do
 					if [ "${Z[0]}" == 'modified:' ]; then
-						local TEMP
-						read -a TEMP <<< `git diff --shortstat`
-						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has %d modified file(s)." "${GI[2]}" "$GB" "${TEMP[0]}"
+						local BUF
+						readarray BUF <<< "$(git --no-pager diff --name-only)"
+						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has %d modified file(s)." "${GI[2]}" "$GB" "${#BUF[@]}"
 						break
 					fi
 				done <<< "$STATUS"
