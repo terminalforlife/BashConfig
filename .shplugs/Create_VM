@@ -107,4 +107,3 @@ mkvm(){
 	} || ERR "$LINENO" "Virtual machine creation failure."
 }
 
-# vim: ft=sh noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
