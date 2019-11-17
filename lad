@@ -210,4 +210,3 @@ fi
 
 #[ "$A_FOUND" == "true" ] && { [ "$BOOLEAN" == "true" ] && printf "true\n"; exit 0; }
 
-# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
