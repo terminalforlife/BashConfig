@@ -395,4 +395,3 @@ fi
 unset -f FOR_THE_EDITOR
 unset DEP FILE DEPCOUNT FOR_THE_EDITOR TTDIR DIR CHOSEN_EDITOR GIT
 
-# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
