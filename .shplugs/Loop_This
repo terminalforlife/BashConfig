@@ -30,4 +30,3 @@ loop(){
 	fi
 }
 
-# vim: ft=sh noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
