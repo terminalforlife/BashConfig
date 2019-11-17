@@ -54,4 +54,3 @@ $if mode=emacs
 	"\e\e[D": backward-word
 $endif
 
-# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
