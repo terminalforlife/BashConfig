@@ -29,4 +29,3 @@ CD_CLEAR_LS(){
 
 alias cd='CD_CLEAR_LS'
 
-# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
