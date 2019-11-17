@@ -64,7 +64,7 @@ PLUGINS=(
 #--------------------------------------------------------------MAIN SETS AND SHOPTS
 
 if ! [ "${BASH_VERSINFO[0]}" -ge 4 ]; then
-        printf "ERROR: Bash version 4.0 or greater is required.\n"
+	printf "ERROR: Bash version 4.0 or greater is required.\n"
 	return 1
 fi
 
@@ -328,4 +328,3 @@ BASH_FUNCTIONS="$HOME/.bash_functions"
 
 unset BASH_ALIASES BASH_FUNCTIONS
 
-# vim: ft=sh noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
