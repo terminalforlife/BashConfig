@@ -10,4 +10,3 @@
 
 /usr/bin/clear
 
-# vim: noexpandtab colorcolumn=84 tabstop=8 noswapfile nobackup
