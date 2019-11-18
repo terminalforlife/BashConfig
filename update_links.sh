@@ -25,7 +25,7 @@ for DEP in /bin/{ln,rm}; {
 
 [ "${PWD//*\/}" == "BashConfig" ] || XERR "Not in the repository's root directory."
 
-for FILE in .bashrc .bash_aliases .bash_functions .profile; {
+for FILE in .bashrc .bash_aliases .bash_functions .bash_logout .profile; {
 	/bin/rm -v $HOME/$FILE 2>&-
 	/bin/ln -v $FILE $HOME/$FILE 2>&-
 }
