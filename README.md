@@ -13,8 +13,8 @@ Begin by opening up your terminal, or start a new session:
 
 ```bash
 Files=(.{inputrc,shplugs,bash{_{aliases,functions,logout},rc}})
-\\printf -v Archive '%s/.B4-BC_%(%F_%X)T.tgz' "$HOME" -1
-\\tar -czpf "$Archive" "${Files[@]}"
+\printf -v Archive '%s/.B4-BC_%(%F_%X)T.tgz' "$HOME" -1
+\tar -czpf "$Archive" "${Files[@]}"
 ```
 
 With the above, any of the files which would otherwise be overwritten, are backed up in a `tar` (archive, compressed with `gzip`). This archive can be found in `$HOME/` and will have the filename, for example, `.B4BC_2019-11-18_15\:12\:17.tgz`
@@ -22,7 +22,7 @@ With the above, any of the files which would otherwise be overwritten, are backe
 Within the same terminal session (don't leave it, yet!) you'll now need to enter these commands to actually copy the files over, now that the old ones are backed up:
 
 ```bash
-\\cp -t "$HOME" "${Files[@]}"
+\cp -t "$HOME" "${Files[@]}"
 ```
 
 You _can_ leave the terminal session now.
@@ -30,7 +30,7 @@ You _can_ leave the terminal session now.
 You can use the following to _restore_ from the above made backup. Where `[ARCHIVE]` is the _path_ to the backup you want to restore.
 
 ```bash
-\\tar -C "$HOME" -xzf [ARCHIVE]
+\tar -C "$HOME" -xzf [ARCHIVE]
 ```
 
 If you have any issues with these instructions or the files from this repository, please let me know however you are able. Thank you.
