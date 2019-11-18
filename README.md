@@ -1,6 +1,8 @@
 **MASTER** - _Hopefully stable branch._\
 **DEV** - _Development Branch (latest changes)_
 
+The following instructions were written for **Linux**...
+
 To make use of these files, you'll have to install them manually, taking care to **back up** your own files _prior_ to overwriting them. The following instructions guide you through the backup process and actually installing ones in this repository.
 
 Note that there's a very good chance I'll have added or removed files in this repository, but those changes were not reflected here, through the below commands. Provided you did everything right, and our planet didn't implode, all should be fine none-the-less.
