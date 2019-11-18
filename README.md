@@ -24,7 +24,7 @@ Now, from within the same terminal session (don't leave it, yet!), you **must** 
 You'll need to enter these commands to actually copy the files over, now that the old ones are backed up:
 
 ```bash
-\cp -t "$HOME" "${Files[@]}"
+\cp -rt "$HOME" "${Files[@]}"
 ```
 
 You _can_ leave the terminal session now.
