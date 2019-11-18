@@ -19,7 +19,9 @@ Files=(.{inputrc,shplugs,bash{_{aliases,functions,logout},rc}})
 
 With the above, any of the files which would otherwise be overwritten, are backed up in a `tar` (archive, compressed with `gzip`). This archive can be found in `$HOME/` and will have the filename, for example, `.B4BC_2019-11-18_15\:12\:17.tgz`
 
-Within the same terminal session (don't leave it, yet!) you'll now need to enter these commands to actually copy the files over, now that the old ones are backed up:
+Now, from within the same terminal session (don't leave it, yet!), you **must** change directory (`cd`) into `BashConfig` you downloaded from this repository, otherwise the following won't work.
+
+You'll need to enter these commands to actually copy the files over, now that the old ones are backed up:
 
 ```bash
 \cp -t "$HOME" "${Files[@]}"
