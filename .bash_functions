@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Wed 20 Nov 20:51:05 GMT 2019
+# Last Change       - Wed 20 Nov 21:07:04 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -309,16 +309,15 @@ fi
 if type -fP lsmod modinfo > /dev/null 2>&1; then
 	lsmodd(){ #: List, describe, and/or search for detected kernel modules.
 		local SysFile='/proc/modules'
-		local Fancy='true'
 
 		while [ "$1" ]; do
 			case $1 in
 				--help|-h|-\?)
-					printf "Usage: lsmodd [--describe|-d] [--no-fancy|-N] [--modules|-m] [MODULE ...]\n"
+					printf "Usage: lsmodd [--describe|-d] [--pretty|-p] [--file|-F] [MODULE ...]\n"
 					return 0 ;;
-				--no-fancy|-N)
-					Fancy='false' ;;
-				--modules|-m)
+				--pretty|-p)
+					local Pretty='true' ;;
+				--file|-F)
 					shift
 					SysFile=$1 ;;
 				--describe|-d)
@@ -332,11 +331,18 @@ if type -fP lsmod modinfo > /dev/null 2>&1; then
 			shift
 		done
 
+		if [ "$Pretty" == 'true' -a "$Describe" != 'true' ]; then
+			printf "ERROR: '--pretty|-p' only applies when modules are described.\n" >&2
+			return 1
+		fi
+
 		if [ -f "$SysFile" ] && [ -r "$SysFile" ]; then
 			Display(){
-				[ "$Describe" == 'true' ] && ModDesc=`modinfo -d "${LINE[0]}"`
+				if [ "$Describe" == 'true' ]; then
+					local ModDesc=`modinfo -d "${LINE[0]}"`
+				fi
 
-				if [ "$Fancy" == 'true' ]; then
+				if [ "$Pretty" == 'true' ]; then
 						printf -- "%s\n" "${LINE[0]}"
 
 						if [ -n "$ModDesc"  ]; then
@@ -353,7 +359,11 @@ if type -fP lsmod modinfo > /dev/null 2>&1; then
 							[ "$Describe" == 'true' ] && printf "  %s\n\n" "N/A"
 						fi
 				else
-						printf "%s=%s\n" "${LINE[0]}" "${ModDesc:-N/A}"
+						if [ "$Describe" == 'true' ]; then
+							printf "%s=%s\n" "${LINE[0]}" "${ModDesc:-N/A}"
+						else
+							printf "%s\n" "${LINE[0]}"
+						fi
 				fi
 
 				unset ModDesc
