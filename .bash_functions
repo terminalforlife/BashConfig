@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Fri 15 Nov 15:06:03 GMT 2019
+# Last Change       - Wed 20 Nov 20:51:05 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -259,7 +259,7 @@ fi
 # Display all of the 'rc' packages, as determined by dpkg, parsed by the shell.
 # Using this within command substitution, sending it to apt-get, is very useful.
 if type -fP dpkg > /dev/null 2>&1; then
-	lsrc(){ #:Search for and list all 'rc' packages detected by dpkg.
+	lsrc(){ #: Search for and list all 'rc' packages detected by dpkg.
 		while read -a X; do
 			if [ "${X[0]}" == "rc" ]; then
 				printf "%s\n" "${X[1]}"
@@ -268,15 +268,22 @@ if type -fP dpkg > /dev/null 2>&1; then
 	}
 fi
 
-# Get the display's resolution, per the geometry propert of the root window. This
-# doesn't seem to work in i3-wm, so don't enable getres() if in that. Probably
-# won't work if you're using a mult-monitor setup.
-if type -fP xprop > /dev/null 2>&1\
-&& ! [ "$XDG_CURRENT_DESKTOP" == "i3" -o "$DESKTOP_SESSION" == "i3" ]; then
-	getres(){ #: Fetch the screen resolution via root window.
-		local X P="_NET_DESKTOP_GEOMETRY"
-		IFS="=" read -a X <<< "$(xprop -root $P)"
-		printf "Current Resolution: %dx%d\n" "${X[1]%,*}" "${X[1]/*, }"
+# Get the display's resolution.
+if type -fP xwininfo > /dev/null 2>&1; then
+	getres(){ #: Two viable methods for fetching the display resolution.
+		while read -a LINE; do
+			if [ "${LINE[0]}" == '-geometry' ]; then
+				printf "Your resolution is %s, according to xwininfo.\n" "${LINE[1]%+*+*}"
+			fi
+		done <<< "$(xwininfo -root)"
+	}
+elif type -fP xdpyinfo > /dev/null 2>&1; then
+	getres(){ #: Two viable methods for fetching the display resolution.
+		while read -a LINE; do
+			if [ "${LINE[0]}" == 'dimensions:' ]; then
+				printf "Your resolution is %s, according to xdpyinfo.\n" "${LINE[1]}"
+			fi
+		done <<< "$(xdpyinfo)"
 	}
 fi
 
@@ -300,41 +307,75 @@ fi
 #TODO - Fix the inability to pipe the output.
 # Display a descriptive list of kernel modules.
 if type -fP lsmod modinfo > /dev/null 2>&1; then
-	lsmodd(){ #: List and describe (most) detected kernel modules.
-		#TODO - Add user option (argument) for this.
-		# Non-'true' equals parseable data.
-		FANCY='true'
+	lsmodd(){ #: List, describe, and/or search for detected kernel modules.
+		local SysFile='/proc/modules'
+		local Fancy='true'
 
-		while read -a MOD_LINE; do
-			# While I could use redirect to null to avoid parsing the following header
-			# text, it would then end up catching ALL errors, which is unwanted.
-			if ! [[ "${MOD_LINE[0]}" =~ (Module|Size|Use|By) ]]; then
-				if [ "$FANCY" == 'true' ]; then
-					MOD_DESC=$(modinfo -d "${MOD_LINE[0]}")
-					printf -- "['%s']\n" "${MOD_LINE[0]}"
+		while [ "$1" ]; do
+			case $1 in
+				--help|-h|-\?)
+					printf "Usage: lsmodd [--describe|-d] [--no-fancy|-N] [--modules|-m] [MODULE ...]\n"
+					return 0 ;;
+				--no-fancy|-N)
+					Fancy='false' ;;
+				--modules|-m)
+					shift
+					SysFile=$1 ;;
+				--describe|-d)
+					local Describe='true' ;;
+				-*)
+					printf "ERROR: Incorrect argument(s) specified.\n" >&2
+					return 1 ;;
+				*)
+					break ;;
+			esac
+			shift
+		done
 
-					if [ -n "$MOD_DESC" ]; then
-						# Compensating for multi-line descriptions.
-						while read INFO; do
-							printf "    "
+		if [ -f "$SysFile" ] && [ -r "$SysFile" ]; then
+			Display(){
+				[ "$Describe" == 'true' ] && ModDesc=`modinfo -d "${LINE[0]}"`
 
-							for I in $INFO; {
-								printf "%s " "$I"
-							}
+				if [ "$Fancy" == 'true' ]; then
+						printf -- "%s\n" "${LINE[0]}"
 
-							printf "\n"
-						done <<< "$MOD_DESC"
-
-						printf "\n"
-					else
-						printf "    %s\n\n" "N/A"
-					fi
+						if [ -n "$ModDesc"  ]; then
+							if [ "$Describe" == 'true' ]; then
+								# Compensating for multi-line descriptions.
+								while read INFO; do
+									printf "  %s\n" "$INFO"
+								done <<< "$ModDesc"
+								printf "\n"
+							else
+								printf "%s\n" "${LINE[0]}"
+							fi
+						else
+							[ "$Describe" == 'true' ] && printf "  %s\n\n" "N/A"
+						fi
 				else
-					MOD_DESC="$(modinfo -d "${MOD_LINE[0]}")"
-					printf "%s=%s\n" "${MOD_LINE[0]}" "${MOD_DESC:-N/A}"
+						printf "%s=%s\n" "${LINE[0]}" "${ModDesc:-N/A}"
 				fi
-			fi
-		done <<< "$(lsmod)"
+
+				unset ModDesc
+			}
+
+			while read -a LINE; do
+				if [ $# -gt 0 ]; then
+					for Arg in "$@"; {
+						[ "${LINE[0]}" == "$Arg" ] || continue
+						Display
+					}
+
+					unset Arg
+				else
+					Display
+				fi
+			done < "$SysFile"
+
+			unset LINE
+		fi
+
+		unset -f Display
 	}
 fi
 
