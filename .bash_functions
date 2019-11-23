@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Wed 20 Nov 21:07:04 GMT 2019
+# Last Change       - Sat 23 Nov 22:49:03 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -163,7 +163,7 @@ fi
 if type -fP mplayer > /dev/null 2>&1; then
 	mpvi(){ #: In i3-wm, play a video inside the active window.
 		WID="$(xprop -root _NET_ACTIVE_WINDOW | cut -d "#" -f 2)"
-		mplayer -msglevel "all=-1" -nolirc -wid "$WID" "$@" >&- 2>&-
+		mplayer -msglevel "all=-1" -nolirc -wid "$WID" "$@" > /dev/null 2>&1
 
 		# Addresses bug. The window will otherwise fill with last frame.
 		wait; clear
@@ -237,7 +237,7 @@ if [ -d "$GIT" ] && type -fP grep > /dev/null 2>&1; then
 		if cd "$GIT"; then
 			grep --color=auto -R\
 				--exclude-dir=".git" "[#\"]TODO - "
-			cd - >&- 2>&-
+			cd - > /dev/null 2>&1
 		fi
 	}
 fi

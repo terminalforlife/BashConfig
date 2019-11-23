@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 17 Nov 01:20:57 GMT 2019
+# Last Change       - Sat 23 Nov 22:45:41 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -313,8 +313,8 @@ fi
 
 #--------------------------------------------------------------------INPUT BINDINGS
 
-bind -q forward-word >&- 2>&- || bind '"\e[1;5C": forward-word'
-bind -q backward-word >&- 2>&- || bind '"\e[1;5D": backward-word'
+bind -q forward-word > /dev/null 2>&- || bind '"\e[1;5C": forward-word'
+bind -q backward-word > /dev/null 2>&- || bind '"\e[1;5D": backward-word'
 
 #------------------------------------------------------SOURCE ALIASES AND FUNCTIONS
 

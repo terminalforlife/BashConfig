@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 11 Nov 19:33:57 GMT 2019
+# Last Change       - Sat 23 Nov 22:50:07 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -307,18 +307,18 @@ fi
 # These aliases save a lot of typing and do away with the output.
 if type -fP mplayer > /dev/null 2>&1; then
 	# If you're having issues with mpv/mplayer here, try -vo x11 instead.
-	alias mpa="mplayer -nolirc -vo null -really-quiet >&- 2>&-" #: Use 'mplayer' to play audio files, sans window or output.
+	alias mpa="mplayer -nolirc -vo null -really-quiet > /dev/null 2>&1" #: Use 'mplayer' to play audio files, sans window or output.
 
 	declare -a MPLAYER_FONT=("-font" "$HOME/.mplayer/subfont.ttf")
 	if ! [ -f "${MPLAYER_FONT[0]}" ] || ! [ -r "${MPLAYER_FONT[0]}" ]; then
 		unset MPLAYER_FONT
 	fi
 
-	alias mpv="mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet >&- 2>&-" #: Use 'mplayer' to play video files, sans output.
-	alias mpvdvd="mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet dvd://1//dev/sr1 >&- 2>&-" #: Use 'mplayer' to play DVDs, sans output.
+	alias mpv="mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet > /dev/null 2>&1" #: Use 'mplayer' to play video files, sans output.
+	alias mpvdvd="mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet dvd://1//dev/sr1 > /dev/null 2>&1" #: Use 'mplayer' to play DVDs, sans output.
 elif type -fP mpv > /dev/null 2>&1; then
-	#alias mpvve="mpv --af=equalizer=8:7:6:5:0:6:0:5:5:5 --no-stop-screensaver >&- 2>&- "
-	alias mpvv="mpv --no-stop-screensaver >&- 2>&- " #: Use 'mpv' to play video files, sans output.
+	#alias mpvve="mpv --af=equalizer=8:7:6:5:0:6:0:5:5:5 --no-stop-screensaver > /dev/null 2>&1 "
+	alias mpvv="mpv --no-stop-screensaver > /dev/null 2>&1 " #: Use 'mpv' to play video files, sans output.
 fi
 
 if type -fP lsblk > /dev/null 2>&1; then
@@ -388,7 +388,7 @@ if [[ `tty` == /dev/tty* ]] && type -fP tty chvt > /dev/null 2>&1; then
 fi
 
 	if type -fP evince > /dev/null 2>&1; then
-	alias pdf="evince >&- 2>&-" #: Use 'evince' to display PDF documents.
+	alias pdf="evince > /dev/null 2>&1" #: Use 'evince' to display PDF documents.
 fi
 
 # Clean up functions and variables.
