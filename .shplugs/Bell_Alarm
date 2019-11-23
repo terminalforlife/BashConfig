@@ -32,7 +32,7 @@ bell()(
 	# Infinitely sound the bell every second.
 	if [ "$STATUS" == "true" ]; then
 		while :; do
-			pactl play-sample x11-alert >&- 2>&-
+			pactl play-sample x11-alert > /dev/null 2>&-
 			sleep 1s
 		done
 	else

@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/.shplugs/CH_Ext
 # Started On        - Tue 30 Apr 02:26:19 BST 2019
-# Last Change       - Tue 30 Apr 02:40:48 BST 2019
+# Last Change       - Sat 23 Nov 23:06:07 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ chext(){
 			if [ -f "$FILE" ]; then
 				TTL_COUNT+=1
 
-				if /bin/mv "$FILE" "${FILE%.$1}.$2" 2>&- >&-; then
+				if /bin/mv "$FILE" "${FILE%.$1}.$2" > /dev/null 2>&-; then
 					printf "[X] FILE: '%s'\n" "${FILE%.$1}.$2"
 
 					SUCC_COUNT+=1

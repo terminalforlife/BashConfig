@@ -33,9 +33,9 @@ nirdiff(){
 
 	[ $DEPCOUNT -eq 0 ] || return 1
 
-	if /usr/bin/dpkg-query --status "$1" >&- 2>&-; then
+	if /usr/bin/dpkg-query --status "$1" > /dev/null 2>&-; then
 		RERR "$LINENO" "Package already installed."
-	elif ! /usr/bin/dpkg-query --show "$1" >&- 2>&-; then
+	elif ! /usr/bin/dpkg-query --show "$1" > /dev/null 2>&-; then
 		RERR "$LINENO" "Package '$1' not found."
 	fi
 
