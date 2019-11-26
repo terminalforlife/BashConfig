@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/.shplugs/Create_VM
 # Started On        - Thu 14 Sep 20:16:42 BST 2017
-# Last Change       - Sun  9 Dec 20:28:49 GMT 2018
+# Last Change       - Tue 26 Nov 21:04:02 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -22,7 +22,7 @@
 mkvm(){
 	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
 
-	if ! [ -x /usr/bin/vboxmanage ]; then
+	if ! type -fP vboxmanage > /dev/null 2>&1; then
 		ERR "$LINENO" "Dependency '/usr/bin/vboxmanage' not met."
 		return 1
 	elif ! [ $# -eq 2 ]; then
@@ -35,21 +35,21 @@ mkvm(){
 
 	{
 		printf "Creating and registering the virtual machine.\n"
-		/usr/bin/vboxmanage createvm                                      \
+		vboxmanage createvm                                      \
 			--name "$1"                                               \
 			--ostype "$2"                                             \
 			--basefolder "$VBOX_USER_HOME"                            \
 			--register
 
 		printf "Creating the 12GB dynamic storage drive.\n"
-		/usr/bin/vboxmanage createmedium                                  \
+		vboxmanage createmedium                                  \
 			--filename "$VBOX_USER_HOME/$1/$1"                        \
 			--size 12000                                              \
 			--format VDI                                              \
 			--variant Standard
 
 		printf "Configuring the new virtual machine.\n"
-		/usr/bin/vboxmanage modifyvm "$1"                                 \
+		vboxmanage modifyvm "$1"                                 \
 			--usb off                                                 \
 			--audio pulse                                             \
 			--bioslogofadein off                                      \
@@ -80,17 +80,17 @@ mkvm(){
 			--firmware bios
 
 		printf "Setting up the FDD controller.\n"
-		/usr/bin/vboxmanage storagectl "$1"                               \
+		vboxmanage storagectl "$1"                               \
 			--name "Floppy Controller"                                \
 			--add floppy
 
 		printf "Setting up the IDE controller.\n"
-		/usr/bin/vboxmanage storagectl "$1"                               \
+		vboxmanage storagectl "$1"                               \
 			--name "IDE Controller"                                   \
 			--add ide
 
 		printf "Adding the primary HDD.\n"
-		/usr/bin/vboxmanage storageattach "$1"                            \
+		vboxmanage storageattach "$1"                            \
 			--storagectl "IDE Controller"                             \
 			--port 1                                                  \
 			--device 1                                                \
@@ -98,7 +98,7 @@ mkvm(){
 			--medium "$VBOX_USER_HOME"/$1/${1}.vdi
 
 		printf "Adding the primary FDD.\n"
-		/usr/bin/vboxmanage storageattach "$1"                            \
+		vboxmanage storageattach "$1"                            \
 			--storagectl "Floppy Controller"                          \
 			--port 0                                                  \
 			--device 1                                                \
