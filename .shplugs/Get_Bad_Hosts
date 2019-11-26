@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/.shplugs/Get_Bad_Hosts
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Thu 17 Jan 17:33:13 GMT 2019
+# Last Change       - Tue 26 Nov 21:05:46 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -12,8 +12,8 @@
 gbh(){
 	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
 
-	if ! [ -x /usr/bin/wget ]; then
-		ERR "$LINENO" "Dependency '/usr/bin/wget' not met."
+	if ! type -fP wget > /dev/null 2>&1; then
+		ERR "$LINENO" "Dependency 'wget' not met."
 		return 1
 	elif ! [ $# -eq 0 ]; then
 		ERR "$LINENO" "No arguments required."
@@ -33,7 +33,7 @@ gbh(){
 			if [ "${X[0]}" == "127.0.0.1" ]; then
 				printf "%s %s\n" "${X[0]}" "${X[1]%}"
 			fi
-		done <<< "$(/usr/bin/wget $NOWARC -q "$URL" -O -)"\
+		done <<< "$(wget $NOWARC -q "$URL" -O -)"\
 			> ./Bad\ Hosts.txt
 	fi
 }
