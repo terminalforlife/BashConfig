@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/.shplugs/Make_ScreenCast
 # Started On        - Fri 15 Nov 21:06:34 GMT 2019
-# Last Change       - Sat 16 Nov 02:57:00 GMT 2019
+# Last Change       - Tue 26 Nov 20:59:08 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ mksc(){
 		kill -s SIGINT $AR_PID || return 1
 
 		sox -q -c 1 -t wav "$FNAT" "$FNA" noisered\
-			"$SNP" 0.23 2>&- || return 1
+			"$SNP" 0.23 2> /dev/null || return 1
 
 		rm -v "$FNAT" || return 1
 
