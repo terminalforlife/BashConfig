@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/.shplugs/List_Signals
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Fri  6 Apr 19:54:28 BST 2018
+# Last Change       - Tue 26 Nov 21:08:12 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -17,12 +17,12 @@
 lssig(){
 	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
 
-	[ $# -gt 0 ] && {
+	if [ $# -gt 0 ]; then
 		ERR "$LINENO" "No arguments are required."
 		return 1
-	}
+	fi
 
-	[ -x /usr/bin/column ] && {
+	if type -fP column > /dev/null 2>&1; then
 		NUM=0
 		for SIG in\
 		\
@@ -34,9 +34,9 @@ lssig(){
 		{
 			let NUM++
 			printf "%2d %s\n" "${NUM%:*}" "${SIG/*:}"
-		} | /usr/bin/column -x
-	} || {
-		ERR "$LINENO" "Dependency '/usr/bin/column' not met."
+		} | column -x
+	else
+		ERR "$LINENO" "Dependency 'column' not met."
 		return 1
-	}
+	fi
 }
