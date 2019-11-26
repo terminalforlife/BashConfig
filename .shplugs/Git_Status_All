@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/.shplugs/Git_Status_All
 # Started On        - Sat 16 Sep 14:19:06 BST 2017
-# Last Change       - Sat 16 Nov 15:43:36 GMT 2019
+# Last Change       - Tue 26 Nov 20:59:48 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ gitsa()(
 
 							[ -d '.git' ] || continue
 
-							STATUS=`git status 2>&-`
+							STATUS=`git status 2> /dev/null`
 
 							if [ "$BRANCH" == "true" ]; then
 								# Get the current branch name.
