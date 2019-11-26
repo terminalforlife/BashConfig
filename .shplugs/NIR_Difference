@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/.shplugs/NIR_Difference
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Fri 26 Apr 14:06:15 BST 2019
+# Last Change       - Tue 26 Nov 21:09:01 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -24,8 +24,8 @@ nirdiff(){
 	}
 
 	declare -i DEPCOUNT=0
-	for DEP in /usr/bin/{apt-get,awk,dpkg-query}; {
-		[ -x "$DEP" ] || {
+	for DEP in apt-get awk dpkg-query; {
+		type -fP "$DEP" > /dev/null 2>&1 || {
 			ERR "$LINENO" "Dependency '$DEP' not met."
 			DEPCOUNT+=1
 		}
@@ -33,17 +33,17 @@ nirdiff(){
 
 	[ $DEPCOUNT -eq 0 ] || return 1
 
-	if /usr/bin/dpkg-query --status "$1" > /dev/null 2>&-; then
+	if dpkg-query --status "$1" > /dev/null 2>&1; then
 		RERR "$LINENO" "Package already installed."
-	elif ! /usr/bin/dpkg-query --show "$1" > /dev/null 2>&-; then
+	elif ! dpkg-query --show "$1" > /dev/null 2>&1; then
 		RERR "$LINENO" "Package '$1' not found."
 	fi
 
 	printf "%-25s%10s\n" "FLAG" "PKG"
 
 	for SIM in "--no-" "--"; {
-		/usr/bin/apt-get install -s ${SIM}install-recommends "$1" 2>&-\
-			| /usr/bin/awk -Sv SIM="$SIM" '
+		apt-get install -s ${SIM}install-recommends "$1" 2> /dev/null\
+			| awk -Sv SIM="$SIM" '
 				{
 					if(/^[0-9]+ to upgrade,\s/)
 						printf "%-25s%10d\n",SIM"install-recommends",$4
