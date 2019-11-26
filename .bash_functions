@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 26 Nov 01:33:05 GMT 2019
+# Last Change       - Tue 26 Nov 01:47:31 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 # Just in-case.
 [ "$BASH_VERSION" ] || return 1
 
-if type -fP git &>-; then
+if type -fP git > /dev/null 2>&1; then
 	pullup-forks()( #: For all forks, pull upstream changes to the current branch.
 		if [ $UID -eq 1000 -a "$USER" == 'ichy' ]; then
 			FORKS="$HOME/GitHub/terminalforlife/Forks"
@@ -37,11 +37,11 @@ if type -fP git &>-; then
 		# Pull, from upstream, each directory (repository) in FORKS.
 		for DIR in "$FORKS"/*; {
 			if [ -d "$DIR" ]; then
-				cd "$DIR" 2>&- || continue
+				cd "$DIR" 2> /dev/null || continue
 
 				# If not a git repo, go back, then skip to next iteration.
-				if ! git rev-parse --is-inside-work-tree &>-; then
-					cd "$FORKS" 2>&- || return 1
+				if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+					cd "$FORKS" 2> /dev/null || return 1
 					continue
 				fi
 
@@ -56,7 +56,7 @@ if type -fP git &>-; then
 							GB=${Z[1]}
 							break
 						fi
-					done < <(git branch 2>&-)
+					done < <(git branch 2> /dev/null)
 				fi
 
 				# If offline repo, above won't work, try:
@@ -73,7 +73,7 @@ if type -fP git &>-; then
 
 				printf "Repository '%s' updating... " "${DIR##*/}"
 
-				if git --no-pager pull upstream "$GB" &>-; then
+				if git --no-pager pull upstream "$GB" > /dev/null 2>&1; then
 					printf "[\e[1;32mOK\e[0m]\n"
 				else
 					printf "[\e[1;31mERR\e[0m]\n"
@@ -83,7 +83,7 @@ if type -fP git &>-; then
 	)
 fi
 
-if type -fP dmenu &>-; then
+if type -fP dmenu > /dev/null 2>&1; then
 	dnote(){ #: Save a note to the desktop, using a simple form of dmenu.
 		local FILE="$HOME/Desktop/Saved Notes.txt"
 		if ! [ -f "$FILE" ]; then
@@ -105,7 +105,7 @@ if type -fP dmenu &>-; then
 	}
 fi
 
-if type -fP grep uniq sed &>-; then
+if type -fP grep uniq sed > /dev/null 2>&1; then
 	noab(){ #: No absolutes for executables found in PATH directories and the given file.
 		if ! [ -f "$1" -a -r "$1" -a -w "$1" ]; then
 			printf "ERROR: File missing or insufficent permissions.\n"
@@ -115,16 +115,16 @@ if type -fP grep uniq sed &>-; then
 		printf "WARNING: The file will be irreversably changed!\n"
 		read -n 1 -e -p "Press any key to continue, or Ctrl+C to cancel... "
 
-		P=(`grep -Eo "(${PATH//://|})[a-Z0-9_-]+" "$1" 2>&- | uniq 2>&-`)
-		for F in ${P[@]}; { sed -i "s|$F |${F##*/} |g" "$1" 2>&-; }
+		P=(`grep -Eo "(${PATH//://|})[a-Z0-9_-]+" "$1" 2> /dev/null | uniq 2> /dev/null`)
+		for F in ${P[@]}; { sed -i "s|$F |${F##*/} |g" "$1" 2> /dev/null; }
 	}
 fi
 
-if type -fP awk &>-; then
+if type -fP awk > /dev/null 2>&1; then
 	# Inspired by 'paperbenni' on GitHub.
-	if type -fP sha256sum &>- || type -fP md5sum &>-; then
+	if type -fP sha256sum > /dev/null 2>&1 || type -fP md5sum > /dev/null 2>&1; then
 		hash() { #: Fetch and compare the sha256 sums of two or more files.
-			local I=`awk '{!A[$1]++} END{print(NR)}' <(sha256sum "$@" 2>&-)`
+			local I=`awk '{!A[$1]++} END{print(NR)}' <(sha256sum "$@" 2> /dev/null)`
 			if [ $I -eq 0 ]; then
 				printf "Usage: hash [FILE_1] [FILE_2] ...\n" >&2
 				return 2
@@ -132,9 +132,9 @@ if type -fP awk &>-; then
 				return 1
 			fi
 		}
-	elif type -fP md5sum &>-; then
+	elif type -fP md5sum > /dev/null 2>&1; then
 		hash() { #: Fetch and compare the md5 sums of two or more files.
-			local I=`awk '{!A[$1]++} END{print(NR)}' <(md5sum "$@" 2>&-)`
+			local I=`awk '{!A[$1]++} END{print(NR)}' <(md5sum "$@" 2> /dev/null)`
 			if [ $I -eq 0 ]; then
 				printf "Usage: hash [FILE_1] [FILE_2] ...\n" >&2
 				return 2
@@ -156,11 +156,11 @@ if type -fP awk &>-; then
 	}
 
 	sc(){ #: Perform mathematical calculations via AWK.
-		awk -SP "BEGIN{print($@)}" 2>&-
+		awk -SP "BEGIN{print($@)}" 2> /dev/null
 	}
 fi
 
-if type -fP feh &>-; then
+if type -fP feh > /dev/null 2>&1; then
 	bgtest(){ #: Cyclicly test-run all CWD JPGs as a background.
 		declare -i NUM=0
 		for FILE in *$1*.jpg; {
@@ -178,10 +178,10 @@ if type -fP feh &>-; then
 	}
 fi
 
-if type -fP mplayer &>-; then
+if type -fP mplayer > /dev/null 2>&1; then
 	mpvi(){ #: In i3-wm, play a video inside the active window.
 		WID=`xprop -root _NET_ACTIVE_WINDOW | cut -d "#" -f 2`
-		mplayer -msglevel "all=-1" -nolirc -wid "$WID" "$@" &>-
+		mplayer -msglevel "all=-1" -nolirc -wid "$WID" "$@" > /dev/null 2>&1
 
 		# Addresses bug. The window will otherwise fill with last frame.
 		wait; clear
@@ -190,7 +190,7 @@ if type -fP mplayer &>-; then
 	}
 fi
 
-if type -fP column &>-; then
+if type -fP column > /dev/null 2>&1; then
 	builtins(){ #: Display a columnized list of bash builtins.
 		while read -r; do
 			printf "%s\n" "${REPLY/* }"
@@ -199,7 +199,7 @@ if type -fP column &>-; then
 fi
 
 # Display the current DPI setting.
-if type -fP xdpyinfo &>-; then
+if type -fP xdpyinfo > /dev/null 2>&1; then
 	dpi(){ #: Display the current DPI setting.
 		while read -a X; do
 			if [ "${X[0]}" == "resolution:" ]; then
@@ -209,7 +209,7 @@ if type -fP xdpyinfo &>-; then
 	}
 fi
 
-if type -fP sensors &>-; then
+if type -fP sensors > /dev/null 2>&1; then
 	showfans(){ #: Show the available system fan speeds using sensors.
 		while read; do
 			if [[ "$REPLY" == *[Ff][Aa][Nn]*RPM ]]; then
@@ -233,7 +233,7 @@ if [ -f /etc/os-release -a -r /etc/os-release ]; then
 fi
 
 # Very useful, quick function to scan the current directory, if you have clamscan.
-if type -fP clamscan tee &>-; then
+if type -fP clamscan tee > /dev/null 2>&1; then
 	scan(){ #: Scan the CWD with clamscan. Logs in: ~/.scan_func.log
 		{
 			printf "SCAN_START: %(%F (%X))T\n" -1
@@ -252,19 +252,19 @@ fi
 # you use "#T0D0 - Note message here" syntax for your TODOs, where "0" is "O". If
 # you use a different style, but it's perfectly consistent, change the below match.
 GIT="$HOME/GitHub/terminalforlife/Personal"
-if [ -d "$GIT" ] && type -fP grep &>-; then
+if [ -d "$GIT" ] && type -fP grep > /dev/null 2>&1; then
 	todo(){ #: Grab list of TODOs from GitHub projects.
 		if cd "$GIT"; then
 			grep --color=auto -R\
 				--exclude-dir=".git" "[#\"]TODO - "
-			cd - &>-
+			cd - > /dev/null 2>&1
 		fi
 	}
 fi
 
 # Quick and dirty function to display a random note line from command notes.
 if [ "$USER" == "ichy" -a $UID -eq 1000 ]; then
-	if type -fP sed grep shuf &>-; then
+	if type -fP sed grep shuf > /dev/null 2>&1; then
 		if [ -f $HOME/Documents/TT/Useful_Commands ]; then
 			get-random-note(){ #: Display a random note line from command notes.
 				sed "1,/^#END/!d" $HOME/Documents/TT/Useful_Commands\
@@ -278,7 +278,7 @@ fi
 
 # Display all of the 'rc' packages, as determined by dpkg, parsed by the shell.
 # Using this within command substitution, sending it to apt-get, is very useful.
-if type -fP dpkg &>-; then
+if type -fP dpkg > /dev/null 2>&1; then
 	lsrc(){ #: Search for and list all 'rc' packages detected by dpkg.
 		while read -a X; do
 			if [ "${X[0]}" == "rc" ]; then
@@ -289,7 +289,7 @@ if type -fP dpkg &>-; then
 fi
 
 # Get the display's resolution.
-if type -fP xwininfo &>-; then
+if type -fP xwininfo > /dev/null 2>&1; then
 	getres(){ #: Two viable methods for fetching the display resolution.
 		while read -a LINE; do
 			if [ "${LINE[0]}" == '-geometry' ]; then
@@ -297,7 +297,7 @@ if type -fP xwininfo &>-; then
 			fi
 		done < <(xwininfo -root)
 	}
-elif type -fP xdpyinfo &>-; then
+elif type -fP xdpyinfo > /dev/null 2>&1; then
 	getres(){ #: Two viable methods for fetching the display resolution.
 		while read -a LINE; do
 			if [ "${LINE[0]}" == 'dimensions:' ]; then
@@ -308,10 +308,10 @@ elif type -fP xdpyinfo &>-; then
 fi
 
 # Use these environment variables only for man, to give him some color.
-if [ "$MAN_COLORS" == "true" ] && type -fP man &>-; then
+if [ "$MAN_COLORS" == "true" ] && type -fP man > /dev/null 2>&1; then
 	man(){ #: Display man pages with a little color.
 		# This was needed else it wouldn't work, unless absolute path.
-		read MAN_EXEC < <(type -fP man 2>&-)
+		read MAN_EXEC < <(type -fP man 2> /dev/null)
 
 		LESS_TERMCAP_mb=$'\e[01;31m'\
 		LESS_TERMCAP_md=$'\e[01;31m'\
@@ -326,7 +326,7 @@ fi
 
 #TODO - Fix the inability to pipe the output.
 # Display a descriptive list of kernel modules.
-if type -fP lsmod modinfo &>-; then
+if type -fP lsmod modinfo > /dev/null 2>&1; then
 	lsmodd(){ #: List, describe, and/or search for detected kernel modules.
 		local SysFile='/proc/modules'
 
@@ -420,7 +420,7 @@ suppress(){ #: Execute command ($1) and omit specified ($2) output.
 }
 
 # Search for & output files not found which were installed with a given package.
-if type -fP dpkg-query &>-; then
+if type -fP dpkg-query > /dev/null 2>&1; then
 	missing-pkg-files(){ #: Check for missing files installed from a given package(s).
 		local X
 		while read X; do
@@ -430,7 +430,7 @@ if type -fP dpkg-query &>-; then
 fi
 
 # The ago function is a handy way to output some of the apt-get's -o options.
-if type -fP apt-get zcat &>-; then
+if type -fP apt-get zcat > /dev/null 2>&1; then
 	ago(){ #: List out various apt-get options for the -o flag.
 		for FIELD in `zcat /usr/share/man/man8/apt-get.8.gz`; {
 			if [[ "$FIELD" =~ ($^|^(Dir|Acquire|Dpkg|APT)::) ]]; then
@@ -445,7 +445,7 @@ if type -fP apt-get zcat &>-; then
 fi
 
 # Search the given path(s) for file types of TYPE. Ignores filename extension.
-if type -fP mimetype &>-; then
+if type -fP mimetype > /dev/null 2>&1; then
 	sif(){ #: Search given path(s) for files of a specified type.
 		[ $# -eq 0 ] && printf "%s\n"\
 			"USAGE: sif TYPE FILE1 [FILE2 FILE3...]" 1>&2
@@ -528,7 +528,7 @@ dquo(){ #: Surround ($@) text in double quotation marks.
 }
 
 # My preferred links2 settings. Also allows you to quickly search with DDG.
-if type -fP links2 &>-; then
+if type -fP links2 > /dev/null 2>&1; then
 	l2(){ #: A tweaked links2 experience, opening with DuckDuckGo.
 		links2 -http.do-not-track 1 -html-tables 1\
 			-html-tables 1 -html-numbered-links 1\
@@ -542,7 +542,7 @@ fi
 # in output to make it quick and easy to read; may not work on all terminals. The
 # changes are made the moment you press Enter, so be mindful! Ctrl + C to cancel.
 # Use OPT -d or --directories to instead match those.
-if type -fP mv &>-; then
+if type -fP mv > /dev/null 2>&1; then
 	brn(){ #: Batch-rename a bunch of files or directories.
 		printf "NOTE: To match directories instead, use -d|--directories OPTs.\n"
 
@@ -567,7 +567,7 @@ if type -fP mv &>-; then
 
 				read -ep " >> "
 				if [ "$REPLY" ]; then
-					if mv "$FILE" "$REPLY" 2>&-; then
+					if mv "$FILE" "$REPLY" 2> /dev/null; then
 						printf "\e[2;32mItem #%d successfully renamed.\e[0m\n" $NUM
 					else
 						printf "\e[2;31mUnable to rename item #%d.\e[0m\n" $NUM
@@ -578,7 +578,7 @@ if type -fP mv &>-; then
 	}
 fi
 
-if type -fP perl &>-; then
+if type -fP perl > /dev/null 2>&1; then
 	search-git-log(){ #: Search through 'git log' for file ($1) and commit string ($2).
 		if [ $# -eq 0 -o $# -ge 3 ]; then
 			printf "USAGE: search-git-log FILE [REGEX]\n" >&2
@@ -605,7 +605,7 @@ if type -fP perl &>-; then
 	}
 fi
 
-if type -fP espeak &>-; then
+if type -fP espeak > /dev/null 2>&1; then
 	sayit(){ #: Say something with espeak; good for quick alerts.
 		espeak -v en-scottish -g 5 -p 13 -s 0.7 "$*"
 	}

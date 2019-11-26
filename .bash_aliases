@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 25 Nov 13:40:11 GMT 2019
+# Last Change       - Tue 26 Nov 01:47:59 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -106,7 +106,7 @@ if type -fP rm > /dev/null 2>&1; then
 		"$HOME/.mozilla/firefox/Pending Pings"
 	)
 
-	alias hsh="rm --interactive=never -rv ${PLACES[@]} 2>&-" #: Clear out some junk from the current user's HOME.
+	alias hsh="rm --interactive=never -rv ${PLACES[@]} 2> /dev/null" #: Clear out some junk from the current user's HOME.
 fi
 
 # Make the ffmpeg output less cluttered, but also ignore many errors.
@@ -136,7 +136,7 @@ if type -fP feh > /dev/null 2>&1; then
 		alias get='wget -qc --show-progress' #: Download with wget, using some tidier settings with -c.
 	fi
 
-	alias img='feh --fullscreen --hide-pointer --draw-filename --no-menus --preload 2>&-' #: Slide-show images in current directory using feh.
+	alias img='feh --fullscreen --hide-pointer --draw-filename --no-menus --preload 2> /dev/null' #: Slide-show images in current directory using feh.
 fi
 
 # Quickly flash the terminal and sound the bell 3 times.
@@ -156,7 +156,7 @@ if type -fP ip > /dev/null 2>&1; then
 fi
 
 if type -fP hddtemp > /dev/null 2>&1; then
-	alias temphdd='hddtemp /dev/sd{a..z} 2>&-' #: View all sd* storage device temperatures.
+	alias temphdd='hddtemp /dev/sd{a..z} 2> /dev/null' #: View all sd* storage device temperatures.
 fi
 
 if [ -f /var/log/boot.log ]; then
@@ -178,7 +178,7 @@ fi
 # GitHub directory (/home/$USER/GitHub/) and its contents are protected from
 # this, as it could cause quite the problem.
 if type -fP chmod > /dev/null 2>&1; then
-	alias fixperms='[[ "$PWD" == "/home/$USER/GitHub/"* ]] || find -xdev -not -path "*/GitHub/*" \( -type f -exec chmod 600 {} \+ -o -type d -exec chmod 700 "{}" \+ \) -exec chown $UID:$UID {} \+ -printf "FIXING: %p\n" 2>&-' #: Recursively fix permissions and ownership. (F:600 D:700, UID:UID)
+	alias fixperms='[[ "$PWD" == "/home/$USER/GitHub/"* ]] || find -xdev -not -path "*/GitHub/*" \( -type f -exec chmod 600 {} \+ -o -type d -exec chmod 700 "{}" \+ \) -exec chown $UID:$UID {} \+ -printf "FIXING: %p\n" 2> /dev/null' #: Recursively fix permissions and ownership. (F:600 D:700, UID:UID)
 fi
 
 # Create or unmount a user-only RAM Disk (tmpfs, basically) of 32MB.
@@ -252,13 +252,10 @@ fi
 # Get more functionality by default when using grep and ls.
 if type -fP ls grep > /dev/null 2>&1; then
 	case "${TERM:-EMPTY}" in
-	        linux|xterm|xterm-256color)
-	                alias ls="ls --quoting-style=literal -nphq --time-style=iso --color=auto --group-directories-first --show-control-chars" #: A stylish, informative alternative to the 'ls' standard.
-			alias lsa="ls -A" #: As the previously set 'ls' alias, but show all files.
-
-			alias grep="grep --color=auto" #: Colorful (auto) 'grep' output.
-			alias egrep="egrep --color=auto" #: Colorful (auto) 'egrep' output.
-			alias fgrep="fgrep --color=auto" #: Colorful (auto) 'fgrep' output.
+			linux|xterm|xterm-256color)
+				alias ls="ls --quoting-style=literal -nphq --time-style=iso --color=auto --group-directories-first --show-control-chars" #: A stylish, informative alternative to the 'ls' standard.
+				alias lsa="ls -A" #: As the previously set 'ls' alias, but show all files.
+				alias grep="grep --color=auto" #: Colorful (auto) 'grep' output.
 			;;
 	esac
 fi

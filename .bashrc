@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sat 23 Nov 22:45:41 GMT 2019
+# Last Change       - Tue 26 Nov 01:46:29 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -140,7 +140,7 @@ else
 				GI[7]='⮂' # Fix conflicts.
 				GI[8]='!' # Unknown (ERROR).
 
-				STATUS=`git status 2>&-`
+				STATUS=`git status 2> /dev/null`
 
 				if [ "$BRANCH" == "true" ]; then
 					# Get the current branch name.
@@ -313,8 +313,8 @@ fi
 
 #--------------------------------------------------------------------INPUT BINDINGS
 
-bind -q forward-word > /dev/null 2>&- || bind '"\e[1;5C": forward-word'
-bind -q backward-word > /dev/null 2>&- || bind '"\e[1;5D": backward-word'
+bind -q forward-word > /dev/null 2> /dev/null || bind '"\e[1;5C": forward-word'
+bind -q backward-word > /dev/null 2> /dev/null || bind '"\e[1;5D": backward-word'
 
 #------------------------------------------------------SOURCE ALIASES AND FUNCTIONS
 
