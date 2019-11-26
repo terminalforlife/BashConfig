@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/.shplugs/Cleaner_RK_Scan
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Fri  6 Apr 19:54:05 BST 2018
+# Last Change       - Tue 26 Nov 21:05:27 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -12,8 +12,8 @@ rkc(){
 	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
 
 	declare -i DEPCOUNT=0
-	for DEP in /usr/bin/{sudo,rkhunter} /usr/sbin/chkrootkit; {
-		[ -x "$DEP" ] || {
+	for DEP in sudo rkhunter chkrootkit; {
+		type -fP "$DEP" > /dev/null 2>&1 || {
 			ERR "$LINENO" "Dependency '$DEP' not met."
 			DEPCOUNT+=1
 		}
@@ -21,7 +21,7 @@ rkc(){
 
 	[ $DEPCOUNT -eq 0 ] || return 1
 
-	/usr/bin/sudo /usr/bin/rkhunter -c --skip-keypress --rwo
+	sudo rkhunter -c --skip-keypress --rwo
 
 	while read -r; do
 		case "$REPLY" in
@@ -44,5 +44,5 @@ rkc(){
 			*)
 				printf "%s\n" "$REPLY" ;;
 		esac
-	done <<< "$(/usr/bin/sudo /usr/sbin/chkrootkit)"
+	done <<< "$(sudo /usr/sbin/chkrootkit)"
 }
