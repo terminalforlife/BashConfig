@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/.shplugs/CD_Clear_LS
 # Started On        - Thu 14 Sep 20:15:25 BST 2017
-# Last Change       - Fri  6 Apr 19:54:08 BST 2018
+# Last Change       - Tue 26 Nov 21:07:16 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -11,15 +11,15 @@
 CD_CLEAR_LS(){
 	ERR(){ printf "ERROR: %s\n" "$2" 1>&2; }
 
-	if [ -x /bin/ls ]; then
+	if type -fP ls > /dev/null 2>&1; then
 		if [ $# -eq 0 ]; then
 			printf "\033c"
 			cd "$HOME"
-			/bin/ls
+			ls
 		else
 			printf "\033c"
 			cd "$*"
-			/bin/ls
+			ls
 		fi
 	else
 		ERR "$LINENO" "Dependency 'ls' not met."
@@ -28,4 +28,3 @@ CD_CLEAR_LS(){
 }
 
 alias cd='CD_CLEAR_LS'
-
