@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/update_links.sh
 # Started On        - Sun 22 Oct 00:15:02 BST 2017
-# Last Change       - Mon 18 Nov 16:10:36 GMT 2019
+# Last Change       - Tue 26 Nov 20:58:30 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -28,14 +28,14 @@ for DEP in rm ln; {
 [ "${PWD//*\/}" == "BashConfig" ] || FAIL 1 "Not in the repository's root directory."
 
 for FILE in .bashrc .bash_aliases .bash_functions .bash_logout .profile; {
-	rm -v $HOME/$FILE 2>&-
-	ln -v $FILE $HOME/$FILE 2>&-
+	rm -v $HOME/$FILE 2> /dev/null
+	ln -v $FILE $HOME/$FILE 2> /dev/null
 }
 
 for FILE in .shplugs/*; {
-	rm -v $HOME/$FILE 2>&-
-	ln -v $FILE $HOME/$FILE 2>&-
+	rm -v $HOME/$FILE 2> /dev/null
+	ln -v $FILE $HOME/$FILE 2> /dev/null
 }
 
-rm -v $HOME/.inputrc 2>&-
-ln -v .inputrc $HOME/.inputrc 2>&-
+rm -v $HOME/.inputrc 2> /dev/null
+ln -v .inputrc $HOME/.inputrc 2> /dev/null
