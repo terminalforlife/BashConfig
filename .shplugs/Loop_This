@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/.shplugs/Loop_This
 # Started On        - Thu  2 Nov 18:52:49 GMT 2017
-# Last Change       - Sun  9 Dec 20:20:00 GMT 2018
+# Last Change       - Tue 26 Nov 21:07:32 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -14,8 +14,8 @@
 loop(){
 	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
 
-	if ! [ -x /bin/sleep ]; then
-		ERR "$LINENO" "Dependency '/bin/sleep' not met."
+	if ! type -fP sleep > /dev/null 2>&1; then
+		ERR "$LINENO" "Dependency 'sleep' not met."
 		return 1
 	elif [ $# -eq 0 ]; then
 		ERR "$LINENO" "Command(s) required before looping can begin."
@@ -24,7 +24,7 @@ loop(){
 		printf "\ec"
 		while :; do
 			printf "\ec\eH"
-			/bin/sleep 0.3
+			sleep 0.3
 			$@
 		done
 	fi
