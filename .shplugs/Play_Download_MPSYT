@@ -3,13 +3,13 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/.shplugs/Play_Download_MPSYT
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Fri  6 Apr 19:54:46 BST 2018
+# Last Change       - Tue 26 Nov 21:05:06 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
 yt(){
-	ARG_FAIL(){ echo "USAGE: yt [-p|-d] URL" 1>&2; }
+	ARG_FAIL(){ echo "Usage: yt [-p|-d] URL" 1>&2; }
 	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
 
 	if ! [ $# -gt 1 ]; then
@@ -18,8 +18,8 @@ yt(){
 	fi
 
 	declare -i DEPCOUNT=0
-	for DEP in /usr/bin/{apt-get,awk,dpkg-query}; {
-		[ -x "$DEP" ] || {
+	for DEP in apt-get awk dpkg-query; {
+		type -fP "$DEP" > /dev/null 2>&1 || {
 			ERR "$LINENO" "Dependency '$DEP' not met."
 			DEPCOUNT+=1
 		}
@@ -30,9 +30,9 @@ yt(){
 	if [ $# -gt 2 ]; then
 		ARG_FAIL; return 1
 	elif [ "$1" == "-p" ]; then
-		/usr/bin/mpsyt playurl "$2"
+		mpsyt playurl "$2"
 	elif [ "$1" == "-d" ]; then
-		/usr/bin/mpsyt dlurl "$2"
+		mpsyt dlurl "$2"
 	else
 		ARG_FAIL; return 1
 	fi
