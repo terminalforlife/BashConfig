@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 26 Nov 01:47:31 GMT 2019
+# Last Change       - Tue 26 Nov 03:12:41 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -106,6 +106,11 @@ if type -fP dmenu > /dev/null 2>&1; then
 fi
 
 if type -fP grep uniq sed > /dev/null 2>&1; then
+	gitgrep(){
+		grep -r --exclude-dir='.git' --exclude='LICENSE'\
+			--exclude='README.md' --color=always "$@"
+	}
+
 	noab(){ #: No absolutes for executables found in PATH directories and the given file.
 		if ! [ -f "$1" -a -r "$1" -a -w "$1" ]; then
 			printf "ERROR: File missing or insufficent permissions.\n"
