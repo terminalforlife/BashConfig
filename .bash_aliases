@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 24 Nov 19:47:07 GMT 2019
+# Last Change       - Mon 25 Nov 13:40:11 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -200,7 +200,7 @@ if type -fP git > /dev/null 2>&1; then
 		"status -s":status "checkout":checkout "config --list":gcl\
 		"describe --long --tag":describe "mv":gmv "commit -m":scommit\
 		"show --pretty=format:'%CredCommit %Cgreen%h%Cred pushed %ar by %Cgreen%an%Creset%Cred:%Creset%n\"%s\"%n'":show\
-		"log --pretty=format:'%CredCommit %Cgreen%h%Cred pushed %ar by %Cgreen%an%Creset%Cred:%Creset%n\"%s\"%n' 2> /dev/null":log
+		"log --reverse --pretty=format:'%CredCommit %Cgreen%h%Cred pushed %ar by %Cgreen%an%Creset%Cred:%Creset%n\"%s\"%n' 2> /dev/null":log
 	{
 		alias "${CMD/*:}"="git --no-pager ${CMD%:*} 2> /dev/null"
 
