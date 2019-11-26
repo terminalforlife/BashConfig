@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 26 Nov 03:12:41 GMT 2019
+# Last Change       - Tue 26 Nov 20:41:05 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -107,8 +107,9 @@ fi
 
 if type -fP grep uniq sed > /dev/null 2>&1; then
 	gitgrep(){
-		grep -r --exclude-dir='.git' --exclude='LICENSE'\
-			--exclude='README.md' --color=always "$@"
+		grep -r --exclude-dir='.git' --exclude='LICENSE' --exclude='README.md'\
+			--exclude={.bash{_{aliases,functions,logout,profile},rc},{,.}inputrc,inputrc}\
+			--exclude='*.'{mp3,jpg,ogg,png,deb,xml} --color=always "$@"
 	}
 
 	noab(){ #: No absolutes for executables found in PATH directories and the given file.
