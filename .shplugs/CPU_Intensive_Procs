@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/.shplugs/CPU_Intensive_Procs
 # Started On        - Thu 14 Sep 20:10:21 BST 2017
-# Last Change       - Fri  6 Apr 19:54:13 BST 2018
+# Last Change       - Tue 26 Nov 21:06:16 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -11,7 +11,9 @@
 cpuhit(){
 	ERR(){ printf "[L%0.4d] ERROR: %s\n" "$1" "$2" 1>&2; }
 
-	[ -x /bin/ps ] || ERR "$LINENO" "Dependency '/bin/ps' not met."
+	if ! type -fP ps > /dev/null 2>&1; then
+		ERR "$LINENO" "Dependency 'ps' not met."
+	fi
 
 	case "${*:-EMPTY}" in
 		[1-9]|10)
@@ -46,8 +48,7 @@ cpuhit(){
 			let COUNT++
 			[ $COUNT -eq $* ] && return 0
 		}
-	done <<< `/bin/ps ax --noheader -o pid,pcpu,comm`
+	done <<< `ps ax --noheader -o pid,pcpu,comm`
 }
 
 cpuhit 10
-
