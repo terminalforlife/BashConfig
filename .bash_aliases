@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 26 Nov 01:47:59 GMT 2019
+# Last Change       - Wed 27 Nov 23:24:47 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -31,9 +31,6 @@
 # Nifty trick to allow aliases to work with sudo. This avoids needing sudo in these
 # configuration files, since using sudo within a bash script/program is not great.
 alias sudo="sudo " #: Allows for aliases to work with sudo.
-
-# Sick of typing this in the termanal, out of habit!
-alias ":q"="exit" #: Act expectedly, if it were actually VIM.
 
 if type -fP df > /dev/null 2>&1; then
 	alias df='df -lT -x devtmpfs -x tmpfs -x usbfs' #: More relevant output than the default.
@@ -253,8 +250,10 @@ fi
 if type -fP ls grep > /dev/null 2>&1; then
 	case "${TERM:-EMPTY}" in
 			linux|xterm|xterm-256color)
-				alias ls="ls --quoting-style=literal -nphq --time-style=iso --color=auto --group-directories-first --show-control-chars" #: A stylish, informative alternative to the 'ls' standard.
-				alias lsa="ls -A" #: As the previously set 'ls' alias, but show all files.
+				alias ls="ls --quoting-style=literal -pq --time-style=iso --color=auto --group-directories-first --show-control-chars" #: A presentable but minimalistic 'ls'.
+				alias lsa="ls -A" #: As 'ls', but also show all files.
+				alias lsl="ls -nph" #: As 'ls', but with lots of information.
+				alias lsla="ls -Anph" #: As 'lsl', but also show all files.
 				alias grep="grep --color=auto" #: Colorful (auto) 'grep' output.
 			;;
 	esac
