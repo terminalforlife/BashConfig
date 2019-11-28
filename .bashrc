@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed 27 Nov 23:56:19 GMT 2019
+# Last Change       - Thu 28 Nov 14:58:22 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -16,30 +16,30 @@
 
 # This is where you, the user, can change some settings within this .bashrc file.
 # You won't need any programming knowledge or any major experience with a terminal.
-# Know that "true" is on and "false" is off -- but only replace the words!
+# Know that 'true' is on and 'false' is off -- but only replace the words!
 
 # Set this to false to not indicate that shell should abide by posix standards.
-POSIX_MODE="true"
+POSIX_MODE='true'
 
 # If git is installed and you're in a git repository, then this .bashrc file will
 # by default display various pretty-printed git-related information. Change to
 # false to disable.
-DO_GIT="true"
+DO_GIT='true'
 
 # By default, you should see a rather nice prompt. If you want something simple, -
 # akin to the Bourne Shell prompt, set this option to true.
-SIMPLE="false"
+SIMPLE='false'
 
 # If DO_GIT is true, and this option is true, then the current, active branch will
 # be shown if you're currently in a git repository.
-BRANCH="true"
+BRANCH='true'
 
 # Set this to true in order to remove all history settings and use the defaults.
-DEFAULT_HISTORY="false"
+DEFAULT_HISTORY='false'
 
 # If true, the manual pages will be endeavor to be colorful. The code for this
 # setting is actually stored in: $HOME/.bash_functions
-MAN_COLORS="true"
+MAN_COLORS='true'
 
 # Enter your chosen .shplugs here. They must exist in: $HOME/.shplugs/
 # Each entry must be separated by spaces, so ensure you escape or quote filenames
@@ -76,7 +76,7 @@ fi
 # If not running interactively, or are in restricted mode, then ignore the rest.
 { ! [ "$PS1" ] || shopt -q restricted_shell; } && return
 
-if [ "$DEFAULT_HISTORY" == "false" ]; then
+if [ "$DEFAULT_HISTORY" == 'false' ]; then
 	shopt -s histappend cmdhist lithist
 	set -o histexpand
 fi
@@ -88,7 +88,7 @@ shopt -s checkwinsize globstar complete_fullquote expand_aliases extquote\
 
 set -o interactive-comments +o monitor -o hashall -o braceexpand -o emacs
 
-[ "$POSIX_MODE" == "true" ] && set -o posix
+[ "$POSIX_MODE" == 'true' ] && set -o posix
 
 #-------------------------------------------------------------------USER SET CHECKS
 
@@ -107,7 +107,7 @@ for OPT in\
 # When \w is used in PS1, this will set ../ when beyond depth 1. (4.* or later)
 [ "${BASH_VERSINFO[0]}" -ge 4 ] && PROMPT_DIRTRIM=1
 
-if [ "$SIMPLE" == "true" ]; then
+if [ "$SIMPLE" == 'true' ]; then
 	PS1="\$ "
 else
 	# Needed to ensure the git stuff shows correctly. In 18.04, the git
@@ -121,7 +121,7 @@ else
 		printf -v X "%.3d" $?
 		local OFF='▫' ON='▪' P
 
-		if [ "$SHOW_ICON" == "true" ]; then
+		if [ "$SHOW_ICON" == 'true' ]; then
 			[ $X -eq 0 ] && local A='+' || local A='!'
 		fi
 
@@ -142,11 +142,11 @@ else
 
 				STATUS=`git status 2> /dev/null`
 
-				if [ "$BRANCH" == "true" ]; then
+				if [ "$BRANCH" == 'true' ]; then
 					# Get the current branch name.
 					TOP=`git rev-parse --show-toplevel`
 					IFS='/' read -a A < "$TOP/.git/HEAD"
-					local GB="${A[${#A[@]}-1]}"
+					local GB=${A[${#A[@]}-1]}
 				fi
 
 				# While loops in special order:
@@ -217,7 +217,7 @@ else
 
 		P+="${DESC}\[\033[0m\]\n╰─☉  "
 
-		PS1="$P"
+		PS1=$P
 
 		unset X G
 	}
@@ -264,7 +264,7 @@ export LS_COLORS='di=1;31:ln=2;32:mh=1;32:ex=1;33:'
 
 # Remove /snap/bin from the end of the PATH. Uncomment if you need this, but
 # removing the snap functionality (packages) should remove it from PATH anyway.
-#export PATH="${PATH%:\/snap\/bin}"
+#export PATH=${PATH%:\/snap\/bin}
 
 # Set the terminal color.
 export TERM='xterm-256color'
