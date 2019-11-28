@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Thu 28 Nov 14:58:22 GMT 2019
+# Last Change       - Thu 28 Nov 16:32:04 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -44,18 +44,7 @@ MAN_COLORS='true'
 # Enter your chosen .shplugs here. They must exist in: $HOME/.shplugs/
 # Each entry must be separated by spaces, so ensure you escape or quote filenames
 # with spaces in them, or even special characters understood by the shell.
-PLUGINS=(
-	Make_ScreenCast           # Use 'mksc' to make a screencast.
-	Terminal_Reminder         # Display reminders of user-specified dates.
-	Bell_Alarm                # Run 'bell' for simple alarm using the x11 bell.
-	Cleaner_RK_Scan           # Run 'rkc' to scan with rkhunter and chkrootkit.
-	Load_File_Links2          # Run 'l2f FILE' to load a file with links2.
-	Git_Status_All            # Run 'gitsa' to show repos which need action.
-	Get_Bad_Hosts             # Run 'gbh' to download a list of bad domains.
-	List_Signals              # Run 'lsssig' for another way to list signals.
-	LSPKG_Set                 # Run 'lspkg-set' to list various package types.
-	Loop_This                 # Run 'loop' followed by CMD(s) to loop them.
-)
+PLUGINS=()
 
 # WARNING: Changing code below, without knowledge of shell, could easily break it!
 #          Be sure to also back up the above user settings if you plan on updating
