@@ -1,9 +1,9 @@
 #!/bin/sh
 
 #----------------------------------------------------------------------------------
-# Project Name      - BashConfig/.shrc
+# Project Name      - BashConfig/.yashrc
 # Started On        - Thu 28 Nov 15:03:17 GMT 2019
-# Last Change       - Thu 28 Nov 16:22:35 GMT 2019
+# Last Change       - Thu 28 Nov 17:04:18 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -12,6 +12,8 @@
 # by the fairly strict POSIX shell, `yash` (Yet Another Shell).
 #
 # So, for example, if you wanted to load up this configuration in ZSH, you could.
+#
+# NOTE: Any mention of `.bashrc` and Bash in general should still apply here.
 #---------------------------------------------------------------------USER SETTINGS
 
 # This is where you, the user, can change some settings within this .bashrc file.
@@ -19,7 +21,7 @@
 # Know that 'true' is on and 'false' is off -- but only replace the words!
 
 # Set this to false to not indicate that shell should abide by posix standards.
-POSIX_MODE='true'
+POSIX_MODE='false'
 
 # If git is installed and you're in a git repository, then this .bashrc file will
 # by default display various pretty-printed git-related information. Change to
@@ -41,23 +43,6 @@ DEFAULT_HISTORY='false'
 # setting is actually stored in: $HOME/.bash_functions
 MAN_COLORS='true'
 
-#TODO - Make these plugins POSIX-compliant.
-# Enter your chosen .shplugs here. They must exist in: $HOME/.shplugs/
-# Each entry must be separated by spaces, so ensure you escape or quote filenames
-# with spaces in them, or even special characters understood by the shell.
-#PLUGINS=(
-#	Make_ScreenCast           # Use 'mksc' to make a screencast.
-#	Terminal_Reminder         # Display reminders of user-specified dates.
-#	Bell_Alarm                # Run 'bell' for simple alarm using the x11 bell.
-#	Cleaner_RK_Scan           # Run 'rkc' to scan with rkhunter and chkrootkit.
-#	Load_File_Links2          # Run 'l2f FILE' to load a file with links2.
-#	Git_Status_All            # Run 'gitsa' to show repos which need action.
-#	Get_Bad_Hosts             # Run 'gbh' to download a list of bad domains.
-#	List_Signals              # Run 'lsssig' for another way to list signals.
-#	LSPKG_Set                 # Run 'lspkg-set' to list various package types.
-#	Loop_This                 # Run 'loop' followed by CMD(s) to loop them.
-#)
-
 # WARNING: Changing code below, without knowledge of shell, could easily break it!
 #          Be sure to also back up the above user settings if you plan on updating
 #          this file with the bashconfig entry in insit.
@@ -71,7 +56,7 @@ MAN_COLORS='true'
 #fi
 
 # If not running interactively, then ignore the rest.
-[ "$PS1" ] || return
+[ -z "$PS1" ] && return
 
 #TODO - Find and write `sh`-equivalent version of this.
 #if [ "$DEFAULT_HISTORY" == 'false' ]; then
@@ -104,8 +89,6 @@ MAN_COLORS='true'
 #done
 
 #---------------------------------------------------------------CODE FOR THE PROMPT
-
-PS1="\$ "
 
 #TODO - Is there a POSIX feature like this?
 # When \w is used in PS1, this will set ../ when beyond depth 1. (4.* or later)
@@ -237,17 +220,17 @@ PS1="\$ "
 
 #--------------------------------------------------------------------SOURCE PLUGINS
 
-#TODO - POSIX-ify this. No array variables.
-#FLIB="$HOME/.shplugs"
-#if [ -d "$FLIB" ]; then
-#	for FUNC in "${PLUGINS[@]}"; {
-#		if [ -f "$FLIB/$FUNC" ] && [ -r "$FLIB/$FUNC" ]; then
-#			. "$FLIB/$FUNC"
-#		fi
-#	}
-#fi
-#
-#unset FLIB FUNC
+FLIB="$HOME/.shplugs"
+if [ -d "$FLIB" ]; then
+	# Unlike in `.bashrc`, all files will be sourced; no cherry-picking.
+	for FUNC in "$FLIB"/*; do
+		if [ -f "$FLIB/$FUNC" ] && [ -r "$FLIB/$FUNC" ]; then
+			. "$FLIB/$FUNC"
+		fi
+	done
+fi
+
+unset FLIB FUNC
 
 #-------------------------------------------------------------ENVIRONMENT VARIABLES
 
@@ -303,13 +286,11 @@ fi
 
 #--------------------------------------------------------------------INPUT BINDINGS
 
-if ! [ "$POSIX_MODE" = 'true' ]; then
-	if ! bindkey -q forward-word > /dev/null 2> /dev/null; then
-		bindkey '"\e[1;5C": forward-word'
-	elif ! bindkey -q backward-word > /dev/null 2> /dev/null; then
-		bindkey '"\e[1;5D": backward-word'
-	fi
-fi
+# These refuse to work. Can't find anything useful in the documentation.
+#if ! [ "$POSIX_MODE" = 'true' ]; then
+#	bindkey -e '^F' 'forward-char'
+#	bindkey -e '^B' 'backward-char'
+#fi
 
 #------------------------------------------------------SOURCE ALIASES AND FUNCTIONS
 
