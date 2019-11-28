@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 26 Nov 23:32:44 GMT 2019
+# Last Change       - Thu 28 Nov 00:02:47 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -21,7 +21,7 @@
 [ "$BASH_VERSION" ] || return 1
 
 if type -fP git > /dev/null 2>&1; then
-	pullup-forks()( #: For all forks, pull upstream changes to the current branch.
+	pullupforks()( #: For all forks, pull upstream changes to the current branch.
 		if [ $UID -eq 1000 -a "$USER" == 'ichy' ]; then
 			FORKS="$HOME/GitHub/terminalforlife/Forks"
 		else
@@ -56,7 +56,7 @@ if type -fP git > /dev/null 2>&1; then
 							GB=${Z[1]}
 							break
 						fi
-					done < <(git branch 2> /dev/null)
+					done <<< "$(git branch 2> /dev/null)"
 				fi
 
 				# If offline repo, above won't work, try:
@@ -158,7 +158,7 @@ if type -fP awk > /dev/null 2>&1; then
 					printf(\"%'7dM %s\\n\", M, \$2)
 				}
 			}
-		" <(\ps ax -o rss= -o comm= --sort -rss)
+		" <<< "$(\ps ax -o rss= -o comm= --sort -rss)"
 	}
 
 	sc(){ #: Perform mathematical calculations via AWK.
@@ -200,7 +200,7 @@ if type -fP column > /dev/null 2>&1; then
 	builtins(){ #: Display a columnized list of bash builtins.
 		while read -r; do
 			printf "%s\n" "${REPLY/* }"
-		done < <(enable -a) | column
+		done <<< "$(enable -a)" | column
 	}
 fi
 
@@ -211,7 +211,7 @@ if type -fP xdpyinfo > /dev/null 2>&1; then
 			if [ "${X[0]}" == "resolution:" ]; then
 				printf "%s\n" "${X[1]/*x}"
 			fi
-		done < <(xdpyinfo)
+		done <<< "$(xdpyinfo)"
 	}
 fi
 
@@ -221,7 +221,7 @@ if type -fP sensors > /dev/null 2>&1; then
 			if [[ "$REPLY" == *[Ff][Aa][Nn]*RPM ]]; then
 				printf "%s\n" "$REPLY"
 			fi
-		done < <(sensors)
+		done <<< "$(sensors)"
 	}
 fi
 
@@ -272,7 +272,7 @@ fi
 if [ "$USER" == "ichy" -a $UID -eq 1000 ]; then
 	if type -fP sed grep shuf > /dev/null 2>&1; then
 		if [ -f $HOME/Documents/TT/Useful_Commands ]; then
-			get-random-note(){ #: Display a random note line from command notes.
+			getrandomnote(){ #: Display a random note line from command notes.
 				sed "1,/^#END/!d" $HOME/Documents/TT/Useful_Commands\
 					| grep -v "^#"\
 					| grep -v "^$"\
@@ -290,7 +290,7 @@ if type -fP dpkg > /dev/null 2>&1; then
 			if [ "${X[0]}" == "rc" ]; then
 				printf "%s\n" "${X[1]}"
 			fi
-		done < <(dpkg -l)
+		done <<< "$(dpkg -l)"
 	}
 fi
 
@@ -301,7 +301,7 @@ if type -fP xwininfo > /dev/null 2>&1; then
 			if [ "${LINE[0]}" == '-geometry' ]; then
 				printf "Your resolution is %s, according to xwininfo.\n" "${LINE[1]%+*+*}"
 			fi
-		done < <(xwininfo -root)
+		done <<< "$(xwininfo -root)"
 	}
 elif type -fP xdpyinfo > /dev/null 2>&1; then
 	getres(){ #: Two viable methods for fetching the display resolution.
@@ -309,7 +309,7 @@ elif type -fP xdpyinfo > /dev/null 2>&1; then
 			if [ "${LINE[0]}" == 'dimensions:' ]; then
 				printf "Your resolution is %s, according to xdpyinfo.\n" "${LINE[1]}"
 			fi
-		done < <(xdpyinfo)
+		done <<< "$(xdpyinfo)"
 	}
 fi
 
@@ -317,7 +317,7 @@ fi
 if [ "$MAN_COLORS" == "true" ] && type -fP man > /dev/null 2>&1; then
 	man(){ #: Display man pages with a little color.
 		# This was needed else it wouldn't work, unless absolute path.
-		read MAN_EXEC < <(type -fP man 2> /dev/null)
+		read MAN_EXEC <<< "$(type -fP man 2> /dev/null)"
 
 		LESS_TERMCAP_mb=$'\e[01;31m'\
 		LESS_TERMCAP_md=$'\e[01;31m'\
@@ -427,11 +427,11 @@ suppress(){ #: Execute command ($1) and omit specified ($2) output.
 
 # Search for & output files not found which were installed with a given package.
 if type -fP dpkg-query > /dev/null 2>&1; then
-	missing-pkg-files(){ #: Check for missing files installed from a given package(s).
+	missingpkgfiles(){ #: Check for missing files installed from a given package(s).
 		local X
 		while read X; do
 			[ -e "$X" -a "$X" ] || printf "%s\n" "$X"
-		done < <(dpkg-query -L $@)
+		done <<< "$(dpkg-query -L $@)"
 	}
 fi
 
@@ -467,7 +467,7 @@ if type -fP mimetype > /dev/null 2>&1; then
 						printf "%s\n" "$FILE"
 					fi
 				}
-			done < <(mimetype -bd "$FILE")
+			done <<< "$(mimetype -bd "$FILE")"
 		}
 
 		unset TYPE FILE X I
@@ -585,7 +585,7 @@ if type -fP mv > /dev/null 2>&1; then
 fi
 
 if type -fP perl > /dev/null 2>&1; then
-	search-git-log(){ #: Search through 'git log' for file ($1) and commit string ($2).
+	searchgitlog(){ #: Search through 'git log' for file ($1) and commit string ($2).
 		if [ $# -eq 0 -o $# -ge 3 ]; then
 			printf "USAGE: search-git-log FILE [REGEX]\n" >&2
 			return 1
