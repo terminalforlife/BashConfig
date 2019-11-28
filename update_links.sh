@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - bashconfig/update_links.sh
 # Started On        - Sun 22 Oct 00:15:02 BST 2017
-# Last Change       - Tue 26 Nov 20:58:30 GMT 2019
+# Last Change       - Thu 28 Nov 16:24:09 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -39,3 +39,6 @@ for FILE in .shplugs/*; {
 
 rm -v $HOME/.inputrc 2> /dev/null
 ln -v .inputrc $HOME/.inputrc 2> /dev/null
+
+rm -v $HOME/.yashrc 2> /dev/null
+ln -v .yashrc $HOME/.yashrc 2> /dev/null
