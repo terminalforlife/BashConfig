@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Thu 28 Nov 16:32:04 GMT 2019
+# Last Change       - Fri 29 Nov 22:12:43 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ MAN_COLORS='true'
 # Enter your chosen .shplugs here. They must exist in: $HOME/.shplugs/
 # Each entry must be separated by spaces, so ensure you escape or quote filenames
 # with spaces in them, or even special characters understood by the shell.
-PLUGINS=()
+PLUGINS=(gitsa)
 
 # WARNING: Changing code below, without knowledge of shell, could easily break it!
 #          Be sure to also back up the above user settings if you plan on updating
