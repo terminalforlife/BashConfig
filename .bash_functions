@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Thu 28 Nov 00:02:47 GMT 2019
+# Last Change       - Fri 29 Nov 13:26:00 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -19,6 +19,21 @@
 
 # Just in-case.
 [ "$BASH_VERSION" ] || return 1
+
+if type -fP tput > /dev/null 2>&1; then
+	yesno(){ #: Output a very tidy (clears below and on cursor line!) one-line prompt.
+		while :; do
+			read -n 1 -p "$*" PromReply
+			case $PromReply in
+				[Yy]) printf '\n'; return 0 ;;
+				[Nn]) printf '\n'; return 1 ;;
+			esac
+
+			printf '\r'
+			tput ed
+		done
+	}
+fi
 
 if type -fP git > /dev/null 2>&1; then
 	pullupforks()( #: For all forks, pull upstream changes to the current branch.
