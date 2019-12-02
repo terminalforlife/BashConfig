@@ -1,36 +1,36 @@
 #!/usr/bin/env bash
 
 #----------------------------------------------------------------------------------
-# Project Name      - bashconfig/lad
+# Project Name      - BashConfig/lad (List and Describe)
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Fri 15 Nov 15:15:18 GMT 2019
+# Last Change       - Mon  2 Dec 22:33:48 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-_VERSION_="2019-11-15"
-_PROJECT_="${0##*/}"
+CurVer='2019-12-02'
+Progrm=${0##*/}
 
-FAIL(){
+Err(){
 	printf "[L%0.4d] ERROR: %s\n" "$2" "$3" 1>&2
-	[ $1 -eq 1 ] && exit 1
+	[ $1 -gt 0 ] && exit $1
 }
 
-USAGE(){
-	while read -r; do
+Usage(){
+	while read; do
 		printf "%s\n" "$REPLY"
 	done <<-EOF
-		            ${_PROJECT_^^} - LIST AND DESCRIBE ($_VERSION_)
+		            ${Progrm^^} ($CurVer)
 		            Written by terminalforlife (terminalforlife@yahoo.com)
 
 		            List and describe functions and aliases made available from the
 		            bashconfig repository, found through the GitHub link below.
 
-		SYNTAX:     $_PROJECT_ [OPTS] [STRING]
+		SYNTAX:     $Progrm [OPTS] [STRING]
 
 		OPTS:       --help|-h|-?            - Displays this help information.
 		            --version|-v            - Output only the version datestamp.
-		            --debug|-D              - Enables the built-in bash debugging.
+		            --debug|-D              - Enables the built-in Bash debugging.
 		            --search|-s [E|F|A]:S   - Where S is the string for which to search. If
 		                                      searching through the functions, prepend
 		                                      'F:', or for aliases, use 'A:'; for either, -
@@ -45,7 +45,7 @@ USAGE(){
 		            flag, begins with E, F, or A, followed by a colon, note that this will
 		            be ignored as an argument, so should not cause confusion.
 
-		RULES:      In order for $_PROJECT_ to correctly list functions and aliases, various rules
+		RULES:      In order for $Progrm to correctly list functions and aliases, various rules
 		            must be followed; these are listed below:
 
 		              1. ' #: ', sans quotes, must be appended to alias lines.
@@ -92,64 +92,63 @@ USAGE(){
 	EOF
 }
 
-BOOLEAN="true"
+Boolean='true'
 NL="\n"
 
 while [ "$1" ]; do
 	case $1 in
 		--help|-h|-\?)
-			USAGE; exit 0 ;;
+			Usage; exit 0 ;;
 		--version|-v)
-			printf "%s\n" "$_VERSION_"
+			printf "%s\n" "$CurVer"
 			exit 0 ;;
 		--debug|-D)
-			DEBUGME="true" ;;
+			DEBUGME='true' ;;
 		--search|-s)
-			shift; SEARCH="$1"
-			if ! [[ $SEARCH =~ ^[AFE]{1}: ]]; then
-				FAIL 1 "$LINENO" "Invalid search query. See '$_PROJECT_ --help' for information."
+			shift; Search=$1
+			if ! [[ $Search =~ ^[AFE]{1}: ]]; then
+				Err 1 $LINENO "Invalid search query. See '$Progrm --help' for information."
 			fi ;;
 		--exit-only|-e)
-			BOOLEAN="false" ;;
+			Boolean='false' ;;
 		--only-funcs|-F)
-			ONLY_FUNCS="true" ;;
+			OnlyFunc='true' ;;
 		--only-aliases|-A)
-			ONLY_ALIASES="true"; unset NL ;;
+			OnlyAlias='true'; unset NL ;;
 		*)
-			FAIL 1 "$LINENO" "Incorrect argument(s) specified." ;;
+			Err 1 $LINENO "Incorrect argument(s) specified." ;;
 	esac
 	shift
 done
 
-if [ -s "$ONLY_FUNCS" -a -s "$ONLY_ALIASES" ]; then
-	FAIL 1 "$LINENO" "Either '--only-funcs|-F' or '--only-aliases|-A' may used at one time."
-elif [ "$BOOLEAN" == "false" -a -z "$SEARCH" ]; then
-	FAIL 1 "$LINENO" "The '--exit-only' option strictly applies to the '--search|-s' flag."
+if [ -n "$OnlyFunc" -a -n "$OnlyAlias" ]; then
+	Err 1 $LINENO "Either '--only-funcs|-F' or '--only-aliases|-A' may used at one time."
+elif [ "$Boolean" == "false" -a -z "$Search" ]; then
+	Err 1 $LINENO "The '--exit-only' option strictly applies to the '--search|-s' flag."
 fi
 
-FILE_BF="$HOME/.bash_functions"
-FILE_BA="$HOME/.bash_aliases"
+FileBF="$HOME/.bash_functions"
+FileBA="$HOME/.bash_aliases"
 
 [ "$DEBUGME" == "true" ] && set -x
 
-PRINT(){ [ "$SEARCH" ] || printf "  %s - %s\n" "$@"; }
-CHK_TEMP(){ [ "$1" == "$2" ] && A_FOUND='true' || return 1; }
+Print(){ [ "$Search" ] || printf "  %s - %s\n" "$@"; }
+ChkTemp(){ [ "$1" == "$2" ] && A_FOUND='true' || return 1; }
 
-#------------------------------------------------------------------GATHER FUNCTIONS
-
-if [ "$ONLY_FUNCS" == "true" ] || [ -z "$ONLY_FUNCS" -a -z "$ONLY_ALIASES" ]; then
-	if [ -f "$FILE_BF" ] && [ -r "$FILE_BF" ]; then
-		[ -z "$SEARCH" ] && printf "FUNCTIONS ($FILE_BF)\n\n"
+# Gather functions.
+if [ "$OnlyFunc" == "true" ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
+	if [ -f "$FileBF" ] && [ -r "$FileBF" ]; then
+		[ -z "$Search" ] && printf "FUNCTIONS ($FileBF)\n\n"
 
 		while read; do
-			if ! [ -z "$REPLY" ] && ! [[ "$REPLY" =~ ^\# ]]; then
+			if ! [ -z "$REPLY" ] && ! [[ $REPLY =~ ^\# ]]; then
 				if [[ $REPLY =~ [a-Z0-9_-]+\(\)[\{\(] ]]; then
 					NAME=${REPLY%%\(\)[\(\{]*}
 
 					# A description of " #: TEXT" must be appended to
 					# the function call line for each function. This
 					# will NOT work otherwise.
-					DESC=${REPLY#*\#\:}
+					Desc=${REPLY#*\#\:}
 
 					#TODO - Temporary quick fix for strange
 					#       issue since recent update. P()
@@ -159,54 +158,53 @@ if [ "$ONLY_FUNCS" == "true" ] || [ -z "$ONLY_FUNCS" -a -z "$ONLY_ALIASES" ]; th
 					# Only functions found 0-1 tabs in are counted.
 					if [[ $NAME =~ ^\	{0,1}[a-Z_-] ]]; then
 						NAME=${NAME//\	/}
-						if [[ ${SEARCH%%:*} == [FE] ]]; then
-							CHK_TEMP "$NAME" "${SEARCH#[FE]:}" || continue
+						if [[ ${Search%%:*} == [FE] ]]; then
+							ChkTemp "$NAME" "${Search#[FE]:}" || continue
 						else
-							PRINT "$NAME" "${DESC#\ }"
+							Print "$NAME" "${Desc#\ }"
 						fi
 					fi
 				fi
 			fi
-		done < "$FILE_BF"
+		done < "$FileBF"
 	else
-		FAIL 1 "$LINENO" "File '$FILE_BF' not found."
+		Err 1 $LINENO "File '$FileBF' not found."
 	fi
 fi
 
-[ "$F_FOUND" == "true" ] && { [ "$BOOLEAN" == "true" ] && printf "true\n"; exit 0; }
+[ "$F_FOUND" == "true" ] && { [ "$Boolean" == "true" ] && printf "true\n"; exit 0; }
 
-#--------------------------------------------------------------------GATHER ALIASES
-
-if [ "$ONLY_ALIASES" == "true" ] || [ -z "$ONLY_FUNCS" -a -z "$ONLY_ALIASES" ]; then
-	if [ -f "$FILE_BA" ] && [ -r "$FILE_BA" ]; then
-		[ -z "$SEARCH" ] && printf "${NL}ALIASES ($FILE_BA)\n\n"
+# Gather aliases.
+if [ "$OnlyAlias" == "true" ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
+	if [ -f "$FileBA" ] && [ -r "$FileBA" ]; then
+		[ -z "$Search" ] && printf "${NL}ALIASES ($FileBA)\n\n"
 
 		while read; do
 			if ! [ -z "$REPLY" ] && ! [[ $REPLY =~ ^\# ]]; then
 				if [[ $REPLY =~ alias\ [:\"\']{0,}[a-Z0-9_-]+[\'\"]{0,}\= ]]; then
-					declare -a TEMP=(${REPLY%%\=*})
+					declare -a Temp=(${REPLY%%\=*})
 
 					#TODO - A cleaner system is preferable.
 					# A description of " #: TEXT" must be appended to
 					# the alias set line for each function. This will
 					# NOT work otherwise, as with the functions.
-					DESC=${REPLY#*\#\:}
+					Desc=${REPLY#*\#\:}
 
-					if [ "${TEMP[0]}" == "alias" ]; then
-						if [[ ${SEARCH%%:*} == [AE] ]]; then
-							CHK_TEMP "${TEMP[1]//[\"\']}" "${SEARCH#[AE]:}" || continue
+					if [ "${Temp[0]}" == 'alias' ]; then
+						if [[ ${Search%%:*} == [AE] ]]; then
+							ChkTemp "${Temp[1]//[\"\']}" "${Search#[AE]:}" || continue
 						else
-							PRINT "${TEMP[1]//[\"\']}" "${DESC#\ }"
+							Print "${Temp[1]//[\"\']}" "${Desc#\ }"
 						fi
 
 					fi
 				fi
 			fi
-		done < "$FILE_BA"
+		done < "$FileBA"
 	else
-		FAIL 1 "$LINENO" "File '$FILE_BA' not found."
+		Err 1 $LINENO "File '$FileBA' not found."
 	fi
 fi
 
-#[ "$A_FOUND" == "true" ] && { [ "$BOOLEAN" == "true" ] && printf "true\n"; exit 0; }
+#[ "$A_FOUND" == "true" ] && { [ "$Boolean" == "true" ] && printf "true\n"; exit 0; }
 
