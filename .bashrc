@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 29 Nov 22:12:43 GMT 2019
+# Last Change       - Sun  1 Dec 01:42:16 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -108,13 +108,8 @@ else
 	# Newer, more concise prompt.
 	PROMPT_PARSER(){
 		printf -v X "%.3d" $?
-		local OFF='▫' ON='▪' P
 
-		if [ "$SHOW_ICON" == 'true' ]; then
-			[ $X -eq 0 ] && local A='+' || local A='!'
-		fi
-
-		P+="\[\e[0m\]╭──╼${X}╾──☉  "
+		local P+="\[\e[0m\]╭──╼${X}╾──☉  "
 
 		if [ "$DO_GIT" == 'true' ] && type -fP git > /dev/null 2>&1; then
 			if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
@@ -129,11 +124,12 @@ else
 				GI[7]='⮂' # Fix conflicts.
 				GI[8]='!' # Unknown (ERROR).
 
-				STATUS=`git status 2> /dev/null`
+				local STATUS=`git status 2> /dev/null`
+				local TOP=`git rev-parse --show-toplevel`
+				printf -v DESC "\e[1;31m∷  \e[2;37mLooking under the hood..."
 
-				if [ "$BRANCH" == 'true' ]; then
+				if [ "$BRANCH" == 'true' -a -n "$TOP" ]; then
 					# Get the current branch name.
-					TOP=`git rev-parse --show-toplevel`
 					IFS='/' read -a A < "$TOP/.git/HEAD"
 					local GB=${A[${#A[@]}-1]}
 				fi
@@ -141,30 +137,29 @@ else
 				# While loops in special order:
 				while read -ra Z; do
 					if [ "${Z[0]}${Z[1]}" == 'Initialcommit' ]; then
-						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has no commits, yet." "${GI[5]}" "$GB"
+						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has no commits, yet." "${GI[5]}" "${GB:-?}"
 						break
 					fi
 				done <<< "$STATUS"
 
 				while read -ra Z; do
 					if [ "${Z[0]}${Z[1]}${Z[2]}" == '(fixconflictsand' ]; then
-						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has conflict(s)." "${GI[7]}" "$GB"
+						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has conflict(s)." "${GI[7]}" "${GB:-?}"
 						break
 					fi
 				done <<< "$STATUS"
 
 				while read -ra Z; do
 					if [ "${Z[0]}${Z[1]}${Z[2]}" == 'nothingtocommit,' ]; then
-						local TTL_COMS
-						readarray TTL_COMS <<< "$(git --no-pager log --format='oneline')"
-						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' is %d commit(s) clean." "${GI[0]}" "$GB" "${#TTL_COMS[@]}"
+						local TTL_COMS=`git rev-list --count HEAD`
+						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' is %d commit(s) clean." "${GI[0]}" "${GB:-?}" "$TTL_COMS"
 						break
 					fi
 				done <<< "$STATUS"
 
 				while read -ra Z; do
 					if [ "${Z[0]}${Z[1]}${Z[3]}" == 'Yourbranchahead' ]; then
-						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' leads by %d commit(s)." "${GI[6]}" "$GB" "${Z[7]}"
+						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' leads by %d commit(s)." "${GI[6]}" "${GB:-?}" "${Z[7]}"
 						break
 					fi
 				done <<< "$STATUS"
@@ -177,7 +172,7 @@ else
 							[ "${LINE[0]}" == '??' ] && let NFTTL+=1
 						done <<< "$(git status --short)"
 
-						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has %d new file(s)." "${GI[3]}" "$GB" "$NFTTL"
+						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has %d new file(s)." "${GI[3]}" "${GB:-?}" "$NFTTL"
 						break
 					fi
 				done <<< "$STATUS"
@@ -186,7 +181,7 @@ else
 					if [ "${Z[0]}" == 'modified:' ]; then
 						local BUF
 						readarray BUF <<< "$(git --no-pager diff --name-only)"
-						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has %d modified file(s)." "${GI[2]}" "$GB" "${#BUF[@]}"
+						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has %d modified file(s)." "${GI[2]}" "${GB:-?}" "${#BUF[@]}"
 						break
 					fi
 				done <<< "$STATUS"
@@ -194,7 +189,7 @@ else
 				while read -ra Z; do
 					if [ "${Z[0]}${Z[1]}${Z[2]}${Z[3]}" == 'Changestobecommitted:' ]; then
 						#TODO: Have a counter for this, too.
-						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has changes to commit." "${GI[1]}" "$GB"
+						printf -v DESC "\e[1;31m%s\e[0m  \e[2;37mBranch '%s' has changes to commit." "${GI[1]}" "${GB:-?}"
 						break
 					fi
 				done <<< "$STATUS"
@@ -208,7 +203,7 @@ else
 
 		PS1=$P
 
-		unset X G
+		unset X G Z DESC
 	}
 	# Minor drawback to this method is the inability to reassign the
 	# value of PS1, unless you first unset or clear this one.
@@ -236,7 +231,7 @@ if [ -d "$FLIB" ]; then
 	}
 fi
 
-unset FLIB FUNC
+unset FLIB FUNC PLUGINS
 
 #-------------------------------------------------------------ENVIRONMENT VARIABLES
 
