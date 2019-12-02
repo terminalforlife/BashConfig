@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Fri 29 Nov 13:26:00 GMT 2019
+# Last Change       - Sun  1 Dec 15:14:59 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -258,11 +258,10 @@ if type -fP clamscan tee > /dev/null 2>&1; then
 	scan(){ #: Scan the CWD with clamscan. Logs in: ~/.scan_func.log
 		{
 			printf "SCAN_START: %(%F (%X))T\n" -1
-			clamscan --bell -r --no-summary -i\
-				--detect-pua=yes --detect-structured=no\
-				--structured-cc-count=3 --structured-ssn-count=3\
-				--phishing-ssl=yes --phishing-cloak=yes\
-				--partition-intersection=yes --detect-broken=yes\
+			clamscan --bell -r --no-summary -i --detect-pua=yes\
+				--detect-structured=no --structured-cc-count=3\
+				--structured-ssn-count=3 --phishing-ssl=yes\
+				--phishing-cloak=yes --partition-intersection=yes\
 				--block-macros=yes --max-filesize=256M\
 				|& tee -a $HOME/.scan_alias.log
 		} |& tee -a $HOME/.scan_func.log
@@ -275,23 +274,41 @@ fi
 GIT="$HOME/GitHub/terminalforlife/Personal"
 if [ -d "$GIT" ] && type -fP grep > /dev/null 2>&1; then
 	todo(){ #: Grab list of TODOs from GitHub projects.
-		if cd "$GIT"; then
-			grep --color=auto -R\
-				--exclude-dir=".git" "[#\"]TODO - "
-			cd - > /dev/null 2>&1
-		fi
+		cd "$GIT" 2> /dev/null || return 1
+		grep -Isr --color=auto --exclude-dir=".git" "[#\"]TODO - "
+		cd - || return 1
 	}
 fi
 
-# Quick and dirty function to display a random note line from command notes.
+# Display a random note line from command notes.
 if [ "$USER" == "ichy" -a $UID -eq 1000 ]; then
 	if type -fP sed grep shuf > /dev/null 2>&1; then
 		if [ -f $HOME/Documents/TT/Useful_Commands ]; then
 			getrandomnote(){ #: Display a random note line from command notes.
-				sed "1,/^#END/!d" $HOME/Documents/TT/Useful_Commands\
-					| grep -v "^#"\
-					| grep -v "^$"\
-					| shuf -n 1
+				local InFile="$HOME/Documents/TT/Useful_Commands";
+				if [ -f "$InFile" ] && [ -r "$InFile" ]; then
+					# POSIX-ly incorrectly, sadly.
+					awk -S -v Rand="$RANDOM" '
+						{
+							if($1~/^#END$/&&NR>10){
+								exit 0
+							}else if($1!~/^(#|$)/){
+								Array[$0]++
+							}
+						}
+
+						END {
+							Count=0
+							for(Index in Array){
+								Count++
+								if(Count==Rand%length(Array)){
+									printf("%s\n", Index)
+									break
+								}
+							}
+						}
+					' "$InFile"
+				fi
 			}
 		fi
 	fi
