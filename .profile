@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------------
-# Project Name      - $HOME/.profile
+# Project Name      - BashConfig/.profile
 # Started On        - Thu 14 Sep 20:09:24 BST 2017
-# Last Change       - Fri  6 Apr 19:46:26 BST 2018
+# Last Change       - Wed  4 Dec 21:31:41 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -15,5 +15,5 @@ umask 0077
 
 # If using Arch, enable bash completion. Comment out if you get this elsewhere.
 if [ -x /usr/bin/pacman -a /usr/share/bash-completion/bash_completion ]; then
-	source /usr/share/bash-completion/bash_completion
+	. /usr/share/bash-completion/bash_completion
 fi
