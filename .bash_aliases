@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Wed 27 Nov 23:24:47 GMT 2019
+# Last Change       - Sat  7 Dec 02:42:07 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -31,6 +31,10 @@
 # Nifty trick to allow aliases to work with sudo. This avoids needing sudo in these
 # configuration files, since using sudo within a bash script/program is not great.
 alias sudo="sudo " #: Allows for aliases to work with sudo.
+
+if type -fP dpkg-query &> /dev/null; then
+	alias getsecs='awk "!Z[\$1]++" <<< "$(dpkg-query -Wf "\${Section}\\n" "*")" | column'
+fi
 
 if type -fP df > /dev/null 2>&1; then
 	alias df='df -lT -x devtmpfs -x tmpfs -x usbfs' #: More relevant output than the default.
