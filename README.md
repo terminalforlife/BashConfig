@@ -63,50 +63,10 @@ I'm going to pre-emptively attempt to answer some questions:
   **Q: Will this configuration work on Linux, BSD, Mac, and other platforms?**\
     A: I've focused on Linux here, so probably not, but this may change in time.
 
-# Installation Instructions
-
-You've made it this far, so you probably want to try it out. Before you do that though, you should **back up** your files _beforehand_, to avoid losing important configurations.
-
-The method I'm going to show you, because I'm being lazy, is using an extensive utility I wrote for such a purpose as this. Cito is a POSIX-compliant Bourne installer for local or remote files stored on GitHub. By the way, you can get a Cito Debian package from [this](https://github.com/terminalforlife/DEB-Packages) repository, if you prefer.
-
-**CAUTION: This will overwrite a temporary file of the same name, if it exists.**
-
-  ```bash
-  wget -qO /tmp/cito 'https://raw.githubusercontent.com/terminalforlife/Extra/master/source/cito' && sudo sh /tmp/cito /tmp/cito || sudo rm -f /tmp/cito
-  ```
-
-Then confirm it worked with:
-
-  ```bash
-  cito --help
-  ```
-
-You should get Cito's extensive usage information come up. If not, you might want to instead use Curl, so just directly replace `wget -qO` with `curl -so`, then re-execute the command.
-
-That should be all it'll take to get everything up and running.
-
-#### So, you have Cito -- now what?
-
-From now on, Cito will make all of this so much easier, not to mention a bit safer and more robust. The following Cito commands, as of 2019-12-08, will do the leg work for you, so just run them one-by-one, for each file you want:
-
-  **NOTE: Currently, existing files yield a prompt to _remove_ them -- re-run afterwards, if you agree.**
-
-  ```bash
-  sudo cito -r terminalforlife BashConfig master source/lad
-  sudo cito -r terminalforlife BashConfig master source/.bashrc
-  sudo cito -r terminalforlife BashConfig master source/.bash_functions
-  sudo cito -r terminalforlife BashConfig master source/.bash_aliases
-  sudo cito -r terminalforlife BashConfig master source/.inputrc
-  sudo cito -r terminalforlife BashConfig master source/.profile
-  sudo cito -r terminalforlife BashConfig master source/.shplugs/gitsa
-  ```
-
-If you're curious to know what happened, you can run `sudo cito -L all` to view all log lines, parsed from the raw `/var/log/cito-events.log` logfile. If you had any problems, please let me know so I can address them ASAP.
-
-Thank you for your time and interest.
-
 # How Can I Contribute?
 
 You can share my GitHub and/or YouTube links to people, so more can make use of these programs and configurations I've spent hours upon hours working on and perfecting.
 
 I'm also more than welcome to take pull requests on GitHub, and they will all be considered.
+
+Thank you for your time and interest.
