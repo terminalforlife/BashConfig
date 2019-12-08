@@ -39,6 +39,9 @@ I'm going to pre-emptively attempt to answer some questions:
   **Q: My version of Bash is older than 4.0; can I still use this?**\
     A: Probably not, but an experienced user could maybe get it working.
 
+  **Q: I'm seeing weird symbols in the prompt; I think it's broken!**\
+    A: You're probably missing the Symbola and/or OpenSymbol fonts the prompt uses.
+
   **Q: Can I add my own user option (variable) to the starting area of `.bashrc`?**\
     A: Absolutely, and if it's a boolean, you might want to use the `for OPT in` bit.
 
