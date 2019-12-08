@@ -30,34 +30,34 @@ Below are some of the features on offer, at the time of writing this.
 
 I'm going to pre-emptively attempt to answer some questions:
 
-  **Q: Can I disable the POSIX mode used in Bash?**
+  **Q: Can I disable the POSIX mode used in Bash?**\
     A: Yes. You need only set `POSIX_MODE='true'` to `'false'` instead.
 
-  **Q: I've written my own plugin; can I add it?**
+  **Q: I've written my own plugin; can I add it?**\
     A: Yes. Add its filename to the `PLUGINS` array assigned early in `.bashrc`.
 
-  **Q: My version of Bash is older than 4.0; can I still use this?**
+  **Q: My version of Bash is older than 4.0; can I still use this?**\
     A: Probably not, but an experienced user could maybe get it working.
 
-  **Q: Can I add my own user option (variable) to the starting area of `.bashrc`?**
+  **Q: Can I add my own user option (variable) to the starting area of `.bashrc`?**\
     A: Absolutely, and if it's a boolean, you might want to use the `for OPT in` bit.
 
-  **Q: I don't understand the symbols used in the git prompt. Help!**
+  **Q: I don't understand the symbols used in the git prompt. Help!**\
     A: You'll soon remember them, but check out the `GI` array in `.bashrc` first.
 
-  **Q: The git prompt isn't working for me. What can I do?**
+  **Q: The git prompt isn't working for me. What can I do?**\
     A: Post a bug report on GitHub or send me an E-Mail: terminalforlife@yahoo.com
 
-  **Q: What is the `000` in the prompt? It keeps changing to weird numbers!**
+  **Q: What is the `000` in the prompt? It keeps changing to weird numbers!**\
     A: Don't worry, that's just the [exit status](https://bash.cyberciti.biz/guide/The_exit_status_of_a_command) of the previously-executed command.
 
-  **Q: Will this configuration work at all on other shells, like ZSH?**
+  **Q: Will this configuration work at all on other shells, like ZSH?**\
     A: Nope, but some of it would, with some tweaking. Bash-only syntax will fail.
 
-  **Q: How can I learn how you program in shell? You use syntax I've never seen.**
+  **Q: How can I learn how you program in shell? You use syntax I've never seen.**\
     A: Aside from research and practice, you can visit my [YouTube](https://www.youtube.com/channel/UCfp-lNJy4QkIGnaEE6NtDSg) channel, 'Learn Linux'.
 
-  **Q: Will this configuration work on Linux, BSD, Mac, and other platforms?**
+  **Q: Will this configuration work on Linux, BSD, Mac, and other platforms?**\
     A: I've focused on Linux here, so probably not, but this may change in time.
 
 # Installation Instructions
