@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - $HOME/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sat  7 Dec 02:42:07 GMT 2019
+# Last Change       - Sun  8 Dec 13:49:31 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -33,7 +33,7 @@
 alias sudo="sudo " #: Allows for aliases to work with sudo.
 
 if type -fP dpkg-query &> /dev/null; then
-	alias getsecs='awk "!Z[\$1]++" <<< "$(dpkg-query -Wf "\${Section}\\n" "*")" | column'
+	alias getsecs='awk "!Z[\$1]++" <<< "$(dpkg-query -Wf "\${Section}\\n" "*")" | column' #: List Debian package sections, per installed packages.
 fi
 
 if type -fP df > /dev/null 2>&1; then
