@@ -10,35 +10,20 @@ While this configuration isn't directly, specifically intended for use by anybod
 Below are some of the features on offer, at the time of writing this.
 
   * Plenty to explore, with ~2,130 lines; ~1,900 of which is _actual_ code to paw through.
-
   * Useful tool called `lad` to list and describe available functions and/or aliases.
-
   * Clean, concise `.inputrc` file with handy tweaks to how Bash operates interactively.
-
   * A `.bash_functions` file with ~33 functions, big and small, for a better workflow.
-
   * A `.bash_aliases` file with well over 50 aliases, covering a wide range of uses.
-
   * An extensive but in-excessive `.bashrc` file with an elegant git-supported prompt.
-
   * The included prompt's brother, `gitsa`, offers an overview of your branches.
-
   * All syntax from these configuration files is in line with Bash's POSIX mode.
-
   * Various easy-to-set variables at the start of `.bashrc` for inexperienced users.
-
   * Functions and aliases are situational, in that they're only active when applicable.
-
   * Several useful shell options (`shopt`) and settings (`set`) are enabled.
-
   * Subtle, consistent colors -- absolutely no rainbows can be found over here!
-
   * Various lesser-known `export` usages, such as for the `ps` and `time` tools.
-
   * In `.bashrc`, resides a small feature which logs when the terminal is open.
-
   * A fresh lick of paint is applied to man pages, making for an easier read.
-
   * The massively-useful ability to use `sudo` even on aliases and functions.
 
 # Do You Have Any Questions?
