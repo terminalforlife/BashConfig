@@ -1,20 +1,18 @@
 #!/usr/bin/env bash
-
+#cito M:755 O:0 G:0 T:/usr/bin/lad
 #----------------------------------------------------------------------------------
-# Project Name      - BashConfig/lad (List and Describe)
+# Project Name      - BashConfig/source/lad (List and Describe)
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Mon  2 Dec 22:33:48 GMT 2019
+# Last Change       - Sun  8 Dec 20:54:39 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
-CurVer='2019-12-02'
-Progrm=${0##*/}
+. /usr/lib/tflbp-sh/Err
+. /usr/lib/tflbp-sh/ChkDep
 
-Err(){
-	printf "[L%0.4d] ERROR: %s\n" "$2" "$3" 1>&2
-	[ $1 -gt 0 ] && exit $1
-}
+CurVer='2019-12-08'
+Progrm=${0##*/}
 
 Usage(){
 	while read; do
@@ -23,27 +21,15 @@ Usage(){
 		            ${Progrm^^} ($CurVer)
 		            Written by terminalforlife (terminalforlife@yahoo.com)
 
-		            List and describe functions and aliases made available from the
-		            bashconfig repository, found through the GitHub link below.
+		            List and describe supported functions and aliases.
 
-		SYNTAX:     $Progrm [OPTS] [STRING]
+		SYNTAX:     $Progrm [OPTS]
 
 		OPTS:       --help|-h|-?            - Displays this help information.
 		            --version|-v            - Output only the version datestamp.
 		            --debug|-D              - Enables the built-in Bash debugging.
-		            --search|-s [E|F|A]:S   - Where S is the string for which to search. If
-		                                      searching through the functions, prepend
-		                                      'F:', or for aliases, use 'A:'; for either, -
-		                                      use 'E:'.
-		            --exit-only|-e          - If using the search feature, omit the boolean
-		                                      result, and instead rely on the exit status.
-		                                      1 is false, 0 is true.
-		            --only-funcs|-F         - Display only functions.
-		            --only-aliases|-A       - Display only aliases.
-
-		NOTE:       If a function or alias for which you're searching with the respective
-		            flag, begins with E, F, or A, followed by a colon, note that this will
-		            be ignored as an argument, so should not cause confusion.
+		            --funcs|-F              - Display only functions.
+		            --aliases|-A            - Display only aliases.
 
 		RULES:      In order for $Progrm to correctly list functions and aliases, various rules
 		            must be followed; these are listed below:
@@ -76,23 +62,22 @@ Usage(){
 		                           alias do="thing" #: Do thing.
 		                   fi
 
-		              5. Aliases must be put into: \$HOME/.bash_aliases
+		              5. Aliases must be put into: ~/.bash_aliases
 
-		              6. Functions must be put into: \$HOME/.bash_functions
+		              6. Functions must be put into: ~/.bash_functions
 
 		              7. Functions must use '(){', without spacing. You can, however, use
 		                 parentheses instead of braces, for use of sub-shells.
 
 		FILES:      The following files are scanned:
 
-		              \$HOME/.bash_functions
-		              \$HOME/.bash_aliases
+		              ~/.bash_functions
+		              ~/.bash_aliases
 
-		LINK:       https://github.com/terminalforlife
+		LINK:       https://github.com/terminalforlife/BashConfig
 	EOF
 }
 
-Boolean='true'
 NL="\n"
 
 while [ "$1" ]; do
@@ -103,81 +88,59 @@ while [ "$1" ]; do
 			printf "%s\n" "$CurVer"
 			exit 0 ;;
 		--debug|-D)
-			DEBUGME='true' ;;
-		--search|-s)
-			shift; Search=$1
-			if ! [[ $Search =~ ^[AFE]{1}: ]]; then
-				Err 1 $LINENO "Invalid search query. See '$Progrm --help' for information."
-			fi ;;
-		--exit-only|-e)
-			Boolean='false' ;;
-		--only-funcs|-F)
+			DebugMe='true' ;;
+		--funcs|-F)
 			OnlyFunc='true' ;;
-		--only-aliases|-A)
+		--aliases|-A)
 			OnlyAlias='true'; unset NL ;;
 		*)
-			Err 1 $LINENO "Incorrect argument(s) specified." ;;
+			Err 1 "Incorrect argument(s) specified." ;;
 	esac
 	shift
 done
 
 if [ -n "$OnlyFunc" -a -n "$OnlyAlias" ]; then
-	Err 1 $LINENO "Either '--only-funcs|-F' or '--only-aliases|-A' may used at one time."
-elif [ "$Boolean" == "false" -a -z "$Search" ]; then
-	Err 1 $LINENO "The '--exit-only' option strictly applies to the '--search|-s' flag."
+	Err 1 "Either '--only-funcs|-F' or '--only-aliases|-A' may used at one time."
 fi
 
 FileBF="$HOME/.bash_functions"
 FileBA="$HOME/.bash_aliases"
 
-[ "$DEBUGME" == "true" ] && set -x
+[ "$DebugMe" == 'true' ] && set -x
 
-Print(){ [ "$Search" ] || printf "  %s - %s\n" "$@"; }
-ChkTemp(){ [ "$1" == "$2" ] && A_FOUND='true' || return 1; }
+Print(){ printf "  %s - %s\n" "$@"; }
 
 # Gather functions.
-if [ "$OnlyFunc" == "true" ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
+if [ "$OnlyFunc" == 'true' ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
 	if [ -f "$FileBF" ] && [ -r "$FileBF" ]; then
-		[ -z "$Search" ] && printf "FUNCTIONS ($FileBF)\n\n"
+		printf "FUNCTIONS ($FileBF)\n\n"
 
 		while read; do
 			if ! [ -z "$REPLY" ] && ! [[ $REPLY =~ ^\# ]]; then
 				if [[ $REPLY =~ [a-Z0-9_-]+\(\)[\{\(] ]]; then
-					NAME=${REPLY%%\(\)[\(\{]*}
+					Name=${REPLY%%\(\)[\(\{]*}
 
 					# A description of " #: TEXT" must be appended to
 					# the function call line for each function. This
 					# will NOT work otherwise.
 					Desc=${REPLY#*\#\:}
 
-					#TODO - Temporary quick fix for strange
-					#       issue since recent update. P()
-					#       still shows up otherwise.
-					#[ "$NAME" == "P" ] && continue
-
 					# Only functions found 0-1 tabs in are counted.
-					if [[ $NAME =~ ^\	{0,1}[a-Z_-] ]]; then
-						NAME=${NAME//\	/}
-						if [[ ${Search%%:*} == [FE] ]]; then
-							ChkTemp "$NAME" "${Search#[FE]:}" || continue
-						else
-							Print "$NAME" "${Desc#\ }"
-						fi
+					if [[ $Name =~ ^\	{0,1}[a-Z_-] ]]; then
+						Print "${Name//\	/}" "${Desc#\ }"
 					fi
 				fi
 			fi
 		done < "$FileBF"
 	else
-		Err 1 $LINENO "File '$FileBF' not found."
+		Err 1 "File '$FileBF' not found."
 	fi
 fi
 
-[ "$F_FOUND" == "true" ] && { [ "$Boolean" == "true" ] && printf "true\n"; exit 0; }
-
 # Gather aliases.
-if [ "$OnlyAlias" == "true" ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
+if [ "$OnlyAlias" == 'true' ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
 	if [ -f "$FileBA" ] && [ -r "$FileBA" ]; then
-		[ -z "$Search" ] && printf "${NL}ALIASES ($FileBA)\n\n"
+		printf "${NL}ALIASES ($FileBA)\n\n"
 
 		while read; do
 			if ! [ -z "$REPLY" ] && ! [[ $REPLY =~ ^\# ]]; then
@@ -190,21 +153,11 @@ if [ "$OnlyAlias" == "true" ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
 					# NOT work otherwise, as with the functions.
 					Desc=${REPLY#*\#\:}
 
-					if [ "${Temp[0]}" == 'alias' ]; then
-						if [[ ${Search%%:*} == [AE] ]]; then
-							ChkTemp "${Temp[1]//[\"\']}" "${Search#[AE]:}" || continue
-						else
-							Print "${Temp[1]//[\"\']}" "${Desc#\ }"
-						fi
-
-					fi
+					Print "${Temp[1]//[\"\']}" "${Desc#\ }"
 				fi
 			fi
 		done < "$FileBA"
 	else
-		Err 1 $LINENO "File '$FileBA' not found."
+		Err 1 "File '$FileBA' not found."
 	fi
 fi
-
-#[ "$A_FOUND" == "true" ] && { [ "$Boolean" == "true" ] && printf "true\n"; exit 0; }
-
