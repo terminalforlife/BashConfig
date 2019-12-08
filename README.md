@@ -67,7 +67,7 @@ I'm going to pre-emptively attempt to answer some questions:
 
 You've made it this far, so you probably want to try it out. Before you do that though, you should **back up** your files _beforehand_, to avoid losing important configurations.
 
-The method I'm going to show you, because I'm being lazy, is using an extensive utility I wrote for such a purpose as this. Cito is a POSIX-compliant Bourne installer for local or files stored on GitHub.
+The method I'm going to show you, because I'm being lazy, is using an extensive utility I wrote for such a purpose as this. Cito is a POSIX-compliant Bourne installer for local or remote files stored on GitHub.
 
 * If you're on a Debian- or Ubuntu-based distribution of Linux, your best bet is:
 
@@ -104,6 +104,8 @@ That should be all it'll take to get everything up and running.
 #### So, now you have Cito -- now what?
 
 From now on, Cito will make all of this so much easier, not to mention a bit safer and more robust. The following Cito commands, as of 2019-12-08, will do the leg work for you, so just run them one-by-one, for each file you want:
+
+  **NOTE: Existing files yield a prompt to remove them -- re-run afterwards, if you agree.**
 
   ```bash
   sudo cito -r terminalforlife BashConfig master source/lad
