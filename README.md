@@ -67,26 +67,15 @@ I'm going to pre-emptively attempt to answer some questions:
 
 You've made it this far, so you probably want to try it out. Before you do that though, you should **back up** your files _beforehand_, to avoid losing important configurations.
 
-The method I'm going to show you, because I'm being lazy, is using an extensive utility I wrote for such a purpose as this. Cito is a POSIX-compliant Bourne installer for local or remote files stored on GitHub.
+The method I'm going to show you, because I'm being lazy, is using an extensive utility I wrote for such a purpose as this. Cito is a POSIX-compliant Bourne installer for local or remote files stored on GitHub. By the way, you can get a Cito Debian package from [this](https://github.com/terminalforlife/DEB-Packages) repository, if you prefer.
 
-* If you're on a Debian- or Ubuntu-based distribution of Linux:
-
-  1. Download the Cito package from [this](https://github.com/terminalforlife/DEB-Packages) repository.
-  2. Open your file manager and browse to the package.
-  3. You have two options here...
-
-  3a. Double click the package to open it with Gdebi, if available.
-  3b. Open a terminal here, then use `sudo dpkg -i ` followed by the package.
-
-* If you're on a different system, or just want the latest (master) version:
-
-  **CAUTION: This will overwrite a temporary file of the same name, if it exists.**
+**CAUTION: This will overwrite a temporary file of the same name, if it exists.**
 
   ```bash
   wget -qO /tmp/cito 'https://raw.githubusercontent.com/terminalforlife/Extra/master/source/cito' && sudo sh /tmp/cito /tmp/cito || sudo rm -f /tmp/cito
   ```
 
-Then confirm it's working with:
+Then confirm it worked with:
 
   ```bash
   cito --help
@@ -96,7 +85,7 @@ You should get Cito's extensive usage information come up. If not, you might wan
 
 That should be all it'll take to get everything up and running.
 
-#### So, now you have Cito -- now what?
+#### So, you have Cito -- now what?
 
 From now on, Cito will make all of this so much easier, not to mention a bit safer and more robust. The following Cito commands, as of 2019-12-08, will do the leg work for you, so just run them one-by-one, for each file you want:
 
