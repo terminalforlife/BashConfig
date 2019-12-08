@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/lad (List and Describe)
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Sun  8 Dec 20:54:39 GMT 2019
+# Last Change       - Sun  8 Dec 21:43:24 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -116,8 +116,8 @@ if [ "$OnlyFunc" == 'true' ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
 		printf "FUNCTIONS ($FileBF)\n\n"
 
 		while read; do
-			if ! [ -z "$REPLY" ] && ! [[ $REPLY =~ ^\# ]]; then
-				if [[ $REPLY =~ [a-Z0-9_-]+\(\)[\{\(] ]]; then
+			if ! [ -z "$REPLY" ] && ! [[ $REPLY =~ ^[[:space:]]+\# ]]; then
+				if [[ $REPLY =~ [a-Z0-9_-]+\(\)[\{\(]\ \#:\  ]]; then
 					Name=${REPLY%%\(\)[\(\{]*}
 
 					# A description of " #: TEXT" must be appended to
@@ -143,8 +143,9 @@ if [ "$OnlyAlias" == 'true' ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
 		printf "${NL}ALIASES ($FileBA)\n\n"
 
 		while read; do
-			if ! [ -z "$REPLY" ] && ! [[ $REPLY =~ ^\# ]]; then
+			if ! [ -z "$REPLY" ] && ! [[ $REPLY =~ ^[[:space:]]+\# ]]; then
 				if [[ $REPLY =~ alias\ [:\"\']{0,}[a-Z0-9_-]+[\'\"]{0,}\= ]]; then
+					[[ $REPLY =~ [\'\"]\ \#:\  ]] || continue
 					declare -a Temp=(${REPLY%%\=*})
 
 					#TODO - A cleaner system is preferable.

@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sun  8 Dec 14:30:18 GMT 2019
+# Last Change       - Sun  8 Dec 21:39:09 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -121,7 +121,7 @@ if type -fP dmenu &> /dev/null; then
 fi
 
 if type -fP grep uniq sed &> /dev/null; then
-	gitgrep(){
+	gitgrep(){ #: Execute a configured grep command in git context.
 		grep -sIr --exclude-dir='.git' --exclude='LICENSE' --exclude='README.md'\
 			--exclude={.bash{_{aliases,functions,logout,profile},rc},{,.}inputrc,inputrc}\
 			--exclude='*.'{mp3,jpg,ogg,png,deb,xml} --color=auto "$@"

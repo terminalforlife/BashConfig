@@ -69,18 +69,21 @@ You've made it this far, so you probably want to try it out. Before you do that 
 
 The method I'm going to show you, because I'm being lazy, is using an extensive utility I wrote for such a purpose as this. Cito is a POSIX-compliant Bourne installer for local or remote files stored on GitHub.
 
-* If you're on a Debian- or Ubuntu-based distribution of Linux, your best bet is:
+* If you're on a Debian- or Ubuntu-based distribution of Linux:
 
-  1. Open up a terminal, and keep it open until this is done.
-  2. Run: `DebPkg='cito_2019-12-07_all.deb'; DomLink='https://raw.githubusercontent.com'`
-  3. Run: `wget -qO "$DebPkg" "$DomLink/terminalforlife/DEB-Packages/master/$DebPkg"`
-  4. Run: `sudo dpkg -i "$DebPkg" && rm "$DebPkg"`
-  5. Now you need only run `cito --help` to see how to use it!
+  1. Download the Cito package from [this](https://github.com/terminalforlife/DEB-Packages) repository.
+  2. Open your file manager and browse to the package.
+  3. You have two options here...
 
-* If you're NOT on such a system, however, you can install via this one-liner:
+  3a. Double click the package to open it with Gdebi, if available.
+  3b. Open a terminal here, then use `sudo dpkg -i ` followed by the package.
+
+* If you're on a different system, or just want the latest (master) version:
+
+  **CAUTION: This will overwrite a temporary file of the same name, if it exists.**
 
   ```bash
-  if TempFile=$(mktemp); then wget -qO "$TempFile" 'https://raw.githubusercontent.com/terminalforlife/Extra/master/source/cito' && sudo sh cito cito; fi
+  wget -qO /tmp/cito 'https://raw.githubusercontent.com/terminalforlife/Extra/master/source/cito' && sudo sh /tmp/cito /tmp/cito || sudo rm -f /tmp/cito
   ```
 
 Then confirm it's working with:
@@ -91,21 +94,13 @@ Then confirm it's working with:
 
 You should get Cito's extensive usage information come up. If not, you might want to instead use Curl, so just directly replace `wget -qO` with `curl -so`, then re-execute the command.
 
-Failing that, perhaps the temporary file creation didn't work, in which case just run:
-
-  **WARNING: This will overwrite an existing file of the same name!**
-
-  ```bash
-  wget -qO ./cito 'https://raw.githubusercontent.com/terminalforlife/Extra/master/source/cito' && sudo sh cito cito
-  ```
-
 That should be all it'll take to get everything up and running.
 
 #### So, now you have Cito -- now what?
 
 From now on, Cito will make all of this so much easier, not to mention a bit safer and more robust. The following Cito commands, as of 2019-12-08, will do the leg work for you, so just run them one-by-one, for each file you want:
 
-  **NOTE: Existing files yield a prompt to remove them -- re-run afterwards, if you agree.**
+  **NOTE: Currently, existing files yield a prompt to _remove_ them -- re-run afterwards, if you agree.**
 
   ```bash
   sudo cito -r terminalforlife BashConfig master source/lad
