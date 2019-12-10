@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun  8 Dec 20:07:58 GMT 2019
+# Last Change       - Mon  9 Dec 16:40:17 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -233,7 +233,7 @@ fi
 
 # Clear the clipboard using xclip.
 if type -fP xclip &> /dev/null; then
-	alias ccb='for X in "-i" "-i -selection clipboard"; { printf "%s" "" | xclip $X}' #: Clear the clipboard using xclip.
+	alias ccb='for X in "-i" "-i -selection clipboard"; { printf "%s" "" | xclip $X; }' #: Clear the clipboard using xclip.
 fi
 
 # Get more functionality by default when using grep and ls.
