@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sun  8 Dec 21:39:09 GMT 2019
+# Last Change       - Sun 15 Dec 00:32:51 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -276,7 +276,7 @@ fi
 if [ -d "$HOME/GitHub/terminalforlife/Personal" ]; then
 	if type -fP grep &> /dev/null; then
 		todo(){ #: Grab list of TODOs from GitHub projects.
-			grep -Isr --color=auto --exclude-dir=".git" "[#\"]TODO - "\
+			grep -Isr --color=auto --exclude-dir=".git" "[#\"]TODO: "\
 				"$HOME/GitHub/terminalforlife/Personal"
 		}
 	fi
