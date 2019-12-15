@@ -148,7 +148,7 @@ if [ "$OnlyAlias" == 'true' ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
 					[[ $REPLY =~ [\'\"]\ \#:\  ]] || continue
 					declare -a Temp=(${REPLY%%\=*})
 
-					#TODO - A cleaner system is preferable.
+					#TODO: A cleaner system is preferable.
 					# A description of " #: TEXT" must be appended to
 					# the alias set line for each function. This will
 					# NOT work otherwise, as with the functions.

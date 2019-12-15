@@ -364,7 +364,7 @@ if [ "$MAN_COLORS" == "true" ] && type -fP man &> /dev/null; then
 	}
 fi
 
-#TODO - Fix the inability to pipe the output.
+#TODO: Fix the inability to pipe the output.
 # Display a descriptive list of kernel modules.
 if type -fP lsmod modinfo &> /dev/null; then
 	lsmodd(){ #: List, describe, and/or search for detected kernel modules.
@@ -500,7 +500,7 @@ if type -fP mimetype &> /dev/null; then
 		for CurFile in $@; {
 			while read -a X; do
 				for I in ${X[@]}; {
-					#TODO - Why won't this match case?
+					#TODO: Why won't this match case?
 					if [[ $I == $TYPE ]]; then
 						printf "%s\n" "$CurFile"
 					fi
@@ -537,7 +537,7 @@ if [ -f /etc/passwd ]; then
 		local X
 		while IFS=':' read -a X; do
 			if [ "$1" == "--nosys" ]; then
-				#TODO - Make this instead omit system ones by
+				#TODO: Make this instead omit system ones by
 				#       testing for the shell used.
 				if [[ ${X[5]/\/home\/syslog} == /home/* ]]; then
 					printf "%-20s %-7d %-7d %-25s %s\n"\

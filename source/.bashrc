@@ -103,7 +103,7 @@ else
 	# version has slightly different output, so needed a workaround.
 	readarray T < /etc/lsb-release
 	[ "${T[2]#*=}" == bionic$'\n' ] && R=4 || R=3
-	#TODO - If file isn't found, should os-release be checked?
+	#TODO: If file isn't found, should os-release be checked?
 
 	# Newer, more concise prompt.
 	PROMPT_PARSER(){

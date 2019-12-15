@@ -49,7 +49,7 @@ MAN_COLORS='true'
 
 #--------------------------------------------------------------MAIN SETS AND SHOPTS
 
-#TODO - Make this POSIX-compliant. `[[` not supported.
+#TODO: Make this POSIX-compliant. `[[` not supported.
 #if [ -d "$HOME/bin" ] && ! [[ $PATH == *"/home/$USER/bin"* ]]; then
 #	# If the directory exists and isn't already in PATH, set it so.
 #	export PATH+=":/home/$USER/bin"
@@ -58,26 +58,26 @@ MAN_COLORS='true'
 # If not running interactively, then ignore the rest.
 [ -z "$PS1" ] && return
 
-#TODO - Find and write `sh`-equivalent version of this.
+#TODO: Find and write `sh`-equivalent version of this.
 #if [ "$DEFAULT_HISTORY" == 'false' ]; then
 #	shopt -s histappend cmdhist lithist
 #	set -o histexpand
 #fi
 
-#TODO - Find `sh`-equivalent settings for these.
+#TODO: Find `sh`-equivalent settings for these.
 #shopt -s checkwinsize globstar complete_fullquote expand_aliases extquote\
 #	 extglob force_fignore hostcomplete interactive_comments xpg_echo\
 #	 promptvars sourcepath progcomp autocd cdspell dirspell direxpand\
 #	 nocasematch
 
-#TODO - Find `sh`-equivalent settings for these.
+#TODO: Find `sh`-equivalent settings for these.
 #set -o interactive-comments +o monitor -o hashall -o braceexpand -o emacs
 
 [ "$POSIX_MODE" == 'true' ] && set -o posixly-correct
 
 #-------------------------------------------------------------------USER SET CHECKS
 
-#TODO - Support POSIX.
+#TODO: Support POSIX.
 #for OPT in\
 #\
 #	DO_GIT:$DO_GIT BRANCH:$BRANCH SIMPLE:$SIMPLE POSIX_MODE:$POSIX_MODE\
@@ -90,11 +90,11 @@ MAN_COLORS='true'
 
 #---------------------------------------------------------------CODE FOR THE PROMPT
 
-#TODO - Is there a POSIX feature like this?
+#TODO: Is there a POSIX feature like this?
 # When \w is used in PS1, this will set ../ when beyond depth 1. (4.* or later)
 #[ "${BASH_VERSINFO[0]}" -ge 4 ] && PROMPT_DIRTRIM=1
 
-#TODO - Rewrite or edit with POSIX in mind.
+#TODO: Rewrite or edit with POSIX in mind.
 #if [ "$SIMPLE" == 'true' ]; then
 #	PS1="\$ "
 #else
@@ -102,7 +102,7 @@ MAN_COLORS='true'
 #	# version has slightly different output, so needed a workaround.
 #	readarray T < /etc/lsb-release
 #	[ "${T[2]#*=}" == bionic$'\n' ] && R=4 || R=3
-#	#TODO - If file isn't found, should os-release be checked?
+#	#TODO: If file isn't found, should os-release be checked?
 #
 #	# Newer, more concise prompt.
 #	PROMPT_PARSER(){
@@ -294,7 +294,7 @@ fi
 
 #------------------------------------------------------SOURCE ALIASES AND FUNCTIONS
 
-#TODO - Support POSIX in these files.
+#TODO: Support POSIX in these files.
 ## If the user's .bash_aliases file is found, source it.
 #BASH_ALIASES="$HOME/.bash_aliases"
 #[ -f "$BASH_ALIASES" -a -r "$BASH_ALIASES" ] && . "$BASH_ALIASES"
