@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon  9 Dec 16:40:17 GMT 2019
+# Last Change       - Sun 15 Dec 17:53:43 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -20,6 +20,10 @@ alias sudo="sudo " #: Allows for aliases to work with sudo.
 
 if type -fP dpkg-query &> /dev/null; then
 	alias getsecs='awk "!Z[\$1]++" <<< "$(dpkg-query -Wf "\${Section}\\n" "*")" | column' #: List Debian package sections, per installed packages.
+fi
+
+if type -fP yash &> /dev/null; then
+	alias sh='yash -o posixlycorrect' #: Instead of executing dash, go for the more POSIX-compliant yash.
 fi
 
 if type -fP df &> /dev/null; then
@@ -366,13 +370,17 @@ if type -fP vim &> /dev/null; then
 	}
 fi
 
+if type -fP md5sum &> /dev/null; then
+	alias chksum='md5sum --ignore-missing --quiet -c 2> /dev/null' #: Check the MD5 hashsums using the provided file.
+	alias setsum='md5sum 2> /dev/null > ./md5sum' #: Lazy solution to saving checksums to './md5sum' file.
+fi
+
 # When in a TTY, change to different ones.
 if [[ `tty` == /dev/tty* ]] && type -fP tty chvt &> /dev/null; then
 	for TTY in {1..12}; {
 		alias $TTY="chvt $TTY"
 	}
 fi
-
 	if type -fP evince &> /dev/null; then
 	alias pdf="evince &> /dev/null" #: Use 'evince' to display PDF documents.
 fi
