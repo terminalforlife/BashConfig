@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sun 15 Dec 00:32:51 GMT 2019
+# Last Change       - Sun 15 Dec 19:37:57 GMT 2019
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -15,6 +15,23 @@
 [ "$BASH_VERSION" ] || return 1
 
 GHForkDir="$HOME/GitHub/terminalforlife/Forks"
+
+gencitocmd(){
+	if [ $# -ne 4 ]; then
+		printf 'Usage: gencitocmd [USER] [REPO] [BRANCH] [PATH]\n' 1>&2
+		return 1
+	fi
+
+	printf 'sudo cito -r %s %s %s %s/{' "$1" "$2" "$3" "${4%/}"
+
+	for CurFile in *; {
+		if [ -f "$CurFile" -a "$CurFile" != 'README.md' ]; then
+			printf "%s," "$CurFile"
+		fi
+	}
+
+	printf '\b}\n'
+}
 
 if type -fP tput &> /dev/null; then
 	yesno(){ #: Output a very tidy (clears below and on cursor line!) one-line prompt.
