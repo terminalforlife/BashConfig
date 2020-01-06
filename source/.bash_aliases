@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 15 Dec 17:53:43 GMT 2019
+# Last Change       - Mon  6 Jan 12:57:52 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -106,8 +106,14 @@ if type -fP ffmpeg &> /dev/null; then
 fi
 
 # Just points to a personal script for moving my screenshots.
-if [ "$USER" == "ichy" -a $UID -eq 1000 ] && [ -f "$HOME/Documents/TT/shotmngr.sh" ]; then
-	alias sm="bash $HOME/Documents/TT/shotmngr.sh" #: Personal script for managing screenshots.
+if [ "$USER" == "ichy" -a $UID -eq 1000 ]; then
+	if [ -f "$HOME/Documents/TT/shotmngr.sh" ]; then
+		alias sm="bash $HOME/Documents/TT/shotmngr.sh" #: Personal script for managing screenshots.
+	fi
+
+	if type -fP ssh &> /dev/null; then
+		alias svr='sh "$HOME/Documents/TT/svrcon"' #: Personal script to connect or copy to a remote server.
+	fi
 fi
 
 
