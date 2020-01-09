@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/devutils/links.sh
 # Started On        - Sun 22 Oct 00:15:02 BST 2017
-# Last Change       - Sun  8 Dec 16:05:44 GMT 2019
+# Last Change       - Thu  9 Jan 18:44:46 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -21,9 +21,9 @@ for CurFile in .inputrc .yashrc .bashrc .bash_logout .bash_aliases .bash_functio
 	ln -v "$CurFile" "$HOME/$CurFile" 2> /dev/null
 done
 
-cd .shplugs
-
-for CurFile in *; do
-	rm -v "$HOME/.shplugs/$CurFile" 2> /dev/null
-	ln -v "$CurFile" "$HOME/.shplugs/$CurFile" 2> /dev/null
-done
+if cd .shplugs 2> /dev/null; then
+	for CurFile in *; do
+		rm -v "$HOME/.shplugs/$CurFile" 2> /dev/null
+		ln -v "$CurFile" "$HOME/.shplugs/$CurFile" 2> /dev/null
+	done
+fi
