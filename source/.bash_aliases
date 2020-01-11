@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon  6 Jan 12:57:52 GMT 2020
+# Last Change       - Sat 11 Jan 15:19:06 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -254,7 +254,7 @@ if type -fP ls grep &> /dev/null; then
 				alias lsa="ls -A" #: As 'ls', but also show all files.
 				alias lsl="ls -nph" #: As 'ls', but with lots of information.
 				alias lsla="ls -Anph" #: As 'lsl', but also show all files.
-				alias grep="grep --color=auto" #: Colorful (auto) 'grep' output.
+				alias grep="grep -sI --color=auto" #: Colorful (auto) 'grep' output.
 			;;
 	esac
 fi
