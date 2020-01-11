@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Thu  9 Jan 23:39:45 GMT 2020
+# Last Change       - Sat 11 Jan 18:36:32 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -361,91 +361,6 @@ if [ "$MAN_COLORS" == "true" ] && type -fP man &> /dev/null; then
 		LESS_TERMCAP_ue=$'\e[0m'\
 		LESS_TERMCAP_us=$'\e[01;32m'\
 		$MAN_EXEC $@
-	}
-fi
-
-#TODO: Fix the inability to pipe the output.
-# Display a descriptive list of kernel modules.
-if type -fP lsmod modinfo &> /dev/null; then
-	lsmodd(){ #: List, describe, and/or search for detected kernel modules.
-		local SysFile='/proc/modules'
-
-		while [ "$1" ]; do
-			case $1 in
-				--help|-h|-\?)
-					printf "Usage: lsmodd [--describe|-d] [--pretty|-p] [--file|-F] [MODULE ...]\n"
-					return 0 ;;
-				--pretty|-p)
-					local Pretty='true' ;;
-				--file|-F)
-					shift
-					SysFile=$1 ;;
-				--describe|-d)
-					local Describe='true' ;;
-				-*)
-					printf "ERROR: Incorrect argument(s) specified.\n" >&2
-					return 1 ;;
-				*)
-					break ;;
-			esac
-			shift
-		done
-
-		if [ "$Pretty" == 'true' -a "$Describe" != 'true' ]; then
-			printf "ERROR: '--pretty|-p' only applies when modules are described.\n" >&2
-			return 1
-		fi
-
-		if [ -f "$SysFile" ] && [ -r "$SysFile" ]; then
-			Display(){
-				if [ "$Describe" == 'true' ]; then
-					local ModDesc=`modinfo -d "${LINE[0]}"`
-				fi
-
-				if [ "$Pretty" == 'true' ]; then
-						printf -- "%s\n" "${LINE[0]}"
-
-						if [ -n "$ModDesc"  ]; then
-							if [ "$Describe" == 'true' ]; then
-								# Compensating for multi-line descriptions.
-								while read INFO; do
-									printf "  %s\n" "$INFO"
-								done <<< "$ModDesc"
-								printf "\n"
-							else
-								printf "%s\n" "${LINE[0]}"
-							fi
-						else
-							[ "$Describe" == 'true' ] && printf "  %s\n\n" "N/A"
-						fi
-				else
-						if [ "$Describe" == 'true' ]; then
-							printf "%s=%s\n" "${LINE[0]}" "${ModDesc:-N/A}"
-						else
-							printf "%s\n" "${LINE[0]}"
-						fi
-				fi
-
-				unset ModDesc
-			}
-
-			while read -a LINE; do
-				if [ $# -gt 0 ]; then
-					for Arg in "$@"; {
-						[ "${LINE[0]}" == "$Arg" ] || continue
-						Display
-					}
-
-					unset Arg
-				else
-					Display
-				fi
-			done < "$SysFile"
-
-			unset LINE
-		fi
-
-		unset -f Display
 	}
 fi
 
