@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sat 11 Jan 18:36:32 GMT 2020
+# Last Change       - Sat 11 Jan 19:10:50 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -283,7 +283,7 @@ if [ -d "$HOME/GitHub/terminalforlife/Personal" ]; then
 fi
 
 # Display a random note line from command notes.
-if [ "$USER" == "ichy" -a $UID -eq 1000 ]; then
+if [ "$USER" == 'ichy' -a $UID -eq 1000 ]; then
 	if type -fP sed grep shuf &> /dev/null; then
 		if [ -f $HOME/Documents/TT/Useful_Commands ]; then
 			getrandomnote(){ #: Display a random note line from command notes.
@@ -406,8 +406,7 @@ fi
 # Search the given path(s) for file types of TYPE. Ignores filename extension.
 if type -fP mimetype &> /dev/null; then
 	sif(){ #: Search given path(s) for files of a specified type.
-		[ $# -eq 0 ] && printf "%s\n"\
-			"USAGE: sif TYPE FILE1 [FILE2 FILE3...]" 1>&2
+		[ $# -eq 0 ] && printf '%s\n' 'USAGE: sif TYPE FILE1 [FILE2 FILE3...]' 1>&2
 
 		TYPE=$1
 		shift
@@ -463,16 +462,6 @@ if [ -f /etc/passwd ]; then
 					"${X[2]}" "${X[3]}" "${X[5]}" "${X[6]}"
 			fi
 		done < /etc/passwd
-	}
-fi
-
-# A simple dictionary lookup function, similar to the look command.
-if [ -f /usr/share/dict/words -a -r /usr/share/dict/words ]; then
-	dict(){ #: A dictionary tool akin to the look command.
-		local X
-		while read -r X; do
-			[[ $X == *$1* ]] && printf "%s\n" "$X"
-		done < /usr/share/dict/words
 	}
 fi
 
@@ -536,34 +525,6 @@ if type -fP mv &> /dev/null; then
 	}
 fi
 
-# Disabled, because it doesn't seem to be working.
-#if type -fP perl &> /dev/null; then
-#	sgl(){ #: Search through 'git log' for file ($1) and commit string ($2).
-#		if [ $# -eq 0 -o $# -ge 3 ]; then
-#			printf "Usage: sgl [FILE] [REGEX]\n" >&2
-#			return 1
-#		fi
-#
-#		perl <<-EOF
-#			use strict;
-#			use warnings;
-#			use autodie;
-#
-#			my \$DATE;
-#			foreach(@{[readpipe('git log --no-pager')]}){
-#			        chomp(\$_);
-#
-#			        if(\$_ =~ /^Date:\\s+/){
-#			                \$DATE = \$_ . "\\n"
-#			        }elsif(\$_ =~ /Updated\\ $1;\\s/ and \$_ =~ /$2/){
-#			                print(\$_ =~ s/^.*;\s/------+ /r . "\\n");
-#			                print(\$DATE) if defined(\$DATE)
-#			        }
-#			}
-#		EOF
-#	}
-#fi
-
 if type -fP espeak &> /dev/null; then
 	sayit(){ #: Say something with espeak; good for quick alerts.
 		espeak -v en-scottish -g 5 -p 13 -s 0.7 "$*"
@@ -573,4 +534,3 @@ if type -fP espeak &> /dev/null; then
 		espeak -v en-scottish -g 5 -p 13 -s 0.7 < "$*"
 	}
 fi
-
