@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sat 11 Jan 19:10:50 GMT 2020
+# Last Change       - Sat 11 Jan 20:24:24 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -15,6 +15,23 @@
 [ "$BASH_VERSION" ] || return 1
 
 GHForkDir="$HOME/GitHub/terminalforlife/Forks"
+
+if type -fP perl &> /dev/null; then
+	perlc(){ #: Perform a syntax check on all Perl scripts within the CWD.
+		local CurFile Line
+
+		for CurFile in ./*; {
+			if [ -f "$CurFile" ] && [ -r "$CurFile" ]; then
+				read Line < "$CurFile"
+
+				case $Line in
+					'#!/*/perl'*|'#!/*/env perl'*)
+						perl -c "$CurFile" ;;
+				esac
+			fi
+		}
+	}
+fi
 
 if type -fP tput &> /dev/null; then
 	yesno(){ #: Output a very tidy (clears below and on cursor line!) one-line prompt.
