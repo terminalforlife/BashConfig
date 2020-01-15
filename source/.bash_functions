@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sat 11 Jan 20:24:24 GMT 2020
+# Last Change       - Wed 15 Jan 21:04:03 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -275,15 +275,24 @@ fi
 # Very useful, quick function to scan the current directory, if you have clamscan.
 if type -fP clamscan tee &> /dev/null; then
 	scan(){ #: Scan the CWD with clamscan. Logs in: ~/.scan_func.log
-		{
-			printf "SCAN_START: %(%F (%X))T\n" -1
-			clamscan --bell -r --no-summary -i --detect-pua=yes\
-				--detect-structured=no --structured-cc-count=3\
-				--structured-ssn-count=3 --phishing-ssl=yes\
-				--phishing-cloak=yes --partition-intersection=yes\
-				--block-macros=yes --max-filesize=256M\
-				|& tee -a $HOME/.scan_alias.log
-		} |& tee -a $HOME/.scan_func.log
+		printf 'Scanning...\n'
+
+		clamscan --bell -zor --detect-pua=yes --detect-structured=no\
+			--structured-cc-count=3 --block-macros=yes --phishing-ssl=yes\
+			--structured-ssn-count=3 --phishing-cloak=yes --cross-fs=no\
+			--partition-intersection=yes &> "$HOME/.scan_func.log"
+
+		while IFS=':' read Key Value; do
+			case $Key in
+				'Infected files') Infected=${Value//[!0-9]} ;;
+			esac
+		done < "$HOME/.scan_func.log"
+
+		if [ $Infected -eq 0 ]; then
+			printf '\e[1;32mNothing found.\e[0m\n'
+		else
+			printf '\e[1;31mFound %d infection(s)!\e[0m\n' $Infected
+		fi
 	}
 fi
 
@@ -302,7 +311,7 @@ fi
 # Display a random note line from command notes.
 if [ "$USER" == 'ichy' -a $UID -eq 1000 ]; then
 	if type -fP sed grep shuf &> /dev/null; then
-		if [ -f $HOME/Documents/TT/Useful_Commands ]; then
+		if [ -f "$HOME/Documents/TT/Useful_Commands" ]; then
 			getrandomnote(){ #: Display a random note line from command notes.
 				local InFile="$HOME/Documents/TT/Useful_Commands";
 				if [ -f "$InFile" ] && [ -r "$InFile" ]; then
@@ -333,15 +342,25 @@ if [ "$USER" == 'ichy' -a $UID -eq 1000 ]; then
 	fi
 fi
 
-# Display all of the 'rc' packages, as determined by dpkg, parsed by the shell.
-# Using this within command substitution, sending it to apt-get, is very useful.
 if type -fP dpkg &> /dev/null; then
 	lsrc(){ #: Search for and list all 'rc' packages detected by dpkg.
-		while read -a X; do
-			if [ "${X[0]}" == "rc" ]; then
-				printf "%s\n" "${X[1]}"
-			fi
+		if [ $# -ne 0 ]; then
+			printf 'ERROR: No arguments required.\n'
+			return 1
+		fi
+
+		declare -a Total
+		while read F1 F2 _; do
+			[ "$F1" == 'rc' ] && Total+="$F2"
 		done <<< "$(dpkg -l)"
+
+		if [ ${#Total} -gt 0 ]; then
+			printf '%s\n' $Total
+		else
+			printf 'No packages found.\n' 2>&1
+		fi
+
+		unset F1 F2 _
 	}
 fi
 
@@ -364,11 +383,10 @@ elif type -fP xdpyinfo &> /dev/null; then
 	}
 fi
 
-# Use these environment variables only for man, to give him some color.
 if [ "$MAN_COLORS" == "true" ] && type -fP man &> /dev/null; then
 	man(){ #: Display man pages with a little color.
 		# This was needed else it wouldn't work, unless absolute path.
-		read MAN_EXEC <<< "$(type -fP man 2> /dev/null)"
+		read ManExec <<< "$(type -fP man 2> /dev/null)"
 
 		LESS_TERMCAP_mb=$'\e[01;31m'\
 		LESS_TERMCAP_md=$'\e[01;31m'\
@@ -377,27 +395,28 @@ if [ "$MAN_COLORS" == "true" ] && type -fP man &> /dev/null; then
 		LESS_TERMCAP_so=$'\e[01;44;33m'\
 		LESS_TERMCAP_ue=$'\e[0m'\
 		LESS_TERMCAP_us=$'\e[01;32m'\
-		$MAN_EXEC $@
+		"$ManExec" "$@"
 	}
 fi
 
 # An improvement of a code block found here:
 # https://forums.linuxmint.com/viewtopic.php?f=47&t=263770&p=1432658#p1432285
 suppress(){ #: Execute command ($1) and omit specified ($2) output.
-	$1 |& while read X; do
-		[ "${X/$2}" ] && printf "%s\n" "${X/$2}"
+	$1 |& while read -r; do
+		[ "${REPLY//$2}" ] && printf '%b\n' "${REPLY//$2}"
 	done
-	unset X
+
 	return ${PIPESTATUS[0]}
 }
 
 # Search for & output files not found which were installed with a given package.
 if type -fP dpkg-query &> /dev/null; then
 	missingpkgfiles(){ #: Check for missing files installed from a given package(s).
-		local X
 		while read X; do
-			[ -e "$X" -a "$X" ] || printf "%s\n" "$X"
-		done <<< "$(dpkg-query -L $@)"
+			[ -e "$X" -a "$X" ] || printf '%s\n' "$X"
+		done <<< "$(dpkg-query -L "$@")"
+
+		unset X
 	}
 
 	getpkgvers(){ #: Fetch a package and version list for Debian package building.
@@ -408,38 +427,41 @@ fi
 # The ago function is a handy way to output some of the apt-get's -o options.
 if type -fP apt-get zcat &> /dev/null; then
 	ago(){ #: List out various apt-get options for the -o flag.
-		for FIELD in `zcat /usr/share/man/man8/apt-get.8.gz`; {
-			if [[ $FIELD =~ ($^|^(Dir|Acquire|Dpkg|APT)::) ]]; then
-				CLEAN=${FIELD//[.\\&)(,]}
-				[ "$OLD" == "$CLEAN" ] || printf "%s\n" "$OLD"
-				OLD=$CLEAN
-			fi
-		}
+		while read F1 _; do
+			case $F1 in
+				*::*)
+					New=${F1//[&,.]}
 
-		unset FIELD CLEAN OLD
+					[ "$New" == "$Old" ] && continue
+					printf '%s\n' "$New"
+
+					Old=$New ;;
+			esac
+		done <<< "$(zcat /usr/share/man/man8/apt-get.8.gz)"
+
+		unset New Old F1 _
 	}
 fi
 
 # Search the given path(s) for file types of TYPE. Ignores filename extension.
 if type -fP mimetype &> /dev/null; then
 	sif(){ #: Search given path(s) for files of a specified type.
-		[ $# -eq 0 ] && printf '%s\n' 'USAGE: sif TYPE FILE1 [FILE2 FILE3...]' 1>&2
+		[ $# -eq 0 ] && printf 'Usage: sif [Type] [FILE_1 [FILE_2 ...]]\n' 1>&2
 
-		TYPE=$1
+		Type=$1
 		shift
 
-		for CurFile in $@; {
+		for CurFile in "$@"; {
 			while read -a X; do
-				for I in ${X[@]}; {
-					#TODO: Why won't this match case?
-					if [[ $I == $TYPE ]]; then
-						printf "%s\n" "$CurFile"
-					fi
+				for I in "${X[@]}"; {
+					case $I in
+						"$Type") printf '%s\n' "$CurFile" ;;
+					esac
 				}
 			done <<< "$(mimetype -bd "$CurFile")"
 		}
 
-		unset TYPE CurFile X I
+		unset Type CurFile X I
 	}
 fi
 
