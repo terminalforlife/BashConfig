@@ -3,26 +3,20 @@
 
 # Introduction to BashConfig
 
-Thank you for checking out my exhaustive [Bourne Again Shell](https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29) configuration files. Here, you'll not find some generic, copy-paste dotfiles, but in-fact thoughtful, purposeful code I've lovingly written and updated entirely myself, over several years.
+Thank you for checking out my somewhat-exhaustive [Bourne Again Shell](https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29) configuration files.
 
-While this configuration isn't directly, specifically intended for use by anybody without any prior configuration from the user, it still can be migrated over to your needs, or just be used as an educational aid.
+Here are some features on offer, as of 2020-01-18:
 
-Below are some of the features on offer, at the time of writing this.
-
-  * Plenty to explore, with ~2,130 lines; ~1,900 of which is _actual_ code to paw through.
   * Useful tool called `lad` to list and describe available functions and/or aliases.
   * Clean, concise `.inputrc` file with handy tweaks to how Bash operates interactively.
-  * A `.bash_functions` file with ~33 functions, big and small, for a better workflow.
-  * A `.bash_aliases` file with well over 50 aliases, covering a wide range of uses.
-  * An extensive but in-excessive `.bashrc` file with an elegant git-supported prompt.
-  * The included prompt's brother, `gitsa`, offers an overview of your branches.
-  * All syntax from these configuration files is in line with Bash's POSIX mode.
-  * Various easy-to-set variables at the start of `.bashrc` for inexperienced users.
+  * A `.bash_functions` file with plenty of handy functions, big and small.
+  * A `.bash_aliases` file with lots of aliases, covering a wide range of uses.
+  * A customized `.bashrc` file with my personalized git-supported prompt.
+  * Syntax from these files is written with Bash's POSIX mode in mind.
   * Functions and aliases are situational, in that they're only active when applicable.
   * Several useful shell options (`shopt`) and settings (`set`) are enabled.
   * Subtle, consistent colors -- absolutely no rainbows can be found over here!
   * Various lesser-known `export` usages, such as for the `ps` and `time` tools.
-  * In `.bashrc`, resides a small feature which logs when the terminal is open.
   * A fresh lick of paint is applied to man pages, making for an easier read.
   * The massively-useful ability to use `sudo` even on aliases and functions.
 
@@ -30,20 +24,11 @@ Below are some of the features on offer, at the time of writing this.
 
 I'm going to pre-emptively attempt to answer some questions:
 
-  **Q: Can I disable the POSIX mode used in Bash?**\
-    A: Yes. You need only set `POSIX_MODE='true'` to `'false'` instead.
-
-  **Q: I've written my own plugin; can I add it?**\
-    A: Yes. Add its filename to the `PLUGINS` array assigned early in `.bashrc`.
-
   **Q: My version of Bash is older than 4.0; can I still use this?**\
     A: Probably not, but an experienced user could maybe get it working.
 
   **Q: I'm seeing weird symbols in the prompt; I think it's broken!**\
     A: You're probably missing the Symbola and/or OpenSymbol fonts the prompt uses.
-
-  **Q: Can I add my own user option (variable) to the starting area of `.bashrc`?**\
-    A: Absolutely, and if it's a boolean, you might want to use the `for OPT in` bit.
 
   **Q: I don't understand the symbols used in the git prompt. Help!**\
     A: You'll soon remember them, but check out the `GI` array in `.bashrc` first.
@@ -65,8 +50,6 @@ I'm going to pre-emptively attempt to answer some questions:
 
 # How Can I Contribute?
 
-You can share my GitHub and/or YouTube links to people, so more can make use of these programs and configurations I've spent hours upon hours working on and perfecting.
-
-I'm also more than welcome to take pull requests on GitHub, and they will all be considered.
+You can share my GitHub and/or YouTube links to people. I'm also more than welcome to take pull requests on GitHub, and they will _all_ be considered.
 
 Thank you for your time and interest.
