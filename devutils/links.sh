@@ -20,10 +20,3 @@ for CurFile in .inputrc .yashrc .bashrc .bash_logout .bash_aliases .bash_functio
 	rm -v "$HOME/$CurFile" 2> /dev/null
 	ln -v "$CurFile" "$HOME/$CurFile" 2> /dev/null
 done
-
-if cd .shplugs 2> /dev/null; then
-	for CurFile in *; do
-		rm -v "$HOME/.shplugs/$CurFile" 2> /dev/null
-		ln -v "$CurFile" "$HOME/.shplugs/$CurFile" 2> /dev/null
-	done
-fi
