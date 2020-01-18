@@ -1,20 +1,15 @@
 #!/usr/bin/env bash
 
 #----------------------------------------------------------------------------------
-# Project Name      - BashConfig/.bash_functions
+# Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Wed 15 Jan 21:04:03 GMT 2020
+# Last Change       - Sat 18 Jan 01:56:08 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 # IMPORTANT: If you use `lad`, you need to read the contents of `lad --help` before
 #            making any changes to this file, or risk breaking it's functionality.
 #----------------------------------------------------------------------------------
-
-# Just in-case.
-[ "$BASH_VERSION" ] || return 1
-
-GHForkDir="$HOME/GitHub/terminalforlife/Forks"
 
 if type -fP perl &> /dev/null; then
 	perlc(){ #: Perform a syntax check on all Perl scripts within the CWD.
@@ -33,20 +28,12 @@ if type -fP perl &> /dev/null; then
 	}
 fi
 
-if type -fP tput &> /dev/null; then
-	yesno(){ #: Output a very tidy (clears below and on cursor line!) one-line prompt.
-		while :; do
-			read -n 1 -p "$*" PromReply
-			case $PromReply in
-				[Yy]) printf '\n'; return 0 ;;
-				[Nn]) printf '\n'; return 1 ;;
-			esac
-
-			printf '\r'
-			tput ed
-		done
-
-		unset PromReply
+if [ -f /usr/lib/tflbp-sh/YNInput ]; then
+	yesno(){ #: Output a discreet one-line prompt, using libtflbp-sh's `YNInput()`.
+		(
+			. /usr/lib/tflbp-sh/YNInput
+			YNInput "$*" || return 1
+		)
 	}
 fi
 
@@ -294,18 +281,6 @@ if type -fP clamscan tee &> /dev/null; then
 			printf '\e[1;31mFound %d infection(s)!\e[0m\n' $Infected
 		fi
 	}
-fi
-
-# Grab a list of TODOs for git projects, per a specific method. This only works if
-# you use "#T0D0 - Note message here" syntax for your TODOs, where "0" is "O". If
-# you use a different style, but it's perfectly consistent, change the below match.
-if [ -d "$HOME/GitHub/terminalforlife/Personal" ]; then
-	if type -fP grep &> /dev/null; then
-		todo(){ #: Grab list of TODOs from GitHub projects.
-			grep -Isr --color=auto --exclude-dir=".git" "[#\"]TODO: "\
-				"$HOME/GitHub/terminalforlife/Personal"
-		}
-	fi
 fi
 
 # Display a random note line from command notes.
@@ -570,6 +545,7 @@ if type -fP espeak &> /dev/null; then
 	}
 
 	readit(){ #: Read a text file with espeak.
+		{ [ -f "$*" ] && [ -r "$*" ]; } || return 1
 		espeak -v en-scottish -g 5 -p 13 -s 0.7 < "$*"
 	}
 fi
