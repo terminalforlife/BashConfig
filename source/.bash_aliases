@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sat 11 Jan 15:19:06 GMT 2020
+# Last Change       - Sun 19 Jan 02:53:33 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -98,6 +98,16 @@ if type -fP rm &> /dev/null; then
 	)
 
 	alias hsh="rm --interactive=never -rv ${PLACES[@]} 2> /dev/null" #: Clear out some junk from the current user's HOME.
+
+	# Add verbosity to various important commands.
+	alias rm='rm -v'
+	alias mv='mv -v'
+	alias mkdir='mkdir -v'
+	alias cp='cp -v'
+	alias ln='ln -v'
+	alias chown='chown -v'
+	alias chmod='chmod -v'
+	alias rmdir='rmdir -v'
 fi
 
 # Make the ffmpeg output less cluttered, but also ignore many errors.
