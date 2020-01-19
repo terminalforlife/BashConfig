@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sat 18 Jan 01:56:08 GMT 2020
+# Last Change       - Sun 19 Jan 03:18:29 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -205,14 +205,24 @@ fi
 
 if type -fP mplayer &> /dev/null; then
 	mpvi(){ #: In i3-wm, play a video inside the active window.
+		tput smcup
+		tput clear
+
 		WID=`xprop -root _NET_ACTIVE_WINDOW | cut -d "#" -f 2`
 		mplayer -msglevel "all=-1" -nolirc -wid "$WID" "$@" &> /dev/null
 
 		# Addresses bug. The window will otherwise fill with last frame.
-		wait; clear
+		wait; tput rmcup
 
 		unset WID
 	}
+
+	if type -fP youtube-dl &> /dev/null; then
+		syt(){ #: Stream a YouTube video directly into MPlayer.
+			youtube-dl "$1" -o - 2> /dev/null | mplayer -vo x11 -nomouseinput\
+				-noar -nojoystick -nogui -zoom -nolirc -really-quiet - &> /dev/null
+		}
+	fi
 fi
 
 if type -fP column &> /dev/null; then
