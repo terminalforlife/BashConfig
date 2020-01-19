@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sat 18 Jan 01:42:29 GMT 2020
+# Last Change       - Sun 19 Jan 02:46:08 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -139,6 +139,8 @@ export PS_PERSONALITY="posix"
 UsrBashComp="/usr/share/bash-completion/bash_completion"
 [ -f "$UsrBashComp" -a -r "$UsrBashComp" ] && . "$UsrBashComp"
 
+bind '"\t": menu-complete'
+bind '"\e[Z": menu-complete-backward'
 bind '"\e[1;5C": forward-word'
 bind '"\e[1;5D": backward-word'
 
