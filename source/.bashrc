@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 24 Jan 01:58:10 GMT 2020
+# Last Change       - Fri 24 Jan 02:18:50 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -22,14 +22,14 @@ set -o interactive-comments +o monitor -o hashall\
 
 PROMPT_PARSER(){
 	if [ $? -eq 0 ]; then
-		Arrow='\e[2;31m:'
+		Arrow='\e[2;31m:\e[0m'
 	else
-		Arrow="\e[1;31m:"
+		Arrow='\e[1;31m:\e[0m'
 	fi
 
-	PS1="${Arrow}\[\033[0m\] "
+	PS1="\[${Arrow}\] "
 
-	unset X BRed Reset
+	unset Arrow
 }
 
 PROMPT_COMMAND='PROMPT_PARSER'
