@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 24 Jan 02:18:50 GMT 2020
+# Last Change       - Fri 24 Jan 02:51:21 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -20,19 +20,19 @@ shopt -s checkwinsize globstar complete_fullquote expand_aliases extquote\
 set -o interactive-comments +o monitor -o hashall\
 	-o braceexpand -o emacs -o histexpand -o posix
 
-PROMPT_PARSER(){
+PromptParser(){
 	if [ $? -eq 0 ]; then
-		Arrow='\e[2;31m:\e[0m'
+		Arrow='\[\e[2;31m\]:\[\e[0m\]'
 	else
-		Arrow='\e[1;31m:\e[0m'
+		Arrow='\[\e[1;31m\]:\[\e[0m\]'
 	fi
 
-	PS1="\[${Arrow}\] "
+	PS1="${Arrow} "
 
 	unset Arrow
 }
 
-PROMPT_COMMAND='PROMPT_PARSER'
+PROMPT_COMMAND='PromptParser'
 
 export HISTTIMEFORMAT="[%F_%X]: "
 export HISTCONTROL='ignoreboth'
@@ -48,13 +48,11 @@ export SUDO_EDITOR="/usr/bin/rvim"
 export GREP_COLOR="1;31"
 export PS_PERSONALITY="posix"
 
-UsrBashComp="/usr/share/bash-completion/bash_completion"
-[ -f "$UsrBashComp" -a -r "$UsrBashComp" ] && . "$UsrBashComp"
-
-#bind '"\t": menu-complete'
-#bind '"\e[Z": menu-complete-backward'
 bind '"\e[1;5C": forward-word'
 bind '"\e[1;5D": backward-word'
+
+UsrBashComp="/usr/share/bash-completion/bash_completion"
+[ -f "$UsrBashComp" -a -r "$UsrBashComp" ] && . "$UsrBashComp"
 
 BCAliases="$HOME/.bash_aliases"
 [ -f "$BCAliases" -a -r "$BCAliases" ] && . "$BCAliases"
@@ -62,4 +60,4 @@ BCAliases="$HOME/.bash_aliases"
 BCFuncs="$HOME/.bash_functions"
 [ -f "$BCFuncs" -a -r "$BCFuncs" ] && . "$BCFuncs"
 
-unset BCAliases BCFuncs UsrBashComp X G Z Desc Status Top BRed White Reset
+unset BCAliases BCFuncs UsrBashComp
