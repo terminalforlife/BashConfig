@@ -1,7 +1,9 @@
+#!/usr/bin/env bash
+#cito M:600 O:1000 G:1000 T:$HOME/.profile
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.profile
 # Started On        - Thu 14 Sep 20:09:24 BST 2017
-# Last Change       - Thu 23 Jan 14:52:53 GMT 2020
+# Last Change       - Fri 24 Jan 02:02:19 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+#cito M:600 O:1000 G:1000 T:$HOME/.bash_functions
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018

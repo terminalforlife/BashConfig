@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+#cito M:600 O:1000 G:1000 T:$HOME/.bash_aliases
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
