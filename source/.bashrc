@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 24 Jan 01:39:01 GMT 2020
+# Last Change       - Fri 24 Jan 01:58:10 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -19,11 +19,6 @@ shopt -s checkwinsize globstar complete_fullquote expand_aliases extquote\
 
 set -o interactive-comments +o monitor -o hashall\
 	-o braceexpand -o emacs -o histexpand -o posix
-
-# Needed to ensure the git stuff shows correctly. In 18.04, the git
-# version has slightly different output, so needed a workaround.
-readarray T < /etc/lsb-release
-[ "${T[2]#*=}" == bionic$'\n' ] && R=4 || R=3
 
 PROMPT_PARSER(){
 	if [ $? -eq 0 ]; then
@@ -44,7 +39,7 @@ export HISTCONTROL='ignoreboth'
 export HISTFILESIZE=0
 export HISTSIZE=1000
 export VBOX_USER_HOME="/media/$USER/Main Data/Linux Generals/VirtualBox VMs"
-export TIMEFORMAT='>>> real %3R | user %3U | sys %3S | pcpu %P <<<'
+export TIMEFORMAT="{'real' => %3R, 'user' => %3U, 'sys' => %3S, 'pcpu' => %P}"
 export LS_COLORS='di=1;31:ln=2;32:mh=1;32:ex=1;33:'
 export PATH=${PATH%:\/snap\/bin}
 export TERM='xterm-256color'
