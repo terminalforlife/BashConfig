@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 24 Jan 02:42:58 GMT 2020
+# Last Change       - Sat 25 Jan 21:23:53 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -14,7 +14,7 @@
 # Just in-case.
 [ "$BASH_VERSION" ] || return 1
 
-alias sudo="sudo " #: Allows for aliases to work with sudo.
+alias sudo='sudo ' #: Allows for aliases to work with sudo.
 
 if type -fP dpkg-query &> /dev/null; then
 	alias getsecs='awk "!Z[\$1]++" <<< "$(dpkg-query -Wf "\${Section}\\n" "*")" | column' #: List Debian package sections, per installed packages.
@@ -33,11 +33,7 @@ if type -fP perl &> /dev/null; then
 fi
 
 if type -fP fc-list &> /dev/null; then
-	alias lsfont="fc-list : family" #: List all of the currently available font families.
-fi
-
-if type -fP gvfs-ls &> /dev/null; then
-	alias lstrash="gvfs-ls -h trash:///" #: List all contents of the trash bin.
+	alias lsfont='fc-list : family' #: List all of the currently available font families.
 fi
 
 if type -fP cat vim &> /dev/null; then
@@ -54,6 +50,15 @@ if type -fP apt-get &> /dev/null; then
 fi
 
 if type -fP rm &> /dev/null; then
+	# Add verbosity to various important commands.
+	for Dep in\
+	\
+		'chmod:-v' 'chown:-v' 'cp:-v' 'killall:-v' 'ln:-v'\
+		'mkdir:-v' 'mv:-v' 'rm:-v' 'rmdir:-v' 'pkill:-e';
+	{
+		alias ${Dep%%:*}="${Dep%%:*} ${Dep##*:}"
+	}
+
 	Places=(\
 		"$HOME/.cache"
 		"$HOME/.thumbnails"
@@ -61,21 +66,17 @@ if type -fP rm &> /dev/null; then
 		"$HOME/.mozilla/firefox/Pending Pings"
 	)
 
-	alias hsh="rm --interactive=never -rv ${Places[@]} 2> /dev/null" #: Clear out some junk from the current user's HOME.
-
-	# Add verbosity to various important commands.
-	alias rm='rm -v'
-	alias mv='mv -v'
-	alias mkdir='mkdir -v'
-	alias cp='cp -v'
-	alias ln='ln -v'
-	alias chown='chown -v'
-	alias chmod='chmod -v'
-	alias rmdir='rmdir -v'
+	alias hsh="rm -rf ${Places[@]} 2> /dev/null" #: Clear out some junk from the current user's HOME.
 fi
 
 if type -fP ffmpeg &> /dev/null; then
 	alias ffmpeg="ffmpeg -v 0 -stats" #: De-clutter this program's output, but not entirely.
+fi
+
+if type -fP gio &> /dev/null; then
+	alias trash='gio trash ' #: Empty the trash with `gio`.
+elif type -fP gvfs &> /dev/null; then
+	alias trash='gvfs-trash ' #: Empty the trash with `gvfs-trash`.
 fi
 
 if [ "$USER" == 'ichy' -a $UID -eq 1000 ]; then
@@ -100,6 +101,10 @@ if type -fP feh &> /dev/null; then
 	fi
 
 	alias img='feh --fullscreen --hide-pointer --draw-filename --no-menus --preload 2> /dev/null' #: Slide-show images in current directory using feh.
+
+	if [ -n "$SSH_TTY" ] && type -fP scrot &> /dev/null; then
+		alias screenlook='{ DISPLAY=:0 scrot -zq 100 /tmp/_.jpg && feh /tmp/_.jpg; } && rm -f /tmp/_.jpg'
+	fi
 fi
 
 if type -fP sleep &> /dev/null; then
@@ -165,10 +170,6 @@ if type -fP git &> /dev/null; then
 	}
 fi
 
-if type -fP gvfs-trash &> /dev/null; then
-	alias rm="gvfs-trash" #: Use gvfs-trash in place of rm, if available.
-fi
-
 if type -fP youtube-dl &> /dev/null; then
 	alias ytdl-video="youtube-dl -c --no-playlist --sleep-interval 5 --format best --no-call-home --console-title --quiet --ignore-errors" #: Download HQ videos from YouTube, using youtube-dl.
 	alias ytdl-audio="youtube-dl -cx --no-playlist --audio-format mp3 --sleep-interval 5 --max-sleep-interval 30 --no-call-home --console-title --quiet --ignore-errors" #: Download HQ audio from YouTube, using youtube-dl.
@@ -217,11 +218,11 @@ fi
 
 for DIR in\
 \
-	"Music":mus "GitHub":gh "Videos":vid "Desktop":dt "Pictures":pic\
-	"Downloads":dl "Documents":doc "Documents/TT":tt ".shplugs":sp\
-	"GitHub/terminalforlife":ghtfl "GitHub/terminalforlife/Forks":ghtflf\
-	"GitHub/terminalforlife/Personal":ghtflp "DosBox":db "Archives":arc\
-	".i3a":i3a "LearnLinux":ll;
+	'Music':mus 'GitHub':gh 'Videos':vid 'Desktop':dt 'Pictures':pic\
+	'Downloads':dl 'Documents':doc 'Documents/TT':tt '.shplugs':sp\
+	'GitHub/terminalforlife':ghtfl 'GitHub/terminalforlife/Forks':ghtflf\
+	'GitHub/terminalforlife/Personal':ghtflp 'DosBox':db 'Archives':arc\
+	'.i3a':i3a 'LearnLinux':ll;
 {
 	[ -d "$HOME/${DIR%:*}" ] && alias ${DIR/*:}="cd $HOME/${DIR%:*}"
 }
@@ -229,7 +230,7 @@ for DIR in\
 if [ -d "/media/$USER" ]; then
 	alias sd="cd /media/$USER" #: Change the CWD to: /media/$USER
 else
-	alias mnt="cd /mnt" #: Change the CWD to: /mnt
+	alias mnt='cd /mnt' #: Change the CWD to: /mnt
 fi
 
 if type -fP ls eject &> /dev/null && [ -b /dev/sr0 ]; then
@@ -245,7 +246,7 @@ if type -fP ls eject &> /dev/null && [ -b /dev/sr0 ]; then
 fi
 
 if type -fP mplayer &> /dev/null; then
-	alias mpa="mplayer -nolirc -vo null -really-quiet &> /dev/null" #: Use 'mplayer' to play audio files, sans window or output.
+	alias mpa='mplayer -nolirc -vo null -really-quiet &> /dev/null' #: Use 'mplayer' to play audio files, sans window or output.
 
 	declare -a MplayerFont=("-font" "$HOME/.mplayer/subfont.ttf")
 	[ -f "${MplayerFont[0]}" -a -r "${MplayerFont[0]}" ] || unset MplayerFont
@@ -341,7 +342,7 @@ case `tty` in
 esac
 
 if type -fP evince &> /dev/null; then
-	alias pdf="evince &> /dev/null" #: Use 'evince' to display PDF documents.
+	alias pdf='evince &> /dev/null' #: Use 'evince' to display PDF documents.
 fi
 
-unset TTY File MplayerFont Places
+unset TTY File MplayerFont Places Dep

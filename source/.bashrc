@@ -27,7 +27,7 @@ PromptParser(){
 		Arrow='\[\e[1;31m\]:\[\e[0m\]'
 	fi
 
-	PS1="${Arrow} "
+	PS1="${Arrow}"
 
 	unset Arrow
 }
