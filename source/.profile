@@ -1,7 +1,9 @@
+#!/usr/bin/env bash
+#cito M:600 O:1000 G:1000 T:$HOME/.profile
 #----------------------------------------------------------------------------------
-# Project Name      - BashConfig/.profile
+# Project Name      - BashConfig/source/.profile
 # Started On        - Thu 14 Sep 20:09:24 BST 2017
-# Last Change       - Wed  4 Dec 21:31:41 GMT 2019
+# Last Change       - Mon 27 Jan 02:08:08 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -16,4 +18,10 @@ umask 0077
 # If using Arch, enable bash completion. Comment out if you get this elsewhere.
 if [ -x /usr/bin/pacman -a /usr/share/bash-completion/bash_completion ]; then
 	. /usr/share/bash-completion/bash_completion
+fi
+
+# Set up the SSH agent for key management.
+if eval `ssh-agent -s` 1> /dev/null; then
+	ssh-add "$HOME/.ssh/rsa_ss" "$HOME/.ssh/rsa_sam"
+	trap 'kill $SSH_AGENT_PID' EXIT
 fi

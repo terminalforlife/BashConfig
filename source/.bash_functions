@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-
+#cito M:600 O:1000 G:1000 T:$HOME/.bash_functions
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sun 19 Jan 03:18:29 GMT 2020
+# Last Change       - Tue 28 Jan 01:55:47 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------

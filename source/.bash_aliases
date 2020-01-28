@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-
+#cito M:600 O:1000 G:1000 T:$HOME/.bash_aliases
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 19 Jan 02:53:33 GMT 2020
+# Last Change       - Tue 28 Jan 01:53:46 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -119,10 +119,6 @@ fi
 if [ "$USER" == "ichy" -a $UID -eq 1000 ]; then
 	if [ -f "$HOME/Documents/TT/shotmngr.sh" ]; then
 		alias sm="bash $HOME/Documents/TT/shotmngr.sh" #: Personal script for managing screenshots.
-	fi
-
-	if type -fP ssh &> /dev/null; then
-		alias svr='sh "$HOME/Documents/TT/svrcon"' #: Personal script to connect or copy to a remote server.
 	fi
 fi
 
@@ -404,4 +400,3 @@ fi
 # Clean up functions and variables.
 unset -f FOR_THE_EDITOR
 unset DEP FILE DEPCOUNT FOR_THE_EDITOR TTDIR DIR CHOSEN_EDITOR GIT
-

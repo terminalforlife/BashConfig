@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-
+#cito M:600 O:1000 G:1000 T:$HOME/.bashrc
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 19 Jan 02:46:08 GMT 2020
+# Last Change       - Tue 28 Jan 01:55:56 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
