@@ -1,19 +1,19 @@
-**MASTER** - _Hopefully stable branch._\
-**DEV** - _Development Branch (latest changes)_
+**MASTER** - _Hopefully-Stable Branch._\
+**DEV** - _Development Branch (Latest Changes)_\
+**BULKY** - _The Old, Bulkier Iteration_
 
 # Introduction to BashConfig
 
 Thank you for checking out my somewhat-exhaustive [Bourne Again Shell](https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29) configuration files.
 
-Here are some features on offer, as of 2020-01-18:
+Here are some of the features I get out of this, as of 2020-01-28:
 
-  * Useful tool called `lad` to list and describe available functions and/or aliases.
-  * Clean, concise `.inputrc` file with handy tweaks to how Bash operates interactively.
-  * A `.bash_functions` file with plenty of handy functions, big and small.
-  * A `.bash_aliases` file with lots of aliases, covering a wide range of uses.
-  * A customized `.bashrc` file with my personalized git-supported prompt.
-  * Syntax from these files is written with Bash's POSIX mode in mind.
-  * Functions and aliases are situational, in that they're only active when applicable.
+  * Lots of user-side tweaks available, via `.inputrc`.
+  * Lad, a tool to list and describe functions and/or aliases, is included.
+  * Both `.bash_functions` and `.bash_aliases` included, with plenty inside.
+  * Customized `.bashrc` with a custom git prompt -- see also: GitSAP.
+  * Within these files is code written with Bash's POSIX mode in mind.
+  * Functions and aliases are situational, applying only when valid.
   * Several useful shell options (`shopt`) and settings (`set`) are enabled.
   * Subtle, consistent colors -- absolutely no rainbows can be found over here!
   * Various lesser-known `export` usages, such as for the `ps` and `time` tools.
