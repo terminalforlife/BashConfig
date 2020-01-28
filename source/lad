@@ -3,15 +3,17 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/lad (List and Describe)
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Fri 13 Dec 21:02:59 GMT 2019
+# Last Change       - Tue 28 Jan 02:37:04 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
 
+set -e
 . /usr/lib/tflbp-sh/Err
 . /usr/lib/tflbp-sh/ChkDep
+set +e
 
-CurVer='2019-12-13'
+CurVer='2020-01-28'
 Progrm=${0##*/}
 
 Usage(){
@@ -28,8 +30,8 @@ Usage(){
 		OPTS:       --help|-h|-?            - Displays this help information.
 		            --version|-v            - Output only the version datestamp.
 		            --debug|-D              - Enables the built-in Bash debugging.
-		            --funcs|-F              - Display only functions.
 		            --aliases|-A            - Display only aliases.
+		            --funcs|-F              - Display only functions.
 
 		RULES:      In order for $Progrm to correctly list functions and aliases, various rules
 		            must be followed; these are listed below:
