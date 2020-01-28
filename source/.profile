@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.profile
 # Started On        - Thu 14 Sep 20:09:24 BST 2017
-# Last Change       - Mon 27 Jan 02:08:08 GMT 2020
+# Last Change       - Tue 28 Jan 02:29:50 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -15,6 +15,9 @@
 # files, respectively; drwx------ and -rw-------.
 umask 0077
 
+# I need this for when I use my configurations remotely, via SSH.
+[ -n "$SSH_TTY" -a -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+
 # If using Arch, enable bash completion. Comment out if you get this elsewhere.
 if [ -x /usr/bin/pacman -a /usr/share/bash-completion/bash_completion ]; then
 	. /usr/share/bash-completion/bash_completion
@@ -22,6 +25,10 @@ fi
 
 # Set up the SSH agent for key management.
 if eval `ssh-agent -s` 1> /dev/null; then
-	ssh-add "$HOME/.ssh/rsa_ss" "$HOME/.ssh/rsa_sam"
+	# Only want to add keys on an SSH client, not the server.
+	if [ -z "$SSH_TTY" ]; then
+		ssh-add "$HOME/.ssh/rsa_ss" "$HOME/.ssh/rsa_sam"
+	fi
+
 	trap 'kill $SSH_AGENT_PID' EXIT
 fi

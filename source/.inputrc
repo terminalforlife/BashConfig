@@ -1,7 +1,8 @@
+#cito M:600 O:1000 G:1000 T:$HOME/.inputrc
 #----------------------------------------------------------------------------------
-# Project Name      - $HOME/.inputrc
+# Project Name      - BashConfig/misc/.inputrc
 # Started On        - Tue 16 Jan 22:16:00 GMT 2018
-# Last Change       - Wed 14 Mar 21:50:06 GMT 2018
+# Last Change       - Tue 28 Jan 02:33:17 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -53,4 +54,3 @@ $if mode=emacs
 	"\e\e[C": forward-word
 	"\e\e[D": backward-word
 $endif
-

@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Tue 28 Jan 01:55:56 GMT 2020
+# Last Change       - Tue 28 Jan 02:25:23 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ PROMPT_PARSER(){
 
 PROMPT_COMMAND='PROMPT_PARSER'
 
-export HISTTIMEFORMAT="[%F_%X]: "
+export HISTTIMEFORMAT='[%F_%X]: '
 export HISTCONTROL='ignoreboth'
 export HISTFILESIZE=0
 export HISTSIZE=1000
@@ -132,15 +132,15 @@ export LS_COLORS='di=1;31:ln=2;32:mh=1;32:ex=1;33:'
 export PATH=${PATH%:\/snap\/bin}
 export TERM='xterm-256color'
 export LESSSECURE=1
-export SUDO_EDITOR="/usr/bin/rvim"
-export GREP_COLOR="1;31"
-export PS_PERSONALITY="posix"
+export SUDO_EDITOR='/usr/bin/rvim'
+export GREP_COLOR='1;31'
+export PS_PERSONALITY='posix'
 
 UsrBashComp="/usr/share/bash-completion/bash_completion"
 [ -f "$UsrBashComp" -a -r "$UsrBashComp" ] && . "$UsrBashComp"
 
-bind '"\t": menu-complete'
-bind '"\e[Z": menu-complete-backward'
+#bind '"\t": menu-complete'
+#bind '"\e[Z": menu-complete-backward'
 bind '"\e[1;5C": forward-word'
 bind '"\e[1;5D": backward-word'
 
