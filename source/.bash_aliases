@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 28 Jan 01:53:46 GMT 2020
+# Last Change       - Tue 28 Jan 03:12:51 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #----------------------------------------------------------------------------------
@@ -17,6 +17,10 @@
 # Nifty trick to allow aliases to work with sudo. This avoids needing sudo in these
 # configuration files, since using sudo within a bash script/program is not great.
 alias sudo="sudo " #: Allows for aliases to work with sudo.
+
+if type -fP upower &> /dev/null; then
+	alias battery='while read -a Line; do case ${Line[0]} in *Percentage*) printf "%s\n" "${Line[1]}"; break ;; esac; done <<< "$(upower -d)"' #: Output the percentage of battery power remaining.
+fi
 
 if type -fP dpkg-query &> /dev/null; then
 	alias getsecs='awk "!Z[\$1]++" <<< "$(dpkg-query -Wf "\${Section}\\n" "*")" | column' #: List Debian package sections, per installed packages.
@@ -93,8 +97,8 @@ if type -fP rm &> /dev/null; then
 	PLACES=(\
 		"$HOME/.cache"
 		"$HOME/.thumbnails"
-		"$HOME/.mozilla/firefox/Crash Reports"
-		"$HOME/.mozilla/firefox/Pending Pings"
+		"$HOME/.mozilla/firefox/Crash\ Reports"
+		"$HOME/.mozilla/firefox/Pending\ Pings"
 	)
 
 	alias hsh="rm --interactive=never -rv ${PLACES[@]} 2> /dev/null" #: Clear out some junk from the current user's HOME.
