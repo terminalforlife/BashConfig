@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 #cito M:600 O:1000 G:1000 T:$HOME/.bash_functions
-#----------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 28 Jan 01:55:47 GMT 2020
+# Last Change       - Fri 31 Jan 21:53:01 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
-#----------------------------------------------------------------------------------
-# IMPORTANT: If you use `lad`, you need to read the contents of `lad --help` before
-#            making any changes to this file, or risk breaking it's functionality.
-#----------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+# IMPORTANT: If you use `lad`, you need to read the contents of `lad --help`
+#            before making any changes to this file, or risk breaking it's
+#            functionality.
+#------------------------------------------------------------------------------
 
 if type -fP perl &> /dev/null; then
 	perlc(){ #: Perform a syntax check on all Perl scripts within the CWD.
@@ -133,11 +134,11 @@ if type -fP grep uniq sed &> /dev/null; then
 
 	noab(){ #: No absolutes for executables found in PATH directories and the given file.
 		if ! [ -f "$1" -a -r "$1" -a -w "$1" ]; then
-			printf "ERROR: File missing or insufficent permissions.\n"
+			printf "ERROR: File missing or insufficient permissions.\n"
 			return 1
 		fi
 
-		printf "WARNING: The file will be irreversably changed!\n"
+		printf "WARNING: The file will be irreversibly changed!\n"
 		read -n 1 -e -p "Press any key to continue, or Ctrl+C to cancel... "
 
 		P=(`grep -Eo "(${PATH//://|})[a-Z0-9_-]+" "$1" 2> /dev/null | uniq 2> /dev/null`)
@@ -186,7 +187,7 @@ if type -fP awk &> /dev/null; then
 fi
 
 if type -fP feh &> /dev/null; then
-	bgtest(){ #: Cyclicly test-run all CWD JPGs as a background.
+	bgtest(){ #: Cyclically test-run all CWD JPGs as a background.
 		declare -i NUM=0
 		for CurFile in *$1*.jpg; {
 			[ -f "$CurFile" ] || continue
@@ -233,7 +234,6 @@ if type -fP column &> /dev/null; then
 	}
 fi
 
-# Display the current DPI setting.
 if type -fP xdpyinfo &> /dev/null; then
 	dpi(){ #: Display the current DPI setting.
 		while read -a X; do
@@ -254,7 +254,6 @@ if type -fP sensors &> /dev/null; then
 	}
 fi
 
-# Get and display the distribution type. (original base first)
 if [ -f /etc/os-release -a -r /etc/os-release ]; then
 	distro(){ #: Get and display the distribution type.
 		while read -a CurLine; do
@@ -269,7 +268,6 @@ if [ -f /etc/os-release -a -r /etc/os-release ]; then
 	}
 fi
 
-# Very useful, quick function to scan the current directory, if you have clamscan.
 if type -fP clamscan tee &> /dev/null; then
 	scan(){ #: Scan the CWD with clamscan. Logs in: ~/.scan_func.log
 		printf 'Scanning...\n'
@@ -466,7 +464,6 @@ if [ -f /proc/net/dev ]; then
 	}
 fi
 
-# Display the users on the system (parse /etc/passwd) in a more human-readable way.
 if [ -f /etc/passwd ]; then
 	lsusers(){ #: List users on the system, according to '/etc/passwd'.
 		printf "%-20s %-7s %-7s %-25s %s\n"\
@@ -475,7 +472,7 @@ if [ -f /etc/passwd ]; then
 		local X
 		while IFS=':' read -a X; do
 			if [ "$1" == "--nosys" ]; then
-				#TODO: Make this omit system ones by testing for the shell used.
+				#TODO: Make this omit system ones by testing for shell used.
 				if [[ ${X[5]/\/home\/syslog} == /home/* ]]; then
 					printf "%-20s %-7d %-7d %-25s %s\n"\
 						"${X[0]}" "${X[2]}" "${X[3]}"\
@@ -489,8 +486,7 @@ if [ -f /etc/passwd ]; then
 	}
 fi
 
-# Two possibly pointless functions to single- or double-quote a string of text.
-squo(){ #: Surround ($@) text in single quotion marks.
+squo(){ #: Surround ($@) text in single quotation marks.
 	printf "'%s'\n\" \"\$*"
 }
 
@@ -498,9 +494,8 @@ dquo(){ #: Surround ($@) text in double quotation marks.
 	printf "\"%s\"\n" "$*"
 }
 
-# My preferred links2 settings. Also allows you to quickly search with DDG.
 if type -fP links2 &> /dev/null; then
-	l2(){ #: A tweaked links2 experience, opening with DuckDuckGo.
+	l2(){ #: A tweaked links2 experience, allowing for quick DuckDuckGo searches.
 		links2 -http.do-not-track 1 -html-tables 1\
 			-html-tables 1 -html-numbered-links 1\
 			http://duckduckgo.com/?q="$*"
@@ -508,11 +503,11 @@ if type -fP links2 &> /dev/null; then
 fi
 
 # Prompt to somewhat programmatically rename each file within the current
-# directory. To skip one, simply submit an empty string. Output is fairly quiet.
-# Does not work recursively, nor will it try to name anything but files. Uses color
-# in output to make it quick and easy to read; may not work on all terminals. The
-# changes are made the moment you press Enter, so be mindful! Ctrl + C to cancel.
-# Use OPT -d or --directories to instead match those.
+# directory. To skip one, simply submit an empty string. Output is fairly
+# quiet. Does not work recursively, nor will it try to name anything but files.
+# Uses color in output to make it quick and easy to read; may not work on all
+# terminals. The changes are made the moment you press Enter, so be mindful!
+# Ctrl + C to cancel. Use OPT -d or --directories to instead match those.
 if type -fP mv &> /dev/null; then
 	brn(){ #: Batch-rename a bunch of files or directories.
 		printf "NOTE: To match directories instead, use -d|--directories OPTs.\n"

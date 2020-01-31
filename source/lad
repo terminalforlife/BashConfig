@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 #cito M:755 O:0 G:0 T:/usr/bin/lad
-#----------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/lad (List and Describe)
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Tue 28 Jan 02:37:04 GMT 2020
+# Last Change       - Fri 31 Jan 21:47:04 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
-#----------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 set -e
 . /usr/lib/tflbp-sh/Err
 . /usr/lib/tflbp-sh/ChkDep
 set +e
 
-CurVer='2020-01-28'
+CurVer='2020-01-31'
 Progrm=${0##*/}
 
 Usage(){
@@ -28,28 +28,27 @@ Usage(){
 		SYNTAX:     $Progrm [OPTS]
 
 		OPTS:       --help|-h|-?            - Displays this help information.
-		            --version|-v            - Output only the version datestamp.
-		            --debug|-D              - Enables the built-in Bash debugging.
+		            --version|-v            - Output the version datestamp.
 		            --aliases|-A            - Display only aliases.
 		            --funcs|-F              - Display only functions.
 
-		RULES:      In order for $Progrm to correctly list functions and aliases, various rules
-		            must be followed; these are listed below:
+		RULES:      In order for $Progrm to correctly list functions and
+		            aliases, various rules must be followed, as listed below.
 
 		              1. ' #: ', sans quotes, must be appended to alias lines.
 
 		                 For example:
 
-		                   alias do='echo "Some random stuff."' #: Print some text.
+		                   alias do='echo "Random stuff."' #: Print some text.
 
-		              2. Alias setting MUST be single-line only.
+		              2. Alias setting needs to be single-line only.
 
-		              3. ' #: ', sans quotes, must be appended to function declaration.
+		              3. ' #: ', sans quotes, must be appended to functions.
 
 		                 For example:
 
 		                   func_name(){ #: Print some text.
-		                           echo "Some random stuff."
+		                       echo "Some random stuff."
 		                   }
 
 		              4. The alias must be the first command on its line.
@@ -61,22 +60,19 @@ Usage(){
 		                 Example of correct usage:
 
 		                   if [ -x /bin/thing ]; then
-		                           alias do="thing" #: Do thing.
+		                       alias do="thing" #: Do thing.
 		                   fi
 
 		              5. Aliases must be put into: ~/.bash_aliases
 
 		              6. Functions must be put into: ~/.bash_functions
 
-		              7. Functions must use '(){', without spacing. You can, however, use
-		                 parentheses instead of braces, for use of sub-shells.
+		              7. Functions must use '(){', without spacing. You can, -
+		                 however, use parentheses instead of braces, for use of
+		                 sub-shells.
 
-		FILES:      The following files are scanned:
-
-		              ~/.bash_functions
-		              ~/.bash_aliases
-
-		LINK:       https://github.com/terminalforlife/BashConfig
+		FILES:      ~/.bash_functions
+		            ~/.bash_aliases
 	EOF
 }
 
@@ -89,8 +85,6 @@ while [ "$1" ]; do
 		--version|-v)
 			printf "%s\n" "$CurVer"
 			exit 0 ;;
-		--debug|-D)
-			DebugMe='true' ;;
 		--funcs|-F)
 			OnlyFunc='true' ;;
 		--aliases|-A)
@@ -108,8 +102,6 @@ fi
 FileBF="$HOME/.bash_functions"
 FileBA="$HOME/.bash_aliases"
 
-[ "$DebugMe" == 'true' ] && set -x
-
 Print(){ printf "  %s - %s\n" "$@"; }
 
 # Gather functions.
@@ -122,9 +114,8 @@ if [ "$OnlyFunc" == 'true' ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
 				if [[ $REPLY =~ [a-Z0-9_-]+\(\)[\{\(]\ \#:\  ]]; then
 					Name=${REPLY%%\(\)[\(\{]*}
 
-					# A description of " #: TEXT" must be appended to
-					# the function call line for each function. This
-					# will NOT work otherwise.
+					# A description of " #: TEXT" must be appended to the
+					# function call line for each function. Fails otherwise.
 					Desc=${REPLY#*\#\:}
 
 					# Only functions found 0-1 tabs in are counted.
@@ -151,9 +142,8 @@ if [ "$OnlyAlias" == 'true' ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
 					declare -a Temp=(${REPLY%%\=*})
 
 					#TODO: A cleaner system is preferable.
-					# A description of " #: TEXT" must be appended to
-					# the alias set line for each function. This will
-					# NOT work otherwise, as with the functions.
+					# A description of " #: TEXT" must be appended to the alias
+					# set line for each function. Fails otherwise, as above.
 					Desc=${REPLY#*\#\:}
 
 					Print "${Temp[1]//[\"\']}" "${Desc#\ }"

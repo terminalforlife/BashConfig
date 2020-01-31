@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 #cito M:600 O:1000 G:1000 T:$HOME/.profile
-#----------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.profile
 # Started On        - Thu 14 Sep 20:09:24 BST 2017
-# Last Change       - Tue 28 Jan 02:29:50 GMT 2020
+# Last Change       - Fri 31 Jan 21:55:24 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
-#----------------------------------------------------------------------------------
-# Things I would usually put in this file are processed by i3-wm when it starts.
-#--------------------------------------------------------------------------THE VOID
+#------------------------------------------------------------------------------
 
 # The RHEL recommended umask for much more safety when creating new files and
 # directories. This is the equivalent of octal 700 and 600 for directories and

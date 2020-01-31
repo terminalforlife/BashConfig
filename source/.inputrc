@@ -1,11 +1,11 @@
 #cito M:600 O:1000 G:1000 T:$HOME/.inputrc
-#----------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Project Name      - BashConfig/misc/.inputrc
 # Started On        - Tue 16 Jan 22:16:00 GMT 2018
-# Last Change       - Tue 28 Jan 02:33:17 GMT 2020
+# Last Change       - Fri 31 Jan 21:54:00 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
-#----------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 set bell-style audible
 set colored-stats On

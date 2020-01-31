@@ -1,14 +1,14 @@
 #!/bin/sh
 
-#----------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Project Name      - BashConfig/devutils/links.sh
 # Started On        - Sun 22 Oct 00:15:02 BST 2017
-# Last Change       - Tue 28 Jan 02:42:31 GMT 2020
+# Last Change       - Fri 31 Jan 21:55:37 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
-#----------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Just a simple, quick script to update the hard links when changing branches.
-#----------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 set -e
 . /usr/lib/tflbp-sh/ChkDep

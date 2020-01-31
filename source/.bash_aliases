@@ -1,21 +1,22 @@
 #!/usr/bin/env bash
 #cito M:600 O:1000 G:1000 T:$HOME/.bash_aliases
-#----------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 28 Jan 03:12:51 GMT 2020
+# Last Change       - Fri 31 Jan 21:40:57 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
-#----------------------------------------------------------------------------------
-# IMPORTANT: If you use `lad`, you need to read the contents of `lad --help` before
-#            making any changes to this file, or risk breaking it's functionality.
-#----------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+# IMPORTANT: If you use `lad`, you need to read the contents of `lad --help`
+#            before making any changes to this file, or risk breaking it's
+#            functionality.
+#------------------------------------------------------------------------------
 
 # Just in-case.
 [ "$BASH_VERSION" ] || return 1
 
-# Nifty trick to allow aliases to work with sudo. This avoids needing sudo in these
-# configuration files, since using sudo within a bash script/program is not great.
+# Nifty trick to allow aliases to work with sudo. This avoids needing sudo in
+# these configuration files, since using sudo in scripts is not great.
 alias sudo="sudo " #: Allows for aliases to work with sudo.
 
 if type -fP upower &> /dev/null; then
@@ -43,11 +44,6 @@ if type -fP fc-list &> /dev/null; then
 	alias lsfont="fc-list : family" #: List all of the currently available font families.
 fi
 
-# List the contents of the trash bin. (Including hidden files?)
-if type -fP gvfs-ls &> /dev/null; then
-	alias lstrash="gvfs-ls -h trash:///" #: List all contents of the trash bin.
-fi
-
 # View the entire (17,000+ lines) VIM User Guide.
 if type -fP cat vim &> /dev/null; then
 	alias vug='cat /usr/share/vim/vim74/doc/usr_*.txt | vim -' #: View the entire VIM User Guide.
@@ -59,13 +55,14 @@ if [ -f /etc/X11/xdm/Xresources ] && type -fP xdm &> /dev/null; then
 	alias xdm-xresources='rvim /etc/X11/xdm/Xresources' #: Useful file to edit if you use the X Display Manager.
 fi
 
-# A less excessive, yet still very, very useful current-user-focused ps command.
+# A less excessive, yet still very useful current-user-focused ps command.
 if type -fP ps &> /dev/null; then
 	alias ps='ps -faxc -U $UID -o pid,uid,gid,pcpu,pmem,stat,comm' #: Less excessive, current-user-focused ps alternative.
 fi
 
-# This is where I usually have the main bulk of my music, and since I like to have
-# little in my $HOME, I might as well just point mplay/MOC to the one on Main Data.
+# This is where I usually have the main bulk of my music, and since I like to
+# have little in my $HOME, I might as well just point mplay/MOC to the one on
+# Main Data.
 if [ $UID -eq 1000 -a $USER == 'ichy' ] && type -fP mplay &> /dev/null; then
 	alias mplay='mplay /media/$USER/Main\ Data/Linux\ Generals/Music' #: Execute mplay (uses MOC) with a pre-specified directory.
 fi
@@ -112,6 +109,17 @@ if type -fP rm &> /dev/null; then
 	alias chown='chown -v'
 	alias chmod='chmod -v'
 	alias rmdir='rmdir -v'
+
+	# Fix all CWD file and directory permissions to match the safer 0077 umask.
+	# The GitHub directory (/home/$USER/GitHub/) and its contents are protected
+	# from this, as it could cause quite the problem.
+	if type -fP chmod find &> /dev/null; then
+		alias fixperms='[[ "$PWD" == "/home/$USER/GitHub/"* ]] || find -xdev -not -path "*/GitHub/*" \( -type f -exec chmod 600 {} \+ -o -type d -exec chmod 700 "{}" \+ \) -exec chown $UID:$UID {} \+ -printf "FIXING: %p\n" 2> /dev/null' #: Recursively fix permissions and ownership. (F:600 D:700, UID:UID)
+
+		if type -fP sync systemctl e4defrag sleep &> /dev/null; then
+			alias shutdown='cd "$HOME"; hsh; fixperms; e4defrag "$HOME"; sync; sleep 3s; systemctl poweroff' #: Perform some standard maintenance tasks, then shutdown.
+		fi
+	fi
 fi
 
 # Make the ffmpeg output less cluttered, but also ignore many errors.
@@ -126,8 +134,7 @@ if [ "$USER" == "ichy" -a $UID -eq 1000 ]; then
 	fi
 fi
 
-
-# Used to notify you of a job completion on the terminal. I use this with dunst.
+# Notify you of a job completion on the terminal. I use this with dunst.
 if type -fP notify-send tty &> /dev/null; then
 	# Standard notification.
 	alias yo='notify-send --urgency=normal "Your normal job in `tty` has completed."' #: Perform a standard notify-send notification.
@@ -175,17 +182,10 @@ if type -fP newsbeuter &> /dev/null; then
 	alias rss='vim $HOME/.newsbeuter/urls' #: Edit a list of RSS feeds, using VIM.
 fi
 
-# Watches a directory as its size and number of files increase. Useful while you're
-# downloading or making other sorts of changes to its contents, and want to watch.
+# Watches a directory as its size and number of files increase. Useful while
+# you're downloading or making other changes to its contents, and wanna watch.
 if type -fP ls watch &> /dev/null; then
 	alias dwatch='watch -n 0.1 "ls -SsCphq --color=auto --group-directories-first"' #: Watche a directory for changes in size and number of files.
-fi
-
-# Fix all CWD file and directory permissions to match the safer 0077 umask. The
-# GitHub directory (/home/$USER/GitHub/) and its contents are protected from
-# this, as it could cause quite the problem.
-if type -fP chmod &> /dev/null; then
-	alias fixperms='[[ "$PWD" == "/home/$USER/GitHub/"* ]] || find -xdev -not -path "*/GitHub/*" \( -type f -exec chmod 600 {} \+ -o -type d -exec chmod 700 "{}" \+ \) -exec chown $UID:$UID {} \+ -printf "FIXING: %p\n" 2> /dev/null' #: Recursively fix permissions and ownership. (F:600 D:700, UID:UID)
 fi
 
 # Create or unmount a user-only RAM Disk (tmpfs, basically) of 32MB.
@@ -216,11 +216,6 @@ if type -fP git &> /dev/null; then
 	}
 fi
 
-# If you have gvfs-trash available, be safe with that.
-if type -fP gvfs-trash &> /dev/null; then
-	alias rm="gvfs-trash" #: Use gvfs-trash in place of rm, if available.
-fi
-
 # Ease-of-use youtube-dl aliases; these save typing!
 if type -fP youtube-dl &> /dev/null; then
 	alias ytdl-video="youtube-dl -c --no-playlist --sleep-interval 5 --format best --no-call-home --console-title --quiet --ignore-errors" #: Download HQ videos from YouTube, using youtube-dl.
@@ -236,22 +231,12 @@ if type -fP apt-cache &> /dev/null; then
 	}
 fi
 
-# Workaround for older versions of dd; displays progress.
-if type -fP dd pidof &> /dev/null; then
-	alias ddp="kill -USR1 `pidof dd`" #: Workaround for older versions of dd; displays progress.
-fi
-
 # These are just options I find the most useful when using dmesg.
 if type -fP dmesg &> /dev/null; then
 	alias klog="dmesg -t -L=never -l err,crit,alert,emerg" #: Potentially useful option for viewing the kernel log.
 fi
 
-# Enable the default hostkey when vboxsdl is used, if virtualbox gui is not found.
-if type -fP vboxsdl &> /dev/null && ! type -fP virtualbox &> /dev/null; then
-	alias vboxsdl="vboxsdl --hostkey 305 128" #: Enable the default hostkey when only vboxsdl is found.
-fi
-
-# Clear the clipboard using xclip.
+# Clear the clipboard (both types) using xclip.
 if type -fP xclip &> /dev/null; then
 	alias ccb='for X in "-i" "-i -selection clipboard"; { printf "%s" "" | xclip $X; }' #: Clear the clipboard using xclip.
 fi
@@ -275,8 +260,9 @@ if ! shopt -qp autocd; then
 	alias ..="cd .." #: ???
 fi
 
-# For each directory listed to the left of :, create an alias you see on the right
-# of :. This is a key=value style approach, like dictionaries in Python. HOME only.
+# For each directory listed to the left of `:`, create an alias you see on the
+# right of `:`. This is a key=value style approach, like dictionaries in
+# Python. HOME only.
 for DIR in\
 \
 	"Music":mus "GitHub":gh "Videos":vid "Desktop":dt "Pictures":pic\
@@ -295,9 +281,9 @@ else
 	alias mnt="cd /mnt" #: Change the CWD to: /mnt
 fi
 
-# For each found "sr" device, enables alias for opening and closing the tray. For
-# example, use ot0 to specific you want the tray for /dev/sr0 to open. Testing for
-# /dev/sr0 to ensure at least the one device is available, to avoid errors.
+# For each found "sr" device, enables alias for opening and closing the tray.
+# For example, use to to specific you want the tray for `/dev/sr0` to open.
+# Testing for `/dev/sr0` to ensure >= 1 device is available, to avoid errors.
 if type -fP ls eject &> /dev/null && [ -b /dev/sr0 ]; then
 	for DEV in /dev/sr[0-9]*; {
 		alias ot${DEV/\/dev\/sr}="eject $DEV"
@@ -310,7 +296,6 @@ if type -fP ls eject &> /dev/null && [ -b /dev/sr0 ]; then
 	}
 fi
 
-# These aliases save a lot of typing and do away with the output.
 if type -fP mplayer &> /dev/null; then
 	# If you're having issues with mpv/mplayer here, try -vo x11 instead.
 	alias mpa="mplayer -nolirc -vo null -really-quiet &> /dev/null" #: Use 'mplayer' to play audio files, sans window or output.
@@ -323,7 +308,6 @@ if type -fP mplayer &> /dev/null; then
 	alias mpv="mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet &> /dev/null" #: Use 'mplayer' to play video files, sans output.
 	alias mpvdvd="mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet dvd://1//dev/sr1 &> /dev/null" #: Use 'mplayer' to play DVDs, sans output.
 elif type -fP mpv &> /dev/null; then
-	#alias mpvve="mpv --af=equalizer=8:7:6:5:0:6:0:5:5:5 --no-stop-screensaver &> /dev/null "
 	alias mpvv="mpv --no-stop-screensaver &> /dev/null " #: Use 'mpv' to play video files, sans output.
 fi
 
@@ -354,18 +338,16 @@ if type -fP vim &> /dev/null; then
 	# Many files I often edit; usually configuration files.
 	for FILE in\
 	\
-		".zshrc":zshrc ".vimrc":vimrc ".bashrc":bashrc ".conkyrc":conkyrc\
-		".profile":profile ".i3bbelow":i3b1 ".i3babove":i3b2\
-		".config/i3/config":i3c "bin/maintain":maintain-sh\
-		".bash_aliases":bashaliases ".config/compton.conf":compconf\
-		"Documents/TT/Useful_Commands":cn "i3blocks1.conf":i3cb1\
-		"Documents/TT/python/Useful_Commands.py":cnp\
-		".maintain/changelog.txt":maintain-cl ".xbindkeysrc":xbkrc\
-		".maintain/maintain.man":maintain-man ".config/openbox/rc.xml":obc\
-		".maintain/usersettings.conf":maintain-set ".wgetrc":wgetrc\
-		".dosbox/dosbox-0.74.conf":dbc ".bash_functions":bashfunctions\
-		".libi3bview":li3bv ".config/herbstluftwm/autostart":hla\
-		".config/herbstluftwm/panel.sh":panel;
+		'.zshrc':zshrc '.vimrc':vimrc '.bashrc':bashrc\
+		'.profile':profile '.config/herbstluftwm/panel.sh':panel\
+		'.config/i3/config':i3c 'bin/maintain':maintain-sh\
+		'.bash_aliases':bashaliases '.config/compton.conf':compconf\
+		'Documents/TT/Useful_Commands':cn 'i3blocks1.conf':i3cb1\
+		'.libi3bview':li3bv '.i3babove':i3b2 '.i3bbelow':i3b1\
+		'.xbindkeysrc':xbkrc '.bash_functions':bashfunctions\
+		'.config/openbox/rc.xml':obc '.dosbox/dosbox-0.74.conf':dbc\
+		'.config/herbstluftwm/autostart':hla '.conkyrc':conkyrc\
+		'.config/gitsap/config':gitsapconf;
 	{
 		[ -f "$HOME/${FILE%:*}" ] || continue
 		alias ${FILE/*:}="vim $HOME/${FILE%:*}"
@@ -374,12 +356,12 @@ if type -fP vim &> /dev/null; then
 	# As above, but for those which need root privileges.
 	for FILE in\
 	\
-		"/etc/hosts":hosts "/etc/fstab":fstab "/etc/modules":modules\
-		"/etc/pam.d/login":pamlogin "/etc/bash.bashrc":bash.bashrc\
+		'/etc/hosts':hosts '/etc/fstab':fstab '/etc/modules':modules\
+		'/etc/pam.d/login':pamlogin '/etc/bash.bashrc':bash.bashrc\
 		"$HOME/bin/maintain":maintain-sh\
-		"/etc/X11/default-display-manager":ddm\
-		"/etc/X11/default-display-manager":defdm\
-		"/etc/modprobe.d/blacklist.conf":blacklist
+		'/etc/X11/default-display-manager':ddm\
+		'/etc/X11/default-display-manager':defdm\
+		'/etc/modprobe.d/blacklist.conf':blacklist;
 	{
 		[ -f "${FILE%:*}" ] || continue
 		alias ${FILE/*:}="rvim ${FILE%:*}"
