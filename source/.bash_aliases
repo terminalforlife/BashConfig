@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Fri 31 Jan 21:40:57 GMT 2020
+# Last Change       - Sat  1 Feb 05:45:27 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -19,8 +19,8 @@
 # these configuration files, since using sudo in scripts is not great.
 alias sudo="sudo " #: Allows for aliases to work with sudo.
 
-if type -fP upower &> /dev/null; then
-	alias battery='while read -a Line; do case ${Line[0]} in *Percentage*) printf "%s\n" "${Line[1]}"; break ;; esac; done <<< "$(upower -d)"' #: Output the percentage of battery power remaining.
+if [ -f /sys/class/power_supply/BAT1/capacity ]; then
+	alias bat='read < /sys/class/power_supply/BAT1/capacity; printf "Battery is at %d%% capacity.\n" "$REPLY"' #: Output the percentage of battery power remaining.
 fi
 
 if type -fP dpkg-query &> /dev/null; then
