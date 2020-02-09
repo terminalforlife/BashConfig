@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 31 Jan 21:53:41 GMT 2020
+# Last Change       - Fri  7 Feb 15:39:29 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -11,6 +11,8 @@
 #------------------------------------------------------------------------------
 
 { ! [ "$PS1" ] || shopt -q restricted_shell; } && return
+
+type -fP ubuchk &> /dev/null && ubuchk
 
 shopt -s checkwinsize globstar complete_fullquote expand_aliases extquote\
 	 extglob force_fignore hostcomplete interactive_comments xpg_echo\
