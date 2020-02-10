@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sat  1 Feb 05:45:27 GMT 2020
+# Last Change       - Mon 10 Feb 17:09:25 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -370,7 +370,10 @@ fi
 
 if type -fP md5sum &> /dev/null; then
 	alias chksum='md5sum --ignore-missing --quiet -c 2> /dev/null' #: Check the MD5 hashsums using the provided file.
-	alias setsum='md5sum 2> /dev/null > ./md5sum' #: Lazy solution to saving checksums to './md5sum' file.
+
+	if type -fP sort find sed &> /dev/null; then
+		alias gitsum='Dir=`git rev-parse --show-toplevel 2> /dev/null` && cd "$Dir" && find -not -path "*.git*" -type f -not -name "README.md" -not -name "LICENSE" -not -name "md5sum" -exec md5sum {} \+ 2> /dev/null | sed "s/\.\///" | sort -k 2 > md5sum; cd - &> /dev/null' #: Lazy solution to saving a sane and sorted checksum list to './md5sum' file.
+	fi
 fi
 
 # When in a TTY, change to different ones.
