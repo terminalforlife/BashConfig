@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 10 Feb 17:09:25 GMT 2020
+# Last Change       - Mon 10 Feb 17:22:36 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -18,6 +18,10 @@
 # Nifty trick to allow aliases to work with sudo. This avoids needing sudo in
 # these configuration files, since using sudo in scripts is not great.
 alias sudo="sudo " #: Allows for aliases to work with sudo.
+
+if type -fP sh &> /dev/null; then
+	alias uplinks='cd "$HOME/GitHub/terminalforlife/Personal" && for File in {Extra,BashConfig,i3Config,VimConfig}/devutils/links.sh; { sh "$File"; }; cd -' #: Personal scripts for updating my GitHub-related hard links.
+fi
 
 if [ -f /sys/class/power_supply/BAT1/capacity ]; then
 	alias bat='read < /sys/class/power_supply/BAT1/capacity; printf "Battery is at %d%% capacity.\n" "$REPLY"' #: Output the percentage of battery power remaining.
