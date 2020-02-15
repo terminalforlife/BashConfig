@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Fri 31 Jan 21:53:01 GMT 2020
+# Last Change       - Sat 15 Feb 16:44:24 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -11,6 +11,36 @@
 #            before making any changes to this file, or risk breaking it's
 #            functionality.
 #------------------------------------------------------------------------------
+
+if type -fP dmenu man &> /dev/null; then
+	# Function contains code I've written for and sent a PR to:
+	#
+	#   https://github.com/AlexChaplinBraz/dmenu-scripts
+	#
+	dman(){ #: Use Dmenu to interactively look for and display a man page.
+		Chosen=$(
+			man -k . 2> /dev/null | while read Pkg Group _ Desc; do
+				# The `#- ` bit fixes entries with botched short descriptions.
+				printf '%50s - %s\n' "$Pkg $Group" "${Desc#- }"
+			done | dmenu -i -l 30 -fn 'Ubuntu Mono':style=Bold:size=12\
+				-nb \#000000 -nf \#ffffff -sb \#550000 -sf \#ffffff
+				# Dmenu is using my customizations from i3Config here.
+		)
+
+		FieldCount=0
+		for Field in $Chosen; do
+			FieldCount=$((FieldCount + 1))
+
+			case $FieldCount in
+				1) Pkg=$Field ;;
+				2) Group=${Field%)} ;;
+				*) break ;;
+			esac
+		done
+
+		man "${Group#(}" "$Pkg" 2> /dev/null
+	}
+fi
 
 if type -fP perl &> /dev/null; then
 	perlc(){ #: Perform a syntax check on all Perl scripts within the CWD.
