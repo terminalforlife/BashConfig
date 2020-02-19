@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 10 Feb 17:22:36 GMT 2020
+# Last Change       - Wed 19 Feb 21:59:28 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -118,10 +118,10 @@ if type -fP rm &> /dev/null; then
 	# The GitHub directory (/home/$USER/GitHub/) and its contents are protected
 	# from this, as it could cause quite the problem.
 	if type -fP chmod find &> /dev/null; then
-		alias fixperms='[[ "$PWD" == "/home/$USER/GitHub/"* ]] || find -xdev -not -path "*/GitHub/*" \( -type f -exec chmod 600 {} \+ -o -type d -exec chmod 700 "{}" \+ \) -exec chown $UID:$UID {} \+ -printf "FIXING: %p\n" 2> /dev/null' #: Recursively fix permissions and ownership. (F:600 D:700, UID:UID)
+		alias fixperms='[[ $PWD == "$HOME/GitHub/"* ]] || find -xdev -not -path "*/GitHub/*" \( -type f -exec chmod 600 {} \+ -o -type d -exec chmod 700 "{}" \+ \) -exec chown $UID:$UID {} \+ -printf "FIXING: %p\n" 2> /dev/null' #: Recursively fix permissions and ownership. (F:600 D:700, UID:UID)
 
-		if type -fP sync systemctl e4defrag sleep &> /dev/null; then
-			alias shutdown='cd "$HOME"; hsh; fixperms; e4defrag "$HOME"; sync; sleep 3s; systemctl poweroff' #: Perform some standard maintenance tasks, then shutdown.
+		if type -fP sync systemctl sleep &> /dev/null; then
+			alias shutdown='cd "$HOME"; hsh; fixperms; sync; sleep 3s; systemctl poweroff' #: Perform some standard maintenance tasks, then shutdown.
 		fi
 	fi
 fi
@@ -189,7 +189,7 @@ fi
 # Watches a directory as its size and number of files increase. Useful while
 # you're downloading or making other changes to its contents, and wanna watch.
 if type -fP ls watch &> /dev/null; then
-	alias dwatch='watch -n 0.1 "ls -SsCphq --color=auto --group-directories-first"' #: Watche a directory for changes in size and number of files.
+	alias dwatch='watch -n 0.1 -t "ls -SsCphq --color=auto --group-directories-first"' #: Watche a directory for changes in size and number of files.
 fi
 
 # Create or unmount a user-only RAM Disk (tmpfs, basically) of 32MB.
@@ -226,13 +226,6 @@ if type -fP youtube-dl &> /dev/null; then
 	alias ytdl-audio="youtube-dl -cx --no-playlist --audio-format mp3 --sleep-interval 5 --max-sleep-interval 30 --no-call-home --console-title --quiet --ignore-errors" #: Download HQ audio from YouTube, using youtube-dl.
 	alias ytpldl-audio="youtube-dl -cix --audio-format mp3 --sleep-interval 5 --yes-playlist --no-call-home --console-title --quiet --ignore-errors" #: Download HQ videos from YouTube playlist, using youtube-dl.
 	alias ytpldl-video="youtube-dl -ci --yes-playlist --sleep-interval 5 --format best --no-call-home --console-title --quiet --ignore-errors" #: Download HQ audio from YouTube playlist, using youtube-dl.
-fi
-
-# Various [q]uick apt-cache aliases to make life easier still.
-if type -fP apt-cache &> /dev/null; then
-	for CMD in qse:"search" qsh:"show"; {
-		alias ${CMD%:*}="apt-cache ${CMD/*:}" #: ???
-	}
 fi
 
 # These are just options I find the most useful when using dmesg.
