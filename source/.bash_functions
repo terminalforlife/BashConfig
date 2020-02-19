@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sat 15 Feb 16:44:24 GMT 2020
+# Last Change       - Wed 19 Feb 22:00:12 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -11,6 +11,12 @@
 #            before making any changes to this file, or risk breaking it's
 #            functionality.
 #------------------------------------------------------------------------------
+
+if type -fP apt-cache grep sort &> /dev/null; then
+	qse(){ #: Search Debian packages with APT, properly.
+		{ apt-cache search ' ' | grep "$*" | sort -k 1; } 2> /dev/null
+	}
+fi
 
 if type -fP dmenu man &> /dev/null; then
 	# Function contains code I've written for and sent a PR to:
