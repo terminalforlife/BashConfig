@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Wed 19 Feb 21:59:28 GMT 2020
+# Last Change       - Thu 20 Feb 13:41:02 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -18,6 +18,10 @@
 # Nifty trick to allow aliases to work with sudo. This avoids needing sudo in
 # these configuration files, since using sudo in scripts is not great.
 alias sudo="sudo " #: Allows for aliases to work with sudo.
+
+if type -fP grep cut uniq &> /dev/null; then
+	alias ukeys='grep -v "^\(#\|\$\)" "$HOME/.config/ubuchk/config" | cut -d "=" -f 1 | uniq -u'
+fi
 
 if type -fP sh &> /dev/null; then
 	alias uplinks='cd "$HOME/GitHub/terminalforlife/Personal" && for File in {Extra,BashConfig,i3Config,VimConfig}/devutils/links.sh; { sh "$File"; }; cd -' #: Personal scripts for updating my GitHub-related hard links.
@@ -90,7 +94,7 @@ if type -fP apt-get &> /dev/null; then
 		alias ${CMD%:*}="apt-get ${CMD/*:}" #: ???
 	}
 
-	alias apt-get='apt-get --quiet -o Dpkg::Progress=true -o Dpkg::Progress-Fancy=true -o APT::Get::AutomaticRemove=true -o APT::Get::Purge=true ' #: Much nicer output for the apt-get command.
+	alias apt-get='apt-get --quiet -o Dpkg::Progress=true -o Dpkg::Progress-Fancy=true -o APT::Get::AutomaticRemove=true ' #: Much nicer output for the apt-get command.
 fi
 
 # Quick alias to clear out some junk from HOME.
