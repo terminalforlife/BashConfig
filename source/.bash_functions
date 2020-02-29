@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Wed 19 Feb 22:00:12 GMT 2020
+# Last Change       - Thu 27 Feb 18:37:03 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -402,7 +402,7 @@ elif type -fP xdpyinfo &> /dev/null; then
 	}
 fi
 
-if [ "$MAN_COLORS" == "true" ] && type -fP man &> /dev/null; then
+if type -fP man &> /dev/null; then
 	man(){ #: Display man pages with a little color.
 		# This was needed else it wouldn't work, unless absolute path.
 		read ManExec <<< "$(type -fP man 2> /dev/null)"
