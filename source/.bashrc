@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri  7 Feb 15:39:29 GMT 2020
+# Last Change       - Sun  1 Mar 18:08:17 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -130,7 +130,16 @@ export HISTFILESIZE=0
 export HISTSIZE=1000
 export VBOX_USER_HOME="/media/$USER/Main Data/Linux Generals/VirtualBox VMs"
 export TIMEFORMAT='>>> real %3R | user %3U | sys %3S | pcpu %P <<<'
-export LS_COLORS='di=1;31:ln=2;32:mh=1;32:ex=1;33:'
+
+# Created this theme on 2020-03-01, using various shades (not 50!) of grey.
+export LS_COLORS='fi=0;37:di=1;37:ln=1;30:mh=1;30:ex=7;1;30:no=1;37:or=1;30:mi=1;30'
+
+# Not using this anymore, as of 2020-03-01. I absolutely love this theme and
+# have used it pretty much the entire time since I found Linux. Thanks to
+# YouTube's compression (or some other weirdness) people watching my channel
+# can't easily see the red text. :(
+#export LS_COLORS='di=1;31:ln=2;32:mh=1;32:ex=1;33:'
+
 export PATH=${PATH%:\/snap\/bin}
 export TERM='xterm-256color'
 export LESSSECURE=1
