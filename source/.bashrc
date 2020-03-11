@@ -3,12 +3,15 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun  1 Mar 18:08:17 GMT 2020
+# Last Change       - Wed 11 Mar 19:56:30 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
 # Bash version 4.0 or greater is required.
 #------------------------------------------------------------------------------
+
+# This is just something I use when making certain YT videos.
+#return
 
 { ! [ "$PS1" ] || shopt -q restricted_shell; } && return
 
@@ -27,8 +30,8 @@ set -o interactive-comments +o monitor -o hashall\
 readarray T < /etc/lsb-release
 [ "${T[2]#*=}" == bionic$'\n' ] && R=4 || R=3
 
-PROMPT_PARSER(){
-	printf -v X "%.3d" $?
+PromptParser(){
+	printf -v X '%.3d' $?
 
 	BRed='\033[1;31m'
 	White='\033[2;37m'
@@ -122,7 +125,7 @@ PROMPT_PARSER(){
 	PS1="\[${Reset}\]╭──╼${X}╾──☉  ${Desc}\[${Reset}\]\n╰─☉  "
 }
 
-PROMPT_COMMAND='PROMPT_PARSER'
+PROMPT_COMMAND='PromptParser'
 
 export HISTTIMEFORMAT='[%F_%X]: '
 export HISTCONTROL='ignoreboth'
