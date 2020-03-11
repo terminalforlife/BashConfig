@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Thu 20 Feb 13:41:02 GMT 2020
+# Last Change       - Tue  3 Mar 19:14:20 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -18,10 +18,6 @@
 # Nifty trick to allow aliases to work with sudo. This avoids needing sudo in
 # these configuration files, since using sudo in scripts is not great.
 alias sudo="sudo " #: Allows for aliases to work with sudo.
-
-if type -fP grep cut uniq &> /dev/null; then
-	alias ukeys='grep -v "^\(#\|\$\)" "$HOME/.config/ubuchk/config" | cut -d "=" -f 1 | uniq -u'
-fi
 
 if type -fP sh &> /dev/null; then
 	alias uplinks='cd "$HOME/GitHub/terminalforlife/Personal" && for File in {Extra,BashConfig,i3Config,VimConfig}/devutils/links.sh; { sh "$File"; }; cd -' #: Personal scripts for updating my GitHub-related hard links.
@@ -40,7 +36,7 @@ if type -fP yash &> /dev/null; then
 fi
 
 if type -fP df &> /dev/null; then
-	alias df='df -lT -x devtmpfs -x tmpfs -x usbfs' #: More relevant output than the default.
+	alias df='df -x devtmpfs -x tmpfs -x usbfs' #: More relevant output than the default.
 fi
 
 if type -fP perl &> /dev/null; then
@@ -52,27 +48,20 @@ if type -fP fc-list &> /dev/null; then
 	alias lsfont="fc-list : family" #: List all of the currently available font families.
 fi
 
-# View the entire (17,000+ lines) VIM User Guide.
-if type -fP cat vim &> /dev/null; then
-	alias vug='cat /usr/share/vim/vim74/doc/usr_*.txt | vim -' #: View the entire VIM User Guide.
+# View the entire (17,000+ lines) Vim User Guide.
+if type -fP cat less &> /dev/null; then
+	alias vug='cat /usr/share/vim/vim74/doc/usr_*.txt | less -nrs' #: View the entire Vim User Guide.
 fi
 
 # A useful file to edit, if you use the X Display Manager.
 if [ -f /etc/X11/xdm/Xresources ] && type -fP xdm &> /dev/null; then
-	alias vug='cat /usr/share/vim/vim74/doc/usr_*.txt | vim -' #: View the entire VIM User Guide.
+	alias vug='cat /usr/share/vim/vim74/doc/usr_*.txt | vim -' #: View the entire Vim User Guide.
 	alias xdm-xresources='rvim /etc/X11/xdm/Xresources' #: Useful file to edit if you use the X Display Manager.
 fi
 
 # A less excessive, yet still very useful current-user-focused ps command.
 if type -fP ps &> /dev/null; then
 	alias ps='ps -faxc -U $UID -o pid,uid,gid,pcpu,pmem,stat,comm' #: Less excessive, current-user-focused ps alternative.
-fi
-
-# This is where I usually have the main bulk of my music, and since I like to
-# have little in my $HOME, I might as well just point mplay/MOC to the one on
-# Main Data.
-if [ $UID -eq 1000 -a $USER == 'ichy' ] && type -fP mplay &> /dev/null; then
-	alias mplay='mplay /media/$USER/Main\ Data/Linux\ Generals/Music' #: Execute mplay (uses MOC) with a pre-specified directory.
 fi
 
 # I'm done with the boring original apt-get output! I'm also sick of specifying
@@ -135,13 +124,6 @@ if type -fP ffmpeg &> /dev/null; then
 	alias ffmpeg="ffmpeg -v 0 -stats" #: De-clutter this program's output, but not entirely.
 fi
 
-# Just points to a personal script for moving my screenshots.
-if [ "$USER" == "ichy" -a $UID -eq 1000 ]; then
-	if [ -f "$HOME/Documents/TT/shotmngr.sh" ]; then
-		alias sm="bash $HOME/Documents/TT/shotmngr.sh" #: Personal script for managing screenshots.
-	fi
-fi
-
 # Notify you of a job completion on the terminal. I use this with dunst.
 if type -fP notify-send tty &> /dev/null; then
 	# Standard notification.
@@ -187,7 +169,7 @@ fi
 
 if type -fP newsbeuter &> /dev/null; then
 	alias news='newsbeuter -qr -c "$HOME/.newsbeuter/cache.db" -u "$HOME/.newsbeuter/urls" -C "$HOME/.newsbeuter/newsbeuter.conf"' #: Load newsbeuter more quickly to get access to RSS feeds.
-	alias rss='vim $HOME/.newsbeuter/urls' #: Edit a list of RSS feeds, using VIM.
+	alias rss='vim $HOME/.newsbeuter/urls' #: Edit a list of RSS feeds, using Vim.
 fi
 
 # Watches a directory as its size and number of files increase. Useful while
@@ -246,11 +228,11 @@ fi
 if type -fP ls grep &> /dev/null; then
 	case "${TERM:-EMPTY}" in
 			linux|xterm|xterm-256color)
-				alias ls="ls --quoting-style=literal -pq --time-style=iso --color=auto --group-directories-first --show-control-chars" #: A presentable but minimalistic 'ls'.
-				alias lsa="ls -A" #: As 'ls', but also show all files.
-				alias lsl="ls -nph" #: As 'ls', but with lots of information.
-				alias lsla="ls -Anph" #: As 'lsl', but also show all files.
-				alias grep="grep -sI --color=auto" #: Colorful (auto) 'grep' output.
+				alias ls='ls --quoting-style=literal -pq --time-style=iso --color=auto --group-directories-first --show-control-chars' #: A presentable but minimalistic 'ls'.
+				alias lsa='ls -A' #: As 'ls', but also show all files.
+				alias lsl='ls -nph' #: As 'ls', but with lots of information.
+				alias lsla='ls -Anph' #: As 'lsl', but also show all files.
+				alias grep='grep -sI --color=auto' #: Colorful (auto) 'grep' output.
 			;;
 	esac
 fi
@@ -266,11 +248,11 @@ fi
 # Python. HOME only.
 for DIR in\
 \
-	"Music":mus "GitHub":gh "Videos":vid "Desktop":dt "Pictures":pic\
-	"Downloads":dl "Documents":doc "Documents/TT":tt ".shplugs":sp\
-	"GitHub/terminalforlife":ghtfl "GitHub/terminalforlife/Forks":ghtflf\
-	"GitHub/terminalforlife/Personal":ghtflp "DosBox":db "Archives":arc\
-	".i3a":i3a "LearnLinux":ll;
+	'Music':mus 'GitHub':gh 'Videos':vid 'Desktop':dt 'Pictures':pic\
+	'Downloads':dl 'Documents':doc 'Documents/TT':tt '.shplugs':sp\
+	'GitHub/terminalforlife':ghtfl 'GitHub/terminalforlife/Forks':ghtflf\
+	'GitHub/terminalforlife/Personal':ghtflp 'DosBox':db 'Archives':arc\
+	'.i3a':i3a 'LearnLinux':ll;
 {
 	[ -d "$HOME/${DIR%:*}" ] && alias ${DIR/*:}="cd $HOME/${DIR%:*}"
 }
@@ -279,7 +261,7 @@ for DIR in\
 if [ -d "/media/$USER" ]; then
 	alias sd="cd /media/$USER" #: Change the CWD to: /media/$USER
 else
-	alias mnt="cd /mnt" #: Change the CWD to: /mnt
+	alias mnt='cd /mnt' #: Change the CWD to: /mnt
 fi
 
 # For each found "sr" device, enables alias for opening and closing the tray.
@@ -299,9 +281,9 @@ fi
 
 if type -fP mplayer &> /dev/null; then
 	# If you're having issues with mpv/mplayer here, try -vo x11 instead.
-	alias mpa="mplayer -nolirc -vo null -really-quiet &> /dev/null" #: Use 'mplayer' to play audio files, sans window or output.
+	alias mpa='mplayer -nolirc -vo null -really-quiet &> /dev/null' #: Use 'mplayer' to play audio files, sans window or output.
 
-	declare -a MPLAYER_FONT=("-font" "$HOME/.mplayer/subfont.ttf")
+	declare -a MPLAYER_FONT=('-font' "$HOME/.mplayer/subfont.ttf")
 	if ! [ -f "${MPLAYER_FONT[0]}" ] || ! [ -r "${MPLAYER_FONT[0]}" ]; then
 		unset MPLAYER_FONT
 	fi
@@ -309,7 +291,7 @@ if type -fP mplayer &> /dev/null; then
 	alias mpv="mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet &> /dev/null" #: Use 'mplayer' to play video files, sans output.
 	alias mpvdvd="mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet dvd://1//dev/sr1 &> /dev/null" #: Use 'mplayer' to play DVDs, sans output.
 elif type -fP mpv &> /dev/null; then
-	alias mpvv="mpv --no-stop-screensaver &> /dev/null " #: Use 'mpv' to play video files, sans output.
+	alias mpvv='mpv --no-stop-screensaver &> /dev/null ' #: Use 'mpv' to play video files, sans output.
 fi
 
 if type -fP lsblk &> /dev/null; then
@@ -322,13 +304,13 @@ if type -fP pager &> /dev/null || type -fP less &> /dev/null; then
 
 	# Text files I occasionally like to view, but not edit.
 	if type -fP pager &> /dev/null; then
-		for FILE in\
+		for File in\
 		\
 			"/var/log/apt/history.log":aptlog\
 			"$HOME/Documents/TT/python/Module\ Index.txt":pymodindex;
 		{
-			if [ -f "${FILE%:*}" -a -r "${FILE%:*}" ]; then
-				alias ${FILE/*:}="pager ${FILE%:*}"
+			if [ -f "${File%:*}" -a -r "${File%:*}" ]; then
+				alias ${File/*:}="pager ${File%:*}"
 			fi
 		}
 	fi
@@ -337,7 +319,7 @@ fi
 
 if type -fP vim &> /dev/null; then
 	# Many files I often edit; usually configuration files.
-	for FILE in\
+	for File in\
 	\
 		'.zshrc':zshrc '.vimrc':vimrc '.bashrc':bashrc\
 		'.profile':profile '.config/herbstluftwm/panel.sh':panel\
@@ -350,12 +332,12 @@ if type -fP vim &> /dev/null; then
 		'.config/herbstluftwm/autostart':hla '.conkyrc':conkyrc\
 		'.config/gitsap/config':gitsapconf;
 	{
-		[ -f "$HOME/${FILE%:*}" ] || continue
-		alias ${FILE/*:}="vim $HOME/${FILE%:*}"
+		[ -f "$HOME/${File%:*}" ] || continue
+		alias ${File/*:}="vim $HOME/${File%:*}"
 	}
 
 	# As above, but for those which need root privileges.
-	for FILE in\
+	for File in\
 	\
 		'/etc/hosts':hosts '/etc/fstab':fstab '/etc/modules':modules\
 		'/etc/pam.d/login':pamlogin '/etc/bash.bashrc':bash.bashrc\
@@ -364,8 +346,8 @@ if type -fP vim &> /dev/null; then
 		'/etc/X11/default-display-manager':defdm\
 		'/etc/modprobe.d/blacklist.conf':blacklist;
 	{
-		[ -f "${FILE%:*}" ] || continue
-		alias ${FILE/*:}="rvim ${FILE%:*}"
+		[ -f "${File%:*}" ] || continue
+		alias ${File/*:}="rvim ${File%:*}"
 	}
 fi
 
@@ -384,9 +366,22 @@ if [[ `tty` == /dev/tty* ]] && type -fP tty chvt &> /dev/null; then
 	}
 fi
 	if type -fP evince &> /dev/null; then
-	alias pdf="evince &> /dev/null" #: Use 'evince' to display PDF documents.
+	alias pdf='evince &> /dev/null' #: Use 'evince' to display PDF documents.
+fi
+
+# Personal aliases I want only to have enabled if I'm logged in. (rudimentary)
+if [ $UID -eq 1000 -a $USER == 'ichy' ]; then
+	type -fP mplay &> /dev/null &&
+		alias mplay='mplay /media/$USER/Main\ Data/Linux\ Generals/Music'
+
+	if type -fP ssh &> /dev/null; then
+		alias ihh='ssh -Cq server :'
+		alias chkrf='chkrf server Desktop/READ_ME.txt'
+	fi
+
+	[ -f "$HOME/Documents/TT/shotmngr.sh" ] &&
+		alias sm="bash $HOME/Documents/TT/shotmngr.sh"
 fi
 
 # Clean up functions and variables.
-unset -f FOR_THE_EDITOR
-unset DEP FILE DEPCOUNT FOR_THE_EDITOR TTDIR DIR CHOSEN_EDITOR GIT
+unset File DIR CHOSEN_EDITOR GIT
