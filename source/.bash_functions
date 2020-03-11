@@ -439,7 +439,7 @@ if type -fP dpkg-query &> /dev/null; then
 	}
 
 	getpkgvers(){ #: Fetch a package and version list for Debian package building.
-		dpkg-query -Wf '${Package} (${Version}), ' "$@" | sed -r 's/,{1}\s+$/\n/'
+		dpkg-query -Wf '${Package} (${Version}), ' "$@" | sed -r 's/,{1}\s+$/\n/; s/\(/\(>= /g; s/ubuntu[0-9].[0-9]\)/\)/g'
 	}
 fi
 

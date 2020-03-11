@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue  3 Mar 19:14:20 GMT 2020
+# Last Change       - Wed 11 Mar 20:06:25 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -204,6 +204,8 @@ if type -fP git &> /dev/null; then
 		# Use this instead, if you want pager support:
 		#alias "${CMD/*:}"="git ${CMD%:*} 2> /dev/null"
 	}
+
+	alias pulltfl='for Dir in "$HOME/GitHub/terminalforlife/Personal"/*; { [ -d "$Dir" ] || continue; cd "$Dir" && pull "$Dir"; cd ..; }' #: Personal alias to pull all `Personal` repositories.
 fi
 
 # Ease-of-use youtube-dl aliases; these save typing!
