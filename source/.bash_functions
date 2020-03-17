@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Thu 27 Feb 18:37:03 GMT 2020
+# Last Change       - Mon 16 Mar 02:57:49 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -15,6 +15,18 @@
 if type -fP apt-cache grep sort &> /dev/null; then
 	qse(){ #: Search Debian packages with APT, properly.
 		{ apt-cache search ' ' | grep "$*" | sort -k 1; } 2> /dev/null
+	}
+fi
+
+#
+if type -fP grep git &> /dev/null; then
+	pulloo(){
+		for Dir in "$HOME"/GitHub/terminalforlife/Personal/*; {
+			(
+				cd "$Dir" 2> /dev/null && pull |
+					grep --color=never -vF 'Already up-to-date'
+			)
+		}
 	}
 fi
 
