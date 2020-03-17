@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Wed 11 Mar 20:06:25 GMT 2020
+# Last Change       - Sun 15 Mar 18:27:40 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -351,6 +351,11 @@ if type -fP vim &> /dev/null; then
 		[ -f "${File%:*}" ] || continue
 		alias ${File/*:}="rvim ${File%:*}"
 	}
+
+	# Personal alias to list files with tabs, so they can then be converted. I
+	# know this can be automated, but I'd like to see it done myself. This is
+	# mainly used for my forks of Chubin's 'cheat.sheets' repository on GitHub.
+	alias lstabs='gitgrep "	" | awk -F ":" "{!z[\$1]++} END {for(I in z){print(I)}}"'
 fi
 
 if type -fP md5sum &> /dev/null; then
