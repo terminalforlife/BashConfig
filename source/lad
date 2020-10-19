@@ -3,9 +3,15 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/lad (List and Describe)
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Fri 31 Jan 21:47:04 GMT 2020
+# Last Change       - Mon 19 Oct 14:50:36 BST 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
+#------------------------------------------------------------------------------
+# Dependencies:
+#
+#   bash (>= 4.3-14)
+#   coreutils  (>= 8.25-2)
+#   libtflbp-sh (>= 2019-12-10)
 #------------------------------------------------------------------------------
 
 set -e
@@ -13,7 +19,7 @@ set -e
 . /usr/lib/tflbp-sh/ChkDep
 set +e
 
-CurVer='2020-01-31'
+CurVer='2020-10-19'
 Progrm=${0##*/}
 
 Usage(){
@@ -99,6 +105,8 @@ if [ -n "$OnlyFunc" -a -n "$OnlyAlias" ]; then
 	Err 1 "Either '--only-funcs|-F' or '--only-aliases|-A' may used at one time."
 fi
 
+ChkDep sort
+
 FileBF="$HOME/.bash_functions"
 FileBA="$HOME/.bash_aliases"
 
@@ -124,7 +132,7 @@ if [ "$OnlyFunc" == 'true' ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
 					fi
 				fi
 			fi
-		done < "$FileBF"
+		done < "$FileBF" | sort
 	else
 		Err 1 "File '$FileBF' not found."
 	fi
@@ -149,7 +157,7 @@ if [ "$OnlyAlias" == 'true' ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
 					Print "${Temp[1]//[\"\']}" "${Desc#\ }"
 				fi
 			fi
-		done < "$FileBA"
+		done < "$FileBA" | sort
 	else
 		Err 1 "File '$FileBA' not found."
 	fi
