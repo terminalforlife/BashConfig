@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 15 Mar 18:27:40 GMT 2020
+# Last Change       - Mon 19 Oct 14:40:46 BST 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -148,11 +148,12 @@ if type -fP sleep &> /dev/null; then
 	alias alertme='for I in {1..3}; { sleep 0.03s; printf "\a\e[?5h"; sleep 0.03s; printf "\a\e[?5l"; }' #: Sound the bell and flash the terminal (white) thrice.
 fi
 
+#TODO: Bug causing nospacei to remove an extra (wanted) character from lines.
 # Remove trailing spaces or lines with only spaces. Tabs included. Needs testing.
-if type -fP sed &> /dev/null; then
-	alias nospace='sed s/^[\\s\\t]\\+$//\;\ s/[\\s\\t]\\+$//' #: Remove trailing spaces/tabs from given file(s).
-	alias nospacei='sed -i s/^[\\s\\t]\\+$//\;\ s/[\\s\\t]\\+$//' #: Remove (saves!) trailing spaces/tabs from given file(s).
-fi
+#if type -fP sed &> /dev/null; then
+#	alias nospace='sed s/^[\\s\\t]\\+$//\;\ s/[\\s\\t]\\+$//' #: Remove trailing spaces/tabs from given file(s).
+#	alias nospacei='sed -i s/^[\\s\\t]\\+$//\;\ s/[\\s\\t]\\+$//' #: Remove (saves!) trailing spaces/tabs from given file(s).
+#fi
 
 # Efficient and fairly portable way to display the current iface, using 'ip'.
 if type -fP ip &> /dev/null; then
