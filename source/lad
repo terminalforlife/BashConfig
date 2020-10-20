@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/lad (List and Describe)
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Tue 20 Oct 18:21:31 BST 2020
+# Last Change       - Tue 20 Oct 22:39:44 BST 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -77,6 +77,10 @@ Usage(){
 		                 however, use parentheses instead of braces, for use of
 		                 sub-shells.
 
+		NOTE:       A check will be performed prior to listing, for both
+		            aliases and functions, as to whether they are enabled
+		            (uncommented, for example) or not.
+
 		FILES:      ~/.bash_functions
 		            ~/.bash_aliases
 	EOF
@@ -117,11 +121,28 @@ if [ "$OnlyFunc" == 'true' ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
 	if [ -f "$FileBF" ] && [ -r "$FileBF" ]; then
 		printf "FUNCTIONS ($FileBF)\n\n"
 
+		# Fetch array of active functions.
+		ActiveFuncs=()
+		(
+			. "$FileBF"
+			while read -a Line; do
+				ActiveFuncs+=${Line[2]}
+			done <<< "$(declare -F)"
+		)
+
 		while read; do
 			if ! [ -z "$REPLY" ] && ! [[ $REPLY =~ ^[[:space:]]+\# ]]; then
 				if [[ $REPLY =~ [a-Z0-9_-]+\(\)[\{\(]\ \#:\  ]]; then
 					Name=${REPLY%%\(\)[\(\{]*}
 					Desc=${REPLY#*\#\:}
+
+					# Ensure only active aliases are listed.
+					NotFound='False'
+					for ActiveFunc in ${ActiveFuncs[@]}; {
+						[ "$ActiveFunc" == "$Name" ] || $NotFound='True'
+					}
+
+					[ "$NotFound" == 'True' ] && continue
 
 					# Only functions found 0-1 tabs in are counted.
 					if [[ $Name =~ ^\	{0,1}[a-Z_-] ]]; then
