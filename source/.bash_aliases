@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Mon 19 Oct 14:40:46 BST 2020
+# Last Change       - Tue 20 Oct 16:35:30 BST 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -55,7 +55,6 @@ fi
 
 # A useful file to edit, if you use the X Display Manager.
 if [ -f /etc/X11/xdm/Xresources ] && type -fP xdm &> /dev/null; then
-	alias vug='cat /usr/share/vim/vim74/doc/usr_*.txt | vim -' #: View the entire Vim User Guide.
 	alias xdm-xresources='rvim /etc/X11/xdm/Xresources' #: Useful file to edit if you use the X Display Manager.
 fi
 
