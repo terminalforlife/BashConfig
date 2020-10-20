@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon 16 Mar 02:57:49 GMT 2020
+# Last Change       - Mon 19 Oct 15:44:35 BST 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -405,7 +405,7 @@ if type -fP xwininfo &> /dev/null; then
 		done <<< "$(xwininfo -root)"
 	}
 elif type -fP xdpyinfo &> /dev/null; then
-	getres(){ #: Two viable methods for fetching the display resolution.
+	getres(){
 		while read -a LINE; do
 			if [ "${LINE[0]}" == 'dimensions:' ]; then
 				printf "Your resolution is %s, according to xdpyinfo.\n" "${LINE[1]}"
