@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon 19 Oct 15:44:35 BST 2020
+# Last Change       - Tue 20 Oct 22:51:24 BST 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -520,7 +520,8 @@ if [ -f /etc/passwd ]; then
 		local X
 		while IFS=':' read -a X; do
 			if [ "$1" == "--nosys" ]; then
-				#TODO: Make this omit system ones by testing for shell used.
+				# It's possible some users might show up if they mistakenly
+				# were given a HOME, but '--nosys' should otherwise work.
 				if [[ ${X[5]/\/home\/syslog} == /home/* ]]; then
 					printf "%-20s %-7d %-7d %-25s %s\n"\
 						"${X[0]}" "${X[2]}" "${X[3]}"\
