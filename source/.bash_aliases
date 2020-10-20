@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 20 Oct 23:09:34 BST 2020
+# Last Change       - Tue 20 Oct 23:18:16 BST 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -190,7 +190,7 @@ if type -fP git &> /dev/null; then
 	for CMD in\
 	\
 		"remote add upstream":raddup "rm":grm "add":add "tag":tag\
-		"push":push "pull":pull "pull upstream":pullup "diff":diff\
+		"push":push "pull":pull "pull upstream":pup "diff":diff\
 		"init":init "clone":clone "merge":merge "branch":branch\
 		"config":config "rm --cached":grmc "commit":commit\
 		"status -s":status "checkout":checkout "config --list":gcl\
