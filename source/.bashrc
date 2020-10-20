@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed 11 Mar 19:56:30 GMT 2020
+# Last Change       - Tue 20 Oct 23:11:30 BST 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -91,7 +91,6 @@ PromptParser(){
 
 		while read -ra Z; do
 			if [ "${Z[0]}${Z[1]}" == 'Untrackedfiles:' ]; then
-				#TODO: Sloppy method needs improving.
 				declare -i NFTTL=0
 				while read -a LINE; do
 					[ "${LINE[0]}" == '??' ] && NFTTL+=1
