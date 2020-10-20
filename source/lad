@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/lad (List and Describe)
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Tue 20 Oct 16:35:50 BST 2020
+# Last Change       - Tue 20 Oct 18:21:31 BST 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -157,12 +157,12 @@ if [ "$OnlyAlias" == 'true' ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
 					Name=${Temp[1]//[\"\']}
 
 					# Ensure only active aliases are listed.
-					Found='False'
+					NotFound='False'
 					for ActiveAlias in ${ActiveAliases[@]}; {
-						[ "$ActiveAlias" == "$Name" ] && $Found='True'
+						[ "$ActiveAlias" == "$Name" ] || $NotFound='True'
 					}
 
-					[ "$Found" == 'True' ] && continue
+					[ "$NotFound" == 'True' ] && continue
 
 					Desc=${REPLY#*\#\:}
 
