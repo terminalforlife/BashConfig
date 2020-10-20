@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/lad (List and Describe)
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Mon 19 Oct 14:50:36 BST 2020
+# Last Change       - Tue 20 Oct 16:35:50 BST 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ set -e
 . /usr/lib/tflbp-sh/ChkDep
 set +e
 
-CurVer='2020-10-19'
+CurVer='2020-10-20'
 Progrm=${0##*/}
 
 Usage(){
@@ -121,9 +121,6 @@ if [ "$OnlyFunc" == 'true' ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
 			if ! [ -z "$REPLY" ] && ! [[ $REPLY =~ ^[[:space:]]+\# ]]; then
 				if [[ $REPLY =~ [a-Z0-9_-]+\(\)[\{\(]\ \#:\  ]]; then
 					Name=${REPLY%%\(\)[\(\{]*}
-
-					# A description of " #: TEXT" must be appended to the
-					# function call line for each function. Fails otherwise.
 					Desc=${REPLY#*\#\:}
 
 					# Only functions found 0-1 tabs in are counted.
@@ -143,18 +140,33 @@ if [ "$OnlyAlias" == 'true' ] || [ -z "$OnlyFunc" -a -z "$OnlyAlias" ]; then
 	if [ -f "$FileBA" ] && [ -r "$FileBA" ]; then
 		printf "${NL}ALIASES ($FileBA)\n\n"
 
+		# Fetch array of active aliases.
+		ActiveAliases=()
+		(
+			. "$FileBA"
+			while read -a Line; do
+				ActiveAliases+=${Line[1]%=*}
+			done <<< "$(alias)"
+		)
+
 		while read; do
 			if ! [ -z "$REPLY" ] && ! [[ $REPLY =~ ^[[:space:]]+\# ]]; then
 				if [[ $REPLY =~ alias\ [:\"\']{0,}[a-Z0-9_-]+[\'\"]{0,}\= ]]; then
 					[[ $REPLY =~ [\'\"]\ \#:\  ]] || continue
-					declare -a Temp=(${REPLY%%\=*})
+					Temp=(${REPLY%%\=*})
+					Name=${Temp[1]//[\"\']}
 
-					#TODO: A cleaner system is preferable.
-					# A description of " #: TEXT" must be appended to the alias
-					# set line for each function. Fails otherwise, as above.
+					# Ensure only active aliases are listed.
+					Found='False'
+					for ActiveAlias in ${ActiveAliases[@]}; {
+						[ "$ActiveAlias" == "$Name" ] && $Found='True'
+					}
+
+					[ "$Found" == 'True' ] && continue
+
 					Desc=${REPLY#*\#\:}
 
-					Print "${Temp[1]//[\"\']}" "${Desc#\ }"
+					Print "$Name" "${Desc#\ }"
 				fi
 			fi
 		done < "$FileBA" | sort
