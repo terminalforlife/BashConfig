@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Tue 20 Oct 23:11:30 BST 2020
+# Last Change       - Fri 23 Oct 19:52:13 BST 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -142,7 +142,7 @@ export LS_COLORS='fi=0;37:di=1;37:ln=1;30:mh=1;30:ex=7;1;30:no=1;37:or=1;30:mi=1
 # can't easily see the red text. :(
 #export LS_COLORS='di=1;31:ln=2;32:mh=1;32:ex=1;33:'
 
-export PATH=${PATH%:\/snap\/bin}
+export PATH=${PATH%:/snap/bin}
 export TERM='xterm-256color'
 export LESSSECURE=1
 export SUDO_EDITOR='/usr/bin/rvim'
