@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 20 Oct 22:51:24 BST 2020
+# Last Change       - Tue 27 Oct 18:28:45 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -545,10 +545,31 @@ dquo(){ #: Surround ($@) text in double quotation marks.
 
 if type -fP links2 &> /dev/null; then
 	l2(){ #: A tweaked links2 experience, allowing for quick DuckDuckGo searches.
-		links2 -http.do-not-track 1 -html-tables 1\
-			-html-tables 1 -html-numbered-links 1\
+		links2 -http.do-not-track 1 -html-tables 1 -html-numbered-links 1\
 			http://duckduckgo.com/?q="$*"
 	}
+
+
+	if type -fP less wget &> /dev/null; then
+		gp(){ #: Dump formatted HTML output from a Perl Gtk2 reference page.
+			URL="http://gtk2-perl.sourceforge.net/doc/pod/Gtk2/$1.html"
+
+			case $1 in
+				*\ *|'')
+					printf 'ERROR: Invalid reference page provided.\n' 1>&2
+					return 1 ;;
+				*)
+					if ! wget -q --spider "$URL"; then
+						printf 'ERROR: Provided reference page not found.\n' 1>&2
+						return 1
+					fi ;;
+			esac
+
+			links2 -dump -html-tables 1 -html-frames 1\
+				-http.do-not-track 1 "$URL" | \less -Fs
+		}
+	fi
+
 fi
 
 # Prompt to somewhat programmatically rename each file within the current
