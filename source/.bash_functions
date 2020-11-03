@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 27 Oct 18:28:45 GMT 2020
+# Last Change       - Tue  3 Nov 03:59:03 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -18,13 +18,29 @@ if type -fP apt-cache grep sort &> /dev/null; then
 	}
 fi
 
-#
+if type -fP youtube-dl ffmpeg &> /dev/null; then
+	getalbum(){ #: Download, convert, and strip ID of YouTube playlists' tracks.
+		# Download the tracks, via the provided playlist, to the CWD.
+		\youtube-dl -cix --audio-format mp3 --sleep-interval 5 --yes-playlist\
+			--no-call-home --console-title --quiet --ignore-errors "$1"
+
+		# Convert tracks from MP3 to OGG.
+		for File in *.mp3; { [ -f "$File" ] || continue; ffmpeg -v 8 -i\
+			"$File" "${File%.mp3}.ogg" && \rm "$File"; }
+
+		# Remove video ID from filename.
+		for File in *.ogg; { \mv "$File" "${File%????????????????}.ogg"; }
+	}
+fi
+
 if type -fP grep git &> /dev/null; then
-	pulloo(){
+	pulloo(){ #: Personal function to `pull` in all my own repositories.
 		for Dir in "$HOME"/GitHub/terminalforlife/Personal/*; {
 			(
-				cd "$Dir" 2> /dev/null && pull |
-					grep --color=never -vF 'Already up-to-date'
+				if cd "$Dir" 2> /dev/null; then
+					git --no-pager pull 2> /dev/null |
+						grep --color=never -vF 'Already up-to-date'
+				fi
 			)
 		}
 	}
@@ -218,7 +234,7 @@ if type -fP awk &> /dev/null; then
 		}
 	fi
 
-	topmem(){ #: Nice, brief, and clean output showing the top 50 memory-hogging processes.
+	topmem(){ #: Nice, clean output showing the top 50 memory-hogging processes.
 		awk "
 			{
 				M=\$1/1024
@@ -548,28 +564,29 @@ if type -fP links2 &> /dev/null; then
 		links2 -http.do-not-track 1 -html-tables 1 -html-numbered-links 1\
 			http://duckduckgo.com/?q="$*"
 	}
+fi
 
+if type -fP less wget awk &> /dev/null; then
+	gp(){ #: Dump formatted HTML output from a Perl Gtk2 reference page.
+		URL="http://gtk2-perl.sourceforge.net/doc/pod/Gtk2/$1.html"
 
-	if type -fP less wget &> /dev/null; then
-		gp(){ #: Dump formatted HTML output from a Perl Gtk2 reference page.
-			URL="http://gtk2-perl.sourceforge.net/doc/pod/Gtk2/$1.html"
+		case $1 in
+			*\ *|'')
+				printf 'ERROR: Invalid reference page provided.\n' 1>&2
+				return 1 ;;
+			*)
+				if ! wget -q --spider "$URL"; then
+					printf 'ERROR: Provided reference page not found.\n' 1>&2
+					return 1
+				fi ;;
+		esac
 
-			case $1 in
-				*\ *|'')
-					printf 'ERROR: Invalid reference page provided.\n' 1>&2
-					return 1 ;;
-				*)
-					if ! wget -q --spider "$URL"; then
-						printf 'ERROR: Provided reference page not found.\n' 1>&2
-						return 1
-					fi ;;
-			esac
+		links2 -dump -html-tables 1 -html-frames 1\
+			-http.do-not-track 1 "$URL"\
+			| awk 'NR>=3 {print($0)}' | \less -Fs
 
-			links2 -dump -html-tables 1 -html-frames 1\
-				-http.do-not-track 1 "$URL" | \less -Fs
-		}
-	fi
-
+		unset URL
+	}
 fi
 
 # Prompt to somewhat programmatically rename each file within the current
