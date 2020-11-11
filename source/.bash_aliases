@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 20 Oct 23:18:16 BST 2020
+# Last Change       - Sat  7 Nov 00:18:51 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -149,8 +149,8 @@ fi
 
 # Remove trailing spaces or lines with only spaces. Tabs included. Needs testing.
 if type -fP sed &> /dev/null; then
-	alias nospace='sed s/[\ \\t]\\+$//' #: Remove trailing spaces/tabs from given file(s).
-	alias nospacei='sed -i s/[\ \\t]\\+$//' #: Remove (saves!) trailing spaces/tabs from given file(s).
+	alias nospace='sed s/[\ \\t]\\+$//' #: Clear trailing spaces from given file(s).
+	alias nospacei='sed -i s/[\ \\t]\\+$//' #: Destructively clear trailing spaces from file(s).
 fi
 
 # Efficient and fairly portable way to display the current iface, using 'ip'.
