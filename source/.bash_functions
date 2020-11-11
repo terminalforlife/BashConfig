@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue  3 Nov 03:59:03 GMT 2020
+# Last Change       - Tue 10 Nov 16:41:12 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -427,22 +427,6 @@ elif type -fP xdpyinfo &> /dev/null; then
 				printf "Your resolution is %s, according to xdpyinfo.\n" "${LINE[1]}"
 			fi
 		done <<< "$(xdpyinfo)"
-	}
-fi
-
-if type -fP man &> /dev/null; then
-	man(){ #: Display man pages with a little color.
-		# This was needed else it wouldn't work, unless absolute path.
-		read ManExec <<< "$(type -fP man 2> /dev/null)"
-
-		LESS_TERMCAP_mb=$'\e[01;31m'\
-		LESS_TERMCAP_md=$'\e[01;31m'\
-		LESS_TERMCAP_me=$'\e[0m'\
-		LESS_TERMCAP_se=$'\e[0m'\
-		LESS_TERMCAP_so=$'\e[01;44;33m'\
-		LESS_TERMCAP_ue=$'\e[0m'\
-		LESS_TERMCAP_us=$'\e[01;32m'\
-		"$ManExec" "$@"
 	}
 fi
 
