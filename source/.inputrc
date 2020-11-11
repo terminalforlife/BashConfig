@@ -2,7 +2,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/misc/.inputrc
 # Started On        - Tue 16 Jan 22:16:00 GMT 2018
-# Last Change       - Fri 31 Jan 21:54:00 GMT 2020
+# Last Change       - Sat  7 Nov 00:27:05 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -16,7 +16,7 @@ set completion-query-items 50
 set convert-meta On
 set disable-completion Off
 set editing-mode emacs
-set echo-control-characters On
+set echo-control-characters Off
 set enable-keypad Off
 set enable-meta-key On
 set expand-tilde Off
