@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 23 Oct 19:52:13 BST 2020
+# Last Change       - Tue 10 Nov 16:40:58 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -148,6 +148,15 @@ export LESSSECURE=1
 export SUDO_EDITOR='/usr/bin/rvim'
 export GREP_COLOR='1;31'
 export PS_PERSONALITY='posix'
+
+for Less in\
+    'mb:\e[1;31m' 'md:\e[1;31m' 'me:\e[0m' 'ue:\e[0m'\
+    'so:\e[1;33m' 'se:\e[0m' 'us:\e[1;32m'
+{
+    LessIdentifier="LESS_TERMCAP_${Less%:*}"
+    printf -v $LessIdentifier '%b' "${Less#*:}"
+    export $LessIdentifier
+}
 
 UsrBashComp="/usr/share/bash-completion/bash_completion"
 [ -f "$UsrBashComp" -a -r "$UsrBashComp" ] && . "$UsrBashComp"
