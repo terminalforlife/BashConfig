@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sat  7 Nov 00:18:51 GMT 2020
+# Last Change       - Wed 11 Nov 18:51:56 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -363,6 +363,10 @@ if type -fP md5sum &> /dev/null; then
 	if type -fP sort find sed &> /dev/null; then
 		alias gitsum='Dir=`git rev-parse --show-toplevel 2> /dev/null` && cd "$Dir" && find -not -path "*.git*" -type f -not -name "README.md" -not -name "LICENSE" -not -name "md5sum" -exec md5sum {} \+ 2> /dev/null | sed "s/\.\///" | sort -k 2 > md5sum; cd - &> /dev/null' #: Lazy solution to saving a sane and sorted checksum list to './md5sum' file.
 	fi
+fi
+
+if type -fP find &> /dev/null; then
+	alias nonroots='find -not \( -user 0 -or -group 0 \)' #: List any files not owned by or in the group of the root user.
 fi
 
 # When in a TTY, change to different ones.
