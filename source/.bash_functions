@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 10 Nov 16:41:12 GMT 2020
+# Last Change       - Tue 17 Nov 19:33:31 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -103,6 +103,30 @@ if [ -f /usr/lib/tflbp-sh/YNInput ]; then
 fi
 
 if type -fP git &> /dev/null; then
+	touched(){ #: Tell the user how many commits have touched the given file(s).
+		for File in "$@"; {
+			if ! git rev-parse --is-inside-work-tree &> /dev/null; then
+				printf 'ERROR: Not inside a Git repository.\n' 1>&2
+				return 1
+			elif ! [ -e "$File" ]; then
+				printf "ERROR: '%s' doesn't exist.\n" "$File" 1>&2
+				return 1
+			fi
+
+			if [ -d "$File" ]; then
+				local FiDi='Directory'
+			elif [ -f "$File" ]; then
+				local FiDi='File'
+			fi
+
+			readarray Lines <<< "$(git rev-list HEAD "$File")"
+			printf "%s '%s' has been touched by %d commit(s).\n"\
+				"$FiDi" "$File" ${#Lines[@]}
+
+			unset File
+		}
+	}
+
 	pullupforks()( #: For all forks, pull upstream changes to the current branch.
 		if [ $UID -eq 1000 -a "$USER" == 'ichy' ]; then
 			GHForkDir="$HOME/GitHub/terminalforlife/Forks"
