@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Wed 11 Nov 18:51:56 GMT 2020
+# Last Change       - Tue 17 Nov 19:01:35 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -18,6 +18,8 @@
 # Nifty trick to allow aliases to work with sudo. This avoids needing sudo in
 # these configuration files, since using sudo in scripts is not great.
 alias sudo="sudo " #: Allows for aliases to work with sudo.
+
+alias lenchk='bash "$HOME"/GitHub/terminalforlife/Forks/cheat.sheets/tests/lenchk' #: Tester tool I wrote for Chubin's cheat.sh project on GitHub.
 
 if type -fP sh &> /dev/null; then
 	alias uplinks='cd "$HOME/GitHub/terminalforlife/Personal" && for File in {Extra,BashConfig,i3Config,VimConfig}/devutils/links.sh; { sh "$File"; }; cd -' #: Personal scripts for updating my GitHub-related hard links.
@@ -94,6 +96,7 @@ if type -fP rm &> /dev/null; then
 		"$HOME/.mozilla/firefox/Pending\ Pings"
 	)
 
+	# If you use `rudbgvid`, its cache will also be removed here!
 	alias hsh="rm --interactive=never -rv ${PLACES[@]} 2> /dev/null" #: Clear out some junk from the current user's HOME.
 
 	# Add verbosity to various important commands.
@@ -130,6 +133,11 @@ if type -fP notify-send tty &> /dev/null; then
 
 	# Urgent notification.
 	alias YO='notify-send --urgency=critical "Your critical job in `tty` has completed."' #: Perform an urgent notify-send notification.
+fi
+
+# I prefer wget to curl, so I'm having wget appear like curl.
+if type -fP wget &> /dev/null; then
+	alias joke='wget -U "curl/7.55.1" -qO - https://icanhazdadjoke.com; printf "\n"' #: Output a random joke from the web.
 fi
 
 # Used to use gpicview, until I realised feh could be used as an image viewer!
@@ -187,6 +195,8 @@ fi
 
 # Enable a bunch of git aliases, if you have git installed.
 if type -fP git &> /dev/null; then
+	alias togr='cd "$(git rev-parse --show-toplevel)"' #: Change to the top-most level of the current Git repository.
+
 	for CMD in\
 	\
 		"remote add upstream":raddup "rm":grm "add":add "tag":tag\
