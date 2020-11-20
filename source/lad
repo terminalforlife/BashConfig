@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/lad (List and Describe)
 # Started On        - Tue  9 Apr 14:48:44 BST 2019
-# Last Change       - Fri 13 Nov 03:30:45 GMT 2020
+# Last Change       - Fri 20 Nov 03:33:56 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -14,7 +14,7 @@
 #   libtflbp-sh (>= 2019-12-10)
 #------------------------------------------------------------------------------
 
-CurVer='2020-11-13'
+CurVer='2020-11-20'
 Progrm=${0##*/}
 
 Usage(){
@@ -109,7 +109,7 @@ if [ -n "$OnlyFunc" -a -n "$OnlyAlias" ]; then
 	Err 1 "Either '--only-funcs|-F' or '--only-aliases|-A' may used at one time."
 fi
 
-type -fP sort &> /dev/null || Err 1 "Dependency 'sort' not met."
+type -P sort &> /dev/null || Err 1 "Dependency 'sort' not met."
 
 FileBF="$HOME/.bash_functions"
 FileBA="$HOME/.bash_aliases"

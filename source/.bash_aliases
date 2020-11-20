@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 17 Nov 19:01:35 GMT 2020
+# Last Change       - Fri 20 Nov 03:34:32 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -21,7 +21,11 @@ alias sudo="sudo " #: Allows for aliases to work with sudo.
 
 alias lenchk='bash "$HOME"/GitHub/terminalforlife/Forks/cheat.sheets/tests/lenchk' #: Tester tool I wrote for Chubin's cheat.sh project on GitHub.
 
-if type -fP sh &> /dev/null; then
+if type -P espeak sleep &> /dev/null; then
+	alias shortcd='for I in {30..0}; { { espeak -a 50 -s 300 -p 0 "$I" & sleep 1; } &> /dev/null; }' #: ...
+fi
+
+if type -P sh &> /dev/null; then
 	alias uplinks='cd "$HOME/GitHub/terminalforlife/Personal" && for File in {Extra,BashConfig,i3Config,VimConfig}/devutils/links.sh; { sh "$File"; }; cd -' #: Personal scripts for updating my GitHub-related hard links.
 fi
 
@@ -29,45 +33,45 @@ if [ -f /sys/class/power_supply/BAT1/capacity ]; then
 	alias bat='read < /sys/class/power_supply/BAT1/capacity; printf "Battery is at %d%% capacity.\n" "$REPLY"' #: Output the percentage of battery power remaining.
 fi
 
-if type -fP dpkg-query &> /dev/null; then
+if type -P dpkg-query &> /dev/null; then
 	alias getsecs='awk "!Z[\$1]++" <<< "$(dpkg-query -Wf "\${Section}\\n" "*")" | column' #: List Debian package sections, per installed packages.
 fi
 
-if type -fP yash &> /dev/null; then
+if type -P yash &> /dev/null; then
 	alias sh='yash -o posixlycorrect' #: Instead of executing dash, go for the more POSIX-compliant yash.
 fi
 
-if type -fP df &> /dev/null; then
+if type -P df &> /dev/null; then
 	alias df='df -x devtmpfs -x tmpfs -x usbfs' #: More relevant output than the default.
 fi
 
-if type -fP perl &> /dev/null; then
+if type -P perl &> /dev/null; then
 	alias perl-lib-path="perl -e 'print(\"\$_\n\") foreach @INC'" #: List directories in which Perl looks for library files.
 fi
 
 # Display a list of all of the currently available font families.
-if type -fP fc-list &> /dev/null; then
+if type -P fc-list &> /dev/null; then
 	alias lsfont="fc-list : family" #: List all of the currently available font families.
 fi
 
 # View the entire (17,000+ lines) Vim User Guide.
-if type -fP cat less &> /dev/null; then
+if type -P cat less &> /dev/null; then
 	alias vug='cat /usr/share/vim/vim74/doc/usr_*.txt | less -nrs' #: View the entire Vim User Guide.
 fi
 
 # A useful file to edit, if you use the X Display Manager.
-if [ -f /etc/X11/xdm/Xresources ] && type -fP xdm &> /dev/null; then
+if [ -f /etc/X11/xdm/Xresources ] && type -P xdm &> /dev/null; then
 	alias xdm-xresources='rvim /etc/X11/xdm/Xresources' #: Useful file to edit if you use the X Display Manager.
 fi
 
 # A less excessive, yet still very useful current-user-focused ps command.
-if type -fP ps &> /dev/null; then
+if type -P ps &> /dev/null; then
 	alias ps='ps -faxc -U $UID -o pid,uid,gid,pcpu,pmem,stat,comm' #: Less excessive, current-user-focused ps alternative.
 fi
 
 # I'm done with the boring original apt-get output! I'm also sick of specifying
 # --purge --autoremove, so I want it to be assumed! A much more useful apt-get.
-if type -fP apt-get &> /dev/null; then
+if type -P apt-get &> /dev/null; then
 	# Various [q]uick apt-get aliases to make life a bit easier.
 	for CMD in\
 	\
@@ -88,7 +92,7 @@ if type -fP apt-get &> /dev/null; then
 fi
 
 # Quick alias to clear out some junk from HOME.
-if type -fP rm &> /dev/null; then
+if type -P rm &> /dev/null; then
 	PLACES=(\
 		"$HOME/.cache"
 		"$HOME/.thumbnails"
@@ -112,22 +116,22 @@ if type -fP rm &> /dev/null; then
 	# Fix all CWD file and directory permissions to match the safer 0077 umask.
 	# The GitHub directory (/home/$USER/GitHub/) and its contents are protected
 	# from this, as it could cause quite the problem.
-	if type -fP chmod find &> /dev/null; then
+	if type -P chmod find &> /dev/null; then
 		alias fixperms='[[ $PWD == "$HOME/GitHub/"* ]] || find -xdev -not -path "*/GitHub/*" \( -type f -exec chmod 600 {} \+ -o -type d -exec chmod 700 "{}" \+ \) -exec chown $UID:$UID {} \+ -printf "FIXING: %p\n" 2> /dev/null' #: Recursively fix permissions and ownership. (F:600 D:700, UID:UID)
 
-		if type -fP sync systemctl sleep &> /dev/null; then
+		if type -P sync systemctl sleep &> /dev/null; then
 			alias shutdown='cd "$HOME"; hsh; fixperms; sync; sleep 3s; systemctl poweroff' #: Perform some standard maintenance tasks, then shutdown.
 		fi
 	fi
 fi
 
 # Make the ffmpeg output less cluttered, but also ignore many errors.
-if type -fP ffmpeg &> /dev/null; then
+if type -P ffmpeg &> /dev/null; then
 	alias ffmpeg="ffmpeg -v 0 -stats" #: De-clutter this program's output, but not entirely.
 fi
 
 # Notify you of a job completion on the terminal. I use this with dunst.
-if type -fP notify-send tty &> /dev/null; then
+if type -P notify-send tty &> /dev/null; then
 	# Standard notification.
 	alias yo='notify-send --urgency=normal "Your normal job in `tty` has completed."' #: Perform a standard notify-send notification.
 
@@ -136,13 +140,13 @@ if type -fP notify-send tty &> /dev/null; then
 fi
 
 # I prefer wget to curl, so I'm having wget appear like curl.
-if type -fP wget &> /dev/null; then
+if type -P wget &> /dev/null; then
 	alias joke='wget -U "curl/7.55.1" -qO - https://icanhazdadjoke.com; printf "\n"' #: Output a random joke from the web.
 fi
 
 # Used to use gpicview, until I realised feh could be used as an image viewer!
-if type -fP feh &> /dev/null; then
-	if type -fP wget &> /dev/null; then
+if type -P feh &> /dev/null; then
+	if type -P wget &> /dev/null; then
 		alias getsetwall='wget -qO - "https://source.unsplash.com/random/1920x1080" | feh --bg-center -' #: Fetch and set a random 1920x1080 wallpaper.
 		alias get='wget -qc --show-progress' #: Download with wget, using some tidier settings with -c.
 	fi
@@ -151,22 +155,22 @@ if type -fP feh &> /dev/null; then
 fi
 
 # Quickly flash the terminal and sound the bell 3 times.
-if type -fP sleep &> /dev/null; then
+if type -P sleep &> /dev/null; then
 	alias alertme='for I in {1..3}; { sleep 0.03s; printf "\a\e[?5h"; sleep 0.03s; printf "\a\e[?5l"; }' #: Sound the bell and flash the terminal (white) thrice.
 fi
 
 # Remove trailing spaces or lines with only spaces. Tabs included. Needs testing.
-if type -fP sed &> /dev/null; then
+if type -P sed &> /dev/null; then
 	alias nospace='sed s/[\ \\t]\\+$//' #: Clear trailing spaces from given file(s).
 	alias nospacei='sed -i s/[\ \\t]\\+$//' #: Destructively clear trailing spaces from file(s).
 fi
 
 # Efficient and fairly portable way to display the current iface, using 'ip'.
-if type -fP ip &> /dev/null; then
+if type -P ip &> /dev/null; then
 	alias iface='X=(`ip route`) && printf "%s\n" ${X[4]}' #: Display the current iface, using the 'ip' command.
 fi
 
-if type -fP hddtemp &> /dev/null; then
+if type -P hddtemp &> /dev/null; then
 	alias temphdd='hddtemp /dev/sd{a..z} 2> /dev/null' #: View all sd* storage device temperatures.
 fi
 
@@ -174,19 +178,19 @@ if [ -f /var/log/boot.log ]; then
 	alias bootlog='while read -r; do printf "%s\n" "$REPLY"; done < /var/log/boot.log' #: View the system boot log, with colors.
 fi
 
-if type -fP newsbeuter &> /dev/null; then
+if type -P newsbeuter &> /dev/null; then
 	alias news='newsbeuter -qr -c "$HOME/.newsbeuter/cache.db" -u "$HOME/.newsbeuter/urls" -C "$HOME/.newsbeuter/newsbeuter.conf"' #: Load newsbeuter more quickly to get access to RSS feeds.
 	alias rss='vim $HOME/.newsbeuter/urls' #: Edit a list of RSS feeds, using Vim.
 fi
 
 # Watches a directory as its size and number of files increase. Useful while
 # you're downloading or making other changes to its contents, and wanna watch.
-if type -fP ls watch &> /dev/null; then
+if type -P ls watch &> /dev/null; then
 	alias dwatch='watch -n 0.1 -t "ls -SsCphq --color=auto --group-directories-first"' #: Watche a directory for changes in size and number of files.
 fi
 
 # Create or unmount a user-only RAM Disk (tmpfs, basically) of 32MB.
-if type -fP mount umount &> /dev/null; then
+if type -P mount umount &> /dev/null; then
 	RAMDISK="/media/$USER/RAMDisk_32M"
 
 	alias rd='mount -t tmpfs tmpfs -o x-mount.mkdir=700,uid=1000,gid=1000,mode=700,nodev -o noexec,nosuid,size=32M "$RAMDISK"' #: Create a user-only RAM Disk (tmpfs) of 32MB.
@@ -194,7 +198,7 @@ if type -fP mount umount &> /dev/null; then
 fi
 
 # Enable a bunch of git aliases, if you have git installed.
-if type -fP git &> /dev/null; then
+if type -P git &> /dev/null; then
 	alias togr='cd "$(git rev-parse --show-toplevel)"' #: Change to the top-most level of the current Git repository.
 
 	for CMD in\
@@ -218,7 +222,7 @@ if type -fP git &> /dev/null; then
 fi
 
 # Ease-of-use youtube-dl aliases; these save typing!
-if type -fP youtube-dl &> /dev/null; then
+if type -P youtube-dl &> /dev/null; then
 	alias ytdl-video="youtube-dl -c --no-playlist --sleep-interval 5 --format best --no-call-home --console-title --quiet --ignore-errors" #: Download HQ videos from YouTube, using youtube-dl.
 	alias ytdl-audio="youtube-dl -cx --no-playlist --audio-format mp3 --sleep-interval 5 --max-sleep-interval 30 --no-call-home --console-title --quiet --ignore-errors" #: Download HQ audio from YouTube, using youtube-dl.
 	alias ytpldl-audio="youtube-dl -cix --audio-format mp3 --sleep-interval 5 --yes-playlist --no-call-home --console-title --quiet --ignore-errors" #: Download HQ videos from YouTube playlist, using youtube-dl.
@@ -226,17 +230,17 @@ if type -fP youtube-dl &> /dev/null; then
 fi
 
 # These are just options I find the most useful when using dmesg.
-if type -fP dmesg &> /dev/null; then
-	alias klog="dmesg -t -L=never -l err,crit,alert,emerg" #: Potentially useful option for viewing the kernel log.
+if type -P dmesg &> /dev/null; then
+	alias klog="dmesg -t -L=never -l emerg,alert,crit,err,warn --human --nopager" #: Potentially useful option for viewing the kernel log.
 fi
 
 # Clear the clipboard (both types) using xclip.
-if type -fP xclip &> /dev/null; then
+if type -P xclip &> /dev/null; then
 	alias ccb='for X in "-i" "-i -selection clipboard"; { printf "%s" "" | xclip $X; }' #: Clear the clipboard using xclip.
 fi
 
 # Get more functionality by default when using grep and ls.
-if type -fP ls grep &> /dev/null; then
+if type -P ls grep &> /dev/null; then
 	case "${TERM:-EMPTY}" in
 			linux|xterm|xterm-256color)
 				alias ls='ls --quoting-style=literal -pq --time-style=iso --color=auto --group-directories-first --show-control-chars' #: A presentable but minimalistic 'ls'.
@@ -278,19 +282,19 @@ fi
 # For each found "sr" device, enables alias for opening and closing the tray.
 # For example, use to to specific you want the tray for `/dev/sr0` to open.
 # Testing for `/dev/sr0` to ensure >= 1 device is available, to avoid errors.
-if type -fP ls eject &> /dev/null && [ -b /dev/sr0 ]; then
+if type -P ls eject &> /dev/null && [ -b /dev/sr0 ]; then
 	for DEV in /dev/sr[0-9]*; {
 		alias ot${DEV/\/dev\/sr}="eject $DEV"
 		alias ct${DEV/\/dev\/sr}="eject -t $DEV"
 
-		if type -fP udisksctl &> /dev/null; then
+		if type -P udisksctl &> /dev/null; then
 			alias mcd${DEV/\/dev\/sr}="udisksctl mount -b $DEV"
 			alias umcd${DEV/\/dev\/sr}="udisksctl unmount -b $DEV"
 		fi
 	}
 fi
 
-if type -fP mplayer &> /dev/null; then
+if type -P mplayer &> /dev/null; then
 	# If you're having issues with mpv/mplayer here, try -vo x11 instead.
 	alias mpa='mplayer -nolirc -vo null -really-quiet &> /dev/null' #: Use 'mplayer' to play audio files, sans window or output.
 
@@ -301,20 +305,20 @@ if type -fP mplayer &> /dev/null; then
 
 	alias mpv="mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet &> /dev/null" #: Use 'mplayer' to play video files, sans output.
 	alias mpvdvd="mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet dvd://1//dev/sr1 &> /dev/null" #: Use 'mplayer' to play DVDs, sans output.
-elif type -fP mpv &> /dev/null; then
+elif type -P mpv &> /dev/null; then
 	alias mpvv='mpv --no-stop-screensaver &> /dev/null ' #: Use 'mpv' to play video files, sans output.
 fi
 
-if type -fP lsblk &> /dev/null; then
+if type -P lsblk &> /dev/null; then
 	alias lsblkid='lsblk -o name,label,fstype,size,uuid,mountpoint --noheadings' #: A more descriptive, yet concise lsblk.
 fi
 
-if type -fP pager &> /dev/null || type -fP less &> /dev/null; then
+if type -P pager &> /dev/null || type -P less &> /dev/null; then
 	alias pager='pager -sN --tilde' #: Useful options included with 'pager'.
 	alias less='pager -sN --tilde' #: Useful options included with 'less'.
 
 	# Text files I occasionally like to view, but not edit.
-	if type -fP pager &> /dev/null; then
+	if type -P pager &> /dev/null; then
 		for File in\
 		\
 			"/var/log/apt/history.log":aptlog\
@@ -328,7 +332,7 @@ if type -fP pager &> /dev/null || type -fP less &> /dev/null; then
 fi
 
 
-if type -fP vim &> /dev/null; then
+if type -P vim &> /dev/null; then
 	# Many files I often edit; usually configuration files.
 	for File in\
 	\
@@ -367,34 +371,34 @@ if type -fP vim &> /dev/null; then
 	alias lstabs='gitgrep "	" | awk -F ":" "{!z[\$1]++} END {for(I in z){print(I)}}"'
 fi
 
-if type -fP md5sum &> /dev/null; then
+if type -P md5sum &> /dev/null; then
 	alias chksum='md5sum --ignore-missing --quiet -c 2> /dev/null' #: Check the MD5 hashsums using the provided file.
 
-	if type -fP sort find sed &> /dev/null; then
+	if type -P sort find sed &> /dev/null; then
 		alias gitsum='Dir=`git rev-parse --show-toplevel 2> /dev/null` && cd "$Dir" && find -not -path "*.git*" -type f -not -name "README.md" -not -name "LICENSE" -not -name "md5sum" -exec md5sum {} \+ 2> /dev/null | sed "s/\.\///" | sort -k 2 > md5sum; cd - &> /dev/null' #: Lazy solution to saving a sane and sorted checksum list to './md5sum' file.
 	fi
 fi
 
-if type -fP find &> /dev/null; then
+if type -P find &> /dev/null; then
 	alias nonroots='find -not \( -user 0 -or -group 0 \)' #: List any files not owned by or in the group of the root user.
 fi
 
 # When in a TTY, change to different ones.
-if [[ `tty` == /dev/tty* ]] && type -fP tty chvt &> /dev/null; then
+if [[ `tty` == /dev/tty* ]] && type -P tty chvt &> /dev/null; then
 	for TTY in {1..12}; {
 		alias $TTY="chvt $TTY"
 	}
 fi
-	if type -fP evince &> /dev/null; then
+	if type -P evince &> /dev/null; then
 	alias pdf='evince &> /dev/null' #: Use 'evince' to display PDF documents.
 fi
 
 # Personal aliases I want only to have enabled if I'm logged in. (rudimentary)
 if [ $UID -eq 1000 -a $USER == 'ichy' ]; then
-	type -fP mplay &> /dev/null &&
+	type -P mplay &> /dev/null &&
 		alias mplay='mplay /media/$USER/Main\ Data/Linux\ Generals/Music'
 
-	if type -fP ssh &> /dev/null; then
+	if type -P ssh &> /dev/null; then
 		alias ihh='ssh -Cq server :'
 		alias chkrf='chkrf server Desktop/READ_ME.txt'
 	fi

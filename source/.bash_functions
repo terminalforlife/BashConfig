@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 17 Nov 19:33:31 GMT 2020
+# Last Change       - Fri 20 Nov 03:34:43 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -12,13 +12,13 @@
 #            functionality.
 #------------------------------------------------------------------------------
 
-if type -fP apt-cache grep sort &> /dev/null; then
+if type -P apt-cache grep sort &> /dev/null; then
 	qse(){ #: Search Debian packages with APT, properly.
 		{ apt-cache search ' ' | grep "$*" | sort -k 1; } 2> /dev/null
 	}
 fi
 
-if type -fP youtube-dl ffmpeg &> /dev/null; then
+if type -P youtube-dl ffmpeg &> /dev/null; then
 	getalbum(){ #: Download, convert, and strip ID of YouTube playlists' tracks.
 		# Download the tracks, via the provided playlist, to the CWD.
 		\youtube-dl -cix --audio-format mp3 --sleep-interval 5 --yes-playlist\
@@ -33,7 +33,7 @@ if type -fP youtube-dl ffmpeg &> /dev/null; then
 	}
 fi
 
-if type -fP grep git &> /dev/null; then
+if type -P grep git &> /dev/null; then
 	pulloo(){ #: Personal function to `pull` in all my own repositories.
 		for Dir in "$HOME"/GitHub/terminalforlife/Personal/*; {
 			(
@@ -46,7 +46,7 @@ if type -fP grep git &> /dev/null; then
 	}
 fi
 
-if type -fP dmenu man &> /dev/null; then
+if type -P dmenu man &> /dev/null; then
 	# Function contains code I've written for and sent a PR to:
 	#
 	#   https://github.com/AlexChaplinBraz/dmenu-scripts
@@ -76,7 +76,7 @@ if type -fP dmenu man &> /dev/null; then
 	}
 fi
 
-if type -fP perl &> /dev/null; then
+if type -P perl &> /dev/null; then
 	perlc(){ #: Perform a syntax check on all Perl scripts within the CWD.
 		local CurFile Line
 
@@ -102,7 +102,7 @@ if [ -f /usr/lib/tflbp-sh/YNInput ]; then
 	}
 fi
 
-if type -fP git &> /dev/null; then
+if type -P git &> /dev/null; then
 	touched(){ #: Tell the user how many commits have touched the given file(s).
 		for File in "$@"; {
 			if ! git rev-parse --is-inside-work-tree &> /dev/null; then
@@ -191,7 +191,7 @@ if type -fP git &> /dev/null; then
 	)
 fi
 
-if type -fP dmenu &> /dev/null; then
+if type -P dmenu &> /dev/null; then
 	dnote(){ #: Save a note to the desktop, using a simple form of dmenu.
 		local File="$HOME/Desktop/Saved Notes.txt"
 		if ! [ -f "$File" ]; then
@@ -213,7 +213,7 @@ if type -fP dmenu &> /dev/null; then
 	}
 fi
 
-if type -fP grep uniq sed &> /dev/null; then
+if type -P grep uniq sed &> /dev/null; then
 	gitgrep(){ #: Execute a configured grep command in git context.
 		grep -sIr --exclude-dir='.git' --exclude='LICENSE' --exclude='README.md'\
 			--exclude={.bash{_{aliases,functions,logout,profile},rc},{,.}inputrc,inputrc}\
@@ -234,9 +234,9 @@ if type -fP grep uniq sed &> /dev/null; then
 	}
 fi
 
-if type -fP awk &> /dev/null; then
+if type -P awk &> /dev/null; then
 	# Inspired by 'paperbenni' on GitHub.
-	if type -fP sha256sum &> /dev/null || type -fP md5sum &> /dev/null; then
+	if type -P sha256sum &> /dev/null || type -P md5sum &> /dev/null; then
 		hash() { #: Fetch and compare the sha256 sums of two or more files.
 			local I=`awk '{!A[$1]++} END{print(NR)}' <(sha256sum "$@" 2> /dev/null)`
 			if [ $I -eq 0 ]; then
@@ -246,7 +246,7 @@ if type -fP awk &> /dev/null; then
 				return 1
 			fi
 		}
-	elif type -fP md5sum &> /dev/null; then
+	elif type -P md5sum &> /dev/null; then
 		hash() { #: Fetch and compare the md5 sums of two or more files.
 			local I=`awk '{!A[$1]++} END{print(NR)}' <(md5sum "$@" 2> /dev/null)`
 			if [ $I -eq 0 ]; then
@@ -274,7 +274,7 @@ if type -fP awk &> /dev/null; then
 	}
 fi
 
-if type -fP feh &> /dev/null; then
+if type -P feh &> /dev/null; then
 	bgtest(){ #: Cyclically test-run all CWD JPGs as a background.
 		declare -i NUM=0
 		for CurFile in *$1*.jpg; {
@@ -292,7 +292,7 @@ if type -fP feh &> /dev/null; then
 	}
 fi
 
-if type -fP mplayer &> /dev/null; then
+if type -P mplayer &> /dev/null; then
 	mpvi(){ #: In i3-wm, play a video inside the active window.
 		tput smcup
 		tput clear
@@ -306,7 +306,7 @@ if type -fP mplayer &> /dev/null; then
 		unset WID
 	}
 
-	if type -fP youtube-dl &> /dev/null; then
+	if type -P youtube-dl &> /dev/null; then
 		syt(){ #: Stream a YouTube video directly into MPlayer.
 			youtube-dl "$1" -o - 2> /dev/null | mplayer -vo x11 -nomouseinput\
 				-noar -nojoystick -nogui -zoom -nolirc -really-quiet - &> /dev/null
@@ -314,7 +314,7 @@ if type -fP mplayer &> /dev/null; then
 	fi
 fi
 
-if type -fP column &> /dev/null; then
+if type -P column &> /dev/null; then
 	builtins(){ #: Display a columnized list of bash builtins.
 		while read -r; do
 			printf "%s\n" "${REPLY/* }"
@@ -322,7 +322,7 @@ if type -fP column &> /dev/null; then
 	}
 fi
 
-if type -fP xdpyinfo &> /dev/null; then
+if type -P xdpyinfo &> /dev/null; then
 	dpi(){ #: Display the current DPI setting.
 		while read -a X; do
 			if [ "${X[0]}" == "resolution:" ]; then
@@ -332,7 +332,7 @@ if type -fP xdpyinfo &> /dev/null; then
 	}
 fi
 
-if type -fP sensors &> /dev/null; then
+if type -P sensors &> /dev/null; then
 	showfans(){ #: Show the available system fan speeds using sensors.
 		while read; do
 			if [[ $REPLY == *[Ff][Aa][Nn]*RPM ]]; then
@@ -356,7 +356,7 @@ if [ -f /etc/os-release -a -r /etc/os-release ]; then
 	}
 fi
 
-if type -fP clamscan tee &> /dev/null; then
+if type -P clamscan tee &> /dev/null; then
 	scan(){ #: Scan the CWD with clamscan. Logs in: ~/.scan_func.log
 		printf 'Scanning...\n'
 
@@ -381,7 +381,7 @@ fi
 
 # Display a random note line from command notes.
 if [ "$USER" == 'ichy' -a $UID -eq 1000 ]; then
-	if type -fP sed grep shuf &> /dev/null; then
+	if type -P sed grep shuf &> /dev/null; then
 		if [ -f "$HOME/Documents/TT/Useful_Commands" ]; then
 			getrandomnote(){ #: Display a random note line from command notes.
 				local InFile="$HOME/Documents/TT/Useful_Commands";
@@ -413,7 +413,7 @@ if [ "$USER" == 'ichy' -a $UID -eq 1000 ]; then
 	fi
 fi
 
-if type -fP dpkg &> /dev/null; then
+if type -P dpkg &> /dev/null; then
 	lsrc(){ #: Search for and list all 'rc' packages detected by dpkg.
 		if [ $# -ne 0 ]; then
 			printf 'ERROR: No arguments required.\n'
@@ -436,7 +436,7 @@ if type -fP dpkg &> /dev/null; then
 fi
 
 # Get the display's resolution.
-if type -fP xwininfo &> /dev/null; then
+if type -P xwininfo &> /dev/null; then
 	getres(){ #: Two viable methods for fetching the display resolution.
 		while read -a LINE; do
 			if [ "${LINE[0]}" == '-geometry' ]; then
@@ -444,7 +444,7 @@ if type -fP xwininfo &> /dev/null; then
 			fi
 		done <<< "$(xwininfo -root)"
 	}
-elif type -fP xdpyinfo &> /dev/null; then
+elif type -P xdpyinfo &> /dev/null; then
 	getres(){
 		while read -a LINE; do
 			if [ "${LINE[0]}" == 'dimensions:' ]; then
@@ -465,7 +465,7 @@ suppress(){ #: Execute command ($1) and omit specified ($2) output.
 }
 
 # Search for & output files not found which were installed with a given package.
-if type -fP dpkg-query &> /dev/null; then
+if type -P dpkg-query &> /dev/null; then
 	missingpkgfiles(){ #: Check for missing files installed from a given package(s).
 		while read X; do
 			[ -e "$X" -a "$X" ] || printf '%s\n' "$X"
@@ -480,7 +480,7 @@ if type -fP dpkg-query &> /dev/null; then
 fi
 
 # The ago function is a handy way to output some of the apt-get's -o options.
-if type -fP apt-get zcat &> /dev/null; then
+if type -P apt-get zcat &> /dev/null; then
 	ago(){ #: List out various apt-get options for the -o flag.
 		while read F1 _; do
 			case $F1 in
@@ -499,7 +499,7 @@ if type -fP apt-get zcat &> /dev/null; then
 fi
 
 # Search the given path(s) for file types of TYPE. Ignores filename extension.
-if type -fP mimetype &> /dev/null; then
+if type -P mimetype &> /dev/null; then
 	sif(){ #: Search given path(s) for files of a specified type.
 		[ $# -eq 0 ] && printf 'Usage: sif [Type] [FILE_1 [FILE_2 ...]]\n' 1>&2
 
@@ -567,14 +567,14 @@ dquo(){ #: Surround ($@) text in double quotation marks.
 	printf "\"%s\"\n" "$*"
 }
 
-if type -fP links2 &> /dev/null; then
+if type -P links2 &> /dev/null; then
 	l2(){ #: A tweaked links2 experience, allowing for quick DuckDuckGo searches.
 		links2 -http.do-not-track 1 -html-tables 1 -html-numbered-links 1\
 			http://duckduckgo.com/?q="$*"
 	}
 fi
 
-if type -fP less wget awk &> /dev/null; then
+if type -P less wget awk &> /dev/null; then
 	gp(){ #: Dump formatted HTML output from a Perl Gtk2 reference page.
 		URL="http://gtk2-perl.sourceforge.net/doc/pod/Gtk2/$1.html"
 
@@ -603,7 +603,7 @@ fi
 # Uses color in output to make it quick and easy to read; may not work on all
 # terminals. The changes are made the moment you press Enter, so be mindful!
 # Ctrl + C to cancel. Use OPT -d or --directories to instead match those.
-if type -fP mv &> /dev/null; then
+if type -P mv &> /dev/null; then
 	brn(){ #: Batch-rename a bunch of files or directories.
 		printf "NOTE: To match directories instead, use -d|--directories OPTs.\n"
 
@@ -639,7 +639,7 @@ if type -fP mv &> /dev/null; then
 	}
 fi
 
-if type -fP espeak &> /dev/null; then
+if type -P espeak &> /dev/null; then
 	sayit(){ #: Say something with espeak; good for quick alerts.
 		espeak -v en-scottish -g 5 -p 13 -s 0.7 "$*"
 	}
