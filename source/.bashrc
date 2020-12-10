@@ -3,19 +3,14 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 20 Nov 03:33:38 GMT 2020
+# Last Change       - Thu 10 Dec 02:56:16 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
 # Bash version 4.0 or greater is required.
 #------------------------------------------------------------------------------
 
-# This is just something I use when making certain YT videos.
-#return
-
 { ! [ "$PS1" ] || shopt -q restricted_shell; } && return
-
-type -P ubuchk &> /dev/null && ubuchk
 
 shopt -s checkwinsize globstar complete_fullquote expand_aliases extquote\
 	 extglob force_fignore hostcomplete interactive_comments xpg_echo\
@@ -30,106 +25,8 @@ set -o interactive-comments +o monitor -o hashall\
 readarray T < /etc/lsb-release
 [ "${T[2]#*=}" == bionic$'\n' ] && R=4 || R=3
 
-case `tty` in
-	*/pts*)
-		PromptParser(){
-			printf -v X '%.3d' $?
-
-			BRed='\033[1;31m'
-			White='\033[2;37m'
-			Reset='\033[0m'
-
-			if git rev-parse --is-inside-work-tree &> /dev/null; then
-				GI[0]='≎' # Clean.
-				GI[1]='≍' # Uncommitted changes.
-				GI[2]='≭' # Unstaged changes.
-				GI[3]='≺' # New file(s).
-				GI[4]='⊀' # Removed file(s).
-				GI[5]='≔' # Initial commit.
-				GI[6]='∾' # Branch is ahead.
-				GI[7]='⮂' # Fix conflicts.
-				GI[8]='!' # Unknown (ERROR).
-
-				Status=`git status 2> /dev/null`
-				Top=`git rev-parse --show-toplevel`
-				printf -v Desc "${BRed}∷  ${White}Looking under the hood..."
-
-				if [ -n "$Top" ]; then
-					# Get the current branch name.
-					IFS='/' read -a A < "$Top/.git/HEAD"
-					GB=${A[${#A[@]}-1]}
-				fi
-
-				# While loops in special order:
-				while read -ra Z; do
-					if [ "${Z[0]}${Z[1]}" == 'Initialcommit' ]; then
-						Desc="${BRed}${GI[5]}  ${White}Branch '${GB:-?}' has no commits, yet."
-						break
-					fi
-				done <<< "$Status"
-
-				while read -ra Z; do
-					if [ "${Z[0]}${Z[1]}${Z[2]}" == '(fixconflictsand' ]; then
-						Desc="${BRed}${GI[7]}  ${White}Branch '${GB:-?}' has conflict(s)."
-						break
-					fi
-				done <<< "$Status"
-
-				while read -ra Z; do
-					if [ "${Z[0]}${Z[1]}${Z[2]}" == 'nothingtocommit,' ]; then
-						TTLCommits=`git rev-list --count HEAD`
-
-						Desc="${BRed}${GI[0]}  ${White}Branch '${GB:-?}' is $TTLCommits commit(s) clean."
-						break
-					fi
-				done <<< "$Status"
-
-				while read -ra Z; do
-					if [ "${Z[0]}${Z[1]}${Z[3]}" == 'Yourbranchahead' ]; then
-						Desc="${BRed}${GI[6]}  ${White}Branch '${GB:-?}' leads by ${Z[7]} commit(s)."
-						break
-					fi
-				done <<< "$Status"
-
-				while read -ra Z; do
-					if [ "${Z[0]}${Z[1]}" == 'Untrackedfiles:' ]; then
-						declare -i NFTTL=0
-						while read -a LINE; do
-							[ "${LINE[0]}" == '??' ] && NFTTL+=1
-						done <<< "$(git status --short)"
-
-						Desc="${BRed}${GI[3]}  ${White}Branch '${GB:-?}' has $NFTTL new file(s)."
-						break
-					fi
-				done <<< "$Status"
-
-				while read -ra Z; do
-					if [ "${Z[0]}" == 'modified:' ]; then
-						readarray Buffer <<< "$(git --no-pager diff --name-only)"
-
-						Desc="${BRed}${GI[2]}  ${White}Branch '${GB:-?}' has ${#Buffer[@]} modified file(s)."
-						break
-					fi
-				done <<< "$Status"
-
-				while read -ra Z; do
-					if [ "${Z[0]}${Z[1]}${Z[2]}${Z[3]}" == 'Changestobecommitted:' ]; then
-						Desc="${BRed}${GI[1]}  ${White}Branch '${GB:-?}' has changes to commit."
-						break
-					fi
-				done <<< "$Status"
-				# End of specially-ordered while loops.
-			else
-				printf -v Desc "${BRed}☡  ${White}Sleepy git..."
-			fi
-
-			PS1="\[${Reset}\]╭──╼${X}╾──☉  ${Desc}\[${Reset}\]\n╰─☉  "
-		}
-
-		PROMPT_COMMAND='PromptParser' ;;
-	/dev/tty*)
-		PS1="$ " ;;
-esac
+# Yep, super-simple prompt, now.
+PS1="\$ "
 
 export HISTTIMEFORMAT='[%F_%X]: '
 export HISTCONTROL='ignoreboth'
@@ -154,7 +51,9 @@ export SUDO_EDITOR='/usr/bin/rvim'
 export GREP_COLOR='1;31'
 export PS_PERSONALITY='posix'
 
+# Yep, an unnecessarily-complicated solution! Proof of concept, I guess.
 for Less in\
+\
     'mb:\e[1;31m' 'md:\e[1;31m' 'me:\e[0m' 'ue:\e[0m'\
     'so:\e[1;33m' 'se:\e[0m' 'us:\e[1;32m'
 {
@@ -166,8 +65,6 @@ for Less in\
 UsrBashComp="/usr/share/bash-completion/bash_completion"
 [ -f "$UsrBashComp" -a -r "$UsrBashComp" ] && . "$UsrBashComp"
 
-#bind '"\t": menu-complete'
-#bind '"\e[Z": menu-complete-backward'
 bind '"\e[1;5C": forward-word'
 bind '"\e[1;5D": backward-word'
 
@@ -177,4 +74,4 @@ BCAliases="$HOME/.bash_aliases"
 BCFuncs="$HOME/.bash_functions"
 [ -f "$BCFuncs" -a -r "$BCFuncs" ] && . "$BCFuncs"
 
-unset BCAliases BCFuncs UsrBashComp X G Z Desc Status Top BRed White Reset
+unset BCAliases BCFuncs UsrBashComp

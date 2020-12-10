@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Fri 20 Nov 03:34:43 GMT 2020
+# Last Change       - Thu 10 Dec 03:55:38 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -12,430 +12,279 @@
 #            functionality.
 #------------------------------------------------------------------------------
 
-if type -P apt-cache grep sort &> /dev/null; then
-	qse(){ #: Search Debian packages with APT, properly.
-		{ apt-cache search ' ' | grep "$*" | sort -k 1; } 2> /dev/null
+qse(){ #: Search Debian packages with APT, properly.
+	{ apt-cache search ' ' | grep "$*" | sort -k 1; } 2> /dev/null
+}
+
+pulloo(){ #: Personal function to `pull` in all my own repositories.
+	for Dir in "$HOME"/GitHub/terminalforlife/Personal/*; {
+		git -C "$Dir" pull | grep --color=never -vF 'Already up-to-date'
 	}
-fi
+}
 
-if type -P youtube-dl ffmpeg &> /dev/null; then
-	getalbum(){ #: Download, convert, and strip ID of YouTube playlists' tracks.
-		# Download the tracks, via the provided playlist, to the CWD.
-		\youtube-dl -cix --audio-format mp3 --sleep-interval 5 --yes-playlist\
-			--no-call-home --console-title --quiet --ignore-errors "$1"
+# Function contains code I've written for and sent a PR to:
+#
+#   https://github.com/AlexChaplinBraz/dmenu-scripts
+#
+dman(){ #: Use Dmenu to interactively look for and display a man page.
+	local Chosen=$(
+		man -k . 2> /dev/null | while read Pkg Group _ Desc; do
+			# The `#- ` bit fixes entries with botched short descriptions.
+			printf '%50s - %s\n' "$Pkg $Group" "${Desc#- }"
+		done | dmenu -i -l 30 -fn 'Ubuntu Mono':style=Bold:size=12\
+			-nb \#000000 -nf \#ffffff -sb \#550000 -sf \#ffffff
+			# Dmenu is using my customizations from i3Config here.
+	)
 
-		# Convert tracks from MP3 to OGG.
-		for File in *.mp3; { [ -f "$File" ] || continue; ffmpeg -v 8 -i\
-			"$File" "${File%.mp3}.ogg" && \rm "$File"; }
+	local FieldCount=0
+	local Field Pkg Group
+	for Field in $Chosen; do
+		FieldCount=$((FieldCount + 1))
 
-		# Remove video ID from filename.
-		for File in *.ogg; { \mv "$File" "${File%????????????????}.ogg"; }
-	}
-fi
+		case $FieldCount in
+			1) Pkg=$Field ;;
+			2) Group=${Field%)} ;;
+			*) break ;;
+		esac
+	done
 
-if type -P grep git &> /dev/null; then
-	pulloo(){ #: Personal function to `pull` in all my own repositories.
-		for Dir in "$HOME"/GitHub/terminalforlife/Personal/*; {
-			(
-				if cd "$Dir" 2> /dev/null; then
-					git --no-pager pull 2> /dev/null |
-						grep --color=never -vF 'Already up-to-date'
-				fi
-			)
-		}
-	}
-fi
+	man "${Group#(}" "$Pkg" 2> /dev/null
+}
 
-if type -P dmenu man &> /dev/null; then
-	# Function contains code I've written for and sent a PR to:
-	#
-	#   https://github.com/AlexChaplinBraz/dmenu-scripts
-	#
-	dman(){ #: Use Dmenu to interactively look for and display a man page.
-		Chosen=$(
-			man -k . 2> /dev/null | while read Pkg Group _ Desc; do
-				# The `#- ` bit fixes entries with botched short descriptions.
-				printf '%50s - %s\n' "$Pkg $Group" "${Desc#- }"
-			done | dmenu -i -l 30 -fn 'Ubuntu Mono':style=Bold:size=12\
-				-nb \#000000 -nf \#ffffff -sb \#550000 -sf \#ffffff
-				# Dmenu is using my customizations from i3Config here.
-		)
-
-		FieldCount=0
-		for Field in $Chosen; do
-			FieldCount=$((FieldCount + 1))
-
-			case $FieldCount in
-				1) Pkg=$Field ;;
-				2) Group=${Field%)} ;;
-				*) break ;;
-			esac
-		done
-
-		man "${Group#(}" "$Pkg" 2> /dev/null
-	}
-fi
-
-if type -P perl &> /dev/null; then
-	perlc(){ #: Perform a syntax check on all Perl scripts within the CWD.
-		local CurFile Line
-
-		for CurFile in ./*; {
-			if [ -f "$CurFile" ] && [ -r "$CurFile" ]; then
-				read Line < "$CurFile"
-
-				case $Line in
-					'#!/*/perl'*|'#!/*/env perl'*)
-						perl -c "$CurFile" ;;
-				esac
-			fi
-		}
-	}
-fi
-
-if [ -f /usr/lib/tflbp-sh/YNInput ]; then
-	yesno(){ #: Output a discreet one-line prompt, using libtflbp-sh's `YNInput()`.
-		(
-			. /usr/lib/tflbp-sh/YNInput
-			YNInput "$*" || return 1
-		)
-	}
-fi
-
-if type -P git &> /dev/null; then
-	touched(){ #: Tell the user how many commits have touched the given file(s).
-		for File in "$@"; {
-			if ! git rev-parse --is-inside-work-tree &> /dev/null; then
-				printf 'ERROR: Not inside a Git repository.\n' 1>&2
-				return 1
-			elif ! [ -e "$File" ]; then
-				printf "ERROR: '%s' doesn't exist.\n" "$File" 1>&2
-				return 1
-			fi
-
-			if [ -d "$File" ]; then
-				local FiDi='Directory'
-			elif [ -f "$File" ]; then
-				local FiDi='File'
-			fi
-
-			readarray Lines <<< "$(git rev-list HEAD "$File")"
-			printf "%s '%s' has been touched by %d commit(s).\n"\
-				"$FiDi" "$File" ${#Lines[@]}
-
-			unset File
-		}
-	}
-
-	pullupforks()( #: For all forks, pull upstream changes to the current branch.
-		if [ $UID -eq 1000 -a "$USER" == 'ichy' ]; then
-			GHForkDir="$HOME/GitHub/terminalforlife/Forks"
-		else
-			if [ -z "$1" ]; then
-				printf "ERROR: The GitHub username is required.\n"
-				return 1
-			else
-				# If not me, enter your GitHub forks path.
-				GHForkDir=${1%/}
-			fi
+touched(){ #: Tell the user how many commits have touched the given file(s).
+	for File in "$@"; {
+		if ! git rev-parse --is-inside-work-tree &> /dev/null; then
+			printf 'ERROR: Not inside a Git repository.\n' 1>&2
+			return 1
+		elif ! [ -e "$File" ]; then
+			printf "ERROR: '%s' doesn't exist.\n" "$File" 1>&2
+			return 1
 		fi
 
-		# Pull, from upstream, each directory (repository) in GHForkDir.
-		for CurDir in "$GHForkDir"/*; {
-			if [ -d "$CurDir" ]; then
-				cd "$CurDir" 2> /dev/null || continue
+		if [ -d "$File" ]; then
+			local FiDi='Directory'
+		elif [ -f "$File" ]; then
+			local FiDi='File'
+		fi
 
-				# If not a git repo, go back, then skip to next iteration.
-				if ! git rev-parse --is-inside-work-tree &> /dev/null; then
-					cd "$GHForkDir" 2> /dev/null || return 1
+		readarray Lines <<< "$(git rev-list HEAD "$File")"
+		printf "%s '%s' has been touched by %d commit(s).\n"\
+			"$FiDi" "$File" ${#Lines[@]}
+
+		unset File
+	}
+}
+
+pullupforks()( #: For all forks, pull upstream changes to the current branch.
+	if [ $UID -eq 1000 -a "$USER" == 'ichy' ]; then
+		GHForkDir="$HOME/GitHub/terminalforlife/Forks"
+	else
+		if [ -z "$1" ]; then
+			printf "ERROR: The GitHub username is required.\n"
+			return 1
+		else
+			# If not me, enter your GitHub forks path.
+			GHForkDir=${1%/}
+		fi
+	fi
+
+	# Pull, from upstream, each directory (repository) in GHForkDir.
+	for CurDir in "$GHForkDir"/*; {
+		if [ -d "$CurDir" ]; then
+			cd "$CurDir" 2> /dev/null || continue
+
+			# If not a git repo, go back, then skip to next iteration.
+			if ! git rev-parse --is-inside-work-tree &> /dev/null; then
+				cd "$GHForkDir" 2> /dev/null || return 1
+				continue
+			fi
+
+			# Get the current branch name.
+			IFS='/' read -a HeadArr < "$CurDir/.git/HEAD"
+			GitBranch=${HeadArr[${#HeadArr[@]}-1]}
+
+			if [ -z "$GitBranch" ]; then
+				# If above fails, try old method.
+				while read -ra CurLine; do
+					if [[ ${CurLine[@]} == \*\ * ]]; then
+						GitBranch=${CurLine[1]}
+						break
+					fi
+				done <<< "$(git branch 2> /dev/null)"
+			fi
+
+			# If offline repo, above won't work, try:
+			if [ -z "$GitBranch" ]; then
+				read -a GitBranch <<< "$GitStatus"
+				GitBranch=${GitBranch[2]}
+
+				# If all else fails, bail.
+				if [ -z "$GitBranch" ]; then
+					printf "ERROR: Branch name detection failed.\n"
 					continue
 				fi
-
-				# Get the current branch name.
-				IFS='/' read -a HeadArr < "$CurDir/.git/HEAD"
-				GitBranch=${HeadArr[${#HeadArr[@]}-1]}
-
-				if [ -z "$GitBranch" ]; then
-					# If above fails, try old method.
-					while read -ra CurLine; do
-						if [[ ${CurLine[@]} == \*\ * ]]; then
-							GitBranch=${CurLine[1]}
-							break
-						fi
-					done <<< "$(git branch 2> /dev/null)"
-				fi
-
-				# If offline repo, above won't work, try:
-				if [ -z "$GitBranch" ]; then
-					read -a GitBranch <<< "$GitStatus"
-					GitBranch=${GitBranch[2]}
-
-					# If all else fails, bail.
-					if [ -z "$GitBranch" ]; then
-						printf "ERROR: Branch name detection failed.\n"
-						continue
-					fi
-				fi
-
-				printf "Repository '%s' updating... " "${CurDir##*/}"
-
-				if git --no-pager pull upstream "$GitBranch" &> /dev/null; then
-					printf "[\e[1;32mOK\e[0m]\n"
-				else
-					printf "[\e[1;31mERR\e[0m]\n"
-				fi
 			fi
 
-			unset CurDir GHForkDir GitBranch GitStatus HeadArr
-		}
-	)
-fi
+			printf "Repository '%s' updating... " "${CurDir##*/}"
 
-if type -P dmenu &> /dev/null; then
-	dnote(){ #: Save a note to the desktop, using a simple form of dmenu.
-		local File="$HOME/Desktop/Saved Notes.txt"
-		if ! [ -f "$File" ]; then
-			> "$File"
-		else
-			if ! [ -w "$File" ]; then
-				printf "ERROR: No write access to notes file.\n"
-				return 1
+			if git --no-pager pull upstream "$GitBranch" &> /dev/null; then
+				printf "[\e[1;32mOK\e[0m]\n"
+			else
+				printf "[\e[1;31mERR\e[0m]\n"
 			fi
 		fi
 
-		local NOTE=`printf '' | dmenu -p 'NOTE:' -l 1`
-		if [ -z "$NOTE" ]; then
-			printf "ERROR: Cannot save an empty note.\n"
-			return 1
-		else
-			printf "%(%F_%X)T: %s\n" -1 "$NOTE" >> "$File"
-		fi
+		unset CurDir GHForkDir GitBranch GitStatus HeadArr
 	}
-fi
+)
 
-if type -P grep uniq sed &> /dev/null; then
-	gitgrep(){ #: Execute a configured grep command in git context.
-		grep -sIr --exclude-dir='.git' --exclude='LICENSE' --exclude='README.md'\
-			--exclude={.bash{_{aliases,functions,logout,profile},rc},{,.}inputrc,inputrc}\
-			--exclude='*.'{mp3,jpg,ogg,png,deb,xml} --color=auto "$@"
-	}
-
-	noab(){ #: No absolutes for executables found in PATH directories and the given file.
-		if ! [ -f "$1" -a -r "$1" -a -w "$1" ]; then
-			printf "ERROR: File missing or insufficient permissions.\n"
+dnote(){ #: Save a note to the desktop, using a simple form of dmenu.
+	local File="$HOME/Desktop/Saved Notes.txt"
+	if ! [ -f "$File" ]; then
+		> "$File"
+	else
+		if ! [ -w "$File" ]; then
+			printf "ERROR: No write access to notes file.\n"
 			return 1
 		fi
-
-		printf "WARNING: The file will be irreversibly changed!\n"
-		read -n 1 -e -p "Press any key to continue, or Ctrl+C to cancel... "
-
-		P=(`grep -Eo "(${PATH//://|})[a-Z0-9_-]+" "$1" 2> /dev/null | uniq 2> /dev/null`)
-		for F in ${P[@]}; { sed -i "s|$F |${F##*/} |g" "$1" 2> /dev/null; }
-	}
-fi
-
-if type -P awk &> /dev/null; then
-	# Inspired by 'paperbenni' on GitHub.
-	if type -P sha256sum &> /dev/null || type -P md5sum &> /dev/null; then
-		hash() { #: Fetch and compare the sha256 sums of two or more files.
-			local I=`awk '{!A[$1]++} END{print(NR)}' <(sha256sum "$@" 2> /dev/null)`
-			if [ $I -eq 0 ]; then
-				printf "Usage: hash [FILE_1] [FILE_2] ...\n" >&2
-				return 2
-			elif [ $I -eq 1 ]; then
-				return 1
-			fi
-		}
-	elif type -P md5sum &> /dev/null; then
-		hash() { #: Fetch and compare the md5 sums of two or more files.
-			local I=`awk '{!A[$1]++} END{print(NR)}' <(md5sum "$@" 2> /dev/null)`
-			if [ $I -eq 0 ]; then
-				printf "Usage: hash [FILE_1] [FILE_2] ...\n" >&2
-				return 2
-			elif [ $I -eq 1 ]; then
-				return 1
-			fi
-		}
 	fi
 
-	topmem(){ #: Nice, clean output showing the top 50 memory-hogging processes.
-		awk "
-			{
-				M=\$1/1024
-				if(NR<50 && M>1){
-					printf(\"%'7dM %s\\n\", M, \$2)
-				}
-			}
-		" <<< "$(\ps ax -o rss= -o comm= --sort -rss)"
-	}
-
-	sc(){ #: Perform mathematical calculations via AWK.
-		awk -SP "BEGIN{print($@)}" 2> /dev/null
-	}
-fi
-
-if type -P feh &> /dev/null; then
-	bgtest(){ #: Cyclically test-run all CWD JPGs as a background.
-		declare -i NUM=0
-		for CurFile in *$1*.jpg; {
-			[ -f "$CurFile" ] || continue
-			NUM+=1; [ $NUM -lt $2 ] && continue
-
-			printf "\r%${COLUMNS}s\r%d: %s" ' ' "$NUM"  "$CurFile"
-			feh --bg-center "$CurFile"
-			read -n 1 -s
-		}
-
-		[ $NUM == 0 ] || printf "\n"
-
-		unset CurFile
-	}
-fi
-
-if type -P mplayer &> /dev/null; then
-	mpvi(){ #: In i3-wm, play a video inside the active window.
-		tput smcup
-		tput clear
-
-		WID=`xprop -root _NET_ACTIVE_WINDOW | cut -d "#" -f 2`
-		mplayer -msglevel "all=-1" -nolirc -wid "$WID" "$@" &> /dev/null
-
-		# Addresses bug. The window will otherwise fill with last frame.
-		wait; tput rmcup
-
-		unset WID
-	}
-
-	if type -P youtube-dl &> /dev/null; then
-		syt(){ #: Stream a YouTube video directly into MPlayer.
-			youtube-dl "$1" -o - 2> /dev/null | mplayer -vo x11 -nomouseinput\
-				-noar -nojoystick -nogui -zoom -nolirc -really-quiet - &> /dev/null
-		}
+	local NOTE=`printf '' | dmenu -p 'NOTE:' -l 1`
+	if [ -z "$NOTE" ]; then
+		printf "ERROR: Cannot save an empty note.\n"
+		return 1
+	else
+		printf "%(%F_%X)T: %s\n" -1 "$NOTE" >> "$File"
 	fi
-fi
+}
 
-if type -P column &> /dev/null; then
-	builtins(){ #: Display a columnized list of bash builtins.
-		while read -r; do
-			printf "%s\n" "${REPLY/* }"
-		done <<< "$(enable -a)" | column
-	}
-fi
+gitgrep(){ #: Execute a configured grep command in git context.
+	grep -sIr --exclude-dir='.git' --exclude='LICENSE' --exclude='README.md'\
+		--exclude={.bash{_{aliases,functions,logout,profile},rc},{,.}inputrc,inputrc}\
+		--exclude='*.'{mp3,jpg,ogg,png,deb,xml} --color=auto "$@"
+}
 
-if type -P xdpyinfo &> /dev/null; then
-	dpi(){ #: Display the current DPI setting.
-		while read -a X; do
-			if [ "${X[0]}" == "resolution:" ]; then
-				printf "%s\n" "${X[1]/*x}"
-			fi
-		done <<< "$(xdpyinfo)"
-	}
-fi
-
-if type -P sensors &> /dev/null; then
-	showfans(){ #: Show the available system fan speeds using sensors.
-		while read; do
-			if [[ $REPLY == *[Ff][Aa][Nn]*RPM ]]; then
-				printf "%s\n" "$REPLY"
-			fi
-		done <<< "$(sensors)"
-	}
-fi
-
-if [ -f /etc/os-release -a -r /etc/os-release ]; then
-	distro(){ #: Get and display the distribution type.
-		while read -a CurLine; do
-			if [[ ${CurLine[0]} == ID_LIKE=* ]]; then
-				printf "%s\n" "${CurLine[0]/*=}"; break
-			elif [[ ${CurLine[0]} == ID=* ]]; then
-				printf "%s\n" "${CurLine[0]/*=}"; break
-			fi
-		done < /etc/os-release
-
-		unset CurLine
-	}
-fi
-
-if type -P clamscan tee &> /dev/null; then
-	scan(){ #: Scan the CWD with clamscan. Logs in: ~/.scan_func.log
-		printf 'Scanning...\n'
-
-		clamscan --bell -zor --detect-pua=yes --detect-structured=no\
-			--structured-cc-count=3 --block-macros=yes --phishing-ssl=yes\
-			--structured-ssn-count=3 --phishing-cloak=yes --cross-fs=no\
-			--partition-intersection=yes &> "$HOME/.scan_func.log"
-
-		while IFS=':' read Key Value; do
-			case $Key in
-				'Infected files') Infected=${Value//[!0-9]} ;;
-			esac
-		done < "$HOME/.scan_func.log"
-
-		if [ $Infected -eq 0 ]; then
-			printf '\e[1;32mNothing found.\e[0m\n'
-		else
-			printf '\e[1;31mFound %d infection(s)!\e[0m\n' $Infected
-		fi
-	}
-fi
-
-# Display a random note line from command notes.
-if [ "$USER" == 'ichy' -a $UID -eq 1000 ]; then
-	if type -P sed grep shuf &> /dev/null; then
-		if [ -f "$HOME/Documents/TT/Useful_Commands" ]; then
-			getrandomnote(){ #: Display a random note line from command notes.
-				local InFile="$HOME/Documents/TT/Useful_Commands";
-				if [ -f "$InFile" ] && [ -r "$InFile" ]; then
-					# POSIX-ly incorrectly, sadly, because of `length()` on arrays.
-					awk -S -v Rand="$RANDOM" '
-						{
-							if($1~/^#END$/&&NR>10){
-								exit 0
-							}else if($1!~/^(#|$)/){
-								Array[$0]++
-							}
-						}
-
-						END {
-							Count=0
-							for(Index in Array){
-								Count++
-								if(Count==Rand%length(Array)){
-									printf("%s\n", Index)
-									break
-								}
-							}
-						}
-					' "$InFile"
-				fi
-			}
-		fi
+noab(){ #: No absolutes for executables found in PATH directories and the given file.
+	if ! [ -f "$1" -a -r "$1" -a -w "$1" ]; then
+		printf "ERROR: File missing or insufficient permissions.\n"
+		return 1
 	fi
-fi
 
-if type -P dpkg &> /dev/null; then
-	lsrc(){ #: Search for and list all 'rc' packages detected by dpkg.
-		if [ $# -ne 0 ]; then
-			printf 'ERROR: No arguments required.\n'
+	printf "WARNING: The file will be irreversibly changed!\n"
+	read -n 1 -e -p "Press any key to continue, or Ctrl+C to cancel... "
+
+	P=(`grep -Eo "(${PATH//://|})[a-Z0-9_-]+" "$1" 2> /dev/null | uniq 2> /dev/null`)
+	for F in ${P[@]}; { sed -i "s|$F |${F##*/} |g" "$1" 2> /dev/null; }
+}
+
+# Inspired by 'paperbenni' on GitHub.
+if type -P sha256sum &> /dev/null || type -P md5sum &> /dev/null; then
+	hash() { #: Fetch and compare the sha256 sums of two or more files.
+		local I=`awk '{!A[$1]++} END{print(NR)}' <(sha256sum "$@" 2> /dev/null)`
+		if [ $I -eq 0 ]; then
+			printf "Usage: hash [FILE_1] [FILE_2] ...\n" >&2
+			return 2
+		elif [ $I -eq 1 ]; then
 			return 1
 		fi
-
-		declare -a Total
-		while read F1 F2 _; do
-			[ "$F1" == 'rc' ] && Total+="$F2"
-		done <<< "$(dpkg -l)"
-
-		if [ ${#Total} -gt 0 ]; then
-			printf '%s\n' $Total
-		else
-			printf 'No packages found.\n' 2>&1
+	}
+elif type -P md5sum &> /dev/null; then
+	hash() { #: Fetch and compare the md5 sums of two or more files.
+		local I=`awk '{!A[$1]++} END{print(NR)}' <(md5sum "$@" 2> /dev/null)`
+		if [ $I -eq 0 ]; then
+			printf "Usage: hash [FILE_1] [FILE_2] ...\n" >&2
+			return 2
+		elif [ $I -eq 1 ]; then
+			return 1
 		fi
-
-		unset F1 F2 _
 	}
 fi
 
-# Get the display's resolution.
+sc(){ #: Perform mathematical calculations via AWK.
+	awk -SP "BEGIN {print($*)}" 2> /dev/null
+}
+
+mpvi(){ #: In i3-wm, play a video inside the active window.
+	tput smcup
+	tput clear
+
+	WID=`xprop -root _NET_ACTIVE_WINDOW | cut -d "#" -f 2`
+	mplayer -msglevel "all=-1" -nolirc -wid "$WID" "$@" &> /dev/null
+
+	# Addresses bug. The window will otherwise fill with last frame.
+	wait; tput rmcup
+
+	unset WID
+}
+
+syt(){ #: Stream a YouTube video directly into MPlayer.
+	youtube-dl "$1" -o - 2> /dev/null | mplayer -vo x11 -nomouseinput\
+		-noar -nojoystick -nogui -zoom -nolirc -really-quiet - &> /dev/null
+}
+
+builtins(){ #: Display a columnized list of bash builtins.
+	while read -r; do
+		printf "%s\n" "${REPLY/* }"
+	done <<< "$(enable -a)" | column
+}
+
+dpi(){ #: Display the current DPI setting.
+	while read -a X; do
+		if [ "${X[0]}" == "resolution:" ]; then
+			printf "%s\n" "${X[1]/*x}"
+		fi
+	done <<< "$(xdpyinfo)"
+}
+
+fans(){ #: Show the available system fan speeds using sensors.
+	while read; do
+		if [[ $REPLY == *[Ff][Aa][Nn]*RPM ]]; then
+			printf "%s\n" "$REPLY"
+		fi
+	done <<< "$(sensors)"
+}
+
+scan(){ #: Scan the CWD with clamscan. Logs in: ~/.scan_func.log
+	printf 'Scanning...\n'
+
+	clamscan --bell -zor --detect-pua=yes --detect-structured=no\
+		--structured-cc-count=3 --block-macros=yes --phishing-ssl=yes\
+		--structured-ssn-count=3 --phishing-cloak=yes --cross-fs=no\
+		--partition-intersection=yes &> "$HOME/.scan_func.log"
+
+	while IFS=':' read Key Value; do
+		case $Key in
+			'Infected files') Infected=${Value//[!0-9]} ;;
+		esac
+	done < "$HOME/.scan_func.log"
+
+	if [ $Infected -eq 0 ]; then
+		printf '\e[1;32mNothing found.\e[0m\n'
+	else
+		printf '\e[1;31mFound %d infection(s)!\e[0m\n' $Infected
+	fi
+}
+
+lsrc(){ #: Search for and list all 'rc' packages detected by dpkg.
+	if [ $# -ne 0 ]; then
+		printf 'ERROR: No arguments required.\n'
+		return 1
+	fi
+
+	declare -a Total
+	while read F1 F2 _; do
+		[ "$F1" == 'rc' ] && Total+="$F2"
+	done <<< "$(dpkg -l)"
+
+	if [ ${#Total} -gt 0 ]; then
+		printf '%s\n' $Total
+	else
+		printf 'No packages found.\n' 2>&1
+	fi
+
+	unset F1 F2 _
+}
+
 if type -P xwininfo &> /dev/null; then
 	getres(){ #: Two viable methods for fetching the display resolution.
 		while read -a LINE; do
@@ -464,138 +313,69 @@ suppress(){ #: Execute command ($1) and omit specified ($2) output.
 	return ${PIPESTATUS[0]}
 }
 
-# Search for & output files not found which were installed with a given package.
-if type -P dpkg-query &> /dev/null; then
-	missingpkgfiles(){ #: Check for missing files installed from a given package(s).
-		while read X; do
-			[ -e "$X" -a "$X" ] || printf '%s\n' "$X"
-		done <<< "$(dpkg-query -L "$@")"
-
-		unset X
-	}
-
-	getpkgvers(){ #: Fetch a package and version list for Debian package building.
-		dpkg-query -Wf '${Package} (${Version}), ' "$@" | sed -r 's/,{1}\s+$/\n/; s/\(/\(>= /g; s/ubuntu[0-9].[0-9]\)/\)/g'
-	}
-fi
-
-# The ago function is a handy way to output some of the apt-get's -o options.
-if type -P apt-get zcat &> /dev/null; then
-	ago(){ #: List out various apt-get options for the -o flag.
-		while read F1 _; do
-			case $F1 in
-				*::*)
-					New=${F1//[&,.]}
-
-					[ "$New" == "$Old" ] && continue
-					printf '%s\n' "$New"
-
-					Old=$New ;;
-			esac
-		done <<< "$(zcat /usr/share/man/man8/apt-get.8.gz)"
-
-		unset New Old F1 _
-	}
-fi
-
-# Search the given path(s) for file types of TYPE. Ignores filename extension.
-if type -P mimetype &> /dev/null; then
-	sif(){ #: Search given path(s) for files of a specified type.
-		[ $# -eq 0 ] && printf 'Usage: sif [Type] [FILE_1 [FILE_2 ...]]\n' 1>&2
-
-		Type=$1
-		shift
-
-		for CurFile in "$@"; {
-			while read -a X; do
-				for I in "${X[@]}"; {
-					case $I in
-						"$Type") printf '%s\n' "$CurFile" ;;
-					esac
-				}
-			done <<< "$(mimetype -bd "$CurFile")"
-		}
-
-		unset Type CurFile X I
-	}
-fi
-
-# Display the total data downloaded and uploaded on a given interface.
-if [ -f /proc/net/dev ]; then
-	inout(){ #: Display total network data transfer this session.
-		local X
-		while read -a X; do
-			if [ "${X[0]}" == "${1}:" ]; then
-				declare -i IN=${X[1]}
-				declare -i OUT=${X[9]}
-				break
-			fi
-		done < /proc/net/dev
-
-		printf "IN:  %'14dK\nOUT: %'14dK\n" "$((IN/1024))" "$((OUT/1024))"
-	}
-fi
-
-if [ -f /etc/passwd ]; then
-	lsusers(){ #: List users on the system, according to '/etc/passwd'.
-		printf "%-20s %-7s %-7s %-25s %s\n"\
-			"USERNAME" "UID" "GID" "HOME" "SHELL"
-
-		local X
-		while IFS=':' read -a X; do
-			if [ "$1" == "--nosys" ]; then
-				# It's possible some users might show up if they mistakenly
-				# were given a HOME, but '--nosys' should otherwise work.
-				if [[ ${X[5]/\/home\/syslog} == /home/* ]]; then
-					printf "%-20s %-7d %-7d %-25s %s\n"\
-						"${X[0]}" "${X[2]}" "${X[3]}"\
-						"${X[5]}" "${X[6]}"
-				fi
-			else
-				printf "%-20s %-7d %-7d %-25s %s\n" "${X[0]}"\
-					"${X[2]}" "${X[3]}" "${X[5]}" "${X[6]}"
-			fi
-		done < /etc/passwd
-	}
-fi
-
-squo(){ #: Surround ($@) text in single quotation marks.
-	printf "'%s'\n\" \"\$*"
+getpkgvers(){ #: Fetch a package and version list for Debian package building.
+	dpkg-query -Wf '${Package} (${Version}), ' "$@" |
+		sed -r 's/,{1}\s+$/\n/; s/\(/\(>= /g; s/ubuntu[0-9].[0-9]\)/\)/g'
 }
 
-dquo(){ #: Surround ($@) text in double quotation marks.
-	printf "\"%s\"\n" "$*"
+inout(){ #: Display total network data transfer this session.
+	local X
+	while read -a X; do
+		if [ "${X[0]}" == "$1:" ]; then
+			declare -i IN=${X[1]}
+			declare -i OUT=${X[9]}
+			break
+		fi
+	done < /proc/net/dev
+
+	printf "IN:  %'14dK\nOUT: %'14dK\n" "$((IN/1024))" "$((OUT/1024))"
 }
 
-if type -P links2 &> /dev/null; then
-	l2(){ #: A tweaked links2 experience, allowing for quick DuckDuckGo searches.
-		links2 -http.do-not-track 1 -html-tables 1 -html-numbered-links 1\
-			http://duckduckgo.com/?q="$*"
-	}
-fi
+lsusers(){ #: List users on the system, according to '/etc/passwd'.
+	printf "%-20s %-7s %-7s %-25s %s\n" "USERNAME" "UID" "GID" "HOME" "SHELL"
 
-if type -P less wget awk &> /dev/null; then
-	gp(){ #: Dump formatted HTML output from a Perl Gtk2 reference page.
-		URL="http://gtk2-perl.sourceforge.net/doc/pod/Gtk2/$1.html"
+	local X
+	while IFS=':' read -a X; do
+		if [ "$1" == "--nosys" ]; then
+			# It's possible some users might show up if they mistakenly
+			# were given a HOME, but '--nosys' should otherwise work.
+			if [[ ${X[5]/\/home\/syslog} == /home/* ]]; then
+				printf "%-20s %-7d %-7d %-25s %s\n"\
+					"${X[0]}" "${X[2]}" "${X[3]}"\
+					"${X[5]}" "${X[6]}"
+			fi
+		else
+			printf "%-20s %-7d %-7d %-25s %s\n" "${X[0]}"\
+				"${X[2]}" "${X[3]}" "${X[5]}" "${X[6]}"
+		fi
+	done < /etc/passwd
+}
 
-		case $1 in
-			*\ *|'')
-				printf 'ERROR: Invalid reference page provided.\n' 1>&2
-				return 1 ;;
-			*)
-				if ! wget -q --spider "$URL"; then
-					printf 'ERROR: Provided reference page not found.\n' 1>&2
-					return 1
-				fi ;;
-		esac
+l2(){ #: A tweaked links2 experience, allowing for quick DuckDuckGo searches.
+	links2 -http.do-not-track 1 -html-tables 1 -html-numbered-links 1\
+		http://duckduckgo.com/?q="$*"
+}
 
-		links2 -dump -html-tables 1 -html-frames 1\
-			-http.do-not-track 1 "$URL"\
-			| awk 'NR>=3 {print($0)}' | \less -Fs
+gp(){ #: Dump formatted HTML output from a Perl Gtk2 reference page.
+	URL="http://gtk2-perl.sourceforge.net/doc/pod/Gtk2/$1.html"
 
-		unset URL
-	}
-fi
+	case $1 in
+		*\ *|'')
+			printf 'ERROR: Invalid reference page provided.\n' 1>&2
+			return 1 ;;
+		*)
+			if ! wget -q --spider "$URL"; then
+				printf 'ERROR: Provided reference page not found.\n' 1>&2
+				return 1
+			fi ;;
+	esac
+
+	links2 -dump -html-tables 1 -html-frames 1\
+		-http.do-not-track 1 "$URL"\
+		| awk 'NR>=3 {print($0)}' | \less -Fs
+
+	unset URL
+}
 
 # Prompt to somewhat programmatically rename each file within the current
 # directory. To skip one, simply submit an empty string. Output is fairly
@@ -603,49 +383,45 @@ fi
 # Uses color in output to make it quick and easy to read; may not work on all
 # terminals. The changes are made the moment you press Enter, so be mindful!
 # Ctrl + C to cancel. Use OPT -d or --directories to instead match those.
-if type -P mv &> /dev/null; then
-	brn(){ #: Batch-rename a bunch of files or directories.
-		printf "NOTE: To match directories instead, use -d|--directories OPTs.\n"
+brn(){ #: Batch-rename a bunch of files or directories.
+	printf "NOTE: To match directories instead, use -d|--directories OPTs.\n"
 
-		while [ "$1" ]; do
-			case $1 in
-				--directories|-d)
-					UseDirs='true' ;;
-				'')
-					;;
-				*)
-					printf "ERROR: Incorrect argument(s) specified." ;;
-			esac
-			shift
-		done
+	while [ "$1" ]; do
+		case $1 in
+			--directories|-d)
+				UseDirs='true' ;;
+			'')
+				;;
+			*)
+				printf "ERROR: Incorrect argument(s) specified." ;;
+		esac
+		shift
+	done
 
-		declare -i NUM=0
-		for CurFile in *; {
-			if { ! [ "$UseDirs" == "true" ] && [ -f "$CurFile" ]; }\
-			|| { [ "$UseDirs" == "true" ] && [ -d "$CurFile" ]; }; then
-				NUM+=1
-				printf "\e[2;31mCurFile:\e[0m %s\n" "$CurFile"
+	declare -i NUM=0
+	for CurFile in *; {
+		if { ! [ "$UseDirs" == "true" ] && [ -f "$CurFile" ]; }\
+		|| { [ "$UseDirs" == "true" ] && [ -d "$CurFile" ]; }; then
+			NUM+=1
+			printf "\e[2;31mCurFile:\e[0m %s\n" "$CurFile"
 
-				read -ep " >> "
-				if [ "$REPLY" ]; then
-					if mv "$CurFile" "$REPLY" 2> /dev/null; then
-						printf "\e[2;32mItem #%d successfully renamed.\e[0m\n" $NUM
-					else
-						printf "\e[2;31mUnable to rename item #%d.\e[0m\n" $NUM
-					fi
+			read -ep " >> "
+			if [ "$REPLY" ]; then
+				if mv "$CurFile" "$REPLY" 2> /dev/null; then
+					printf "\e[2;32mItem #%d successfully renamed.\e[0m\n" $NUM
+				else
+					printf "\e[2;31mUnable to rename item #%d.\e[0m\n" $NUM
 				fi
 			fi
-		}
+		fi
 	}
-fi
+}
 
-if type -P espeak &> /dev/null; then
-	sayit(){ #: Say something with espeak; good for quick alerts.
-		espeak -v en-scottish -g 5 -p 13 -s 0.7 "$*"
-	}
+sayit(){ #: Say something with espeak; good for quick alerts.
+	espeak -v en-scottish -g 5 -p 13 -s 0.7 "$*"
+}
 
-	readit(){ #: Read a text file with espeak.
-		{ [ -f "$*" ] && [ -r "$*" ]; } || return 1
-		espeak -v en-scottish -g 5 -p 13 -s 0.7 < "$*"
-	}
-fi
+readit(){ #: Read a text file with espeak.
+	{ [ -f "$*" ] && [ -r "$*" ]; } || return 1
+	espeak -v en-scottish -g 5 -p 13 -s 0.7 < "$*"
+}

@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.profile
 # Started On        - Thu 14 Sep 20:09:24 BST 2017
-# Last Change       - Mon  3 Feb 04:47:28 GMT 2020
+# Last Change       - Tue  8 Dec 04:18:28 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -25,7 +25,7 @@ fi
 if eval `ssh-agent -s` 1> /dev/null; then
 	# Only want to add keys on an SSH client, not the server.
 	if [ "$HOSTNAME" == 'Z11' ]; then
-		[ -z "$SSH_TTY" ] && ssh-add "$HOME/.ssh/rsa_ss" "$HOME/.ssh/rsa_sam"
+		[ -z "$SSH_TTY" ] && ssh-add "$HOME"/.ssh/rsa_{ss,sam,vm}
 	elif [ "$HOSTNAME" == 'Sam' ]; then
 		[ -z "$SSH_TTY" ] && ssh-add "$HOME/.ssh/rsa_gitsam"
 	fi
