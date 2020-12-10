@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Thu 10 Dec 03:35:22 GMT 2020
+# Last Change       - Thu 10 Dec 04:17:46 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -20,7 +20,6 @@ alias shortcd='for I in {30..0}; { { espeak -a 50 -s 300 -p 0 "$I" & sleep 1; } 
 alias uplinks='cd "$HOME/GitHub/terminalforlife/Personal" && for File in {Extra,BashConfig,i3Config,VimConfig}/devutils/links.sh; { sh "$File"; }; cd -' #: Personal scripts for updating my GitHub-related hard links.
 alias bat='read < /sys/class/power_supply/BAT1/capacity; printf "Battery is at %d%% capacity.\n" "$REPLY"' #: Output the percentage of battery power remaining.
 alias getsecs='awk "!Z[\$1]++" <<< "$(dpkg-query -Wf "\${Section}\\n" "*")" | column' #: List Debian package sections, per installed packages.
-alias sh='yash -o posixlycorrect' #: Instead of executing dash, go for the more POSIX-compliant yash.
 alias psf='ps -faxc -U $UID -o pid,uid,gid,pcpu,pmem,stat,comm' #: Less excessive, current-user-focused ps alternative.
 alias apt-get='apt-get -q -o Dpkg::Progress=true -o Dpkg::Progress-Fancy=true -o APT::Get::AutomaticRemove=true ' #: Much nicer output for the apt-get command.
 alias rm='rm -v'
@@ -40,6 +39,13 @@ alias get='wget -qc --show-progress' #: Download with WGet with pretty and usefu
 alias joke='wget -U "curl/7.55.1" -qO - https://icanhazdadjoke.com; printf "\n"' #: Output a random joke from the web.
 alias alertme='for I in {1..3}; { sleep 0.03s; printf "\a\e[?5h"; sleep 0.03s; printf "\a\e[?5l"; }' #: Sound the bell and flash the terminal (white) thrice.
 alias dwatch='watch -n 0.1 -t "ls -SsCphq --color=auto --group-directories-first"' #: Watche a directory for changes in size and number of files.
+alias add='git add'
+alias checkout='git checkout'
+alias pull='git pull'
+alias commit='git commit'
+alias merge='git merge'
+alias branch='git branch'
+alias push='git push'
 alias toplevel='cd "$(git rev-parse --show-toplevel)"' #: Change to the top-most level of the current Git repository.
 alias log="git --no-pager log --reverse --pretty=format:'%CredCommit %Cgreen%h%Cred pushed %ar by %Cgreen%an%Creset%Cred:%Creset%n\"%s\"%n' 2> /dev/null":log
 alias show="git --no-pager show --pretty=format:'%CredCommit %Cgreen%h%Cred pushed %ar by %Cgreen%an%Creset%Cred:%Creset%n\"%s\"%n'"

@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Thu 10 Dec 02:56:16 GMT 2020
+# Last Change       - Thu 10 Dec 04:27:12 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -26,7 +26,18 @@ readarray T < /etc/lsb-release
 [ "${T[2]#*=}" == bionic$'\n' ] && R=4 || R=3
 
 # Yep, super-simple prompt, now.
-PS1="\$ "
+PromptParser(){
+	Branch=`git rev-parse --symbolic-full-name HEAD 2> /dev/null`
+
+	if [ -z "$Branch" ]; then
+		PS1="\$ "
+	else
+		# I need to see which branch I'm on in-case I mess with the wrong one.
+		PS1=" <\[\e[1;32m\]${Branch##*/}\[\e[0m\]> \$ "
+	fi
+}
+
+PROMPT_COMMAND='PromptParser'
 
 export HISTTIMEFORMAT='[%F_%X]: '
 export HISTCONTROL='ignoreboth'
