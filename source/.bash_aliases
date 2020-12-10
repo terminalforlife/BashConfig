@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Thu 10 Dec 04:17:46 GMT 2020
+# Last Change       - Thu 10 Dec 04:38:18 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -46,6 +46,7 @@ alias commit='git commit'
 alias merge='git merge'
 alias branch='git branch'
 alias push='git push'
+alias diff='git diff'
 alias toplevel='cd "$(git rev-parse --show-toplevel)"' #: Change to the top-most level of the current Git repository.
 alias log="git --no-pager log --reverse --pretty=format:'%CredCommit %Cgreen%h%Cred pushed %ar by %Cgreen%an%Creset%Cred:%Creset%n\"%s\"%n' 2> /dev/null":log
 alias show="git --no-pager show --pretty=format:'%CredCommit %Cgreen%h%Cred pushed %ar by %Cgreen%an%Creset%Cred:%Creset%n\"%s\"%n'"
