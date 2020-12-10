@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Thu 10 Dec 04:27:12 GMT 2020
+# Last Change       - Thu 10 Dec 04:36:03 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -32,8 +32,17 @@ PromptParser(){
 	if [ -z "$Branch" ]; then
 		PS1="\$ "
 	else
+		Status=`git status -s 2> /dev/null`
+
 		# I need to see which branch I'm on in-case I mess with the wrong one.
-		PS1=" <\[\e[1;32m\]${Branch##*/}\[\e[0m\]> \$ "
+		if [ -z "$Status" ]; then
+			PS1=" \[\e[2;37m\]<\[\e[0m\]\[\e[1;32m\]"
+			PS1+="${Branch##*/}\[\e[0m\]\[\e[2;37m\]>\[\e[0m\] \$ "
+		else
+			# Red branch name if there's something to do. Simple?
+			PS1=" \[\e[2;37m\]<\[\e[0m\]\[\e[1;31m\]"
+			PS1+="${Branch##*/}\[\e[0m\]\[\e[2;37m\]>\[\e[0m\] \$ "
+		fi
 	fi
 }
 
