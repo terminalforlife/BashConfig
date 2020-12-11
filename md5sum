@@ -1,7 +1,7 @@
 db99a9063cd0f5dc12f4baeb84c25781  devutils/links.sh
-8e7f7495abce48dcf218aff847d283ba  source/.bash_aliases
+0b523bb39746478fc9f88cad1783f371  source/.bash_aliases
 a6b284d8fe2fcfd72af3fbf6a36438fb  source/.bash_functions
-0bb009e78a8c4b9644f1c36a285da427  source/.bashrc
+c3b1df6c0af6bd63c8ad809feb0fe164  source/.bashrc
 fb2610e049eb0ef29e1b789c093d4e1e  source/.inputrc
 66d34fd0375905c719717cdadcec418a  source/lad
 8f07e69e6411c55a351a1749e2f4125e  source/.profile

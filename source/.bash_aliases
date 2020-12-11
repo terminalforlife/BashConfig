@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Thu 10 Dec 04:38:18 GMT 2020
+# Last Change       - Fri 11 Dec 20:22:37 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -15,9 +15,10 @@
 [ "$BASH_VERSION" ] || return 1
 
 alias sudo="sudo " #: Allows for aliases to work with sudo.
+alias hsh='bash $HOME/Documents/TT/bin/sweep'
 alias lenchk='bash "$HOME"/GitHub/terminalforlife/Forks/cheat.sheets/tests/lenchk' #: Tester tool I wrote for Chubin's cheat.sh project on GitHub.
 alias shortcd='for I in {30..0}; { { espeak -a 50 -s 300 -p 0 "$I" & sleep 1; } &> /dev/null; }' #: ESpeak counts down 30s; was thinking of using this for YouTube.
-alias uplinks='cd "$HOME/GitHub/terminalforlife/Personal" && for File in {Extra,BashConfig,i3Config,VimConfig}/devutils/links.sh; { sh "$File"; }; cd -' #: Personal scripts for updating my GitHub-related hard links.
+alias uplinks='cd "$HOME/GitHub/terminalforlife/Personal" && for File in {Extra,BashConfig,i3Config,VimConfig,BSPWMConfig}/devutils/links.sh; { sh "$File"; }; cd -' #: Personal scripts for updating my GitHub-related hard links.
 alias bat='read < /sys/class/power_supply/BAT1/capacity; printf "Battery is at %d%% capacity.\n" "$REPLY"' #: Output the percentage of battery power remaining.
 alias getsecs='awk "!Z[\$1]++" <<< "$(dpkg-query -Wf "\${Section}\\n" "*")" | column' #: List Debian package sections, per installed packages.
 alias psf='ps -faxc -U $UID -o pid,uid,gid,pcpu,pmem,stat,comm' #: Less excessive, current-user-focused ps alternative.
@@ -48,7 +49,7 @@ alias branch='git branch'
 alias push='git push'
 alias diff='git diff'
 alias toplevel='cd "$(git rev-parse --show-toplevel)"' #: Change to the top-most level of the current Git repository.
-alias log="git --no-pager log --reverse --pretty=format:'%CredCommit %Cgreen%h%Cred pushed %ar by %Cgreen%an%Creset%Cred:%Creset%n\"%s\"%n' 2> /dev/null":log
+alias log="git --no-pager log --reverse --pretty=format:'%CredCommit %Cgreen%h%Cred pushed %ar by %Cgreen%an%Creset%Cred:%Creset%n\"%s\"%n' 2> /dev/null"
 alias show="git --no-pager show --pretty=format:'%CredCommit %Cgreen%h%Cred pushed %ar by %Cgreen%an%Creset%Cred:%Creset%n\"%s\"%n'"
 alias status='git status -s'
 alias pulltfl='for Dir in "$HOME/GitHub/terminalforlife/Personal"/*; { [ -d "$Dir" ] || continue; cd "$Dir" && pull "$Dir"; cd ..; }' #: Personal alias to pull all `Personal` repositories.
