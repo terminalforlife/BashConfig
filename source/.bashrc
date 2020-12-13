@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Thu 10 Dec 04:36:03 GMT 2020
+# Last Change       - Sat 12 Dec 03:45:28 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -26,27 +26,9 @@ readarray T < /etc/lsb-release
 [ "${T[2]#*=}" == bionic$'\n' ] && R=4 || R=3
 
 # Yep, super-simple prompt, now.
-PromptParser(){
-	Branch=`git rev-parse --symbolic-full-name HEAD 2> /dev/null`
+PS1="\$ "
 
-	if [ -z "$Branch" ]; then
-		PS1="\$ "
-	else
-		Status=`git status -s 2> /dev/null`
-
-		# I need to see which branch I'm on in-case I mess with the wrong one.
-		if [ -z "$Status" ]; then
-			PS1=" \[\e[2;37m\]<\[\e[0m\]\[\e[1;32m\]"
-			PS1+="${Branch##*/}\[\e[0m\]\[\e[2;37m\]>\[\e[0m\] \$ "
-		else
-			# Red branch name if there's something to do. Simple?
-			PS1=" \[\e[2;37m\]<\[\e[0m\]\[\e[1;31m\]"
-			PS1+="${Branch##*/}\[\e[0m\]\[\e[2;37m\]>\[\e[0m\] \$ "
-		fi
-	fi
-}
-
-PROMPT_COMMAND='PromptParser'
+[ -f "$HOME"/.git-prompt ] && . "$HOME"/.git-prompt
 
 export HISTTIMEFORMAT='[%F_%X]: '
 export HISTCONTROL='ignoreboth'

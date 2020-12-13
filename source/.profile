@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.profile
 # Started On        - Thu 14 Sep 20:09:24 BST 2017
-# Last Change       - Tue  8 Dec 04:18:28 GMT 2020
+# Last Change       - Sat 12 Dec 03:06:15 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -31,4 +31,8 @@ if eval `ssh-agent -s` 1> /dev/null; then
 	fi
 
 	trap 'kill $SSH_AGENT_PID' EXIT
+fi
+
+if [ -f "$HOME"/.bashrc ] && [[ `tty` == '/dev/tty*' ]]; then
+	. "$HOME"/.bashrc
 fi
