@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sat 12 Dec 03:45:28 GMT 2020
+# Last Change       - Mon 14 Dec 01:08:24 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -25,10 +25,62 @@ set -o interactive-comments +o monitor -o hashall\
 readarray T < /etc/lsb-release
 [ "${T[2]#*=}" == bionic$'\n' ] && R=4 || R=3
 
-# Yep, super-simple prompt, now.
-PS1="\$ "
+# ANSI color escape sequences. Useful else, not just the prompt.
+C_Red='\e[2;31m';       C_BRed='\e[1;31m';      C_Green='\e[2;32m';
+C_BGreen='\e[1;32m';    C_Yellow='\e[2;33m';    C_BYellow='\e[1;33m';
+C_Grey='\e[2;37m';      C_Reset='\e[0m';        C_BPink='\e[1;35m';
+C_Italic='\e[3m';       C_Blue='\e[2;34m';      C_BBlue='\e[1;34m';
+C_Pink='\e[2;35m';      C_Cyan='\e[2;36m';      C_BCyan='\e[1;36m'
 
-[ -f "$HOME"/.git-prompt ] && . "$HOME"/.git-prompt
+PROMPT_PARSER(){
+	if git rev-parse --is-inside-work-tree &> /dev/null; then
+		local Status=`git status -s`
+		if [ -n "$Status" ]; then
+			local StatusColor=$C_BRed
+		else
+			local StatusColor=$C_BGreen
+		fi
+
+		local Top=`git rev-parse --show-toplevel`
+		read Line < "$Top"/.git/HEAD
+		local Branch="$C_Italic$StatusColor${Line##*/}$C_Reset "
+	fi
+
+	if [ $1 -gt 0 ]; then
+		local Exit="$C_BRed🗴$C_Reset"
+	else
+		local Exit="$C_BGreen🗸$C_Reset"
+	fi
+
+	local Basename=${PWD##*/}
+	local Dirname=${PWD%/*}
+
+	if [ "$Dirname/$Basename" == '/' ]; then
+		printf -v CWD "$C_Italic$C_BGreen/$C_Reset"
+	else
+		CWD="$C_Grey$Dirname/$C_Italic$C_BGreen$Basename$C_Reset"
+
+		# If the CWD is too long, just show basename with '.../' prepended, if
+		# it's valid to do so. I think ANSI escape sequences are being counted
+		# in its length, causing it not work as it should, but I like the
+		# result, none-the-less.
+		local Slashes=${CWD//[!\/]/}
+		TempColumns=$((COLUMNS + 40)) # <-- Seems to work around sequences.
+		if [ ${#CWD} -gt $(((TempColumns - ${#Branch}) - 2)) ]; then
+			if [ ${#Slashes} -ge 2 ]; then
+				CWD="$C_Grey.../$C_Reset$C_BGreen$Basename$C_Reset"
+			else
+				CWD="$C_BGreen$Basename$C_Reset"
+			fi
+		fi
+	fi
+
+	PS1="$Exit $Branch$CWD\n: "
+
+	unset Line
+}
+
+PROMPT_COMMAND='PROMPT_PARSER $?'
 
 export HISTTIMEFORMAT='[%F_%X]: '
 export HISTCONTROL='ignoreboth'
