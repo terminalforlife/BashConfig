@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Thu 10 Dec 03:55:38 GMT 2020
+# Last Change       - Sun 27 Dec 03:59:24 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -217,11 +217,6 @@ mpvi(){ #: In i3-wm, play a video inside the active window.
 	unset WID
 }
 
-syt(){ #: Stream a YouTube video directly into MPlayer.
-	youtube-dl "$1" -o - 2> /dev/null | mplayer -vo x11 -nomouseinput\
-		-noar -nojoystick -nogui -zoom -nolirc -really-quiet - &> /dev/null
-}
-
 builtins(){ #: Display a columnized list of bash builtins.
 	while read -r; do
 		printf "%s\n" "${REPLY/* }"
@@ -424,4 +419,15 @@ sayit(){ #: Say something with espeak; good for quick alerts.
 readit(){ #: Read a text file with espeak.
 	{ [ -f "$*" ] && [ -r "$*" ]; } || return 1
 	espeak -v en-scottish -g 5 -p 13 -s 0.7 < "$*"
+}
+
+clips(){
+	if ! [ $# -eq 0 -o $# -eq 1 ]; then
+		printf "file '%s'\n" "$@" > flist
+		ffmpeg -f concat -safe 0 -i flist output.mp4
+		rm flist
+	else
+		printf 'ERROR: No video clips provided.\n' 1>&2
+		return 1
+	fi
 }

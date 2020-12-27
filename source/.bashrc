@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Mon 14 Dec 01:08:24 GMT 2020
+# Last Change       - Mon 14 Dec 15:11:55 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ PROMPT_PARSER(){
 		# in its length, causing it not work as it should, but I like the
 		# result, none-the-less.
 		local Slashes=${CWD//[!\/]/}
-		TempColumns=$((COLUMNS + 40)) # <-- Seems to work around sequences.
+		TempColumns=$((COLUMNS + 20)) # <-- Seems to work around sequences.
 		if [ ${#CWD} -gt $(((TempColumns - ${#Branch}) - 2)) ]; then
 			if [ ${#Slashes} -ge 2 ]; then
 				CWD="$C_Grey.../$C_Reset$C_BGreen$Basename$C_Reset"
