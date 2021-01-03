@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Mon 14 Dec 15:11:55 GMT 2020
+# Last Change       - Sun 27 Dec 23:44:19 GMT 2020
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ PROMPT_PARSER(){
 	if [ "$Dirname/$Basename" == '/' ]; then
 		printf -v CWD "$C_Italic$C_BGreen/$C_Reset"
 	else
-		CWD="$C_Grey$Dirname/$C_Italic$C_BGreen$Basename$C_Reset"
+		CWD="$C_Grey$Dirname/$C_Italic$Basename$C_Reset"
 
 		# If the CWD is too long, just show basename with '.../' prepended, if
 		# it's valid to do so. I think ANSI escape sequences are being counted
