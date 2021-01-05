@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 27 Dec 23:44:19 GMT 2020
+# Last Change       - Sun  3 Jan 20:14:05 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -82,12 +82,12 @@ PROMPT_PARSER(){
 
 PROMPT_COMMAND='PROMPT_PARSER $?'
 
-export HISTTIMEFORMAT='[%F_%X]: '
 export HISTCONTROL='ignoreboth'
 export HISTFILESIZE=0
 export HISTSIZE=1000
-export VBOX_USER_HOME="/media/$USER/Main Data/Linux Generals/VirtualBox VMs"
+export HISTTIMEFORMAT='[%F_%X]: '
 export TIMEFORMAT='>>> real %3R | user %3U | sys %3S | pcpu %P <<<'
+export VBOX_USER_HOME="/media/$USER/Main Data/Linux Generals/VirtualBox VMs"
 
 # Created this theme on 2020-03-01, using various shades (not 50!) of grey.
 export LS_COLORS='fi=0;37:di=1;37:ln=1;30:mh=1;30:ex=7;1;30:no=1;37:or=1;30:mi=1;30'
@@ -98,12 +98,17 @@ export LS_COLORS='fi=0;37:di=1;37:ln=1;30:mh=1;30:ex=7;1;30:no=1;37:or=1;30:mi=1
 # can't easily see the red text. :(
 #export LS_COLORS='di=1;31:ln=2;32:mh=1;32:ex=1;33:'
 
-export PATH=${PATH%:/snap/bin}
-export TERM='xterm-256color'
-export LESSSECURE=1
-export SUDO_EDITOR='/usr/bin/rvim'
 export GREP_COLOR='1;31'
+export LESSSECURE=1
+export PATH=${PATH%:/snap/bin}
 export PS_PERSONALITY='posix'
+export SUDO_EDITOR='/usr/bin/rvim'
+export TERM='xterm-256color'
+
+# Values for shader caching for use in gaming.
+export __GL_SHADER_DISK_CACHE=1
+export __GL_SHADER_DISK_CACHE_PATH='/tmp/nvidia-shaders'
+export __GL_THREADED_OPTIMIZATION=1
 
 # Yep, an unnecessarily-complicated solution! Proof of concept, I guess.
 for Less in\
