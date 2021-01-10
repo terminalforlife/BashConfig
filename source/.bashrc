@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 10 Jan 15:57:25 GMT 2021
+# Last Change       - Sun 10 Jan 16:12:38 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ PROMPT_PARSER(){
 			if [ -n "$Top" ]; then
 				# Get the current branch name.
 				IFS='/' read -a A < "$Top/.git/HEAD"
-				GB=${A[${#A[@]}-1]}
+				local GB=${A[${#A[@]}-1]}
 			fi
 
 			# Data parsing in specific order:
@@ -120,7 +120,7 @@ PROMPT_PARSER(){
 
 			while read -ra Z; do
 				if [ "${Z[0]}${Z[1]}${Z[2]}" == 'nothingtocommit,' ]; then
-					TTLCommits=`git rev-list --count HEAD`
+					printf -v TTLCommits "%'d" "$(git rev-list --count HEAD)"
 
 					Desc="${C_BRed}${GI[0]}  ${C_Grey}Branch '${GB:-?}' is $TTLCommits commit(s) clean."
 					break
@@ -129,17 +129,20 @@ PROMPT_PARSER(){
 
 			while read -ra Z; do
 				if [ "${Z[0]}${Z[1]}${Z[3]}" == 'Yourbranchahead' ]; then
-					Desc="${C_BRed}${GI[6]}  ${C_Grey}Branch '${GB:-?}' leads by ${Z[7]} commit(s)."
+					printf -v TTLCommits "%'d" "${Z[7]}"
+
+					Desc="${C_BRed}${GI[6]}  ${C_Grey}Branch '${GB:-?}' leads by $TTLCommits commit(s)."
 					break
 				fi
 			done <<< "$Status"
 
 			while read -ra Z; do
 				if [ "${Z[0]}${Z[1]}" == 'Untrackedfiles:' ]; then
-					declare -i NFTTL=0
-					while read -a LINE; do
-						[ "${LINE[0]}" == '??' ] && NFTTL+=1
+					NFTTL=0
+					while read -a Line; do
+						[ "${Line[0]}" == '??' ] && let NFTTL+=1
 					done <<< "$(git status --short)"
+					printf -v NFTTL "%'d" $NFTTL
 
 					Desc="${C_BRed}${GI[3]}  ${C_Grey}Branch '${GB:-?}' has $NFTTL new file(s)."
 					break
@@ -149,8 +152,9 @@ PROMPT_PARSER(){
 			while read -ra Z; do
 				if [ "${Z[0]}" == 'modified:' ]; then
 					readarray Buffer <<< "$(git --no-pager diff --name-only)"
+					printf -v ModifiedFiles "%'d" ${#Buffer[@]}
 
-					Desc="${C_BRed}${GI[2]}  ${C_Grey}Branch '${GB:-?}' has ${#Buffer[@]} modified file(s)."
+					Desc="${C_BRed}${GI[2]}  ${C_Grey}Branch '${GB:-?}' has $ModifiedFiles modified file(s)."
 					break
 				fi
 			done <<< "$Status"
@@ -167,6 +171,9 @@ PROMPT_PARSER(){
 		fi
 
 		PS1="\[${C_Reset}\]╭──╼${X}╾──☉  ${Desc}\[${C_Reset}\]\n╰─☉  "
+
+		unset Z Line Desc GI Status Top X GB\
+			Buffer ModifiedFiles TTLCommits NFTTL
 	fi
 }
 
