@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun  3 Jan 20:14:05 GMT 2021
+# Last Change       - Sun 10 Jan 15:39:08 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -32,52 +32,145 @@ C_Grey='\e[2;37m';      C_Reset='\e[0m';        C_BPink='\e[1;35m';
 C_Italic='\e[3m';       C_Blue='\e[2;34m';      C_BBlue='\e[1;34m';
 C_Pink='\e[2;35m';      C_Cyan='\e[2;36m';      C_BCyan='\e[1;36m'
 
+# Values '1' or '2' are valid, for new and old versions, respectively.
+PROMPT_STYLE=2
+
 PROMPT_PARSER(){
-	if git rev-parse --is-inside-work-tree &> /dev/null; then
-		local Status=`git status -s`
-		if [ -n "$Status" ]; then
-			local StatusColor=$C_BRed
-		else
-			local StatusColor=$C_BGreen
+	if [ $PROMPT_STYLE -eq 1 ]; then
+		if git rev-parse --is-inside-work-tree &> /dev/null; then
+			local Status=`git status -s`
+			if [ -n "$Status" ]; then
+				local StatusColor=$C_BRed
+			else
+				local StatusColor=$C_BGreen
+			fi
+
+			local Top=`git rev-parse --show-toplevel`
+			read Line < "$Top"/.git/HEAD
+			local Branch="$C_Italic$StatusColor${Line##*/}$C_Reset "
 		fi
 
-		local Top=`git rev-parse --show-toplevel`
-		read Line < "$Top"/.git/HEAD
-		local Branch="$C_Italic$StatusColor${Line##*/}$C_Reset "
-	fi
+		if [ $1 -gt 0 ]; then
+			local Exit="$C_BRed🗴$C_Reset"
+		else
+			local Exit="$C_BGreen🗸$C_Reset"
+		fi
 
-	if [ $1 -gt 0 ]; then
-		local Exit="$C_BRed🗴$C_Reset"
-	else
-		local Exit="$C_BGreen🗸$C_Reset"
-	fi
+		local Basename=${PWD##*/}
+		local Dirname=${PWD%/*}
 
-	local Basename=${PWD##*/}
-	local Dirname=${PWD%/*}
+		if [ "$Dirname/$Basename" == '/' ]; then
+			printf -v CWD "$C_Italic$C_BGreen/$C_Reset"
+		else
+			CWD="$C_Grey$Dirname/$C_Italic$Basename$C_Reset"
 
-	if [ "$Dirname/$Basename" == '/' ]; then
-		printf -v CWD "$C_Italic$C_BGreen/$C_Reset"
-	else
-		CWD="$C_Grey$Dirname/$C_Italic$Basename$C_Reset"
-
-		# If the CWD is too long, just show basename with '.../' prepended, if
-		# it's valid to do so. I think ANSI escape sequences are being counted
-		# in its length, causing it not work as it should, but I like the
-		# result, none-the-less.
-		local Slashes=${CWD//[!\/]/}
-		TempColumns=$((COLUMNS + 20)) # <-- Seems to work around sequences.
-		if [ ${#CWD} -gt $(((TempColumns - ${#Branch}) - 2)) ]; then
-			if [ ${#Slashes} -ge 2 ]; then
-				CWD="$C_Grey.../$C_Reset$C_BGreen$Basename$C_Reset"
-			else
-				CWD="$C_BGreen$Basename$C_Reset"
+			# If the CWD is too long, just show basename with '.../' prepended, if
+			# it's valid to do so. I think ANSI escape sequences are being counted
+			# in its length, causing it not work as it should, but I like the
+			# result, none-the-less.
+			local Slashes=${CWD//[!\/]/}
+			TempColumns=$((COLUMNS + 20)) # <-- Seems to work around sequences.
+			if [ ${#CWD} -gt $(((TempColumns - ${#Branch}) - 2)) ]; then
+				if [ ${#Slashes} -ge 2 ]; then
+					CWD="$C_Grey.../$C_Reset$C_BGreen$Basename$C_Reset"
+				else
+					CWD="$C_BGreen$Basename$C_Reset"
+				fi
 			fi
 		fi
+
+		PS1="$Exit $Branch$CWD\n: "
+
+		unset Line
+	elif [ $PROMPT_STYLE -eq 2 ]; then
+		printf -v X '%.3d' $?
+
+		if git rev-parse --is-inside-work-tree &> /dev/null; then
+			GI[0]='≎' # Clean.
+			GI[1]='≍' # Uncommitted changes.
+			GI[2]='≭' # Unstaged changes.
+			GI[3]='≺' # New file(s).
+			GI[4]='⊀' # Removed file(s).
+			GI[5]='≔' # Initial commit.
+			GI[6]='∾' # Branch is ahead.
+			GI[7]='⮂' # Fix conflicts.
+			GI[8]='!' # Unknown (ERROR).
+
+			Status=`git status 2> /dev/null`
+			Top=`git rev-parse --show-toplevel`
+			printf -v Desc "${C_BRed}∷  ${C_Grey}Looking under the hood..."
+
+			if [ -n "$Top" ]; then
+				# Get the current branch name.
+				IFS='/' read -a A < "$Top/.git/HEAD"
+				GB=${A[${#A[@]}-1]}
+			fi
+
+			# While loops in special order:
+			while read -ra Z; do
+				if [ "${Z[0]}${Z[1]}" == 'Initialcommit' ]; then
+					Desc="${C_BRed}${GI[5]}  ${C_Grey}Branch '${GB:-?}' has no commits, yet."
+					break
+				fi
+			done <<< "$Status"
+
+			while read -ra Z; do
+				if [ "${Z[0]}${Z[1]}${Z[2]}" == '(fixconflictsand' ]; then
+					Desc="${C_BRed}${GI[7]}  ${C_Grey}Branch '${GB:-?}' has conflict(s)."
+					break
+				fi
+			done <<< "$Status"
+
+			while read -ra Z; do
+				if [ "${Z[0]}${Z[1]}${Z[2]}" == 'nothingtocommit,' ]; then
+					TTLCommits=`git rev-list --count HEAD`
+
+					Desc="${C_BRed}${GI[0]}  ${C_Grey}Branch '${GB:-?}' is $TTLCommits commit(s) clean."
+					break
+				fi
+			done <<< "$Status"
+
+			while read -ra Z; do
+				if [ "${Z[0]}${Z[1]}${Z[3]}" == 'Yourbranchahead' ]; then
+					Desc="${C_BRed}${GI[6]}  ${C_Grey}Branch '${GB:-?}' leads by ${Z[7]} commit(s)."
+					break
+				fi
+			done <<< "$Status"
+
+			while read -ra Z; do
+				if [ "${Z[0]}${Z[1]}" == 'Untrackedfiles:' ]; then
+					declare -i NFTTL=0
+					while read -a LINE; do
+						[ "${LINE[0]}" == '??' ] && NFTTL+=1
+					done <<< "$(git status --short)"
+
+					Desc="${C_BRed}${GI[3]}  ${C_Grey}Branch '${GB:-?}' has $NFTTL new file(s)."
+					break
+				fi
+			done <<< "$Status"
+
+			while read -ra Z; do
+				if [ "${Z[0]}" == 'modified:' ]; then
+					readarray Buffer <<< "$(git --no-pager diff --name-only)"
+
+					Desc="${C_BRed}${GI[2]}  ${C_Grey}Branch '${GB:-?}' has ${#Buffer[@]} modified file(s)."
+					break
+				fi
+			done <<< "$Status"
+
+			while read -ra Z; do
+				if [ "${Z[0]}${Z[1]}${Z[2]}${Z[3]}" == 'Changestobecommitted:' ]; then
+					Desc="${C_BRed}${GI[1]}  ${C_Grey}Branch '${GB:-?}' has changes to commit."
+					break
+				fi
+			done <<< "$Status"
+			# End of specially-ordered while loops.
+		else
+			printf -v Desc "${C_BRed}☡  ${C_Grey}Sleepy git..."
+		fi
+
+		PS1="\[${C_Reset}\]╭──╼${X}╾──☉  ${Desc}\[${C_Reset}\]\n╰─☉  "
 	fi
-
-	PS1="$Exit $Branch$CWD\n: "
-
-	unset Line
 }
 
 PROMPT_COMMAND='PROMPT_PARSER $?'
