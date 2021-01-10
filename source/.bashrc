@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 10 Jan 15:39:08 GMT 2021
+# Last Change       - Sun 10 Jan 15:57:25 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ PROMPT_PARSER(){
 		local Dirname=${PWD%/*}
 
 		if [ "$Dirname/$Basename" == '/' ]; then
-			printf -v CWD "$C_Italic$C_BGreen/$C_Reset"
+			CWD="$C_Italic$C_BGreen/$C_Reset"
 		else
 			CWD="$C_Grey$Dirname/$C_Italic$Basename$C_Reset"
 
@@ -83,7 +83,7 @@ PROMPT_PARSER(){
 
 		unset Line
 	elif [ $PROMPT_STYLE -eq 2 ]; then
-		printf -v X '%.3d' $?
+		printf -v X '%.3d' $1
 
 		if git rev-parse --is-inside-work-tree &> /dev/null; then
 			GI[0]='≎' # Clean.
@@ -98,7 +98,7 @@ PROMPT_PARSER(){
 
 			Status=`git status 2> /dev/null`
 			Top=`git rev-parse --show-toplevel`
-			printf -v Desc "${C_BRed}∷  ${C_Grey}Looking under the hood..."
+			Desc="${C_BRed}∷  ${C_Grey}Looking under the hood..."
 
 			if [ -n "$Top" ]; then
 				# Get the current branch name.
@@ -106,13 +106,10 @@ PROMPT_PARSER(){
 				GB=${A[${#A[@]}-1]}
 			fi
 
-			# While loops in special order:
-			while read -ra Z; do
-				if [ "${Z[0]}${Z[1]}" == 'Initialcommit' ]; then
-					Desc="${C_BRed}${GI[5]}  ${C_Grey}Branch '${GB:-?}' has no commits, yet."
-					break
-				fi
-			done <<< "$Status"
+			# Data parsing in specific order:
+			if [ -z "$(git rev-parse --branches)" ]; then
+				Desc="${C_BRed}${GI[5]}  ${C_Grey}Branch '${GB:-?}' awaits its initial commit."
+			fi
 
 			while read -ra Z; do
 				if [ "${Z[0]}${Z[1]}${Z[2]}" == '(fixconflictsand' ]; then
@@ -164,9 +161,9 @@ PROMPT_PARSER(){
 					break
 				fi
 			done <<< "$Status"
-			# End of specially-ordered while loops.
+			# End of specifically-ordered parsing.
 		else
-			printf -v Desc "${C_BRed}☡  ${C_Grey}Sleepy git..."
+			Desc="${C_BRed}☡  ${C_Grey}Sleepy git..."
 		fi
 
 		PS1="\[${C_Reset}\]╭──╼${X}╾──☉  ${Desc}\[${C_Reset}\]\n╰─☉  "
