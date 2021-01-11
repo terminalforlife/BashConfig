@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Mon 11 Jan 16:05:41 GMT 2021
+# Last Change       - Mon 11 Jan 16:11:11 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -107,7 +107,7 @@ PROMPT_PARSER(){
 				local GB=${A[${#A[@]}-1]}
 			fi
 
-			# Data parsing in specific order:
+			# The following is in a very specific order of priority.
 			if [ -z "$(git rev-parse --branches)" ]; then
 				Desc="${C_BRed}${GI[5]}  ${C_Grey}Branch '${GB:-?}' awaits its initial commit."
 			else
@@ -149,7 +149,6 @@ PROMPT_PARSER(){
 					fi
 				done <<< "$Status"
 			fi
-			# End of specifically-ordered parsing.
 		else
 			Desc="${C_BRed}☡  ${C_Grey}Sleepy git..."
 		fi
