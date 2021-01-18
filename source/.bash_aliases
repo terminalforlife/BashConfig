@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue 29 Dec 03:15:57 GMT 2020
+# Last Change       - Thu 14 Jan 21:05:37 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -77,6 +77,7 @@ alias ghtflf='cd "$HOME"/GitHub/terminalforlife/Forks'
 alias tt='cd "$HOME"/Documents/TT'
 alias i3a='cd "$HOME"/.i3a'
 alias jbp='journalctl -b -p 0..4 --no-pager' #: Use journalctl(1) to display anything from 'emerg' to 'warning' since boot.
+alias thumbnail='sh "$HOME/GitHub/terminalforlife/Personal/LearnLinux/Miscellaneous Scripts/thumbnail-generator.sh"'
 
 if type -P mplayer &> /dev/null; then
 	# If you're having issues with mpv/mplayer here, try -vo x11 instead.
