@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.profile
 # Started On        - Thu 14 Sep 20:09:24 BST 2017
-# Last Change       - Thu 31 Dec 01:00:09 GMT 2020
+# Last Change       - Thu 28 Jan 16:08:57 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -15,7 +15,9 @@
 	umask 0077
 
 	# I need this for when I use my configurations remotely, via SSH.
-	[ -n "$SSH_TTY" -a -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+	if [ -n "$SSH_TTY" ] && [ -f "$HOME/.bashrc" ]; then
+		. "$HOME/.bashrc"
+	fi
 
 	# Set up the SSH agent for key management.
 	if eval `ssh-agent -s`; then
@@ -28,12 +30,8 @@
 
 		trap 'kill $SSH_AGENT_PID' EXIT
 	fi
+
+	if [ -f "$HOME"/.bashrc ] && [[ `tty` == '/dev/tty*' ]]; then
+		. "$HOME"/.bashrc
+	fi
 } 1> /dev/null
-
-# Need this for when I'm using the proprietary nVidia driver, because it
-# insists on automatically setting it to something far too small.
-xrandr --dpi 96 &> /dev/null
-
-if [ -f "$HOME"/.bashrc ] && [[ `tty` == '/dev/tty*' ]]; then
-	. "$HOME"/.bashrc
-fi
