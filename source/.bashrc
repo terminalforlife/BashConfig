@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Mon 11 Jan 16:11:11 GMT 2021
+# Last Change       - Mon  1 Feb 13:20:04 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -99,55 +99,58 @@ PROMPT_PARSER(){
 
 			Status=`git status 2> /dev/null`
 			Top=`git rev-parse --show-toplevel`
-			Desc="${C_BRed}∷  ${C_Grey}Looking under the hood..."
 
-			if [ -n "$Top" ]; then
-				# Get the current branch name.
-				IFS='/' read -a A < "$Top/.git/HEAD"
-				local GB=${A[${#A[@]}-1]}
-			fi
-
-			# The following is in a very specific order of priority.
-			if [ -z "$(git rev-parse --branches)" ]; then
-				Desc="${C_BRed}${GI[5]}  ${C_Grey}Branch '${GB:-?}' awaits its initial commit."
+			if [ "$(git rev-parse --git-dir)" == '.' ]; then
+				Desc="${C_BRed}∷  ${C_Grey}Looking under the hood..."
 			else
-				while read -ra Z; do
-					if [ "${Z[0]}${Z[1]}${Z[2]}" == '(fixconflictsand' ]; then
-						Desc="${C_BRed}${GI[7]}  ${C_Grey}Branch '${GB:-?}' has conflict(s)."
-						break
-					elif [ "${Z[0]}${Z[1]}${Z[2]}" == 'nothingtocommit,' ]; then
-						printf -v TTLCommits "%'d" "$(git rev-list --count HEAD)"
+				if [ -n "$Top" ]; then
+					# Get the current branch name.
+					IFS='/' read -a A < "$Top/.git/HEAD"
+					local GB=${A[${#A[@]}-1]}
+				fi
 
-						Desc="${C_BRed}${GI[0]}  ${C_Grey}Branch '${GB:-?}' is $TTLCommits commit(s) clean."
-						break
-					elif [ "${Z[0]}${Z[1]}${Z[3]}" == 'Yourbranchahead' ]; then
-						printf -v TTLCommits "%'d" "${Z[7]}"
+				# The following is in a very specific order of priority.
+				if [ -z "$(git rev-parse --branches)" ]; then
+					Desc="${C_BRed}${GI[5]}  ${C_Grey}Branch '${GB:-?}' awaits its initial commit."
+				else
+					while read -ra Z; do
+						if [ "${Z[0]}${Z[1]}${Z[2]}" == '(fixconflictsand' ]; then
+							Desc="${C_BRed}${GI[7]}  ${C_Grey}Branch '${GB:-?}' has conflict(s)."
+							break
+						elif [ "${Z[0]}${Z[1]}${Z[2]}" == 'nothingtocommit,' ]; then
+							printf -v TTLCommits "%'d" "$(git rev-list --count HEAD)"
 
-						Desc="${C_BRed}${GI[6]}  ${C_Grey}Branch '${GB:-?}' leads by $TTLCommits commit(s)."
-						break
-					elif [ "${Z[0]}${Z[1]}" == 'Untrackedfiles:' ]; then
-						NFTTL=0
-						while read -a Line; do
-							[ "${Line[0]}" == '??' ] && let NFTTL+=1
-						done <<< "$(git status --short)"
-						printf -v NFTTL "%'d" $NFTTL
+							Desc="${C_BRed}${GI[0]}  ${C_Grey}Branch '${GB:-?}' is $TTLCommits commit(s) clean."
+							break
+						elif [ "${Z[0]}${Z[1]}${Z[3]}" == 'Yourbranchahead' ]; then
+							printf -v TTLCommits "%'d" "${Z[7]}"
 
-						Desc="${C_BRed}${GI[3]}  ${C_Grey}Branch '${GB:-?}' has $NFTTL new file(s)."
-						break
-					elif [ "${Z[0]}" == 'modified:' ]; then
-						readarray Buffer <<< "$(git --no-pager diff --name-only)"
-						printf -v ModifiedFiles "%'d" ${#Buffer[@]}
+							Desc="${C_BRed}${GI[6]}  ${C_Grey}Branch '${GB:-?}' leads by $TTLCommits commit(s)."
+							break
+						elif [ "${Z[0]}${Z[1]}" == 'Untrackedfiles:' ]; then
+							NFTTL=0
+							while read -a Line; do
+								[ "${Line[0]}" == '??' ] && let NFTTL+=1
+							done <<< "$(git status --short)"
+							printf -v NFTTL "%'d" $NFTTL
 
-						Desc="${C_BRed}${GI[2]}  ${C_Grey}Branch '${GB:-?}' has $ModifiedFiles modified file(s)."
-						break
-					elif [ "${Z[0]}" == 'deleted:' ]; then
-						Desc="${C_BRed}${GI[9]}  ${C_Grey}Branch '${GB:-?}' detects removed file(s)."
-						break
-					elif [ "${Z[0]}${Z[1]}${Z[2]}${Z[3]}" == 'Changestobecommitted:' ]; then
-						Desc="${C_BRed}${GI[1]}  ${C_Grey}Branch '${GB:-?}' has changes to commit."
-						break
-					fi
-				done <<< "$Status"
+							Desc="${C_BRed}${GI[3]}  ${C_Grey}Branch '${GB:-?}' has $NFTTL new file(s)."
+							break
+						elif [ "${Z[0]}" == 'modified:' ]; then
+							readarray Buffer <<< "$(git --no-pager diff --name-only)"
+							printf -v ModifiedFiles "%'d" ${#Buffer[@]}
+
+							Desc="${C_BRed}${GI[2]}  ${C_Grey}Branch '${GB:-?}' has $ModifiedFiles modified file(s)."
+							break
+						elif [ "${Z[0]}" == 'deleted:' ]; then
+							Desc="${C_BRed}${GI[9]}  ${C_Grey}Branch '${GB:-?}' detects removed file(s)."
+							break
+						elif [ "${Z[0]}${Z[1]}${Z[2]}${Z[3]}" == 'Changestobecommitted:' ]; then
+							Desc="${C_BRed}${GI[1]}  ${C_Grey}Branch '${GB:-?}' has changes to commit."
+							break
+						fi
+					done <<< "$Status"
+				fi
 			fi
 		else
 			Desc="${C_BRed}☡  ${C_Grey}Sleepy git..."
