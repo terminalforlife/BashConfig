@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Thu 14 Jan 21:05:37 GMT 2021
+# Last Change       - Tue  2 Feb 13:50:51 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -14,10 +14,10 @@
 
 [ "$BASH_VERSION" ] || return 1
 
-alias sudo="sudo " #: Allows for aliases to work with sudo.
+alias sudo="sudo " #: Allows for aliases to work with sudo(8).
 alias hsh='bash $HOME/Documents/TT/bin/sweep'
 alias lenchk='bash "$HOME"/GitHub/terminalforlife/Forks/cheat.sheets/tests/lenchk' #: Tester tool I wrote for Chubin's cheat.sh project on GitHub.
-alias shortcd='for I in {30..0}; { { espeak -a 50 -s 300 -p 0 "$I" & sleep 1; } &> /dev/null; }' #: ESpeak counts down 30s; was thinking of using this for YouTube.
+alias shortcd='for I in {30..0}; { { espeak -a 50 -s 300 -p 0 "$I" & sleep 1; } &> /dev/null; }' #: Make espeak(1) count down from 30s; was thinking of using this for YouTube.
 alias uplinks='cd "$HOME/GitHub/terminalforlife/Personal" && for File in {Extra,BashConfig,i3Config,VimConfig,BSPWMConfig}/devutils/links.sh; { sh "$File"; }; cd -' #: Personal scripts for updating my GitHub-related hard links.
 alias bat='read < /sys/class/power_supply/BAT1/capacity; printf "Battery is at %d%% capacity.\n" "$REPLY"' #: Output the percentage of battery power remaining.
 alias getsecs='awk "!Z[\$1]++" <<< "$(dpkg-query -Wf "\${Section}\\n" "*")" | column' #: List Debian package sections, per installed packages.
@@ -48,7 +48,7 @@ alias merge='git merge'
 alias branch='git branch'
 alias push='git push'
 alias diff='git diff'
-alias toplevel='cd "$(git rev-parse --show-toplevel)"' #: Change to the top-most level of the current Git repository.
+alias toplevel='cd "$(git rev-parse --show-toplevel)"' #: Change to the top-most level of the current git(1) repository.
 alias log="git --no-pager log --reverse --pretty=format:'%CredCommit %Cgreen%h%Cred pushed %ar by %Cgreen%an%Creset%Cred:%Creset%n\"%s\"%n' 2> /dev/null"
 alias show="git --no-pager show --pretty=format:'%CredCommit %Cgreen%h%Cred pushed %ar by %Cgreen%an%Creset%Cred:%Creset%n\"%s\"%n'"
 alias status='git status -s'
@@ -70,42 +70,38 @@ alias lsblkid='lsblk -o name,label,fstype,size,uuid --noheadings' #: A more desc
 alias chksum='md5sum --ignore-missing --quiet -c' #: Check the MD5 hashsums using the provided file.
 alias gitsum='Dir=`git rev-parse --show-toplevel 2> /dev/null` && cd "$Dir" && find -not -path "*.git*" -type f -not -name "README.md" -not -name "LICENSE" -not -name "md5sum" -exec md5sum {} \+ 2> /dev/null | sed "s/\.\///" | sort -k 2 > md5sum; cd - &> /dev/null' #: Lazy solution to saving a sane and sorted checksum list to './md5sum' file.
 alias nonroots='find -not \( -user 0 -or -group 0 \)' #: List any files not owned by or in the group of the root user.
-alias dt='cd "$HOME"/Desktop'
-alias dl='cd "$HOME"/Downloads'
-alias ghtflp='cd "$HOME"/GitHub/terminalforlife/Personal'
-alias ghtflf='cd "$HOME"/GitHub/terminalforlife/Forks'
-alias tt='cd "$HOME"/Documents/TT'
-alias i3a='cd "$HOME"/.i3a'
+alias dt='cd "$HOME"/Desktop' #: Change to the current user's desktop.
+alias dl='cd "$HOME"/Downloads' #: Change to the current user's 'Downloads' directory.
+alias ghtflp='cd "$HOME"/GitHub/terminalforlife/Personal' #: Change to the TFL 'Personal' directory.
+alias ghtflf='cd "$HOME"/GitHub/terminalforlife/Forks' #: Change to the TFL 'Forks' directory.
+alias tt='cd "$HOME"/Documents/TT' #: Change to the 'TT' directory.
+alias i3a='cd "$HOME"/.i3a' #: Change to the '.i3a' directory in HOME.
 alias jbp='journalctl -b -p 0..4 --no-pager' #: Use journalctl(1) to display anything from 'emerg' to 'warning' since boot.
-alias thumbnail='sh "$HOME/GitHub/terminalforlife/Personal/LearnLinux/Miscellaneous Scripts/thumbnail-generator.sh"'
 
 if type -P mplayer &> /dev/null; then
 	# If you're having issues with mpv/mplayer here, try -vo x11 instead.
-	alias mpa='mplayer -nolirc -vo null -really-quiet &> /dev/null' #: Use 'mplayer' to play audio files, sans window or output.
+	alias mpa='mplayer -nolirc -vo null -really-quiet &> /dev/null' #: Use mplayer(1) to play audio files, sans window or output.
 
 	declare -a MPLAYER_FONT=('-font' "$HOME/.mplayer/subfont.ttf")
 	if ! [ -f "${MPLAYER_FONT[0]}" ] || ! [ -r "${MPLAYER_FONT[0]}" ]; then
 		unset MPLAYER_FONT
 	fi
 
-	alias mpv="mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet &> /dev/null" #: Use 'mplayer' to play video files, sans output.
-	alias mpvdvd="mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet dvd://1//dev/sr1 &> /dev/null" #: Use 'mplayer' to play DVDs, sans output.
+	alias mpv="mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet &> /dev/null" #: Use mplayer(1) to play video files, sans output.
+	alias mpvdvd="mplayer -vo x11 -nomouseinput -noar -nojoystick -nogui -zoom -nolirc $MPLAYER_FONT -really-quiet dvd://1//dev/sr1 &> /dev/null" #: Use mplayer(1) to play DVDs, sans output.
 elif type -P mpv &> /dev/null; then
 	alias mpvv='mpv --no-stop-screensaver &> /dev/null ' #: Use 'mpv' to play video files, sans output.
 fi
 
 # Personal aliases I want only to have enabled if I'm logged in. (rudimentary)
 if [ $UID -eq 1000 -a $USER == 'ichy' ]; then
-	type -P mplay &> /dev/null &&
-		alias mplay='mplay /media/$USER/Main\ Data/Linux\ Generals/Music'
+	alias thumbnail='sh "$HOME/GitHub/terminalforlife/Personal/LearnLinux/Miscellaneous Scripts/thumbnail-generator.sh"' #: Execute script to generate a YouTube thumbnail for Learn Linux.
+	alias mplay='mplay /media/$USER/Main\ Data/Linux\ Generals/Music'
+	alias chkrf='ssh cl cat Desktop/READ_ME.txt | less'
 
-	if type -P ssh &> /dev/null; then
-		alias ihh='ssh -Cq server :'
-		alias chkrf='chkrf server Desktop/READ_ME.txt'
-	fi
-
-	[ -f "$HOME/Documents/TT/shotmngr.sh" ] &&
+	if [ -f "$HOME/Documents/TT/shotmngr.sh" ]; then
 		alias sm="bash $HOME/Documents/TT/shotmngr.sh"
+	fi
 fi
 
 # Clean up functions and variables.
