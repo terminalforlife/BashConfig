@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Tue  2 Feb 13:50:51 GMT 2021
+# Last Change       - Sun 14 Feb 15:47:54 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ alias ln='ln -v'
 alias chown='chown -v'
 alias chmod='chmod -v'
 alias rmdir='rmdir -v'
-alias fixperms='[[ $PWD == "$HOME/GitHub/"* || $PWD == "$HOME/.steam/"* ]] || find -xdev -not -path "*/GitHub/*" \( -type f -exec chmod 600 {} \+ -o -type d -exec chmod 700 "{}" \+ \) -exec chown $UID:$UID {} \+ -printf "FIXING: %p\n" 2> /dev/null' #: Recursively fix permissions and ownership. (F:600 D:700, UID:UID)
+#alias fixperms='[[ $PWD == "$HOME/GitHub/"* || $PWD == "$HOME/.steam/"* ]] || find -xdev -not -path "*/GitHub/*" \( -type f -exec chmod 600 {} \+ -o -type d -exec chmod 700 "{}" \+ \) -exec chown $UID:$UID {} \+ -printf "FIXING: %p\n" 2> /dev/null' #: Recursively fix permissions and ownership. (F:600 D:700, UID:UID)
 alias ffmpeg="ffmpeg -v 0 -stats" #: De-clutter this program's output, but not entirely.
 alias yo='notify-send --urgency=normal "Your normal job in `tty` has completed."' #: Perform a standard notify-send notification.
 alias YO='notify-send --urgency=critical "Your critical job in `tty` has completed."' #: Perform an urgent notify-send notification.
@@ -101,6 +101,10 @@ if [ $UID -eq 1000 -a $USER == 'ichy' ]; then
 
 	if [ -f "$HOME/Documents/TT/shotmngr.sh" ]; then
 		alias sm="bash $HOME/Documents/TT/shotmngr.sh"
+	fi
+
+	if [ -f "$HOME/Documents/TT/bin/poks" ]; then
+		alias poks="sh $HOME/Documents/TT/bin/poks"
 	fi
 fi
 

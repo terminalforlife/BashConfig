@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sun 27 Dec 03:59:24 GMT 2020
+# Last Change       - Mon  8 Feb 14:42:37 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -421,7 +421,7 @@ readit(){ #: Read a text file with espeak.
 	espeak -v en-scottish -g 5 -p 13 -s 0.7 < "$*"
 }
 
-clips(){
+clips(){ #: Concatenate two or more video clips using ffmpeg(1).
 	if ! [ $# -eq 0 -o $# -eq 1 ]; then
 		printf "file '%s'\n" "$@" > flist
 		ffmpeg -f concat -safe 0 -i flist output.mp4

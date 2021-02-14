@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.profile
 # Started On        - Thu 14 Sep 20:09:24 BST 2017
-# Last Change       - Thu 28 Jan 16:08:57 GMT 2021
+# Last Change       - Sun 14 Feb 15:47:39 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -34,4 +34,6 @@
 	if [ -f "$HOME"/.bashrc ] && [[ `tty` == '/dev/tty*' ]]; then
 		. "$HOME"/.bashrc
 	fi
+
+	export PATH+=":$HOME/bin"
 } 1> /dev/null
