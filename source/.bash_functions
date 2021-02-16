@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon  8 Feb 14:42:37 GMT 2021
+# Last Change       - Tue 16 Feb 15:03:48 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -14,6 +14,28 @@
 
 qse(){ #: Search Debian packages with APT, properly.
 	{ apt-cache search ' ' | grep "$*" | sort -k 1; } 2> /dev/null
+}
+
+bins(){ #: A lite version of what lsbins(1) achieves.
+	if [ $# -gt 1 ] || [ "$1" == '-h' ] || [ "$1" == '--help' ]; then
+		printf 'Usage: %s [REGEX]\n' "${FUNCNAME[0]}" 1>&2
+		return 1
+	fi
+
+	for Dir in ${PATH//:/ }; {
+		for File in "$Dir"/*; {
+			if [ -f "$File" ] && [ -x "$File" ]; then
+				Basename=${File##*/}
+				if [ -z "$1" ]; then
+					printf '%s\n' "$Basename"
+				elif [[ $Basename =~ $1 ]]; then
+					printf '%s\n' "$Basename"
+				fi
+			fi
+		}
+	} | sort -u
+
+	unset File Dir Exes
 }
 
 pulloo(){ #: Personal function to `pull` in all my own repositories.
