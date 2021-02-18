@@ -99,6 +99,7 @@ if [ $UID -eq 1000 -a $USER == 'ichy' ]; then
 	alias thumbnail='sh "$HOME/GitHub/terminalforlife/Personal/LearnLinux/Miscellaneous Scripts/thumbnail-generator.sh"' #: Execute script to generate a YouTube thumbnail for Learn Linux.
 	alias mplay='mplay /media/$USER/Main\ Data/Linux\ Generals/Music'
 	alias chkrf='ssh cl cat Desktop/READ_ME.txt | less'
+	alias todo='vim "$HOME"/Documents/todo.txt'
 
 	if [ -f "$HOME/Documents/TT/shotmngr.sh" ]; then
 		alias sm="bash $HOME/Documents/TT/shotmngr.sh"
