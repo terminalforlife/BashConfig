@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed 17 Feb 16:33:37 GMT 2021
+# Last Change       - Fri 19 Feb 14:23:27 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -100,7 +100,8 @@ PROMPT_PARSER(){
 			Status=`git status 2> /dev/null`
 			Top=`git rev-parse --show-toplevel`
 
-			if [ "$(git rev-parse --git-dir)" == '.' ]; then
+			local GitDir=`git rev-parse --git-dir`
+			if [ "$GitDir" == '.' ] || [ "$GitDir" == "${PWD%%/.git/*}/.git" ]; then
 				Desc="${C_BRed}∷  ${C_Grey}Looking under the hood..."
 			else
 				if [ -n "$Top" ]; then
@@ -130,7 +131,7 @@ PROMPT_PARSER(){
 						elif [ "${Z[0]}${Z[1]}" == 'Untrackedfiles:' ]; then
 							NFTTL=0
 							while read -a Line; do
-								[ "${Line[0]}" == '??' ] && let NFTTL+=1
+								[ "${Line[0]}" == '??' ] && let NFTTL++
 							done <<< "$(git status --short)"
 							printf -v NFTTL "%'d" $NFTTL
 
@@ -217,26 +218,3 @@ BCFuncs="$HOME/.bash_functions"
 [ -f "$BCFuncs" -a -r "$BCFuncs" ] && . "$BCFuncs"
 
 unset BCAliases BCFuncs UsrBashComp
-
-lmsf() {
-	if ! type -P convert &> /dev/null; then
-		printf "ERROR: Dependency 'convert' not met.\n" 1>&2
-		return 1
-	elif [ $# -ne 2 ]; then
-		printf 'Usage: %s [INPUT] [OUTPUT]\n' "${FUNCNAME[0]}" 1>&2
-		return 1
-	fi
-
-	case ${1##*.} in
-		jpg|jpeg)
-			convert "$1" -resize 40% "$2" ;;
-		png)
-			convert "$1" -resize 40% "${2.???}.jpg" ;;
-		*)
-			printf 'ERROR: Unsupported INPUT image filetype.\n' 1>&2
-			return 1 ;;
-		'')
-			printf 'ERROR: Filename extension for INPUT not found.\n' 1>&2
-			return 1 ;;
-	esac
-}

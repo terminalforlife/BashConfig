@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 16 Feb 15:03:48 GMT 2021
+# Last Change       - Fri 19 Feb 14:47:50 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -14,6 +14,26 @@
 
 qse(){ #: Search Debian packages with APT, properly.
 	{ apt-cache search ' ' | grep "$*" | sort -k 1; } 2> /dev/null
+}
+
+lmsf() {
+	if [ $# -ne 2 ]; then
+		printf 'Usage: %s [INPUT] [OUTPUT]\n' "${FUNCNAME[0]}" 1>&2
+		return 1
+	fi
+
+	case ${1##*.} in
+		jpg|jpeg)
+			convert "$1" -resize 40% "$2" ;;
+		png)
+			convert "$1" -resize 40% "${2.???}.jpg" ;;
+		*)
+			printf 'ERROR: Unsupported INPUT image filetype.\n' 1>&2
+			return 1 ;;
+		'')
+			printf 'ERROR: Filename extension for INPUT not found.\n' 1>&2
+			return 1 ;;
+	esac
 }
 
 bins(){ #: A lite version of what lsbins(1) achieves.
