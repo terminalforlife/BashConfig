@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 19 Feb 14:23:27 GMT 2021
+# Last Change       - Fri 19 Feb 14:51:22 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -118,16 +118,6 @@ PROMPT_PARSER(){
 						if [ "${Z[0]}${Z[1]}${Z[2]}" == '(fixconflictsand' ]; then
 							Desc="${C_BRed}${GI[7]}  ${C_Grey}Branch '${GB:-?}' has conflict(s)."
 							break
-						elif [ "${Z[0]}${Z[1]}${Z[2]}" == 'nothingtocommit,' ]; then
-							printf -v TTLCommits "%'d" "$(git rev-list --count HEAD)"
-
-							Desc="${C_BRed}${GI[0]}  ${C_Grey}Branch '${GB:-?}' is $TTLCommits commit(s) clean."
-							break
-						elif [ "${Z[0]}${Z[1]}${Z[3]}" == 'Yourbranchahead' ]; then
-							printf -v TTLCommits "%'d" "${Z[7]}"
-
-							Desc="${C_BRed}${GI[6]}  ${C_Grey}Branch '${GB:-?}' leads by $TTLCommits commit(s)."
-							break
 						elif [ "${Z[0]}${Z[1]}" == 'Untrackedfiles:' ]; then
 							NFTTL=0
 							while read -a Line; do
@@ -137,17 +127,27 @@ PROMPT_PARSER(){
 
 							Desc="${C_BRed}${GI[3]}  ${C_Grey}Branch '${GB:-?}' has $NFTTL new file(s)."
 							break
+						elif [ "${Z[0]}" == 'deleted:' ]; then
+							Desc="${C_BRed}${GI[9]}  ${C_Grey}Branch '${GB:-?}' detects removed file(s)."
+							break
 						elif [ "${Z[0]}" == 'modified:' ]; then
 							readarray Buffer <<< "$(git --no-pager diff --name-only)"
 							printf -v ModifiedFiles "%'d" ${#Buffer[@]}
 
 							Desc="${C_BRed}${GI[2]}  ${C_Grey}Branch '${GB:-?}' has $ModifiedFiles modified file(s)."
 							break
-						elif [ "${Z[0]}" == 'deleted:' ]; then
-							Desc="${C_BRed}${GI[9]}  ${C_Grey}Branch '${GB:-?}' detects removed file(s)."
-							break
 						elif [ "${Z[0]}${Z[1]}${Z[2]}${Z[3]}" == 'Changestobecommitted:' ]; then
 							Desc="${C_BRed}${GI[1]}  ${C_Grey}Branch '${GB:-?}' has changes to commit."
+							break
+						elif [ "${Z[0]}${Z[1]}${Z[3]}" == 'Yourbranchahead' ]; then
+							printf -v TTLCommits "%'d" "${Z[7]}"
+
+							Desc="${C_BRed}${GI[6]}  ${C_Grey}Branch '${GB:-?}' leads by $TTLCommits commit(s)."
+							break
+						elif [ "${Z[0]}${Z[1]}${Z[2]}" == 'nothingtocommit,' ]; then
+							printf -v TTLCommits "%'d" "$(git rev-list --count HEAD)"
+
+							Desc="${C_BRed}${GI[0]}  ${C_Grey}Branch '${GB:-?}' is $TTLCommits commit(s) clean."
 							break
 						fi
 					done <<< "$Status"

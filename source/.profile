@@ -31,9 +31,5 @@
 		trap 'kill $SSH_AGENT_PID' EXIT
 	fi
 
-	if [ -f "$HOME"/.bashrc ] && [[ `tty` == '/dev/tty*' ]]; then
-		. "$HOME"/.bashrc
-	fi
-
-	export PATH+=":$HOME/bin"
+	PATH+=":$HOME/bin"
 } 1> /dev/null
