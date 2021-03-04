@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sat 20 Feb 20:28:24 GMT 2021
+# Last Change       - Thu  4 Mar 23:28:32 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -68,7 +68,11 @@ alias sd="cd /media/$USER" #: Change the CWD to: /media/$USER
 alias mnt='cd /mnt' #: Change the CWD to: /mnt
 alias lsblkid='lsblk -o name,label,fstype,size,uuid --noheadings' #: A more descriptive, yet concise lsblk.
 alias chksum='md5sum --ignore-missing --quiet -c' #: Check the MD5 hashsums using the provided file.
-alias gitsum='Dir=`git rev-parse --show-toplevel 2> /dev/null` && cd "$Dir" && find -not -path "*.git*" -type f -not -name "README.md" -not -name "LICENSE" -not -name "md5sum" -exec md5sum {} \+ 2> /dev/null | sed "s/\.\///" | sort -k 2 > md5sum; cd - &> /dev/null' #: Lazy solution to saving a sane and sorted checksum list to './md5sum' file.
+
+# No longer using this, as of 2021-03-04. Might keep it around, in-case it ever
+# becomes useful again, like if I GPG sign any of my checksum files.
+#alias gitsum='Dir=`git rev-parse --show-toplevel 2> /dev/null` && cd "$Dir" && find -not -path "*.git*" -type f -not -name "README.md" -not -name "LICENSE" -not -name "md5sum" -exec md5sum {} \+ 2> /dev/null | sed "s/\.\///" | sort -k 2 > md5sum; cd - &> /dev/null' #: Lazy solution to saving a sane and sorted checksum list to './md5sum' file.
+
 alias nonroots='find -not \( -user 0 -or -group 0 \)' #: List any files not owned by or in the group of the root user.
 alias dt='cd "$HOME"/Desktop' #: Change to the current user's desktop.
 alias dl='cd "$HOME"/Downloads' #: Change to the current user's 'Downloads' directory.
