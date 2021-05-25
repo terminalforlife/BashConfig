@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Fri 19 Feb 14:47:50 GMT 2021
+# Last Change       - Sat  3 Apr 20:17:35 BST 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -472,4 +472,12 @@ clips(){ #: Concatenate two or more video clips using ffmpeg(1).
 		printf 'ERROR: No video clips provided.\n' 1>&2
 		return 1
 	fi
+}
+
+bblist(){ #: ...
+	perl -e '
+		print("[list]\n");
+		print("[*] $_\n") foreach sort({$a cmp $b} @ARGV);
+		print("[/list]\n")
+	' "$@" | xclip -i -selection clipboard
 }
