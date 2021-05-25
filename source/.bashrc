@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 19 Feb 14:51:22 GMT 2021
+# Last Change       - Thu 25 Mar 15:17:58 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -70,11 +70,11 @@ PROMPT_PARSER(){
 			# result, none-the-less.
 			local Slashes=${CWD//[!\/]/}
 			TempColumns=$((COLUMNS + 20)) # <-- Seems to work around sequences.
-			if [ ${#CWD} -gt $(((TempColumns - ${#Branch}) - 2)) ]; then
+			if ((${#CWD} > (TempColumns - ${#Branch}) - 2)); then
 				if [ ${#Slashes} -ge 2 ]; then
 					CWD="$C_Grey.../$C_Reset$C_BGreen$Basename$C_Reset"
 				else
-					CWD="$C_BGreen$Basename$C_Reset"
+					CWD=$C_BGreen$Basename$C_Reset
 				fi
 			fi
 		fi
@@ -86,16 +86,18 @@ PROMPT_PARSER(){
 		printf -v X '%.3d' $1
 
 		if git rev-parse --is-inside-work-tree &> /dev/null; then
-			GI[0]='≎' # Clean.
-			GI[1]='≍' # Uncommitted changes.
-			GI[2]='≭' # Unstaged changes.
-			GI[3]='≺' # New file(s).
-			GI[4]='⊀' # Removed file(s).
-			GI[5]='≔' # Initial commit.
-			GI[6]='∾' # Branch is ahead.
-			GI[7]='⮂' # Fix conflicts.
-			GI[8]='!' # Unknown (ERROR).
-			GI[9]='-' # Removed file(s).
+			GI=(
+				'≎' # Clean
+				'≍' # Uncommitted changes
+				'≭' # Unstaged changes
+				'≺' # New file(s)
+				'⊀' # Removed file(s)
+				'≔' # Initial commit
+				'∾' # Branch is ahead
+				'⮂' # Fix conflicts
+				'!' # Unknown (ERROR)
+				'-' # Removed file(s)
+			)
 
 			Status=`git status 2> /dev/null`
 			Top=`git rev-parse --show-toplevel`
@@ -114,11 +116,11 @@ PROMPT_PARSER(){
 				if [ -z "$(git rev-parse --branches)" ]; then
 					Desc="${C_BRed}${GI[5]}  ${C_Grey}Branch '${GB:-?}' awaits its initial commit."
 				else
-					while read -ra Z; do
-						if [ "${Z[0]}${Z[1]}${Z[2]}" == '(fixconflictsand' ]; then
+					while read -ra Line; do
+						if [ "${Line[0]}${Line[1]}${Line[2]}" == '(fixconflictsand' ]; then
 							Desc="${C_BRed}${GI[7]}  ${C_Grey}Branch '${GB:-?}' has conflict(s)."
 							break
-						elif [ "${Z[0]}${Z[1]}" == 'Untrackedfiles:' ]; then
+						elif [ "${Line[0]}${Line[1]}" == 'Untrackedfiles:' ]; then
 							NFTTL=0
 							while read -a Line; do
 								[ "${Line[0]}" == '??' ] && let NFTTL++
@@ -127,24 +129,22 @@ PROMPT_PARSER(){
 
 							Desc="${C_BRed}${GI[3]}  ${C_Grey}Branch '${GB:-?}' has $NFTTL new file(s)."
 							break
-						elif [ "${Z[0]}" == 'deleted:' ]; then
+						elif [ "${Line[0]}" == 'deleted:' ]; then
 							Desc="${C_BRed}${GI[9]}  ${C_Grey}Branch '${GB:-?}' detects removed file(s)."
 							break
-						elif [ "${Z[0]}" == 'modified:' ]; then
+						elif [ "${Line[0]}" == 'modified:' ]; then
 							readarray Buffer <<< "$(git --no-pager diff --name-only)"
 							printf -v ModifiedFiles "%'d" ${#Buffer[@]}
-
 							Desc="${C_BRed}${GI[2]}  ${C_Grey}Branch '${GB:-?}' has $ModifiedFiles modified file(s)."
 							break
-						elif [ "${Z[0]}${Z[1]}${Z[2]}${Z[3]}" == 'Changestobecommitted:' ]; then
+						elif [ "${Line[0]}${Line[1]}${Line[2]}${Line[3]}" == 'Changestobecommitted:' ]; then
 							Desc="${C_BRed}${GI[1]}  ${C_Grey}Branch '${GB:-?}' has changes to commit."
 							break
-						elif [ "${Z[0]}${Z[1]}${Z[3]}" == 'Yourbranchahead' ]; then
-							printf -v TTLCommits "%'d" "${Z[7]}"
-
+						elif [ "${Line[0]}${Line[1]}${Line[3]}" == 'Yourbranchahead' ]; then
+							printf -v TTLCommits "%'d" "${Line[7]}"
 							Desc="${C_BRed}${GI[6]}  ${C_Grey}Branch '${GB:-?}' leads by $TTLCommits commit(s)."
 							break
-						elif [ "${Z[0]}${Z[1]}${Z[2]}" == 'nothingtocommit,' ]; then
+						elif [ "${Line[0]}${Line[1]}${Line[2]}" == 'nothingtocommit,' ]; then
 							printf -v TTLCommits "%'d" "$(git rev-list --count HEAD)"
 
 							Desc="${C_BRed}${GI[0]}  ${C_Grey}Branch '${GB:-?}' is $TTLCommits commit(s) clean."
@@ -159,7 +159,7 @@ PROMPT_PARSER(){
 
 		PS1="\[${C_Reset}\]╭──╼${X}╾──☉  ${Desc}\[${C_Reset}\]\n╰─☉  "
 
-		unset Z Line Desc GI Status Top X GB\
+		unset Z Line Desc GI Status Top X GB CWD\
 			Buffer ModifiedFiles TTLCommits NFTTL
 	fi
 }
