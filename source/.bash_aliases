@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Thu  4 Mar 23:28:32 GMT 2021
+# Last Change       - Sat  3 Apr 20:12:56 BST 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -81,7 +81,6 @@ alias ghtflf='cd "$HOME"/GitHub/terminalforlife/Forks' #: Change to the TFL 'For
 alias tt='cd "$HOME"/Documents/TT' #: Change to the 'TT' directory.
 alias i3a='cd "$HOME"/.i3a' #: Change to the '.i3a' directory in HOME.
 alias jbp='journalctl -b -p 0..4 --no-pager' #: Use journalctl(1) to display anything from 'emerg' to 'warning' since boot.
-alias ae='autoexec -f -c'
 
 if type -P mplayer &> /dev/null; then
 	# If you're having issues with mpv/mplayer here, try -vo x11 instead.
