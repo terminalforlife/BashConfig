@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sat  3 Apr 20:12:56 BST 2021
+# Last Change       - Sun 13 Jun 18:10:40 BST 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -81,6 +81,8 @@ alias ghtflf='cd "$HOME"/GitHub/terminalforlife/Forks' #: Change to the TFL 'For
 alias tt='cd "$HOME"/Documents/TT' #: Change to the 'TT' directory.
 alias i3a='cd "$HOME"/.i3a' #: Change to the '.i3a' directory in HOME.
 alias jbp='journalctl -b -p 0..4 --no-pager' #: Use journalctl(1) to display anything from 'emerg' to 'warning' since boot.
+alias csi3='csi3 "$HOME"/.config/i3/config'
+alias msn='while :; do printf "\ec"; snotes | shuf -n 1; printf "\n"; read -n 1 -p "Press any key to continue... "; done' #: Randomly display one entry at a time from shell programming notes.
 
 if type -P mplayer &> /dev/null; then
 	# If you're having issues with mpv/mplayer here, try -vo x11 instead.
@@ -99,7 +101,7 @@ fi
 
 # Personal aliases I want only to have enabled if I'm logged in. (rudimentary)
 if [ $UID -eq 1000 -a $USER == 'ichy' ]; then
-	alias thumbnail='sh "$HOME/GitHub/terminalforlife/Personal/LearnLinux/Miscellaneous Scripts/thumbnail-generator.sh"' #: Execute script to generate a YouTube thumbnail for Learn Linux.
+	alias thumbnail='sh "$HOME/GitHub/terminalforlife/Personal/ChannelFiles/Miscellaneous Scripts/thumbnail-generator.sh"' #: Execute script to generate a YouTube thumbnail for Learn Linux.
 	alias mplay='mplay /media/$USER/Main\ Data/Linux\ Generals/Music'
 	alias chkrf='ssh cl cat Desktop/READ_ME.txt | less'
 	alias todo='vim "$HOME"/Documents/todo.txt'
@@ -113,5 +115,4 @@ if [ $UID -eq 1000 -a $USER == 'ichy' ]; then
 	fi
 fi
 
-# Clean up functions and variables.
-unset File DIR CHOSEN_EDITOR GIT
+unset File Basename
