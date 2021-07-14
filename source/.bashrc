@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Thu 25 Mar 15:17:58 GMT 2021
+# Last Change       - Sun 13 Jun 17:57:06 BST 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -83,7 +83,8 @@ PROMPT_PARSER(){
 
 		unset Line
 	elif [ $PROMPT_STYLE -eq 2 ]; then
-		printf -v X '%.3d' $1
+		X=$1
+		(( $X == 0 )) && X=
 
 		if git rev-parse --is-inside-work-tree &> /dev/null; then
 			GI=(
@@ -114,11 +115,11 @@ PROMPT_PARSER(){
 
 				# The following is in a very specific order of priority.
 				if [ -z "$(git rev-parse --branches)" ]; then
-					Desc="${C_BRed}${GI[5]}  ${C_Grey}Branch '${GB:-?}' awaits its initial commit."
+					Desc="${C_BCyan}${GI[5]}  ${C_Grey}Branch '${GB:-?}' awaits its initial commit."
 				else
 					while read -ra Line; do
 						if [ "${Line[0]}${Line[1]}${Line[2]}" == '(fixconflictsand' ]; then
-							Desc="${C_BRed}${GI[7]}  ${C_Grey}Branch '${GB:-?}' has conflict(s)."
+							Desc="${C_BCyan}${GI[7]}  ${C_Grey}Branch '${GB:-?}' has conflict(s)."
 							break
 						elif [ "${Line[0]}${Line[1]}" == 'Untrackedfiles:' ]; then
 							NFTTL=0
@@ -127,37 +128,50 @@ PROMPT_PARSER(){
 							done <<< "$(git status --short)"
 							printf -v NFTTL "%'d" $NFTTL
 
-							Desc="${C_BRed}${GI[3]}  ${C_Grey}Branch '${GB:-?}' has $NFTTL new file(s)."
+							Desc="${C_BCyan}${GI[3]}  ${C_Grey}Branch '${GB:-?}' has $NFTTL new file(s)."
 							break
 						elif [ "${Line[0]}" == 'deleted:' ]; then
-							Desc="${C_BRed}${GI[9]}  ${C_Grey}Branch '${GB:-?}' detects removed file(s)."
+							Desc="${C_BCyan}${GI[9]}  ${C_Grey}Branch '${GB:-?}' detects removed file(s)."
 							break
 						elif [ "${Line[0]}" == 'modified:' ]; then
 							readarray Buffer <<< "$(git --no-pager diff --name-only)"
 							printf -v ModifiedFiles "%'d" ${#Buffer[@]}
-							Desc="${C_BRed}${GI[2]}  ${C_Grey}Branch '${GB:-?}' has $ModifiedFiles modified file(s)."
+							Desc="${C_BCyan}${GI[2]}  ${C_Grey}Branch '${GB:-?}' has $ModifiedFiles modified file(s)."
 							break
 						elif [ "${Line[0]}${Line[1]}${Line[2]}${Line[3]}" == 'Changestobecommitted:' ]; then
-							Desc="${C_BRed}${GI[1]}  ${C_Grey}Branch '${GB:-?}' has changes to commit."
+							Desc="${C_BCyan}${GI[1]}  ${C_Grey}Branch '${GB:-?}' has changes to commit."
 							break
 						elif [ "${Line[0]}${Line[1]}${Line[3]}" == 'Yourbranchahead' ]; then
 							printf -v TTLCommits "%'d" "${Line[7]}"
-							Desc="${C_BRed}${GI[6]}  ${C_Grey}Branch '${GB:-?}' leads by $TTLCommits commit(s)."
+							Desc="${C_BCyan}${GI[6]}  ${C_Grey}Branch '${GB:-?}' leads by $TTLCommits commit(s)."
 							break
 						elif [ "${Line[0]}${Line[1]}${Line[2]}" == 'nothingtocommit,' ]; then
 							printf -v TTLCommits "%'d" "$(git rev-list --count HEAD)"
 
-							Desc="${C_BRed}${GI[0]}  ${C_Grey}Branch '${GB:-?}' is $TTLCommits commit(s) clean."
+							Desc="${C_BCyan}${GI[0]}  ${C_Grey}Branch '${GB:-?}' is $TTLCommits commit(s) clean."
 							break
 						fi
 					done <<< "$Status"
 				fi
 			fi
-		else
-			Desc="${C_BRed}☡  ${C_Grey}Sleepy git..."
 		fi
 
-		PS1="\[${C_Reset}\]╭──╼${X}╾──☉  ${Desc}\[${C_Reset}\]\n╰─☉  "
+		#PS1="\[${C_Reset}\]╭──╼${X}╾──☉  ${Desc}\[${C_Reset}\]\n╰─☉  "
+
+		# 2021-06-13: Temporary block — just experimenting.
+		if [ -n "$Desc" ]; then
+			if [ -n "$X" ]; then
+				PS1="\[${C_Reset}\]${Desc}\[${C_Reset}\]\n\[\e[91m\]${X} \[\e[0m\]\[\e[3;2;37m\]➙ \[\e[0m\] "
+			else
+				PS1="\[${C_Reset}\]${Desc}\[${C_Reset}\]\n\[\e[3;2;37m\]➙ \[\e[0m\] "
+			fi
+		else
+			if [ -n "$X" ]; then
+				PS1="\[${C_Reset}\]\[\e[91m\]${X} \[\e[0m\]\[\e[3;2;37m\]➙ \[\e[0m\] "
+			else
+				PS1="\[${C_Reset}\]\[\e[3;2;37m\]➙ \[\e[0m\] "
+			fi
+		fi
 
 		unset Z Line Desc GI Status Top X GB CWD\
 			Buffer ModifiedFiles TTLCommits NFTTL
@@ -184,7 +198,6 @@ export LS_COLORS='fi=0;37:di=1;37:ln=1;30:mh=1;30:ex=7;1;30:no=1;37:or=1;30:mi=1
 
 export GREP_COLOR='1;31'
 export LESSSECURE=1
-export PATH=${PATH%:/snap/bin}
 export PS_PERSONALITY='posix'
 export SUDO_EDITOR='/usr/bin/rvim'
 export TERM='xterm-256color'
