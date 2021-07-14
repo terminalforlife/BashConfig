@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sat  3 Apr 20:17:35 BST 2021
+# Last Change       - Wed 14 Jul 17:37:02 BST 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -463,21 +463,64 @@ readit(){ #: Read a text file with espeak.
 	espeak -v en-scottish -g 5 -p 13 -s 0.7 < "$*"
 }
 
-clips(){ #: Concatenate two or more video clips using ffmpeg(1).
-	if ! [ $# -eq 0 -o $# -eq 1 ]; then
+clips(){ #: Concatenate video clips & add overlay.
+	if ! (( $# == 0 || $# == 1 )); then
 		printf "file '%s'\n" "$@" > flist
-		ffmpeg -f concat -safe 0 -i flist output.mp4
-		rm flist
+		ffmpeg -f concat -i flist -safe 0 -codec:a\
+			copy -codec:v copy output.mp4
+
+		\rm flist
 	else
 		printf 'ERROR: No video clips provided.\n' 1>&2
 		return 1
 	fi
 }
 
-bblist(){ #: ...
+
+overlay(){ #: Add the TFL overlay to a video file.
+	if (( $# == 1 )); then
+		ffmpeg -i "$1" -i "$HOME/Pictures/TFL/Stream Overlay.png"\
+			-filter_complex '[0:v][1:v]overlay' -c:a copy overlay.mp4
+	else
+		printf 'ERROR: One video clip required.\n' 1>&2
+		return 1
+	fi
+}
+
+bblist(){
 	perl -e '
 		print("[list]\n");
 		print("[*] $_\n") foreach sort({$a cmp $b} @ARGV);
 		print("[/list]\n")
 	' "$@" | xclip -i -selection clipboard
+}
+
+tops(){
+	du --max-depth=1 . | perl -ne '
+		BEGIN {
+			our %Files;
+			our $SizeLenMax = 0;
+		}
+
+		my @Line = split(" ", $_);
+
+		my $Size = sprintf("%0.2fM", $Line[0] / 1024);
+		my $SizeLen = length($Size);
+		$SizeLen > $SizeLenMax and $SizeLenMax = $SizeLen;
+
+		my $Path = join(" ", @Line[1,]) =~ s/^\.\///r;
+		$Files{$Size} = $Path unless $Path eq ".";
+
+		END {
+			my $Count = 0;
+			foreach (sort({$b <=> $a} keys(%Files))) {
+				$Count++;
+				$Count > 10 and last();
+
+				$Files{$_} eq $ENV{"HOME"} and next();
+
+				printf("%*s %s\n", $SizeLenMax, $_, $Files{$_})
+			}
+		}
+	'
 }
