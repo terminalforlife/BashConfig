@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 13 Jun 17:57:06 BST 2021
+# Last Change       - Sat 31 Jul 22:52:02 BST 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -169,7 +169,7 @@ PROMPT_PARSER(){
 			if [ -n "$X" ]; then
 				PS1="\[${C_Reset}\]\[\e[91m\]${X} \[\e[0m\]\[\e[3;2;37m\]➙ \[\e[0m\] "
 			else
-				PS1="\[${C_Reset}\]\[\e[3;2;37m\]➙ \[\e[0m\] "
+				PS1="\[${C_Reset}\]\[\e[2;37m\]➙ \[\e[0m\] "
 			fi
 		fi
 

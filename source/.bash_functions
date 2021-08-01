@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Wed 14 Jul 17:37:02 BST 2021
+# Last Change       - Fri 16 Jul 13:17:39 BST 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -496,7 +496,7 @@ bblist(){
 }
 
 tops(){
-	du --max-depth=1 . | perl -ne '
+	du -b --max-depth=1 | perl -ne '
 		BEGIN {
 			our %Files;
 			our $SizeLenMax = 0;
