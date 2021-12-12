@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sat 31 Jul 22:52:02 BST 2021
+# Last Change       - Sun 12 Dec 08:18:13 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -24,6 +24,10 @@ set -o interactive-comments +o monitor -o hashall\
 # version has slightly different output, so needed a workaround.
 readarray T < /etc/lsb-release
 [ "${T[2]#*=}" == bionic$'\n' ] && R=4 || R=3
+
+# Disable the ability to use Ctrl + S to stop the terminal output.
+# This allows you to search forwards with that same binding.
+stty stop ''
 
 # ANSI color escape sequences. Useful else, not just the prompt.
 C_Red='\e[2;31m';       C_BRed='\e[1;31m';      C_Green='\e[2;32m';
