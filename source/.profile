@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.profile
 # Started On        - Thu 14 Sep 20:09:24 BST 2017
-# Last Change       - Sun 14 Feb 15:47:39 GMT 2021
+# Last Change       - Sun 12 Dec 08:23:54 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -13,11 +13,6 @@
 	# and directories. This is the equivalent of octal 700 and 600 for
 	# directories and files, respectively; drwx------ and -rw-------.
 	umask 0077
-
-	# I need this for when I use my configurations remotely, via SSH.
-	if [ -n "$SSH_TTY" ] && [ -f "$HOME/.bashrc" ]; then
-		. "$HOME/.bashrc"
-	fi
 
 	# Set up the SSH agent for key management.
 	if eval `ssh-agent -s`; then
@@ -30,6 +25,8 @@
 
 		trap 'kill $SSH_AGENT_PID' EXIT
 	fi
+
+	. "$HOME"/.bashrc
 
 	PATH+=":$HOME/bin"
 } &> /dev/null
