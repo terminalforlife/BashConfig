@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_aliases
 # Started On        - Thu 14 Sep 13:14:36 BST 2017
-# Last Change       - Sun 13 Jun 18:10:40 BST 2021
+# Last Change       - Fri 10 Sep 13:01:52 BST 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -53,10 +53,10 @@ alias log="git --no-pager log --reverse --pretty=format:'%CredCommit %Cgreen%h%C
 alias show="git --no-pager show --pretty=format:'%CredCommit %Cgreen%h%Cred pushed %ar by %Cgreen%an%Creset%Cred:%Creset%n\"%s\"%n'"
 alias status='git status -s'
 alias pulltfl='for Dir in "$HOME/GitHub/terminalforlife/Personal"/*; { [ -d "$Dir" ] || continue; cd "$Dir" && pull "$Dir"; cd ..; }' #: Personal alias to pull all `Personal` repositories.
-alias ytdl-video="youtube-dl -c --no-playlist --sleep-interval 5 --format best --no-call-home --console-title --quiet --ignore-errors" #: Download HQ videos from YouTube, using youtube-dl.
-alias ytdl-audio="youtube-dl -cx --no-playlist --audio-format mp3 --sleep-interval 5 --max-sleep-interval 30 --no-call-home --console-title --quiet --ignore-errors" #: Download HQ audio from YouTube, using youtube-dl.
-alias ytpldl-audio="youtube-dl -cix --audio-format mp3 --sleep-interval 5 --yes-playlist --no-call-home --console-title --quiet --ignore-errors" #: Download HQ videos from YouTube playlist, using youtube-dl.
-alias ytpldl-video="youtube-dl -ci --yes-playlist --sleep-interval 5 --format best --no-call-home --console-title --quiet --ignore-errors" #: Download HQ audio from YouTube playlist, using youtube-dl.
+alias ytdl-video="youtube-dl -c --no-playlist --sleep-interval 5 --format best --no-call-home --console-title --quiet --ignore-errors --output '%(title)s.%(ext)s'" #: Download HQ videos from YouTube, using youtube-dl.
+alias ytdl-audio="youtube-dl -cx --no-playlist --audio-format mp3 --sleep-interval 5 --max-sleep-interval 30 --no-call-home --console-title --quiet --ignore-errors --output '%(title)s.%(ext)s'" #: Download HQ audio from YouTube, using youtube-dl.
+alias ytpldl-audio="youtube-dl -cix --audio-format mp3 --sleep-interval 5 --yes-playlist --no-call-home --console-title --quiet --ignore-errors --output '%(title)s.%(ext)s'" #: Download HQ videos from YouTube playlist, using youtube-dl.
+alias ytpldl-video="youtube-dl -ci --yes-playlist --sleep-interval 5 --format best --no-call-home --console-title --quiet --ignore-errors --output '%(title)s.%(ext)s'" #: Download HQ audio from YouTube playlist, using youtube-dl.
 alias klog="dmesg -t -L=never -l emerg,alert,crit,err,warn --human --nopager" #: Potentially useful option for viewing the kernel log.
 alias ccb='for X in "-i" "-i -selection clipboard"; { printf "%s" "" | xclip $X; }' #: Clear the clipboard using xclip.
 alias ls='ls --quoting-style=literal -pq --time-style=iso --color=auto --group-directories-first --show-control-chars' #: A presentable but minimalistic 'ls'.
