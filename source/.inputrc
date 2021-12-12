@@ -53,4 +53,6 @@ $if mode=emacs
 	"\e[5D": backward-word
 	"\e\e[C": forward-word
 	"\e\e[D": backward-word
+
+	"\C-t": "sudo sh -c 'apt-get update && apt-get dist-upgrade'"
 $endif
