@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon 13 Dec 22:41:38 GMT 2021
+# Last Change       - Mon 13 Dec 23:34:04 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -236,14 +236,14 @@ if type -P mplayer &> /dev/null; then
 fi
 
 if type -P mplay mocp &> /dev/null; then
-	mplay() { /usr/bin/mplay /media/"$USER"/Main\ Data/Linux\ Generals/Music; }
+	mplay() { /usr/bin/mplay /media/"$USER"/Main\ Data/Linux\ Generals/Music "$@"; }
 fi
 
 thumbnail() {
 	local File="$HOME/GitHub/terminalforlife/Personal/ChannelFiles"
 	File+='/Miscellaneous Scripts/thumbnail-generator.sh'
 
-	sh "$File"
+	sh "$File" "$@"
 }
 
 if [ -f "$HOME"/Documents/TT/shotmngr.sh ]; then
@@ -253,7 +253,7 @@ if [ -f "$HOME"/Documents/TT/shotmngr.sh ]; then
 			return 1
 		fi
 
-		bash "$HOME"/Documents/TT/shotmngr.sh
+		bash "$HOME"/Documents/TT/shotmngr.sh "$@"
 	}
 fi
 
@@ -264,7 +264,7 @@ if [ -f "$HOME"/Documents/TT/bin/poks ]; then
 			return 1
 		fi
 
-		sh "$HOME"/Documents/TT/bin/poks
+		sh "$HOME"/Documents/TT/bin/poks "$@"
 	}
 fi
 
