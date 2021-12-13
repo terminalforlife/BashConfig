@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon 13 Dec 12:57:57 GMT 2021
+# Last Change       - Mon 13 Dec 20:41:56 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -366,7 +366,7 @@ gp() {
 	esac
 
 	links2 -dump -html-tables 1 -html-frames 1 -http.do-not-track 1 "$URL"\
-		| awk 'NR>=3 {print($0)}' | \less -Fs
+		| awk 'NR>=3 {print($0)}' | /usr/bin/less -Fs
 
 	unset URL
 }
