@@ -3,14 +3,33 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon 13 Dec 10:54:55 GMT 2021
+# Last Change       - Mon 13 Dec 12:57:57 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
 
 Err(){
 	printf '\e[91mErr\e[0m: %s\n' "$1" 1>&2
+	return 1
 }
+
+rm() { /bin/rm -v --preserve-root "$@"; }
+chown() { /bin/chown -v --preserve-root "$@"; }
+chmod() { /bin/chmod -v --preserve-root "$@"; }
+mv() { /bin/mv -vn "$@"; }
+mkdir() { /bin/mkdir -v "$@"; }
+cp() { /bin/cp -vn "$@"; }
+ln() { /bin/ln -v "$@"; }
+rmdir() { /bin/rmdir -v "$@"; }
+
+ls() {
+	/bin/ls --quoting-style=literal -pq --time-style=iso --color=auto\
+		--group-directories-first --show-control-chars "$@"
+}
+
+grep() { /bin/grep -sI --color=auto "$@"; }
+
+md5sum() { /usr/bin/md5sum --ignore-missing --quiet -c; }
 
 if [ -f "$HOME"/Documents/TT/bin/sweep ]; then
 	hsh() {
@@ -75,21 +94,6 @@ if [ -f /sys/class/power_supply/BAT1/capacity ]; then
 	}
 fi
 
-if type -P dpkg-query &> /dev/null; then
-	getsecs() {
-		dpkg-query -Wf '${Section}\n' | sort -u | column
-	}
-fi
-
-rm() { /bin/rm -v --preserve-root $*; }
-chown() { /bin/chown -v --preserve-root $*; }
-chmod() { /bin/chmod -v --preserve-root $*; }
-mv() { /bin/mv -vn $*; }
-mkdir() { /bin/mkdir -v $*; }
-cp() { /bin/cp -vn $*; }
-ln() { /bin/ln -v $*; }
-rmdir() { /bin/rmdir -v $*; }
-
 fixmodes() {
 	while read -r; do
 		printf '%b\n' "$REPLY"
@@ -114,7 +118,30 @@ fixmodes() {
 }
 
 if type -P ffmpeg &> /dev/null; then
-	ffmpeg() { ffmpeg -v 0 -stats; }
+	ffmpeg() { /usr/bin/ffmpeg -v 0 -stats "$@"; }
+
+	clips() {
+		if ! (( $# == 0 || $# == 1 )); then
+			printf "file '%s'\n" "$@" > flist
+			ffmpeg -f concat -i flist -safe 0 -codec:a\
+				copy -codec:v copy output.mp4
+
+			rm flist
+		else
+			printf 'ERROR: No video clips provided.\n' 1>&2
+			return 1
+		fi
+	}
+
+	overlay() {
+		if (( $# == 1 )); then
+			ffmpeg -i "$1" -i "$HOME/Pictures/TFL/Stream Overlay.png"\
+				-filter_complex '[0:v][1:v]overlay' -c:a copy overlay.mp4
+		else
+			printf 'ERROR: One video clip required.\n' 1>&2
+			return 1
+		fi
+	}
 fi
 
 if type -P feh &> /dev/null; then
@@ -124,7 +151,7 @@ if type -P feh &> /dev/null; then
 fi
 
 if type -P wget &> /dev/null; then
-	get() { wget -qc --show-progress; }
+	get() { wget -qc --show-progress "$@"; }
 fi
 
 alert() {
@@ -141,18 +168,18 @@ dwatch() {
 }
 
 if type -P git &> /dev/null; then
-	add() { git add $*; }
-	checkout() { git checkout $*; }
-	pull() { git pull $*; }
-	commit() { git commit $*; }
-	merge() { git merge $*; }
-	branch() { git branch $*; }
-	push() { git push $*; }
-	diff() { git diff $*; }
-	status() { git status -s $*; }
+	add() { git add "$@"; }
+	checkout() { git checkout "$@"; }
+	pull() { git pull "$@"; }
+	commit() { git commit "$@"; }
+	merge() { git merge "$@"; }
+	branch() { git branch "$@"; }
+	push() { git push "$@"; }
+	diff() { git diff "$@"; }
+	status() { git status -s "$@"; }
 
 	show() {
-		git --no-pager show --pretty --pretty=format:'%h: %s' $*
+		git --no-pager show --pretty --pretty=format:'%h: %s' "$@"
 	}
 
 	toplevel() {
@@ -160,7 +187,7 @@ if type -P git &> /dev/null; then
 	}
 
 	log() {
-		git --no-pager log --reverse --pretty=format:'%h: "%s"' $*
+		git --no-pager log --reverse --pretty=format:'%h: "%s"' "$@"
 		printf '\n'
 	}
 fi
@@ -179,7 +206,7 @@ if type -P youtube-dl &> /dev/null; then
 		done
 
 		youtube-dl -ic --format best --no-call-home --console-title\
-			-o '%(title)s.%(ext)s' $ExtraOpts $*
+			-o '%(title)s.%(ext)s' $ExtraOpts "$@"
 	}
 fi
 
@@ -190,16 +217,7 @@ if type -P xclip &> /dev/null; then
 	}
 fi
 
-ls() {
-	/bin/ls --quoting-style=literal -pq --time-style=iso --color=auto\
-		--group-directories-first --show-control-chars $*
-}
-
-grep() { /bin/grep -sI --color=auto; }
-
-lsblkid() { lsblk -o name,label,fstype,size,uuid --noheadings; }
-
-md5sum() { /usr/bin/md5sum --ignore-missing --quiet -c; }
+lsblkid() { lsblk -o name,label,fstype,size,uuid --noheadings "$@"; }
 
 sd() { cd /media/"$USER"; }
 ghtflp() { cd "$HOME"/GitHub/terminalforlife/Personal; }
@@ -209,7 +227,11 @@ i3a() { cd "$HOME"/.i3a; }
 
 if type -P mplayer &> /dev/null; then
 	mpa() {
-		mplayer -volume 100 -nogui -nolirc -vo null -really-quiet &> /dev/null
+		mplayer -volume 100 -nogui -nolirc -vo null -really-quiet "$@" &> /dev/null
+	}
+
+	mpv() {
+		mplayer -volume 100 -vo x11 -nolirc -really-quiet "$@" &> /dev/null
 	}
 fi
 
@@ -228,7 +250,7 @@ if [ -f "$HOME"/Documents/TT/shotmngr.sh ]; then
 	sm() {
 		if ! [ -r "$HOME"/Documents/TT/shotmngr.sh ]; then
 			Err "File '$HOME/Documents/TT/shotmngr.sh' unreadable."
-			continue
+			return 1
 		fi
 
 		bash "$HOME"/Documents/TT/shotmngr.sh
@@ -239,7 +261,7 @@ if [ -f "$HOME"/Documents/TT/bin/poks ]; then
 	poks() {
 		if ! [ -r "$HOME"/Documents/TT/bin/poks ]; then
 			Err "File '$HOME/Documents/TT/bin/poks' unreadable."
-			continue
+			return 1
 		fi
 
 		sh "$HOME"/Documents/TT/bin/poks
@@ -263,11 +285,11 @@ lmsf() {
 			convert "$1" -resize 40% "$2" ;;
 		png)
 			convert "$1" -resize 40% "${2.???}.jpg" ;;
-		*)
-			printf 'ERROR: Unsupported INPUT image file type.\n' 1>&2
-			return 1 ;;
 		'')
 			printf 'ERROR: Filename extension for INPUT not found.\n' 1>&2
+			return 1 ;;
+		*)
+			printf 'ERROR: Unsupported INPUT image file type.\n' 1>&2
 			return 1 ;;
 	esac
 }
@@ -382,29 +404,6 @@ brn() {
 
 sayit() {
 	espeak -v en-scottish -g 5 -p 13 -s 0.7 "$*"
-}
-
-clips() {
-	if ! (( $# == 0 || $# == 1 )); then
-		printf "file '%s'\n" "$@" > flist
-		ffmpeg -f concat -i flist -safe 0 -codec:a\
-			copy -codec:v copy output.mp4
-
-		\rm flist
-	else
-		printf 'ERROR: No video clips provided.\n' 1>&2
-		return 1
-	fi
-}
-
-overlay() {
-	if (( $# == 1 )); then
-		ffmpeg -i "$1" -i "$HOME/Pictures/TFL/Stream Overlay.png"\
-			-filter_complex '[0:v][1:v]overlay' -c:a copy overlay.mp4
-	else
-		printf 'ERROR: One video clip required.\n' 1>&2
-		return 1
-	fi
 }
 
 bblist() {
