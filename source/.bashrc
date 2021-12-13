@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 12 Dec 08:18:13 GMT 2021
+# Last Change       - Mon 13 Dec 10:56:15 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -227,9 +227,6 @@ UsrBashComp="/usr/share/bash-completion/bash_completion"
 
 bind '"\e[1;5C": forward-word'
 bind '"\e[1;5D": backward-word'
-
-BCAliases="$HOME/.bash_aliases"
-[ -f "$BCAliases" -a -r "$BCAliases" ] && . "$BCAliases"
 
 BCFuncs="$HOME/.bash_functions"
 [ -f "$BCFuncs" -a -r "$BCFuncs" ] && . "$BCFuncs"
