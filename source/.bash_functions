@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sun 19 Dec 06:02:58 GMT 2021
+# Last Change       - Sun 19 Dec 06:30:41 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -430,7 +430,11 @@ purgerc() {
 			Package)
 				Package=${Value# } ;;
 			Status)
-				[ "$Value" == ' rc' ] && Packages+=("$Package") ;;
+				Status=${Value# } ;;
+			Architecture)
+				if [ "$Status" == 'deinstall ok config-files' ]; then
+					Packages+=("$Package:${Value# }")
+				fi ;;
 		esac
 	done < "$File"
 
