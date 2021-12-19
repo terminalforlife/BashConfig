@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon 13 Dec 23:34:04 GMT 2021
+# Last Change       - Sun 19 Dec 06:02:58 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -231,7 +231,7 @@ if type -P mplayer &> /dev/null; then
 	}
 
 	mpv() {
-		mplayer -volume 100 -vo x11 -nolirc -really-quiet "$@" &> /dev/null
+		mplayer -volume 100 -vo x11 -zoom -nolirc -really-quiet "$@" &> /dev/null
 	}
 fi
 
@@ -412,4 +412,27 @@ bblist() {
 		printf '[*] %s\n' "$@"
 		printf '[/list]\n'
 	} | xclip -i -selection clipboard
+}
+
+purgerc() {
+	local File='/var/lib/dpkg/status'
+	if ! [ -f "$File" ]; then
+		Err "File '$File' not found."
+		return 1
+	elif ! [ -r "$File" ]; then
+		Err "File '$File' unreadable."
+		return 1
+	fi
+
+	local REPLY Packages=()
+	while IFS=':' read Key Value; do
+		case $Key in
+			Package)
+				Package=${Value# } ;;
+			Status)
+				[ "$Value" == ' rc' ] && Packages+=("$Package") ;;
+		esac
+	done < "$File"
+
+	sudo apt-get purge "${Packages[@]}"
 }
