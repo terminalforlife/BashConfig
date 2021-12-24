@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sun 19 Dec 06:30:41 GMT 2021
+# Last Change       - Fri 24 Dec 12:22:48 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -128,7 +128,7 @@ if type -P ffmpeg &> /dev/null; then
 
 			rm flist
 		else
-			printf 'ERROR: No video clips provided.\n' 1>&2
+			printf 'Err: No video clips provided.\n' 1>&2
 			return 1
 		fi
 	}
@@ -138,7 +138,7 @@ if type -P ffmpeg &> /dev/null; then
 			ffmpeg -i "$1" -i "$HOME/Pictures/TFL/Stream Overlay.png"\
 				-filter_complex '[0:v][1:v]overlay' -c:a copy overlay.mp4
 		else
-			printf 'ERROR: One video clip required.\n' 1>&2
+			printf 'Err: One video clip required.\n' 1>&2
 			return 1
 		fi
 	}
@@ -236,7 +236,7 @@ if type -P mplayer &> /dev/null; then
 fi
 
 if type -P mplay mocp &> /dev/null; then
-	mplay() { /usr/bin/mplay /media/"$USER"/Main\ Data/Linux\ Generals/Music "$@"; }
+	mplay() { /usr/bin/mplay /media/"$USER"/1TB\ WD\ Passport/Linux\ Generals/Music "$@"; }
 fi
 
 thumbnail() {
@@ -286,10 +286,10 @@ lmsf() {
 		png)
 			convert "$1" -resize 40% "${2.???}.jpg" ;;
 		'')
-			printf 'ERROR: Filename extension for INPUT not found.\n' 1>&2
+			printf 'Err: Filename extension for INPUT not found.\n' 1>&2
 			return 1 ;;
 		*)
-			printf 'ERROR: Unsupported INPUT image file type.\n' 1>&2
+			printf 'Err: Unsupported INPUT image file type.\n' 1>&2
 			return 1 ;;
 	esac
 }
@@ -297,10 +297,10 @@ lmsf() {
 touched() {
 	for File in "$@"; {
 		if ! git rev-parse --is-inside-work-tree &> /dev/null; then
-			printf 'ERROR: Not inside a Git repository.\n' 1>&2
+			printf 'Err: Not inside a Git repository.\n' 1>&2
 			return 1
 		elif ! [ -e "$File" ]; then
-			printf "ERROR: '%s' doesn't exist.\n" "$File" 1>&2
+			printf "Err: '%s' doesn't exist.\n" "$File" 1>&2
 			return 1
 		fi
 
@@ -323,9 +323,11 @@ sc() {
 }
 
 builtins() {
-	while read -r; do
-		printf "%s\n" "${REPLY/* }"
-	done <<< "$(enable -a)" | column
+	compgen -b | column
+
+	#while read -r; do
+	#	printf "%s\n" "${REPLY/* }"
+	#done <<< "$(enable -a)" | column
 }
 
 getpkgvers() {
@@ -356,11 +358,11 @@ gp() {
 
 	case $1 in
 		*\ *|'')
-			printf 'ERROR: Invalid reference page provided.\n' 1>&2
+			printf 'Err: Invalid reference page provided.\n' 1>&2
 			return 1 ;;
 		*)
 			if ! wget -q --spider "$URL"; then
-				printf 'ERROR: Provided reference page not found.\n' 1>&2
+				printf 'Err: Provided reference page not found.\n' 1>&2
 				return 1
 			fi ;;
 	esac
@@ -379,7 +381,7 @@ brn() {
 			--directories|-d)
 				UseDirs='true' ;;
 			*)
-				printf "ERROR: Incorrect argument(s) specified." ;;
+				printf "Err: Incorrect argument(s) specified." ;;
 		esac
 		shift
 	done
@@ -439,4 +441,9 @@ purgerc() {
 	done < "$File"
 
 	sudo apt-get purge "${Packages[@]}"
+}
+
+# Test BASH Versions. Development script for testing scripts with BASH >= 3.0.
+tbv() {
+	bash "$HOME"/GitHub/terminalforlife/Personal/Extra/devutils/test-bash.sh "$1"
 }
