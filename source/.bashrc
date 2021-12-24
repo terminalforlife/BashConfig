@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Mon 13 Dec 12:59:21 GMT 2021
+# Last Change       - Thu 23 Dec 16:36:05 GMT 2021
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -167,15 +167,15 @@ PROMPT_PARSER(){
 		# 2021-06-13: Temporary block — just experimenting.
 		if [ -n "$Desc" ]; then
 			if [ -n "$X" ]; then
-				PS1="\[${C_Reset}\]${Desc}\[${C_Reset}\]\n\[\e[91m\]${X} \[\e[0m\]\[\e[3;2;37m\]➙ \[\e[0m\] "
+				PS1="\[${C_Reset}\]${Desc}\[${C_Reset}\]\n\[\e[91m\]${X} \[\e[0m\]\[\e[2;37m\]\$\[\e[0m\] "
 			else
-				PS1="\[${C_Reset}\]${Desc}\[${C_Reset}\]\n\[\e[3;2;37m\]➙ \[\e[0m\] "
+				PS1="\[${C_Reset}\]${Desc}\[${C_Reset}\]\n\[\e[2;37m\]\$\[\e[0m\] "
 			fi
 		else
 			if [ -n "$X" ]; then
-				PS1="\[${C_Reset}\]\[\e[91m\]${X} \[\e[0m\]\[\e[3;2;37m\]➙ \[\e[0m\] "
+				PS1="\[${C_Reset}\]\[\e[91m\]${X} \[\e[0m\]\[\e[2;37m\]\$\[\e[0m\] "
 			else
-				PS1="\[${C_Reset}\]\[\e[2;37m\]➙ \[\e[0m\] "
+				PS1="\[${C_Reset}\]\[\e[2;37m\]\$\[\e[0m\] "
 			fi
 		fi
 
@@ -194,7 +194,9 @@ export TIMEFORMAT='>>> real %3R | user %3U | sys %3S | pcpu %P <<<'
 export VBOX_USER_HOME="/media/$USER/Main Data/Linux Generals/VirtualBox VMs"
 
 # Created this theme on 2020-03-01, using various shades (not 50!) of grey.
-export LS_COLORS='fi=0;37:di=1;37:ln=1;30:mh=1;30:ex=7;1;30:no=1;37:or=1;30:mi=1;30'
+#export LS_COLORS='fi=0;37:di=1;37:ln=1;30:mh=1;30:ex=7;1;30:no=1;37:or=1;30:mi=1;30'
+
+export LS_COLORS='fi=37:di=1;37:ln=90:mh=90:ex=3;2;37:no=1;37:mi=90:ow=91'
 
 # Not using this anymore, as of 2020-03-01. I absolutely love this theme and
 # have used it pretty much the entire time since I found Linux. Thanks to
