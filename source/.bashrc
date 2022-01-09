@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Thu 23 Dec 16:36:05 GMT 2021
+# Last Change       - Fri  7 Jan 20:46:09 GMT 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -26,6 +26,7 @@ set -o interactive-comments +o monitor -o hashall\
 # version has slightly different output, so needed a workaround.
 readarray T < /etc/lsb-release
 [ "${T[2]#*=}" == bionic$'\n' ] && R=4 || R=3
+unset T
 
 # Disable the ability to use Ctrl + S to stop the terminal output.
 # This allows you to search forwards with that same binding.
@@ -190,7 +191,7 @@ export HISTCONTROL='ignoreboth'
 export HISTFILESIZE=0
 export HISTSIZE=1000
 export HISTTIMEFORMAT='[%F_%X]: '
-export TIMEFORMAT='>>> real %3R | user %3U | sys %3S | pcpu %P <<<'
+export TIMEFORMAT='%3R'
 export VBOX_USER_HOME="/media/$USER/Main Data/Linux Generals/VirtualBox VMs"
 
 # Created this theme on 2020-03-01, using various shades (not 50!) of grey.
