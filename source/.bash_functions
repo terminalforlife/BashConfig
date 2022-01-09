@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Fri 24 Dec 12:22:48 GMT 2021
+# Last Change       - Sun  9 Jan 14:49:23 GMT 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -443,7 +443,32 @@ purgerc() {
 	sudo apt-get purge "${Packages[@]}"
 }
 
-# Test BASH Versions. Development script for testing scripts with BASH >= 3.0.
+# Test BASH Versions. For testing scripts with BASH >= 3.0.
 tbv() {
-	bash "$HOME"/GitHub/terminalforlife/Personal/Extra/devutils/test-bash.sh "$1"
+	File=$1
+	shift
+
+	if ! [[ -f $File ]]; then
+		Err 'File not found.'
+		return 1
+	elif ! [[ -r $File ]]; then
+		Err 'File unreadable.'
+		return 1
+	else
+		# Verify the shebang is actually pointing to BASH. Reduces the chance of
+		# accidentally trying to run the wrong file a bazillion times.
+		read <<< "$(file "$File")"
+		Str='Bourne-Again shell script, ASCII text executable'
+		if [[ ${REPLY#*: } != $Str ]]; then
+			Err 'File not a BASH script.'
+			return 1
+		fi
+	fi
+
+	for Dir in "$HOME/BASH/"*; {
+		[[ -d $Dir ]] || continue
+
+		printf '\e[1;92m* \e[91m%s:\e[0m\n' "${Dir##*/}"
+		"$Dir"/bash "$File" "$@"
+	}
 }
