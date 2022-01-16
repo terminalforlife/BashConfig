@@ -217,7 +217,7 @@ if type -P xclip &> /dev/null; then
 	}
 fi
 
-lsblkid() { lsblk -o name,label,fstype,size,uuid --noheadings "$@"; }
+lsblkid() { lsblk -o name,label,fstype,size,uuid,mountpoint --noheadings "$@"; }
 
 sd() { cd /media/"$USER"; }
 ghtflp() { cd "$HOME"/GitHub/terminalforlife/Personal; }
