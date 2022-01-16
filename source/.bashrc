@@ -3,14 +3,14 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri  7 Jan 20:46:09 GMT 2022
+# Last Change       - Sun 16 Jan 21:49:00 GMT 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
 # Bash version 4.0 or greater is required.
 #------------------------------------------------------------------------------
 
-{ ! [ "$PS1" ] || shopt -q restricted_shell; } && return
+{ [[ -z "$PS1" ]] || shopt -q restricted_shell; } && return
 
 shopt -s checkwinsize globstar complete_fullquote extquote extglob\
      force_fignore hostcomplete interactive_comments xpg_echo promptvars\
@@ -21,12 +21,6 @@ enable -n alias
 
 set -o interactive-comments +o monitor -o hashall\
 	-o braceexpand -o emacs -o histexpand -o posix
-
-# Needed to ensure the git stuff shows correctly. In 18.04, the git
-# version has slightly different output, so needed a workaround.
-readarray T < /etc/lsb-release
-[ "${T[2]#*=}" == bionic$'\n' ] && R=4 || R=3
-unset T
 
 # Disable the ability to use Ctrl + S to stop the terminal output.
 # This allows you to search forwards with that same binding.
@@ -192,7 +186,7 @@ export HISTFILESIZE=0
 export HISTSIZE=1000
 export HISTTIMEFORMAT='[%F_%X]: '
 export TIMEFORMAT='%3R'
-export VBOX_USER_HOME="/media/$USER/Main Data/Linux Generals/VirtualBox VMs"
+export VBOX_USER_HOME="/media/$USER/VBox"
 
 # Created this theme on 2020-03-01, using various shades (not 50!) of grey.
 #export LS_COLORS='fi=0;37:di=1;37:ln=1;30:mh=1;30:ex=7;1;30:no=1;37:or=1;30:mi=1;30'
