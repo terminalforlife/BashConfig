@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sun  9 Jan 14:49:23 GMT 2022
+# Last Change       - Mon 17 Jan 20:28:01 GMT 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -236,7 +236,7 @@ if type -P mplayer &> /dev/null; then
 fi
 
 if type -P mplay mocp &> /dev/null; then
-	mplay() { /usr/bin/mplay /media/"$USER"/1TB\ WD\ Passport/Linux\ Generals/Music "$@"; }
+	mplay() { /usr/bin/mplay "$HOME"/Music "$@"; }
 fi
 
 thumbnail() {
