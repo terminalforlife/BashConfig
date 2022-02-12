@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon 17 Jan 20:28:01 GMT 2022
+# Last Change       - Sun  6 Feb 15:57:35 GMT 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -195,18 +195,23 @@ fi
 if type -P youtube-dl &> /dev/null; then
 	ytdl() {
 		local ExtraOpts
-		while [ -n "$1" ]; do
+		while [[ -n $1 ]]; do
 			case $1 in
 				-p|--playlist)
-					ExtraOpts+='--yes-playlist ' ;;
+					ExtraOpts+=' --yes-playlist ' ;;
 				-a|--audio)
-					ExtraOpts+='-x --audio-format mp3 ' ;;
+					ExtraOpts+=' -x --audio-format mp3 ' ;;
+				-*)
+					Err 'Usage: ytdl [{-p|--playlist}|{-a|--audio}] URL'
+					return 1 ;;
+				*)
+					break ;;
 			esac
 			shift
 		done
 
 		youtube-dl -ic --format best --no-call-home --console-title\
-			-o '%(title)s.%(ext)s' $ExtraOpts "$@"
+			-o '%(title)s.%(ext)s' $ExtraOpts "$1"
 	}
 fi
 
@@ -227,11 +232,19 @@ i3a() { cd "$HOME"/.i3a; }
 
 if type -P mplayer &> /dev/null; then
 	mpa() {
-		mplayer -volume 100 -nogui -nolirc -vo null -really-quiet "$@" &> /dev/null
+		mplayer -really-quiet -volume 100 -nogui -nolirc -vo null "$@"
 	}
 
 	mpv() {
-		mplayer -volume 100 -vo x11 -zoom -nolirc -really-quiet "$@" &> /dev/null
+		mplayer -really-quiet -volume 100 -vo x11 -zoom -nolirc "$@"
+	}
+elif type -P mpv &> /dev/null; then
+	mpa() {
+		mpv --really-quiet --no-video "$@"
+	}
+
+	mpv() {
+		/usr/bin/mpv --really-quiet "$@"
 	}
 fi
 

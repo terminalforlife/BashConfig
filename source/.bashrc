@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sun 16 Jan 22:21:09 GMT 2022
+# Last Change       - Wed  9 Feb 18:50:16 GMT 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ PROMPT_PARSER() {
 		Buffer ModifiedFiles TTLCommits Basename Dirname Slashes GB TempColumns
 
 	X=$1
-	(( $X == 0 )) && X=
+	(( X == 0 )) && X=
 
 	if git rev-parse --is-inside-work-tree &> /dev/null; then
 		GI=(
@@ -109,8 +109,6 @@ PROMPT_PARSER() {
 			fi
 		fi
 	fi
-
-	#PS1="\[${C_Reset}\]╭──╼${X}╾──☉  ${Desc}\[${C_Reset}\]\n╰─☉  "
 
 	# 2021-06-13: Temporary block — just experimenting.
 	if [[ -n $Desc ]]; then
