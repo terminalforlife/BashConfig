@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sun  6 Feb 15:57:35 GMT 2022
+# Last Change       - Wed  2 Mar 00:49:34 GMT 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -31,17 +31,6 @@ grep() { /bin/grep -sI --color=auto "$@"; }
 
 md5sum() { /usr/bin/md5sum --ignore-missing --quiet -c; }
 
-if [ -f "$HOME"/Documents/TT/bin/sweep ]; then
-	hsh() {
-		if ! [ -r "$HOME"/Documents/TT/bin/sweep ]; then
-			Err "File '$HOME/Documents/TT/bin/sweep' unreadable."
-			return 1
-		fi
-
-		bash "$HOME"/Documents/TT/bin/sweep
-	}
-fi
-
 if type -P espeak &> /dev/null; then
 	countdown() {
 		if ! [[ $1 =~ ^[0-9]+$ ]]; then
@@ -68,10 +57,10 @@ uplinks() {
 
 	local File
 	for File in {Extra,BashConfig,i3Config,VimConfig}/devutils/links.sh; {
-		if ! [ -f "$File" ]; then
+		if ! [[ -f $File ]]; then
 			Err "File '$File' not found."
 			continue
-		elif ! [ -r "$File" ]; then
+		elif ! [[ -r $File ]]; then
 			Err "File '$File' unreadable."
 			continue
 		fi
@@ -82,9 +71,9 @@ uplinks() {
 	cd - 1> /dev/null
 }
 
-if [ -f /sys/class/power_supply/BAT1/capacity ]; then
+if [[ -f /sys/class/power_supply/BAT1/capacity ]]; then
 	bat() {
-		if ! [ -r /sys/class/power_supply/BAT1/capacity ]; then
+		if ! [[ -r /sys/class/power_supply/BAT1/capacity ]]; then
 			Err "File '/sys/class/power_supply/BAT1/capacity' unreadable."
 			return 1
 		fi
@@ -222,7 +211,15 @@ if type -P xclip &> /dev/null; then
 	}
 fi
 
-lsblkid() { lsblk -o name,label,fstype,size,uuid,mountpoint --noheadings "$@"; }
+if type -P lsblk &> /dev/null; then
+	lsblkid() {
+		lsblk -o name,label,fstype,size,uuid,mountpoint --noheadings "$@"
+	}
+
+	lsblk() {
+		/bin/lsblk -o name,label,fstype,size,mountpoint --noheadings "$@"
+	}
+fi
 
 sd() { cd /media/"$USER"; }
 ghtflp() { cd "$HOME"/GitHub/terminalforlife/Personal; }
@@ -259,9 +256,9 @@ thumbnail() {
 	sh "$File" "$@"
 }
 
-if [ -f "$HOME"/Documents/TT/shotmngr.sh ]; then
+if [[ -f $HOME/Documents/TT/shotmngr.sh ]]; then
 	sm() {
-		if ! [ -r "$HOME"/Documents/TT/shotmngr.sh ]; then
+		if ! [[ -r $HOME/Documents/TT/shotmngr.sh ]]; then
 			Err "File '$HOME/Documents/TT/shotmngr.sh' unreadable."
 			return 1
 		fi
@@ -270,9 +267,9 @@ if [ -f "$HOME"/Documents/TT/shotmngr.sh ]; then
 	}
 fi
 
-if [ -f "$HOME"/Documents/TT/bin/poks ]; then
+if [[ -f $HOME/Documents/TT/bin/poks ]]; then
 	poks() {
-		if ! [ -r "$HOME"/Documents/TT/bin/poks ]; then
+		if ! [[ -r $HOME/Documents/TT/bin/poks ]]; then
 			Err "File '$HOME/Documents/TT/bin/poks' unreadable."
 			return 1
 		fi
@@ -288,7 +285,7 @@ acs() {
 }
 
 lmsf() {
-	if [ $# -ne 2 ]; then
+	if (( $# != 2 )); then
 		printf 'Usage: %s <INPUT> <OUTPUT>\n' "${FUNCNAME[0]}" 1>&2
 		return 1
 	fi
@@ -312,14 +309,14 @@ touched() {
 		if ! git rev-parse --is-inside-work-tree &> /dev/null; then
 			printf 'Err: Not inside a Git repository.\n' 1>&2
 			return 1
-		elif ! [ -e "$File" ]; then
+		elif ! [[ -e $File ]]; then
 			printf "Err: '%s' doesn't exist.\n" "$File" 1>&2
 			return 1
 		fi
 
-		if [ -d "$File" ]; then
+		if [[ -d $File ]]; then
 			local FiDi='Directory'
-		elif [ -f "$File" ]; then
+		elif [[ -f $File ]]; then
 			local FiDi='File'
 		fi
 
@@ -351,7 +348,7 @@ getpkgvers() {
 inout() {
 	local X
 	while read -a X; do
-		if [ "${X[0]}" == "$1:" ]; then
+		if [[ ${X[0]} == $1: ]]; then
 			declare -i IN=${X[1]}
 			declare -i OUT=${X[9]}
 			break
@@ -389,7 +386,7 @@ gp() {
 brn() {
 	printf 'NOTE: To match directories instead, use -d|--directories OPTs.\n'
 
-	while [ -n "$1" ]; do
+	while [[ -n $1 ]]; do
 		case $1 in
 			--directories|-d)
 				UseDirs='true' ;;
@@ -400,14 +397,14 @@ brn() {
 	done
 
 	for CurFile in *; {
-		if { ! [ "$UseDirs" == "true" ] && [ -f "$CurFile" ]; }\
-		|| { [ "$UseDirs" == "true" ] && [ -d "$CurFile" ]; }; then
+		if ! [[ $UseDirs == true && -f $CurFile ]]\
+		|| [[ $UseDirs == true && -d $CurFile ]]; then
 			(( Nr++ ))
 			printf "\e[2;31mCurFile:\e[0m %s\n" "$CurFile"
 
 			read -ep " >> "
 
-			[ -n "$REPLY" ] || continue
+			[[ -n $REPLY ]] || continue
 			if mv "$CurFile" "$REPLY" 2> /dev/null; then
 				printf "\e[2;32mItem #%d successfully renamed.\e[0m\n" $Nr
 			else
@@ -431,10 +428,10 @@ bblist() {
 
 purgerc() {
 	local File='/var/lib/dpkg/status'
-	if ! [ -f "$File" ]; then
+	if ! [[ -f $File ]]; then
 		Err "File '$File' not found."
 		return 1
-	elif ! [ -r "$File" ]; then
+	elif ! [[ -r $File ]]; then
 		Err "File '$File' unreadable."
 		return 1
 	fi
@@ -447,7 +444,7 @@ purgerc() {
 			Status)
 				Status=${Value# } ;;
 			Architecture)
-				if [ "$Status" == 'deinstall ok config-files' ]; then
+				if [[ $Status == deinstall\ ok\ config-files ]]; then
 					Packages+=("$Package:${Value# }")
 				fi ;;
 		esac
