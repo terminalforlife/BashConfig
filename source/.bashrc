@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed  9 Feb 18:50:16 GMT 2022
+# Last Change       - Fri 11 Mar 14:36:02 GMT 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -134,26 +134,26 @@ export HISTSIZE=1000
 export HISTTIMEFORMAT='[%F_%X]: '
 export TIMEFORMAT='%3R'
 export VBOX_USER_HOME="/media/$USER/VBox"
-export LS_COLORS='fi=37:di=1;37:ln=90:mh=90:ex=3;2;37:no=1;37:mi=90:ow=91'
-export GREP_COLOR='1;31'
+export LS_COLORS='fi=37:di=1;97:ln=90:mh=90:ex=3;2;37:no=1;97:mi=90:ow=91'
+export GREP_COLOR='1;91'
 export LESSSECURE=1
 export PS_PERSONALITY='posix'
 export SUDO_EDITOR='/usr/bin/rvim'
 export TERM='xterm-256color'
 
 # Values for shader caching for use in gaming.
-export __GL_SHADER_DISK_CACHE=1
-export __GL_SHADER_DISK_CACHE_PATH='/tmp/nvidia-shaders'
-export __GL_THREADED_OPTIMIZATION=1
+#export __GL_SHADER_DISK_CACHE=1
+#export __GL_SHADER_DISK_CACHE_PATH='/tmp/nvidia-shaders'
+#export __GL_THREADED_OPTIMIZATION=1
 
 # Pretty-print man(1) pages.
-export LESS_TERMCAP_mb=$'\E[1;31m'
-export LESS_TERMCAP_md=$'\E[1;31m'
+export LESS_TERMCAP_mb=$'\E[1;91m'
+export LESS_TERMCAP_md=$'\E[1;91m'
 export LESS_TERMCAP_me=$'\E[0m'
 export LESS_TERMCAP_ue=$'\E[0m'
-export LESS_TERMCAP_so=$'\E[1;33m'
+export LESS_TERMCAP_so=$'\E[1;93m'
 export LESS_TERMCAP_se=$'\E[0m'
-export LESS_TERMCAP_us=$'\E[1;32m'
+export LESS_TERMCAP_us=$'\E[1;92m'
 
 UsrBashComp='/usr/share/bash-completion/bash_completion'
 [[ -f $UsrBashComp && -r $UsrBashComp ]] && . "$UsrBashComp"
