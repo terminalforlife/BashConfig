@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Wed  2 Mar 00:49:34 GMT 2022
+# Last Change       - Tue 15 Mar 21:32:27 GMT 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -12,6 +12,19 @@ Err(){
 	printf '\e[91mErr\e[0m: %s\n' "$1" 1>&2
 	return 1
 }
+
+remember() {
+	Len=${#1}
+	if (( Len <= 80 )); then
+		printf '%s\n' "$1" > ~/.reminder
+	else
+		Err "String length of $Len exceeds limit of 80."
+	fi
+}
+
+csi3(){ /usr/bin/csi3 -f ~/.config/i3/binds "$@"; }
+
+ssh(){ /usr/bin/ssh -q "$@"; }
 
 rm() { /bin/rm -v --preserve-root "$@"; }
 chown() { /bin/chown -v --preserve-root "$@"; }
@@ -28,8 +41,6 @@ ls() {
 }
 
 grep() { /bin/grep -sI --color=auto "$@"; }
-
-md5sum() { /usr/bin/md5sum --ignore-missing --quiet -c; }
 
 if type -P espeak &> /dev/null; then
 	countdown() {
@@ -200,7 +211,7 @@ if type -P youtube-dl &> /dev/null; then
 		done
 
 		youtube-dl -ic --format best --no-call-home --console-title\
-			-o '%(title)s.%(ext)s' $ExtraOpts "$1"
+			-o '%(title)s.%(ext)s' $ExtraOpts "$@"
 	}
 fi
 
