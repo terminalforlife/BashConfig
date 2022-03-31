@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 15 Mar 21:32:27 GMT 2022
+# Last Change       - Thu 31 Mar 15:21:12 BST 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -11,6 +11,32 @@
 Err(){
 	printf '\e[91mErr\e[0m: %s\n' "$1" 1>&2
 	return 1
+}
+
+AskYN() {
+	while :; do
+		read -p "$1 (Y/N) "
+		case ${REPLY,,} in
+			y|yes)
+				return 0 ;;
+			n|no)
+				return 1 ;;
+			'')
+				Err 'Response required -- try again.' ;;
+			*)
+				Err 'Invalid response -- try again.' ;;
+		esac
+	done
+}
+
+overview() {
+	du -h --max-depth=1 | sed -r '
+		$d; s/^([.0-9]+[KMGTPEZY]\t)\.\//\1/
+	' | sort -hr | column
+}
+
+systemctl() {
+	/bin/systemctl --no-pager -l "$@"
 }
 
 remember() {
@@ -82,17 +108,19 @@ uplinks() {
 	cd - 1> /dev/null
 }
 
-if [[ -f /sys/class/power_supply/BAT1/capacity ]]; then
-	bat() {
-		if ! [[ -r /sys/class/power_supply/BAT1/capacity ]]; then
-			Err "File '/sys/class/power_supply/BAT1/capacity' unreadable."
-			return 1
-		fi
+bat() {
+	local File='/sys/class/power_supply/BAT1/capacity'
+	if ! [[ -f $File ]]; then
+		Err "File '$File' not found."
+		return 1
+	elif ! [[ -f $File ]]; then
+		Err "File '$File' unreadable."
+		return 1
+	fi
 
-		read < /sys/class/power_supply/BAT1/capacity
-		printf 'Battery is at %d%% capacity.\n' "$REPLY"
-	}
-fi
+	read < /sys/class/power_supply/BAT1/capacity
+	printf 'Battery is at %d%% capacity.\n' "$REPLY"
+}
 
 fixmodes() {
 	while read -r; do
@@ -104,17 +132,10 @@ fixmodes() {
 
 	EOF
 
-	read -p 'Are you sure? (Y/N) '
-	case $REPLY in
-		[Yy]|[Yy][Ee][Ss])
-			find -xdev -not -path "$HOME/GitHub/*" -not -path "$HOME/.steam"\
-				\( -type f -exec chmod 600 {} \+ -o -type d -exec chmod 700 {} \+ \) ;;
-		[Nn]|[Nn][Oo])
-			printf 'Nothing to do -- quitting.\n' ;;
-		''|*)
-			Err 'Invalid response -- quitting.'
-			return 1 ;;
-	esac
+	if AskYN 'Are you sure?'; then
+		find -xdev -not -path "$HOME/GitHub/*" -not -path "$HOME/.steam"\
+			\( -type f -exec chmod 600 {} \+ -o -type d -exec chmod 700 {} \+ \)
+	fi
 }
 
 if type -P ffmpeg &> /dev/null; then
