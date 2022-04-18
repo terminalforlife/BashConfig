@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Thu 31 Mar 15:21:12 BST 2022
+# Last Change       - Mon 18 Apr 19:06:48 BST 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -285,7 +285,7 @@ thumbnail() {
 	local File="$HOME/GitHub/terminalforlife/Personal/ChannelFiles"
 	File+='/Miscellaneous Scripts/thumbnail-generator.sh'
 
-	sh "$File" "$@"
+	bash "$File" "$@"
 }
 
 if [[ -f $HOME/Documents/TT/shotmngr.sh ]]; then
@@ -300,13 +300,16 @@ if [[ -f $HOME/Documents/TT/shotmngr.sh ]]; then
 fi
 
 if [[ -f $HOME/Documents/TT/bin/poks ]]; then
-	poks() {
-		if ! [[ -r $HOME/Documents/TT/bin/poks ]]; then
-			Err "File '$HOME/Documents/TT/bin/poks' unreadable."
-			return 1
-		fi
+	ktidy() {
+		local Version
+		local Current=`uname -r`
+		for Version in `linux-version list`; {
+			[[ $Version == $Current ]] && continue
 
-		sh "$HOME"/Documents/TT/bin/poks "$@"
+			local Kerns+=" linux-image-$Version linux-headers-$Version"
+		}
+
+		sudo apt-get purge $Kerns
 	}
 fi
 
@@ -337,6 +340,7 @@ lmsf() {
 }
 
 touched() {
+	local File
 	for File in "$@"; {
 		if ! git rev-parse --is-inside-work-tree &> /dev/null; then
 			printf 'Err: Not inside a Git repository.\n' 1>&2
@@ -352,11 +356,10 @@ touched() {
 			local FiDi='File'
 		fi
 
+		local Lines
 		readarray Lines <<< "$(git rev-list HEAD "$File")"
 		printf "%s '%s' has been touched by %d commit(s).\n"\
 			"$FiDi" "$File" ${#Lines[@]}
-
-		unset File
 	}
 }
 
@@ -365,11 +368,12 @@ sc() {
 }
 
 builtins() {
-	compgen -b | column
-
-	#while read -r; do
-	#	printf "%s\n" "${REPLY/* }"
-	#done <<< "$(enable -a)" | column
+	if ! compgen -b | column 2>&-; then
+		# Alternative method, if the above fails.
+		while read -r; do
+			printf "%s\n" "${REPLY/* }"
+		done <<< "$(enable -a)" | column
+	fi
 }
 
 getpkgvers() {
@@ -396,7 +400,7 @@ l2() {
 }
 
 gp() {
-	URL="http://gtk2-perl.sourceforge.net/doc/pod/Gtk2/$1.html"
+	local URL="http://gtk2-perl.sourceforge.net/doc/pod/Gtk2/$1.html"
 
 	case $1 in
 		*\ *|'')
@@ -411,13 +415,12 @@ gp() {
 
 	links2 -dump -html-tables 1 -html-frames 1 -http.do-not-track 1 "$URL"\
 		| awk 'NR>=3 {print($0)}' | /usr/bin/less -Fs
-
-	unset URL
 }
 
 brn() {
 	printf 'NOTE: To match directories instead, use -d|--directories OPTs.\n'
 
+	local UseDirs
 	while [[ -n $1 ]]; do
 		case $1 in
 			--directories|-d)
@@ -428,6 +431,7 @@ brn() {
 		shift
 	done
 
+	local CurFile Nr
 	for CurFile in *; {
 		if ! [[ $UseDirs == true && -f $CurFile ]]\
 		|| [[ $UseDirs == true && -d $CurFile ]]; then
@@ -468,7 +472,7 @@ purgerc() {
 		return 1
 	fi
 
-	local REPLY Packages=()
+	local Packages Key Value Package Status
 	while IFS=':' read Key Value; do
 		case $Key in
 			Package)
@@ -487,30 +491,51 @@ purgerc() {
 
 # Test BASH Versions. For testing scripts with BASH >= 3.0.
 tbv() {
-	File=$1
+	local File=$1
 	shift
 
 	if ! [[ -f $File ]]; then
-		Err 'File not found.'
+		Err "File '$File' not found."
 		return 1
 	elif ! [[ -r $File ]]; then
-		Err 'File unreadable.'
+		Err "File '$File' unreadable."
 		return 1
 	else
 		# Verify the shebang is actually pointing to BASH. Reduces the chance of
 		# accidentally trying to run the wrong file a bazillion times.
 		read <<< "$(file "$File")"
-		Str='Bourne-Again shell script, ASCII text executable'
+		local Str='Bourne-Again shell script, ASCII text executable'
 		if [[ ${REPLY#*: } != $Str ]]; then
 			Err 'File not a BASH script.'
 			return 1
 		fi
 	fi
 
+	local Dir
 	for Dir in "$HOME/BASH/"*; {
 		[[ -d $Dir ]] || continue
 
 		printf '\e[1;92m* \e[91m%s:\e[0m\n' "${Dir##*/}"
 		"$Dir"/bash "$File" "$@"
 	}
+}
+
+lperl() {
+	local Dir="$HOME/PERL"
+	if ! [[ -d $Dir ]]; then
+		Err "Directory '$Dir' not found."
+		return 1
+	elif ! [[ -r $Dir ]]; then
+		Err "Directory '$Dir' unreadable."
+		return 1
+	elif ! [[ -x $Dir ]]; then
+		Err "Directory '$Dir' unexecutable."
+		return 1
+	else
+		# Grab the last file, to get the latest version.
+		for Dir in "$Dir"/*; { :; }
+
+		local File="$Dir/perl"
+		[[ -f $File && -x $File ]] && "$File" "$@"
+	fi
 }
