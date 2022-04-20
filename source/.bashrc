@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 11 Mar 14:36:02 GMT 2022
+# Last Change       - Wed 20 Apr 03:09:51 BST 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -26,38 +26,49 @@ set -o interactive-comments +o monitor -o hashall\
 # This allows you to search forwards with that same binding.
 stty stop ''
 
-# ANSI color escape sequences. Useful else, not just the prompt.
-C_Red='\e[2;31m';           C_BRed='\e[1;31m';          C_Green='\e[2;32m';
-C_BGreen='\e[1;32m';        C_Yellow='\e[2;33m';        C_BYellow='\e[1;33m';
-C_Grey='\e[2;37m';          C_Reset='\e[0m';            C_BPink='\e[1;35m';
-C_Italic='\e[3m';           C_Blue='\e[2;34m';          C_BBlue='\e[1;34m';
-C_Pink='\e[2;35m';          C_Cyan='\e[2;36m';          C_BCyan='\e[1;36m'
-
+# ANSI color escape sequences.
 PROMPT_PARSER() {
 	local X Z Line Desc GI Status Top NFTTL CWD StatusColor Line Top Branch\
-		Buffer ModifiedFiles TTLCommits Basename Dirname Slashes GB TempColumns
+		Buffer ModifiedFiles TTLCommits Basename Dirname Slashes GB\
+		TempColumns WorkTreeChk
+
+	local C_BCyan='\e[96m' C_BRed='\e[91m' C_Reset='\e[0m'\
+		C_Grey='\e[2;37m' C_Red='\e[31m'
 
 	X=$1
 	(( X == 0 )) && X=
 
-	if git rev-parse --is-inside-work-tree &> /dev/null; then
+	# The first check was added as a result of Issue #3 and a recent (April -
+	# 2022) change to git(1) which was pushed in response to a CVE.
+	WorkTreeChk=`git rev-parse --is-inside-work-tree 2>&1`
+	if [[ $WorkTreeChk == 'fatal: unsafe repository '* ]]; then
+		Desc="${C_BRed}!!  ${C_Grey}Unsafe repository detected."
+	elif [[ $WorkTreeChk == 'fatal: '* ]]; then
+		# Don't want to catch all fatals straight away, because not being in a
+		# git(1) repository is a 'fatal' error -- stupid git(1).
+		#
+		# This lets me catch specific unwanted fatal errors, as well as general
+		# fatal errors which are one of the specific ones.
+		if [[ $WorkTreeChk != 'fatal: not a git repository '* ]]; then
+			Desc="${C_BRed}!!  ${C_Grey}Unrecognised fatal error detected."
+		fi
+	elif [[ $WorkTreeChk == true ]]; then
 		GI=(
-			'≎' # Clean
-			'≍' # Uncommitted changes
-			'≭' # Unstaged changes
-			'≺' # New file(s)
-			'⊀' # Removed file(s)
-			'≔' # Initial commit
-			'∾' # Branch is ahead
-			'⮂' # Fix conflicts
-			'!' # Unknown (ERROR)
-			'-' # Removed file(s)
+			'≎' # 0: Clean
+			'≍' # 1: Uncommitted changes
+			'≭' # 2: Unstaged changes
+			'≺' # 3: New file(s)
+			'⊀' # 4: Removed file(s)
+			'≔' # 5: Initial commit
+			'∾' # 6: Branch is ahead
+			'⮂' # 7: Fix conflicts
+			'-' # 8: Removed file(s)
 		)
 
-		Status=`git status 2> /dev/null`
-		Top=`git rev-parse --show-toplevel`
+		Status=`git status 2>&1`
+		Top=`git rev-parse --show-toplevel 2>&1`
 
-		GitDir=`git rev-parse --git-dir`
+		GitDir=`git rev-parse --git-dir 2>&1`
 		if [[ $GitDir == . || $GitDir == "${PWD%%/.git/*}/.git" ]]; then
 			Desc="${C_BRed}∷  ${C_Grey}Looking under the hood..."
 		else
@@ -68,7 +79,7 @@ PROMPT_PARSER() {
 			fi
 
 			# The following is in a very specific order of priority.
-			if [[ -z $(git rev-parse --branches) ]]; then
+			if [[ -z $(git rev-parse --branches 2>&1) ]]; then
 				Desc="${C_BCyan}${GI[5]}  ${C_Grey}Branch '${GB:-?}' awaits its initial commit."
 			else
 				while read -ra Line; do
@@ -79,16 +90,16 @@ PROMPT_PARSER() {
 						NFTTL=0
 						while read -a Line; do
 							[[ ${Line[0]} == ?? ]] && (( NFTTL++ ))
-						done <<< "$(git status --short)"
+						done <<< "$(git status --short 2>&1)"
 						printf -v NFTTL "%'d" $NFTTL
 
 						Desc="${C_BCyan}${GI[3]}  ${C_Grey}Branch '${GB:-?}' has $NFTTL new file(s)."
 						break
 					elif [[ ${Line[0]} == deleted: ]]; then
-						Desc="${C_BCyan}${GI[9]}  ${C_Grey}Branch '${GB:-?}' detects removed file(s)."
+						Desc="${C_BCyan}${GI[8]}  ${C_Grey}Branch '${GB:-?}' detects removed file(s)."
 						break
 					elif [[ ${Line[0]} == modified: ]]; then
-						readarray Buffer <<< "$(git --no-pager diff --name-only)"
+						readarray Buffer <<< "$(git --no-pager diff --name-only 2>&1)"
 						printf -v ModifiedFiles "%'d" ${#Buffer[@]}
 						Desc="${C_BCyan}${GI[2]}  ${C_Grey}Branch '${GB:-?}' has $ModifiedFiles modified file(s)."
 						break
@@ -100,7 +111,7 @@ PROMPT_PARSER() {
 						Desc="${C_BCyan}${GI[6]}  ${C_Grey}Branch '${GB:-?}' leads by $TTLCommits commit(s)."
 						break
 					elif [[ ${Line[0]}${Line[1]}${Line[2]} == nothingtocommit, ]]; then
-						printf -v TTLCommits "%'d" "$(git rev-list --count HEAD)"
+						printf -v TTLCommits "%'d" "$(git rev-list --count HEAD 2>&1)"
 
 						Desc="${C_BCyan}${GI[0]}  ${C_Grey}Branch '${GB:-?}' is $TTLCommits commit(s) clean."
 						break
