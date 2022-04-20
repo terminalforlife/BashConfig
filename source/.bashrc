@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed 20 Apr 03:09:51 BST 2022
+# Last Change       - Wed 20 Apr 03:32:31 BST 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -35,8 +35,21 @@ PROMPT_PARSER() {
 	local C_BCyan='\e[96m' C_BRed='\e[91m' C_Reset='\e[0m'\
 		C_Grey='\e[2;37m' C_Red='\e[31m'
 
-	X=$1
-	(( X == 0 )) && X=
+	X="$1 "
+	(( ${X% } == 0 )) && X=
+
+	# If I'm on a remote server, just use a barebones prompt, with the exit
+	# status, if non-zero, and a note saying you're working remotely. Comment
+	# this block out if you just want to use the exact same prompt.
+	if [[ -n $SSH_CLIENT ]]; then
+		if [[ -n $X ]]; then
+			PS1="\[$C_Grey\]<remote>\[$C_Reset\] \[$C_BRed\]$X\[$C_Reset\] \[$C_Grey\]\$\[$C_Reset\] "
+		else
+			PS1="\[$C_Grey\]<remote>\[$C_Reset\] \[$C_Grey\]\$\[$C_Reset\] "
+		fi
+
+		return
+	fi
 
 	# The first check was added as a result of Issue #3 and a recent (April -
 	# 2022) change to git(1) which was pushed in response to a CVE.
@@ -121,19 +134,10 @@ PROMPT_PARSER() {
 		fi
 	fi
 
-	# 2021-06-13: Temporary block — just experimenting.
 	if [[ -n $Desc ]]; then
-		if [[ -n $X ]]; then
-			PS1="\[${C_Reset}\]${Desc}\[${C_Reset}\]\n\[\e[91m\]${X} \[\e[0m\]\[\e[2;37m\]\$\[\e[0m\] "
-		else
-			PS1="\[${C_Reset}\]${Desc}\[${C_Reset}\]\n\[\e[2;37m\]\$\[\e[0m\] "
-		fi
+		PS1="\[${C_Reset}\]${Desc}\[${C_Reset}\]\n\[$C_BRed\]${X}\[$C_Reset\]\[$C_Grey\]\$\[$C_Reset\] "
 	else
-		if [[ -n $X ]]; then
-			PS1="\[${C_Reset}\]\[\e[91m\]${X} \[\e[0m\]\[\e[2;37m\]\$\[\e[0m\] "
-		else
-			PS1="\[${C_Reset}\]\[\e[2;37m\]\$\[\e[0m\] "
-		fi
+		PS1="\[${C_Reset}\]\[$C_BRed\]${X}\[$C_Reset\]\[$C_Grey\]\$\[$C_Reset\] "
 	fi
 }
 
