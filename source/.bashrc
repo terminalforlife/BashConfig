@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Wed 20 Apr 03:32:31 BST 2022
+# Last Change       - Fri 22 Apr 00:34:35 BST 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -13,9 +13,8 @@
 { [[ -z $PS1 ]] || shopt -q restricted_shell; } && return
 
 shopt -s checkwinsize globstar complete_fullquote extquote extglob\
-     force_fignore hostcomplete interactive_comments xpg_echo promptvars\
-     sourcepath progcomp autocd cdspell dirspell direxpand nocasematch\
-     histappend cmdhist lithist
+	force_fignore hostcomplete xpg_echo promptvars sourcepath progcomp autocd
+	cdspell dirspell direxpand nocasematch histappend cmdhist lithist
 
 enable -n alias
 
