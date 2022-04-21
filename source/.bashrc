@@ -13,7 +13,7 @@
 { [[ -z $PS1 ]] || shopt -q restricted_shell; } && return
 
 shopt -s checkwinsize globstar complete_fullquote extquote extglob\
-	force_fignore hostcomplete xpg_echo promptvars sourcepath progcomp autocd
+	force_fignore hostcomplete xpg_echo promptvars sourcepath progcomp autocd\
 	cdspell dirspell direxpand nocasematch histappend cmdhist lithist
 
 enable -n alias
