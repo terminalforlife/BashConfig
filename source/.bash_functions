@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon 18 Apr 19:06:48 BST 2022
+# Last Change       - Sat 23 Apr 16:11:18 BST 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -538,4 +538,27 @@ lperl() {
 		local File="$Dir/perl"
 		[[ -f $File && -x $File ]] && "$File" "$@"
 	fi
+}
+
+exin() {
+	if (( $# == 0 )); then
+		Err 'Argument required.'
+		return 1
+	elif (( $# > 1 )); then
+		Err 'Only one argument is valid.'
+		return 1
+	fi
+
+	IFS=':' read -a Paths <<< "$PATH"
+
+	while read; do
+		[[ -f $REPLY ]] || continue
+
+		for Path in "${Paths[@]}"; {
+			if [[ ${REPLY%/*} == $Path ]]; then
+				printf '%s\n' "$REPLY"
+				continue 2
+			fi
+		}
+	done <<< "$(dpkg -L "$1" 2>&-)"
 }
