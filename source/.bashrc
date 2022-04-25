@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 22 Apr 00:34:35 BST 2022
+# Last Change       - Tue 26 Apr 00:35:30 BST 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -171,9 +171,6 @@ export LESS_TERMCAP_us=$'\E[1;92m'
 
 UsrBashComp='/usr/share/bash-completion/bash_completion'
 [[ -f $UsrBashComp && -r $UsrBashComp ]] && . "$UsrBashComp"
-
-bind '"\e[1;5C": forward-word'
-bind '"\e[1;5D": backward-word'
 
 BCFuncs="$HOME/.bash_functions"
 [[ -f $BCFuncs && -r $BCFuncs ]] && . "$BCFuncs"
