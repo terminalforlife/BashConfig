@@ -15,8 +15,8 @@ set completion-prefix-display-length 0
 set completion-query-items 50
 set convert-meta On
 set disable-completion Off
-set editing-mode emacs
 set echo-control-characters Off
+set editing-mode emacs
 set enable-keypad Off
 set enable-meta-key On
 set expand-tilde Off
@@ -43,12 +43,12 @@ set skip-completed-text On
 set visible-stats On
 
 $if mode=emacs
-	"\e[1~": beginning-of-line
-	"\e[4~": end-of-line
-	"\e[3~": delete-char
-	"\e[2~": quoted-insert
 	"\e[1;5C": forward-word
 	"\e[1;5D": backward-word
+	"\e[1~": beginning-of-line
+	"\e[2~": quoted-insert
+	"\e[3~": delete-char
+	"\e[4~": end-of-line
 	"\e[5C": forward-word
 	"\e[5D": backward-word
 	"\e\e[C": forward-word
