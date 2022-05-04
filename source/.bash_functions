@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sat 23 Apr 16:11:18 BST 2022
+# Last Change       - Wed  4 May 03:01:50 BST 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -371,7 +371,7 @@ builtins() {
 	if ! compgen -b | column 2>&-; then
 		# Alternative method, if the above fails.
 		while read -r; do
-			printf "%s\n" "${REPLY/* }"
+			printf '%s\n' "${REPLY/* }"
 		done <<< "$(enable -a)" | column
 	fi
 }
@@ -561,4 +561,23 @@ exin() {
 			fi
 		}
 	done <<< "$(dpkg -L "$1" 2>&-)"
+}
+
+ws2dot() {
+	if (( $# == 0 )); then
+		Err 'Argument(s) required.'
+		return 1
+	fi
+
+	case $1 in
+		-s|--simulate)
+			local Sim='echo'
+			shift ;;
+	esac
+
+	local File
+	for File in "$@"; {
+		[[ -f $File ]] || continue
+		$Sim mv "$File" "${File// /.}"
+	}
 }
