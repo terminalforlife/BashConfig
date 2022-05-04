@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Tue 26 Apr 00:35:30 BST 2022
+# Last Change       - Wed  4 May 02:58:48 BST 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ stty stop ''
 PROMPT_PARSER() {
 	local X Z Line Desc GI Status Top NFTTL CWD StatusColor Line Top Branch\
 		Buffer ModifiedFiles TTLCommits Basename Dirname Slashes GB\
-		TempColumns WorkTreeChk
+		TempColumns WorkTreeChk SLevel
 
 	local C_BCyan='\e[96m' C_BRed='\e[91m' C_Reset='\e[0m'\
 		C_Grey='\e[2;37m' C_Red='\e[31m'
@@ -37,14 +37,16 @@ PROMPT_PARSER() {
 	X="$1 "
 	(( ${X% } == 0 )) && X=
 
+	(( SHLVL > 1 )) && SLevel="\[$C_Grey\]<subshell>\[$C_Reset\] "
+
 	# If I'm on a remote server, just use a barebones prompt, with the exit
 	# status, if non-zero, and a note saying you're working remotely. Comment
 	# this block out if you just want to use the exact same prompt.
 	if [[ -n $SSH_CLIENT ]]; then
 		if [[ -n $X ]]; then
-			PS1="\[$C_Grey\]<remote>\[$C_Reset\] \[$C_BRed\]$X\[$C_Reset\] \[$C_Grey\]\$\[$C_Reset\] "
+			PS1="$SLevel\[$C_Grey\]<remote>\[$C_Reset\] \[$C_BRed\]$X\[$C_Reset\] \[$C_Grey\]\$\[$C_Reset\] "
 		else
-			PS1="\[$C_Grey\]<remote>\[$C_Reset\] \[$C_Grey\]\$\[$C_Reset\] "
+			PS1="$SLevel\[$C_Grey\]<remote>\[$C_Reset\] \[$C_Grey\]\$\[$C_Reset\] "
 		fi
 
 		return
@@ -134,18 +136,19 @@ PROMPT_PARSER() {
 	fi
 
 	if [[ -n $Desc ]]; then
-		PS1="\[${C_Reset}\]${Desc}\[${C_Reset}\]\n\[$C_BRed\]${X}\[$C_Reset\]\[$C_Grey\]\$\[$C_Reset\] "
+		PS1="$SLevel\[${C_Reset}\]${Desc}\[${C_Reset}\]\n\[$C_BRed\]${X}\[$C_Reset\]\[$C_Grey\]\$\[$C_Reset\] "
 	else
-		PS1="\[${C_Reset}\]\[$C_BRed\]${X}\[$C_Reset\]\[$C_Grey\]\$\[$C_Reset\] "
+		PS1="$SLevel\[${C_Reset}\]\[$C_BRed\]${X}\[$C_Reset\]\[$C_Grey\]\$\[$C_Reset\] "
 	fi
 }
 
 PROMPT_COMMAND='PROMPT_PARSER $?'
 
 export HISTCONTROL='ignoreboth'
-export HISTFILESIZE=0
+export HISTFILE=
+#export HISTFILESIZE=0
 export HISTSIZE=1000
-export HISTTIMEFORMAT='[%F_%X]: '
+export HISTTIMEFORMAT='[%F (%X)]: '
 export TIMEFORMAT='%3R'
 export VBOX_USER_HOME="/media/$USER/VBox"
 export LS_COLORS='fi=37:di=1;97:ln=90:mh=90:ex=3;2;37:no=1;97:mi=90:ow=91'
@@ -161,13 +164,13 @@ export TERM='xterm-256color'
 #export __GL_THREADED_OPTIMIZATION=1
 
 # Pretty-print man(1) pages.
-export LESS_TERMCAP_mb=$'\E[1;91m'
-export LESS_TERMCAP_md=$'\E[1;91m'
-export LESS_TERMCAP_me=$'\E[0m'
-export LESS_TERMCAP_ue=$'\E[0m'
-export LESS_TERMCAP_so=$'\E[1;93m'
-export LESS_TERMCAP_se=$'\E[0m'
-export LESS_TERMCAP_us=$'\E[1;92m'
+export LESS_TERMCAP_mb=$'\e[1;91m'
+export LESS_TERMCAP_md=$'\e[1;91m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_ue=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[1;93m'
+export LESS_TERMCAP_se=$'\e[0m'
+export LESS_TERMCAP_us=$'\e[1;92m'
 
 UsrBashComp='/usr/share/bash-completion/bash_completion'
 [[ -f $UsrBashComp && -r $UsrBashComp ]] && . "$UsrBashComp"
