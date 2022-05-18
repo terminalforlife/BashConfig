@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Wed  4 May 03:01:50 BST 2022
+# Last Change       - Wed 18 May 01:53:19 BST 2022
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -238,8 +238,8 @@ fi
 
 if type -P xclip &> /dev/null; then
 	ccb() {
-		printf '' | xclip -i -selection clipboard
-		printf '' | xclip -i
+		printf '' | xclip -sel c
+		printf '' | xclip
 	}
 fi
 
