@@ -8,6 +8,16 @@
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
 # Bash version 4.0 or greater is required.
+#
+# Features:
+#
+# N/A
+#
+# Bugs:
+#
+#TODO: Git prompt kicks in with 'Unrecognised fatal error' if the CWD no longer
+#      exists. This error can perhaps be ignored, by checking for this specific
+#      situation and therefore exception.
 #------------------------------------------------------------------------------
 
 { [[ -z $PS1 ]] || shopt -q restricted_shell; } && return
