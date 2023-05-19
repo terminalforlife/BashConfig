@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Wed 18 May 01:53:19 BST 2022
+# Last Change       - Thu 18 May 04:27:47 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -30,7 +30,7 @@ AskYN() {
 }
 
 overview() {
-	du -h --max-depth=1 | sed -r '
+	du -h --max-depth=1 "$1" | sed -r '
 		$d; s/^([.0-9]+[KMGTPEZY]\t)\.\//\1/
 	' | sort -hr | column
 }
