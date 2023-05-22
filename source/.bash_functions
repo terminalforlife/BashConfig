@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Thu 18 May 04:27:47 BST 2023
+# Last Change       - Mon 22 May 20:08:13 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ remember() {
 	fi
 }
 
-csi3(){ /usr/bin/csi3 -f ~/.config/i3/binds "$@"; }
+csi3(){ /usr/local/bin/csi3 -f ~/.config/i3/binds "$@"; }
 
 ssh(){ /usr/bin/ssh -q "$@"; }
 
@@ -278,7 +278,7 @@ elif type -P mpv &> /dev/null; then
 fi
 
 if type -P mplay mocp &> /dev/null; then
-	mplay() { /usr/bin/mplay "$HOME"/Music "$@"; }
+	mplay() { /usr/local/bin/mplay "$HOME"/Music "$@"; }
 fi
 
 thumbnail() {
