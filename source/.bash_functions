@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon 22 May 20:08:13 BST 2023
+# Last Change       - Tue 23 May 22:34:33 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -190,13 +190,16 @@ dwatch() {
 
 if type -P git &> /dev/null; then
 	add() { git add "$@"; }
-	checkout() { git checkout "$@"; }
-	pull() { git pull "$@"; }
-	commit() { git commit "$@"; }
-	merge() { git merge "$@"; }
 	branch() { git branch "$@"; }
-	push() { git push "$@"; }
+	checkout() { git checkout "$@"; }
+	clone() { git clone "$@"; }
+	commit() { git commit "$@"; }
 	diff() { git diff "$@"; }
+	merge() { git merge "$@"; }
+	pull() { git pull "$@"; }
+	push() { git push "$@"; }
+	rebase() { git rebase "$@"; }
+	stash() { git stash "$@"; }
 	status() { git status -s "$@"; }
 
 	show() {
@@ -579,5 +582,70 @@ ws2dot() {
 	for File in "$@"; {
 		[[ -f $File ]] || continue
 		$Sim mv "$File" "${File// /.}"
+	}
+}
+
+toppy() {
+	if (( $# != 0 )); then
+		Err 'No argument(s) required.'
+		return 1
+	fi
+
+	local Data=() MaxLenPid=3 MaxLenProc=7\
+		Proc Pages Comm PID Memory LenPID LenProc Unit
+
+	for Proc in /proc/[[:digit:]]*; {
+		[[ -d $Proc && -x $Proc ]] || continue
+		[[ -f $Proc/statm && -r $Proc/statm ]] || continue
+		[[ -f $Proc/comm && -r $Proc/comm ]] || continue
+
+		read _ Pages _ < "$Proc"/statm
+		read Comm < "$Proc"/comm
+
+		PID=${Proc##*/}
+
+		# Seems to be the same as RSS.
+		(( Memory = Pages * 4096 ))
+
+		LenPID=${#PID}
+		LenProc=${#Comm}
+
+		(( LenPID > MaxLenPID )) && MaxLenPID=$LenPID
+		(( LenProc > MaxLenProc )) && MaxLenProc=$LenProc
+
+		Data+=("$PID|$Comm|$Memory")
+	}
+
+	printf '%-*s  %-*s  %-s\n' $MaxLenPID 'PID'\
+		$MaxLenProc 'PROCESS' 'MEMORY'
+
+	Len=${#Data[@]}
+	for (( Index = 1; Index < Len; Index++ )); {
+		Cur=${Data[Index]}
+		Pos=$Index
+
+		while (( Pos > 0 && ${Data[Pos - 1]##*|} < ${Cur##*|} )); do
+			Data[Pos--]=${Data[Pos - 1]}
+		done
+
+		Data[Pos]=$Cur
+	}
+
+	Data=("${Data[@]:0:10}")
+	for Data in "${Data[@]}"; {
+		IFS='|' read PID Proc Memory <<< "$Data"
+
+		for Unit in b K M G T P E Z Y; {
+			if (( Memory > 1024 )); then
+				(( Memory /= 1024 ))
+			else
+				Memory="$Memory$Unit"
+
+				break
+			fi
+		}
+
+		printf "%-*d  %-*s  %-s\n" $MaxLenPID\
+			$PID $MaxLenProc "$Proc" $Memory
 	}
 }
