@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 23 May 22:34:33 BST 2023
+# Last Change       - Tue 23 May 22:48:33 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -631,8 +631,7 @@ toppy() {
 		Data[Pos]=$Cur
 	}
 
-	Data=("${Data[@]:0:10}")
-	for Data in "${Data[@]}"; {
+	for Data in "${Data[@]:0:10}"; {
 		IFS='|' read PID Proc Memory <<< "$Data"
 
 		for Unit in b K M G T P E Z Y; {
