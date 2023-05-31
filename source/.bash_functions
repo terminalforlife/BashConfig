@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Wed 24 May 16:41:16 BST 2023
+# Last Change       - Tue 30 May 19:42:50 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -185,7 +185,7 @@ if type -P feh &> /dev/null; then
 fi
 
 if type -P wget &> /dev/null; then
-	get() { wget -qc --show-progress "$@"; }
+	get() { wget -qc -U 'Mozilla/5.0' --show-progress "$@"; }
 fi
 
 alert() {
