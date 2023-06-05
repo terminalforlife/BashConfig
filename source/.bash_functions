@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon  5 Jun 12:42:12 BST 2023
+# Last Change       - Mon  5 Jun 12:44:37 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -656,10 +656,10 @@ lscoreutils() {
 
 		for Path in "${Paths[@]}"; {
 			if [[ ${REPLY%/*} == $Path ]]; then
-				printf '%s\n' "$REPLY"
+				printf '%s\n' "${REPLY##*/}"
 
 				break
 			fi
 		}
-	done < "$ListFile"
+	done < "$ListFile" | column
 }
