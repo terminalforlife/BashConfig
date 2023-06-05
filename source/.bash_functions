@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon  5 Jun 12:44:37 BST 2023
+# Last Change       - Mon  5 Jun 13:00:02 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -651,15 +651,30 @@ lscoreutils() {
 		fi
 	}
 
+	local Utils=()
 	while read; do
 		[[ -f $REPLY ]] || continue
 
 		for Path in "${Paths[@]}"; {
 			if [[ ${REPLY%/*} == $Path ]]; then
-				printf '%s\n' "${REPLY##*/}"
+				Utils+=("${REPLY##*/}")
 
 				break
 			fi
 		}
-	done < "$ListFile" | column
+	done < "$ListFile"
+
+	Len=${#Utils[@]}
+	for (( Index = 1; Index < Len; Index++ )); {
+		Cur=${Utils[Index]}
+		Pos=$Index
+
+		while (( Pos > 0 )) && [[ ${Utils[Pos - 1]} > $Cur ]]; do
+			Utils[Pos--]=${Utils[Pos - 1]}
+		done
+
+		Utils[Pos]=$Cur
+	}
+
+	printf '%s\n' "${Utils[@]}" | column
 }
