@@ -3,14 +3,13 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 30 May 19:42:50 BST 2023
+# Last Change       - Mon  5 Jun 12:42:12 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
 
 Err(){
 	printf '\e[91mErr\e[0m: %s\n' "$1" 1>&2
-	return 1
 }
 
 _Human() {
@@ -58,6 +57,7 @@ remember() {
 		printf '%s\n' "$1" > ~/.reminder
 	else
 		Err "String length of $Len exceeds limit of 80."
+		return 1
 	fi
 }
 
@@ -272,25 +272,13 @@ fi
 sd() { cd /media/"$USER"; }
 ghtflp() { cd "$HOME"/GitHub/terminalforlife/Personal; }
 ghtflf() { cd "$HOME"/GitHub/terminalforlife/Forks; }
-tt() { cd "$HOME"/Documents/TT; }
-i3a() { cd "$HOME"/.i3a; }
 
 if type -P mplayer &> /dev/null; then
-	mpa() {
-		mplayer -really-quiet -volume 100 -nogui -nolirc -vo null "$@"
-	}
-
-	mpv() {
-		mplayer -really-quiet -volume 100 -vo x11 -zoom -nolirc "$@"
-	}
+	mpa() { mplayer -really-quiet -volume 100 -nogui -nolirc -vo null "$@"; }
+	mpv() { mplayer -really-quiet -volume 100 -vo x11 -zoom -nolirc "$@"; }
 elif type -P mpv &> /dev/null; then
-	mpa() {
-		mpv --really-quiet --no-video "$@"
-	}
-
-	mpv() {
-		/usr/bin/mpv --really-quiet "$@"
-	}
+	mpa() { mpv --really-quiet --no-video "$@"; }
+	mpv() { /usr/bin/mpv --really-quiet "$@"; }
 fi
 
 if type -P mplay mocp &> /dev/null; then
@@ -337,7 +325,7 @@ acs() {
 
 lmsf() {
 	if (( $# != 2 )); then
-		printf 'Usage: %s <INPUT> <OUTPUT>\n' "${FUNCNAME[0]}" 1>&2
+		printf 'Usage: %s INPUT OUTPUT\n' "${FUNCNAME[0]}" 1>&2
 		return 1
 	fi
 
@@ -355,33 +343,7 @@ lmsf() {
 	esac
 }
 
-touched() {
-	local File
-	for File in "$@"; {
-		if ! git rev-parse --is-inside-work-tree &> /dev/null; then
-			printf 'Err: Not inside a Git repository.\n' 1>&2
-			return 1
-		elif ! [[ -e $File ]]; then
-			printf "Err: '%s' doesn't exist.\n" "$File" 1>&2
-			return 1
-		fi
-
-		if [[ -d $File ]]; then
-			local FiDi='Directory'
-		elif [[ -f $File ]]; then
-			local FiDi='File'
-		fi
-
-		local Lines
-		readarray Lines <<< "$(git rev-list HEAD "$File")"
-		printf "%s '%s' has been touched by %d commit(s).\n"\
-			"$FiDi" "$File" ${#Lines[@]}
-	}
-}
-
-sc() {
-	awk -SP "BEGIN {print($*)}" 2> /dev/null
-}
+sc() { awk -SP "BEGIN {print($*)}" 2> /dev/null; }
 
 builtins() {
 	if ! compgen -b | column 2>&-; then
@@ -441,7 +403,8 @@ brn() {
 			--directories|-d)
 				UseDirs='true' ;;
 			*)
-				printf "Err: Incorrect argument(s) specified." ;;
+				printf "Err: Incorrect argument(s) specified."
+				return 1 ;;
 		esac
 		shift
 	done
@@ -465,9 +428,7 @@ brn() {
 	}
 }
 
-sayit() {
-	espeak -v en-scottish -g 5 -p 13 -s 0.7 "$*"
-}
+sayit() { espeak -v en-scottish -g 5 -p 13 -s 0.7 "$*"; }
 
 bblist() {
 	{
@@ -659,4 +620,46 @@ toppy() {
 		printf "%-*d  %-*s  %-s\n" $MaxLenPID\
 			$PID $MaxLenProc "$Proc" $Memory
 	}
+}
+
+lscoreutils() {
+	local ListFile='/var/lib/dpkg/info/coreutils.list'
+
+	if (( $# > 0 )); then
+		Err 'No Arguments required.'
+		return 1
+	elif ! [[ -f $ListFile ]]; then
+		Err "File '$ListFile' not found."
+		return 1
+	elif ! [[ -r $ListFile ]]; then
+		Err "File '$ListFile' unreadable."
+		return 1
+	fi
+
+	local Index
+	local Buffer=
+	local Paths=()
+	local Path="$PATH:"
+	local Len=${#Path}
+	for (( Index = 0; Index < Len; Index++ )); {
+		Char=${Path:Index:1}
+		if [[ $Char == : ]]; then
+			Paths+=("$Buffer")
+			Buffer=
+		else
+			Buffer+=$Char
+		fi
+	}
+
+	while read; do
+		[[ -f $REPLY ]] || continue
+
+		for Path in "${Paths[@]}"; {
+			if [[ ${REPLY%/*} == $Path ]]; then
+				printf '%s\n' "$REPLY"
+
+				break
+			fi
+		}
+	done < "$ListFile"
 }
