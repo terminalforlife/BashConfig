@@ -3,26 +3,13 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon  5 Jun 13:00:02 BST 2023
+# Last Change       - Mon  5 Jun 13:06:22 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
 
 Err(){
 	printf '\e[91mErr\e[0m: %s\n' "$1" 1>&2
-}
-
-_Human() {
-	local Bytes=$1 Unit
-	for Unit in '' K M G T P E Z Y; {
-		if (( Bytes >= 1024 )); then
-			(( Bytes /= 1024 ))
-		else
-			printf '%d%s\n' $Bytes $Unit
-
-			break
-		fi
-	}
 }
 
 AskYN() {
@@ -357,18 +344,6 @@ builtins() {
 getpkgvers() {
 	dpkg-query -Wf '${Package} (${Version}), ' "$@" |
 		sed -r 's/,{1}\s+$/\n/; s/\(/\(>= /g; s/ubuntu[0-9].[0-9]\)/\)/g'
-}
-
-inout() {
-	local Line F{1..10}
-
-	readarray < /proc/net/dev
-	for Line in "${MAPFILE[@]:2}"; {
-		read F{1..10} <<< "$Line"
-
-		printf '%s\n  < %s\n  > %s\n\n' "$F1"\
-			"$(_Human $F2)" "$(_Human $F10)"
-	}
 }
 
 l2() {
