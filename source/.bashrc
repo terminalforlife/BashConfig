@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Fri 19 May 14:54:07 BST 2023
+# Last Change       - Thu  8 Jun 22:53:17 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ set -o interactive-comments +o monitor -o hashall\
 
 # Disable the ability to use Ctrl + S to stop the terminal output.
 # This allows you to search forwards with that same binding.
-stty stop ''
+stty stop undef
 
 # ANSI color escape sequences.
 PROMPT_PARSER() {
