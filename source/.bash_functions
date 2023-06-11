@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon  5 Jun 13:06:22 BST 2023
+# Last Change       - Sun 11 Jun 15:01:30 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -653,3 +653,25 @@ lscoreutils() {
 
 	printf '%s\n' "${Utils[@]}" | column
 }
+
+# Execute a shell command but with a wrapper which notifies upon completion.
+# If the command succeeds, a normal notification is sent, otherwise a critical
+# one is sent. This function works with sudo(8), provided you include it as
+# part of the arguments, as normal.
+if type -P notify-send &> /dev/null; then
+	notify() {
+		Args=("$@")
+		ArgsOut=("${Args[@]:1}")
+
+		"${Args[@]}"
+
+		local Status=$?
+		local Urgency='normal'
+		if (( $? > 0 )); then
+			Urgency='critical'
+		fi
+
+		notify-send --urgency="${Urgency:-normal}"\
+			"Task Finished [$Status]" "notify(): ${ArgsOut[*]:0:26}"
+	}
+fi
