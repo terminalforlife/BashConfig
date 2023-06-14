@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sun 11 Jun 15:01:30 BST 2023
+# Last Change       - Wed 14 Jun 02:19:24 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -287,20 +287,6 @@ if [[ -f $HOME/Documents/TT/shotmngr.sh ]]; then
 		fi
 
 		bash "$HOME"/Documents/TT/shotmngr.sh "$@"
-	}
-fi
-
-if [[ -f $HOME/Documents/TT/bin/poks ]]; then
-	ktidy() {
-		local Version
-		local Current=`uname -r`
-		for Version in `linux-version list`; {
-			[[ $Version == $Current ]] && continue
-
-			local Kerns+=" linux-image-$Version linux-headers-$Version"
-		}
-
-		sudo apt-get purge $Kerns
 	}
 fi
 
