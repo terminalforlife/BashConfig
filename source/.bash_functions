@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Wed 14 Jun 02:19:24 BST 2023
+# Last Change       - Mon 19 Jun 17:57:52 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -441,11 +441,16 @@ tbv() {
 		# Verify the shebang is actually pointing to BASH. Reduces the chance of
 		# accidentally trying to run the wrong file a bazillion times.
 		read <<< "$(file "$File")"
-		local Str='Bourne-Again shell script, ASCII text executable'
-		if [[ ${REPLY#*: } != $Str ]]; then
-			Err 'File not a BASH script.'
-			return 1
-		fi
+		local Str=''
+		case ${REPLY#*: } in
+			'Bourne-Again shell script, ASCII text executable')
+				;;
+			'Bourne-Again shell script, UTF-8 Unicode text executable')
+				;;
+			''|*)
+				Err 'File not a BASH script.'
+				return 1 ;;
+		esac
 	fi
 
 	local Dir
