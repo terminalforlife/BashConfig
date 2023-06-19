@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Mon 19 Jun 17:57:52 BST 2023
+# Last Change       - Tue 20 Jun 00:19:42 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ uplinks() {
 	fi
 
 	local File
-	for File in {Extra,BashConfig,i3Config,VimConfig}/devutils/links.sh; {
+	for File in {ShellProjects,BashConfig,i3Config,VimConfig}/devutils/links.sh; {
 		if ! [[ -f $File ]]; then
 			Err "File '$File' not found."
 			continue
