@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Tue 20 Jun 00:19:42 BST 2023
+# Last Change       - Fri 23 Jun 00:28:47 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -197,7 +197,31 @@ if type -P git &> /dev/null; then
 	diff() { git diff "$@"; }
 	merge() { git merge "$@"; }
 	pull() { git pull "$@"; }
-	push() { git push "$@"; }
+
+	push() {
+		if ! git rev-parse --is-inside-work-tree &> /dev/null; then
+			Err 'Not in a Git repository.'
+			return 1
+		fi
+
+		# Because I have a habit of habitually pushing -- it's bad, I know.
+		printf '\e[91mWARNING\e[0m: This will make these changes permanent!\n'
+		while :; do
+			read -p '         Are you sure you want to push? [Y|N] '
+			case ${REPLY,,} in
+				y|yes)
+					git push "$@"
+					break ;;
+				n|no)
+					break ;;
+				'')
+					Err 'Response required -- try again.' ;;
+				*)
+					Err 'Response invalid -- try again.' ;;
+			esac
+		done
+	}
+
 	rebase() { git rebase "$@"; }
 	stash() { git stash "$@"; }
 	status() { git status -s "$@"; }
