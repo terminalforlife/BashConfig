@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Thu  8 Jun 22:53:17 BST 2023
+# Last Change       - Sat  1 Jul 07:44:42 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -105,7 +105,7 @@ PROMPT_PARSER() {
 				# this approach, hence the below approach.
 
 				# Get the current branch name and look for detacted HEAD.
-				GB=`git rev-parse --abbrev-ref HEAD`
+				GB=`git rev-parse --abbrev-ref HEAD 2>&-`
 				if [[ $GB == HEAD ]]; then
 					Desc="${C_BCyan}${GI[9]}  ${C_Grey}HEAD detached -- ouch."
 
@@ -113,11 +113,11 @@ PROMPT_PARSER() {
 				fi
 			fi
 
-			# The following is in a very specific order of priority.
-			if [[ $Detached != True ]]; then
-				if [[ -z $(git rev-parse --branches 2>&1) ]]; then
-					Desc="${C_BCyan}${GI[5]}  ${C_Grey}Branch '${GB:-?}' awaits its initial commit."
-				else
+			if [[ -z $(git rev-parse --branches 2>&1) ]]; then
+				Desc="${C_BCyan}${GI[5]}  ${C_Grey}Awaiting initial commit."
+
+				# The following is in a very specific order of priority.
+				if [[ $Detached != True ]]; then
 					while read -ra Line; do
 						if [[ ${Line[0]}${Line[1]}${Line[2]} == \(fixconflictsand ]]; then
 							Desc="${C_BCyan}${GI[7]}  ${C_Grey}Branch '${GB:-?}' has conflict(s)."
