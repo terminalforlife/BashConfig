@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Fri 23 Jun 00:28:47 BST 2023
+# Last Change       - Sat  1 Jul 07:44:12 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -318,26 +318,6 @@ acs() {
 	{
 		apt-cache search "$1" | grep "$1" | sort -k 1
 	} 2> /dev/null
-}
-
-lmsf() {
-	if (( $# != 2 )); then
-		printf 'Usage: %s INPUT OUTPUT\n' "${FUNCNAME[0]}" 1>&2
-		return 1
-	fi
-
-	case ${1##*.} in
-		jpg|jpeg)
-			convert "$1" -resize 40% "$2" ;;
-		png)
-			convert "$1" -resize 40% "${2.???}.jpg" ;;
-		'')
-			printf 'Err: Filename extension for INPUT not found.\n' 1>&2
-			return 1 ;;
-		*)
-			printf 'Err: Unsupported INPUT image file type.\n' 1>&2
-			return 1 ;;
-	esac
 }
 
 sc() { awk -SP "BEGIN {print($*)}" 2> /dev/null; }
@@ -688,5 +668,47 @@ if type -P notify-send &> /dev/null; then
 
 		notify-send --urgency="${Urgency:-normal}"\
 			"Task Finished [$Status]" "notify(): ${ArgsOut[*]:0:26}"
+	}
+fi
+
+if type -P convert &> /dev/null; then
+	lmsf() {
+		if (( $# != 2 )); then
+			printf 'Usage: %s INPUT OUTPUT\n' "${FUNCNAME[0]}" 1>&2
+			return 1
+		fi
+
+		case ${1##*.} in
+			jpg|jpeg)
+				convert "$1" -resize 40% "$2" ;;
+			png)
+				convert "$1" -resize 40% "${2.???}.jpg" ;;
+			'')
+				printf 'Err: Filename extension for INPUT not found.\n' 1>&2
+				return 1 ;;
+			*)
+				printf 'Err: Unsupported INPUT image file type.\n' 1>&2
+				return 1 ;;
+		esac
+	}
+
+	matryoshka() {
+		if (( $# == 0 )); then
+			printf 'Usage: %s FILE [INT [INT] ...]\n' "${FUNCNAME[0]}" 1>&2
+			return 1
+		fi
+
+		File=$1
+		shift
+
+		local Size
+		for Size in ${@:-16 24 32 64}; {
+			NewFile="${File%.*}"_${Size}x$Size."${File#*.}"
+			if ! [[ -f $NewFile ]]; then
+				convert -resize ${Size}x$Size "$File" "$NewFile"
+			else
+				Err "File '$NewFile' exists -- skipping."
+			fi
+		}
 	}
 fi
