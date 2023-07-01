@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sat  1 Jul 07:44:42 BST 2023
+# Last Change       - Sat  1 Jul 23:34:01 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -15,9 +15,7 @@
 #
 # Bugs:
 #
-#TODO: Git prompt kicks in with 'Unrecognised fatal error' if the CWD no longer
-#      exists. This error can perhaps be ignored, by checking for this specific
-#      situation and therefore exception.
+# N/A
 #------------------------------------------------------------------------------
 
 { [[ -z $PS1 ]] || shopt -q restricted_shell; } && return
@@ -42,7 +40,7 @@ PROMPT_PARSER() {
 		TempColumns WorkTreeChk SLevel Detached
 
 	local C_BCyan='\e[96m' C_BRed='\e[91m' C_Reset='\e[0m'\
-		C_Grey='\e[2;37m' C_Red='\e[31m'
+		C_Grey='\e[2;37m' C_Red='\e[31m' C_LGrey='\e[37m'
 
 	X="$1 "
 	(( ${X% } == 0 )) && X=
@@ -74,7 +72,11 @@ PROMPT_PARSER() {
 		# This lets me catch specific unwanted fatal errors, as well as general
 		# fatal errors which are one of the specific ones.
 		if [[ $WorkTreeChk != 'fatal: not a git repository '* ]]; then
-			Desc="${C_BRed}!!  ${C_Grey}Unrecognised fatal error detected."
+			if [[ -d $PWD ]]; then
+				Desc="${C_BRed}!!  ${C_Grey}Unrecognised fatal error detected."
+			else
+				Desc="${C_BRed}!!  ${C_Grey}Unable to resolve path."
+			fi
 		fi
 	elif [[ $WorkTreeChk == true ]]; then
 		GI=(
@@ -105,7 +107,7 @@ PROMPT_PARSER() {
 				# this approach, hence the below approach.
 
 				# Get the current branch name and look for detacted HEAD.
-				GB=`git rev-parse --abbrev-ref HEAD 2>&-`
+				GB=`git rev-parse --abbrev-ref HEAD 2>&1`
 				if [[ $GB == HEAD ]]; then
 					Desc="${C_BCyan}${GI[9]}  ${C_Grey}HEAD detached -- ouch."
 
@@ -113,14 +115,14 @@ PROMPT_PARSER() {
 				fi
 			fi
 
-			if [[ -z $(git rev-parse --branches 2>&1) ]]; then
+			if [[ -z `git rev-parse --branches 2>&1` ]]; then
 				Desc="${C_BCyan}${GI[5]}  ${C_Grey}Awaiting initial commit."
-
+			else
 				# The following is in a very specific order of priority.
 				if [[ $Detached != True ]]; then
 					while read -ra Line; do
 						if [[ ${Line[0]}${Line[1]}${Line[2]} == \(fixconflictsand ]]; then
-							Desc="${C_BCyan}${GI[7]}  ${C_Grey}Branch '${GB:-?}' has conflict(s)."
+							Desc="${C_BCyan}${GI[7]}  ${C_Grey}Branch $C_Reset$C_LGrey'${GB:-?}'$C_Grey has conflict(s)."
 							break
 						elif [[ ${Line[0]}${Line[1]} == Untrackedfiles: ]]; then
 							NFTTL=0
@@ -129,27 +131,27 @@ PROMPT_PARSER() {
 							done <<< "$(git status --short 2>&1)"
 							printf -v NFTTL "%'d" $NFTTL
 
-							Desc="${C_BCyan}${GI[3]}  ${C_Grey}Branch '${GB:-?}' has $NFTTL new file(s)."
+							Desc="${C_BCyan}${GI[3]}  ${C_Grey}Branch $C_Reset$C_LGrey'${GB:-?}'$C_Grey has $C_Reset$C_LGrey$NFTTL$C_Grey new file(s)."
 							break
 						elif [[ ${Line[0]} == deleted: ]]; then
-							Desc="${C_BCyan}${GI[8]}  ${C_Grey}Branch '${GB:-?}' detects removed file(s)."
+							Desc="${C_BCyan}${GI[8]}  ${C_Grey}Branch $C_Reset$C_LGrey'${GB:-?}'$C_Grey detects removed file(s)."
 							break
 						elif [[ ${Line[0]} == modified: ]]; then
 							readarray Buffer <<< "$(git --no-pager diff --name-only 2>&1)"
 							printf -v ModifiedFiles "%'d" ${#Buffer[@]}
-							Desc="${C_BCyan}${GI[2]}  ${C_Grey}Branch '${GB:-?}' has $ModifiedFiles modified file(s)."
+							Desc="${C_BCyan}${GI[2]}  ${C_Grey}Branch $C_Reset$C_LGrey'${GB:-?}'$C_Grey has $C_Reset$C_LGrey$ModifiedFiles$C_Grey modified file(s)."
 							break
 						elif [[ ${Line[0]}${Line[1]}${Line[2]}${Line[3]} == Changestobecommitted: ]]; then
-							Desc="${C_BCyan}${GI[1]}  ${C_Grey}Branch '${GB:-?}' has changes to commit."
+							Desc="${C_BCyan}${GI[1]}  ${C_Grey}Branch $C_Reset$C_LGrey'${GB:-?}'$C_Grey has changes to commit."
 							break
 						elif [[ ${Line[0]}${Line[1]}${Line[3]} == Yourbranchahead ]]; then
 							printf -v TTLCommits "%'d" "${Line[7]}"
-							Desc="${C_BCyan}${GI[6]}  ${C_Grey}Branch '${GB:-?}' leads by $TTLCommits commit(s)."
+							Desc="${C_BCyan}${GI[6]}  ${C_Grey}Branch $C_Reset$C_LGrey'${GB:-?}'$C_Grey leads by $C_Reset$C_LGrey$TTLCommits$C_Grey commit(s)."
 							break
 						elif [[ ${Line[0]}${Line[1]}${Line[2]} == nothingtocommit, ]]; then
 							printf -v TTLCommits "%'d" "$(git rev-list --count HEAD 2>&1)"
 
-							Desc="${C_BCyan}${GI[0]}  ${C_Grey}Branch '${GB:-?}' is $TTLCommits commit(s) clean."
+							Desc="${C_BCyan}${GI[0]}  ${C_Grey}Branch $C_Reset$C_LGrey'${GB:-?}'$C_Grey is $C_Reset$C_LGrey$TTLCommits$C_Grey commit(s) clean."
 							break
 						fi
 					done <<< "$Status"
