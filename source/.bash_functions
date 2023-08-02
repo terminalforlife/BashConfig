@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Sat  1 Jul 07:44:12 BST 2023
+# Last Change       - Fri 28 Jul 12:03:05 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -711,4 +711,20 @@ if type -P convert &> /dev/null; then
 			fi
 		}
 	}
+fi
+
+if type -P snotes &> /dev/null; then
+	snotes() { /usr/local/bin/snotes -n "$@"; }
+fi
+
+if type -P python &> /dev/null; then
+	starfield() {
+		local CMD='import time; print("There are %0.5f day(s) until Starfield '
+		CMD+='Release." % ((1693958400 - time.time()) / 60 / 60 / 24))'
+		python3.6 -c "$CMD"
+	}
+fi
+
+if type -P ncal &> /dev/null; then
+	cal() { ncal -MbA 1 "$@"; }
 fi
