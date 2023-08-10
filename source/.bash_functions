@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bash_functions
 # Started On        - Wed 24 Jan 00:16:36 GMT 2018
-# Last Change       - Fri 28 Jul 12:03:05 BST 2023
+# Last Change       - Fri 11 Aug 00:01:05 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
@@ -29,7 +29,12 @@ AskYN() {
 }
 
 overview() {
-	du -h --max-depth=1 "$1" | sed -r '
+	if (( $? > 1 )); then
+		printf 'Usage: %s [DIR] \n' "${FUNCNAME[0]}" 1>&2
+		return 1
+	fi
+
+	du -h --max-depth=1 "${1:-./}" | sed -r '
 		$d; s/^([.0-9]+[KMGTPEZY]\t)\.\//\1/
 	' | sort -hr | column
 }
@@ -67,24 +72,6 @@ ls() {
 }
 
 grep() { /bin/grep -sI --color=auto "$@"; }
-
-if type -P espeak &> /dev/null; then
-	countdown() {
-		if ! [[ $1 =~ ^[0-9]+$ ]]; then
-			Err 'Numeric argument required.'
-			return 1
-		elif (( $1 > 100 )); then
-			Err 'A valid number is between 1 and 100.'
-			return 1
-		fi
-
-		local Count
-		for (( Count = ${1:-10}; Count >= 0; Count-- )); {
-			espeak -a 100 -s 200 -p 0 "$Count" &> /dev/null &
-			sleep 1
-		}
-	}
-fi
 
 uplinks() {
 	if ! cd "$HOME"/GitHub/terminalforlife/Personal; then
@@ -173,6 +160,16 @@ fi
 
 if type -P wget &> /dev/null; then
 	get() { wget -qc -U 'Mozilla/5.0' --show-progress "$@"; }
+
+	ffget() {
+		(
+			cd "$HOME"/Downloads
+
+			local URL='https://download.mozilla.org/?product='
+			URL+='firefox-latest-ssl&os=linux64&lang=en-GB'
+			get -O 'firefox.tar.bz2' "$URL"
+		)
+	}
 fi
 
 alert() {
@@ -718,11 +715,7 @@ if type -P snotes &> /dev/null; then
 fi
 
 if type -P python &> /dev/null; then
-	starfield() {
-		local CMD='import time; print("There are %0.5f day(s) until Starfield '
-		CMD+='Release." % ((1693958400 - time.time()) / 60 / 60 / 24))'
-		python3.6 -c "$CMD"
-	}
+	starfield() { countdown 1693958400; }
 fi
 
 if type -P ncal &> /dev/null; then
