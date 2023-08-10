@@ -3,12 +3,10 @@
 #------------------------------------------------------------------------------
 # Project Name      - BashConfig/source/.bashrc
 # Started On        - Thu 14 Sep 12:44:56 BST 2017
-# Last Change       - Sat  1 Jul 23:34:01 BST 2023
+# Last Change       - Fri 11 Aug 00:06:29 BST 2023
 # Author E-Mail     - terminalforlife@yahoo.com
 # Author GitHub     - https://github.com/terminalforlife
 #------------------------------------------------------------------------------
-# Bash version 4.0 or greater is required.
-#
 # Features:
 #
 # N/A
@@ -16,7 +14,18 @@
 # Bugs:
 #
 # N/A
+#
+# Dependencies:
+#
+#   bash (>= 4.0)
 #------------------------------------------------------------------------------
+
+# Simple hard-to-ignore reminders.
+_NoticeFile=$HOME/.bash_notice
+if [[ -f $_NoticeFile && -r $_NoticeFile ]]; then
+	readarray -t < "$_NoticeFile"
+	printf '%s\n' "${MAPFILE[@]}"
+fi
 
 { [[ -z $PS1 ]] || shopt -q restricted_shell; } && return
 
